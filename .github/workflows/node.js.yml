@@ -28,3 +28,9 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
+
+    - name: Run UI Tests - Travel Processor
+      working-directory: ./app/travel_processor
+      run: |
+        npm ci
+        npm test
