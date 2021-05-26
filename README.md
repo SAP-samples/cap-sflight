@@ -16,6 +16,7 @@ In some cases, the model and the handlers can be improved or simplified once fur
 In other cases, the app itself could be improved. For example, calculation of the total price for a travel
 currently simply sums up the single prices ignoring the currencies.
 
+![](https://github.com/SAP-samples/cap-sflight/workflows/CI/badge.svg)
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/cap-sflight)](https://api.reuse.software/info/github.com/SAP-samples/cap-sflight)
 
 
