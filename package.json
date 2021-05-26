@@ -1,0 +1,44 @@
+{
+  "name": "sflight",
+  "version": "0.0.1",
+  "description": "CAP flight demo scenario",
+  "repository": "https://github.tools.sap/cap/sflight",
+  "dependencies": {
+    "@sap/cds": "^5.1",
+    "express": "^4"
+  },
+  "devDependencies": {
+    "@sap/ux-specification": "^1.84",
+    "chai": "^4.3.0",
+    "chai-as-promised": "^7.1.1",
+    "chai-subset": "^1.6.0",
+    "jest": "^26.6.3",
+    "qunit": "^2.9.3",
+    "sqlite3": "^5.0.2"
+  },
+  "scripts": {
+    "start": "cds run",
+    "test": "jest --runInBand"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sql"
+      }
+    },
+    "log": {
+      "service": true
+    },
+    "features": {
+      "preserve_computed": true
+    }
+  },
+  "sapux": [
+    "app/travel_processor"
+  ],
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "license": "SAP SAMPLE CODE LICENSE",
+  "private": true
+}
