@@ -1,0 +1,10 @@
+code;locale;name
+N;de;Neu
+B;de;Bestätigt
+X;de;Storniert
+N;fr;Nouvelle
+B;fr;Réservé
+X;fr;Annulé
+N;it;Nuova
+B;it;Prenotato
+X;it;Annullato
