@@ -1,0 +1,21 @@
+{
+    "name": "travel_processor",
+    "version": "0.0.1",
+    "description": "sap.fe.samples.cap",
+    "keywords": [
+        "ui5",
+        "openui5",
+        "sapui5"
+    ],
+    "main": "webapp/index.html",
+    "scripts": {
+        "deploy": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
+    },
+    "devDependencies": {
+        "@ui5/cli": "2.7.1",
+        "@ui5/fs": "2.0.1",
+        "@ui5/logger": "2.0.0",
+        "@sap/ux-ui5-tooling": "1",
+        "@sap/ux-specification": "latest"
+    }
+}

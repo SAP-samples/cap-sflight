@@ -1,0 +1,30 @@
+---
+spring:
+    profiles: default
+    resources:
+        static-locations: "file:./app"
+    datasource:
+        url: "jdbc:sqlite:file::memory:?cache=shared"
+        driver-class-name: org.sqlite.JDBC
+        initialization-mode: always
+        hikari:
+            maximum-pool-size: 1
+management:
+    endpoints:
+        web:
+            exposure:
+                include: "*"
+cds:
+    security:
+        authenticate-unknown-endpoints: false
+---
+spring:
+    profiles: cloud
+    datasource:
+        hikari:
+            maximum-pool-size: 200
+management:
+    endpoints:
+        web:
+            exposure:
+                include: "*"
