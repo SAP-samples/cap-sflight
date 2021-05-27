@@ -1,5 +1,5 @@
 {
-  "name": "sflight",
+  "name": "@capire/sflight",
   "version": "0.0.1",
   "description": "CAP flight demo scenario",
   "repository": "https://github.tools.sap/cap/sflight",
