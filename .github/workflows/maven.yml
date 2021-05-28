@@ -5,14 +5,14 @@ name: Java CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
 
-    runs-on: [ self-hosted ]
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
