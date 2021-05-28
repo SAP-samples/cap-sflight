@@ -13,7 +13,7 @@
     "sapui5"
   ],
   "devDependencies": {
-    "@sap/ux-specification": "^1.84.10",
+    "@sap/ux-specification": "latest",
     "@sap/ux-ui5-tooling": "^1.1.10",
     "@ui5/cli": "^2.10.3",
     "@ui5/fs": "^2.0.6",
@@ -24,7 +24,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-qunit": "^4.1.2",
     "karma-ui5": "^2.3.3",
-    "mbt": "^1.1.1",
+    "mbt": "^1.2.1",
     "puppeteer": "^9.1.0",
     "qunit": "^2.15.0",
     "rimraf": "^3.0.2",

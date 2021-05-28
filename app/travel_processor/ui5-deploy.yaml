@@ -18,6 +18,6 @@ builder:
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
-        archiveName: sapfecaptravel
+        archiveName: travel-processor
         additionalFiles:
           - xs-app.json

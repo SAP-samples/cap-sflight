@@ -46,6 +46,14 @@
   },
   "sap.ui": {
     "technology": "UI5",
+    "icons": {
+      "icon": "sap-icon://flight",
+      "favIcon": "sap-icon://flight",
+      "phone": "sap-icon://flight",
+      "phone@2": "sap-icon://flight",
+      "tablet": "sap-icon://flight",
+      "tablet@2": "sap-icon://flight"
+    },
     "deviceTypes": {
       "desktop": true,
       "tablet": true,

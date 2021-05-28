@@ -5,7 +5,7 @@
     {
       "source": "^/processor/(.*)$",
       "target": "/processor/$1",
-      "destination": "odata-services",
+      "destination": "srv-api",
       "authenticationType": "xsuaa",
       "csrfProtection": false
     },

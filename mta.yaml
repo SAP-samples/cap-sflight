@@ -1,0 +1,187 @@
+_schema-version: "3.2"
+ID: capire.sflight
+version: 0.0.1
+description: "CAP flight demo scenario"
+
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install --production
+        - npx -p @sap/cds-dk cds build --production
+
+modules:
+  # --------------------- SERVER MODULE ------------------------
+  - name: sflight-srv
+  # ------------------------------------------------------------
+    type: nodejs
+    path: gen/srv
+    requires:
+      # Resources extracted from CAP configuration
+      - name: sflight-db
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+
+  # -------------------- SIDECAR MODULE ------------------------
+  - name: sflight-db-deployer
+  # ------------------------------------------------------------
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      # 'hana' and 'xsuaa' resources extracted from CAP configuration
+      - name: sflight-db
+      - name: sflight-uaa
+
+  # ------------------ APPLICATION ROUTER ----------------------
+  - name: sflight-router
+  # ------------------------------------------------------------
+    type: approuter.nodejs
+    path: router
+    deployed-after:
+      - sflight-portalcontent
+      - sflight-srv
+    requires:
+      - name: sflight-portal
+      - name: sflight-html5-repo-runtime
+      - name: sflight-uaa
+      - name: sflight-dest-srv
+        group: destinations
+        properties:
+          forwardAuthToken: false
+          name: ui5
+          url: https://ui5.sap.com
+      - name: srv-api
+        group: destinations
+        properties:
+          forwardAuthToken: true
+          name: srv-api
+          url: ~{srv-url}
+    parameters:
+      disk-quota: 256M
+      memory: 256M
+
+  # ------------------ APPLICATION CONTENT ---------------------
+  - name: sflight-appcontent
+  # ------------------------------------------------------------
+    type: com.sap.application.content
+    path: app
+    requires:
+      - name: sflight-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: sflight-app-travel-processor
+          artifacts:
+            - travel-processor.zip
+          target-path: resources/
+
+  # ------------- APPLICATION: TRAVEL PROCESSOR ----------------
+  - name: sflight-app-travel-processor
+  # ------------------------------------------------------------
+    type: html5
+    path: app/travel_processor
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+
+  # -------------------- PORTAL CONTENT ------------------------
+  - name: sflight-portalcontent
+  # ------------------------------------------------------------
+    type: com.sap.application.content
+    path: portal
+    deployed-after:
+      - sflight-appcontent
+    build-parameters:
+      build-artifact-name: content
+    requires:
+      - name: sflight-portal
+        parameters:
+          content-target: true
+          service-key:
+            name: content-deploy-key
+            config:
+              content-endpoint: developer
+      - name: sflight-html5-repo-host
+      - name: sflight-uaa
+
+resources:
+  # services extracted from CAP configuration
+  # 'service-plan' can be configured via 'cds.requires.<name>.vcap.plan'
+  # ------------------------------------------------------------
+  - name: sflight-db
+  # ------------------------------------------------------------
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana # or 'hanatrial' on trial landscapes
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}
+
+  # ------------------------------------------------------------
+  - name: sflight-uaa
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        tenant-mode: dedicated
+        xsappname: sflight-${space-guid}
+      service: xsuaa
+      service-plan: application
+
+  # ------------------------------------------------------------
+  - name: sflight-html5-repo-runtime
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+
+  # ------------------------------------------------------------
+  - name: sflight-dest-srv
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            destinations:
+              - Name: ui5
+                Authentication: NoAuthentication
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+            existing_destinations_policy: update
+        version: 1.0.0
+      service: destination
+      service-plan: lite
+
+  # ------------------------------------------------------------
+  - name: sflight-html5-repo-host
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+
+  # ------------------------------------------------------------
+  - name: sflight-portal
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: standard
+      service: portal
