@@ -17,6 +17,9 @@ management:
 cds:
     security:
         authenticate-unknown-endpoints: false
+    odata-v4:
+        endpoint:
+            path: "/"
 ---
 spring:
     profiles: cloud

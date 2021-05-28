@@ -11,7 +11,7 @@
         "description": "{{appDescription}}",
         "dataSources": {
             "mainService": {
-                "uri": "/odata/v4/processor/",
+                "uri": "/processor/",
                 "type": "OData",
                 "settings": {
                     "odataVersion": "4.0"

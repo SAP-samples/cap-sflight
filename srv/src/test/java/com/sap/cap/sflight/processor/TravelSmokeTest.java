@@ -9,21 +9,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TravelProcessorTest {
+class TravelSmokeTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    @WithMockUser
     void testReadTravels() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/odata/v4/processor/Travel")).andExpect(status().isOk())
+        mockMvc.perform(MockMvcRequestBuilders.get("/processor/Travel")).andExpect(status().isOk())
                 .andExpect(jsonPath("$.value[0].TravelID").value(equalTo(175)))
                 .andExpect(jsonPath("$.value[0].BeginDate").value(containsString("2020-12-10")))
                 .andExpect(jsonPath("$.value[0].EndDate").value(containsString("2021-10-06")))
