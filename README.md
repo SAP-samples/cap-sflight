@@ -39,7 +39,7 @@ http://localhost:4004/travel_processor/webapp/test/integration/opaTests.qunit.ht
 
 Test documentation is available at:
 https://ui5.sap.com/#/api/sap.fe.test
-
+TEST
 ## Creating a Fiori App from Scratch
 
 If you want to implement an SAP Fiori app, follow these tutorials:
