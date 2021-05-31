@@ -28,7 +28,7 @@ mta_archives/
 srv/src/main/resources/edmx/**
 dist/
 /app/resources/
-/router/package-lock.json
+/app/router/package-lock.json
 
 
 # IDEs

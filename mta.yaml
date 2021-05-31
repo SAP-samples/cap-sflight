@@ -44,7 +44,7 @@ modules:
   - name: sflight-router
   # ------------------------------------------------------------
     type: approuter.nodejs
-    path: router
+    path: app/router
     deployed-after:
       - sflight-portalcontent
       - sflight-srv
@@ -102,7 +102,7 @@ modules:
   - name: sflight-portalcontent
   # ------------------------------------------------------------
     type: com.sap.application.content
-    path: portal
+    path: app/portal
     deployed-after:
       - sflight-appcontent
     build-parameters:
