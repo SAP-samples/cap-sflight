@@ -6,7 +6,8 @@
   "dependencies": {
     "@sap/audit-logging": "^5.0.0",
     "@sap/cds": "^5.1",
-    "@sap/hana-client": "^2.6.61",
+    "@sap/hana-client": "^2.8.20",
+    "@sap/xsenv": "^3.1.0",
     "@sap/xssec": "^3.2.0",
     "express": "^4",
     "passport": "^0.4.1"

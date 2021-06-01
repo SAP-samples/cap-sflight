@@ -1,0 +1,11 @@
+{
+  "HTML5Runtime_enabled": true,
+  "version": "1.0.0",
+  "init_data": {
+    "instance": {
+      "existing_destinations_policy": "update",
+      "destinations": [
+      ]
+    }
+  }
+}

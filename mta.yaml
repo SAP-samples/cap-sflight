@@ -1,10 +1,9 @@
 _schema-version: "3.2"
 ID: capire.sflight
-version: 0.0.1
+version: 1.0.0
 description: "CAP flight demo scenario"
 
 parameters:
-  deploy_mode: html5-repo
   enable-parallel-deployments: true
 
 build-parameters:
@@ -21,52 +20,27 @@ modules:
     type: nodejs
     path: gen/srv
     requires:
-      # Resources extracted from CAP configuration
       - name: sflight-db
+      - name: sflight-uaa
     provides:
       - name: srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
           srv-url: ${default-url}
+    build-parameters:
+      ignore: ["node_modules/"]
 
-  # -------------------- SIDECAR MODULE ------------------------
-  - name: sflight-db-deployer
-  # ------------------------------------------------------------
-    type: hdb
-    path: gen/db
-    parameters:
-      buildpack: nodejs_buildpack
-    requires:
-      # 'hana' and 'xsuaa' resources extracted from CAP configuration
-      - name: sflight-db
-      - name: sflight-uaa
-
-  # ------------------ APPLICATION ROUTER ----------------------
-  - name: sflight-router
-  # ------------------------------------------------------------
-    type: approuter.nodejs
-    path: app/router
-    deployed-after:
-      - sflight-portalcontent
-      - sflight-srv
-    requires:
-      - name: sflight-portal
-      - name: sflight-html5-repo-runtime
-      - name: sflight-uaa
-      - name: sflight-dest-srv
-        group: destinations
-        properties:
-          forwardAuthToken: false
-          name: ui5
-          url: https://ui5.sap.com
-      - name: srv-api
-        group: destinations
-        properties:
-          forwardAuthToken: true
-          name: srv-api
-          url: ~{srv-url}
-    parameters:
-      disk-quota: 256M
-      memory: 256M
+#  # -------------------- SIDECAR MODULE ------------------------
+#  - name: sflight-db-deployer
+#  # ------------------------------------------------------------
+#    type: hdb
+#    path: gen/db
+#    parameters:
+#      buildpack: nodejs_buildpack
+#    requires:
+#      - name: sflight-db
+#      - name: sflight-uaa
+#    build-parameters:
+#      ignore: ["node_modules/"]
 
   # ------------------ APPLICATION CONTENT ---------------------
   - name: sflight-appcontent
@@ -98,35 +72,46 @@ modules:
         - npm run build:cf
       supported-platforms: []
 
-  # -------------------- PORTAL CONTENT ------------------------
-  - name: sflight-portalcontent
-  # ------------------------------------------------------------
+  # ------------------ DESTINATION CONTENT ---------------------
+  - name: sflight-destinationcontent
+    # ------------------------------------------------------------
     type: com.sap.application.content
-    path: app/portal
-    deployed-after:
-      - sflight-appcontent
     build-parameters:
-      build-artifact-name: content
+      no-source: true
     requires:
-      - name: sflight-portal
+      - name: sflight-uaa
+        parameters:
+          service-key:
+            name: sflight-uaa-key
+      - name: sflight-html5-repo-host
+        parameters:
+          service-key:
+            name: sflight-html5-repo-host-key
+      - name: sflight-destination-service
         parameters:
           content-target: true
-          service-key:
-            name: content-deploy-key
-            config:
-              content-endpoint: developer
-      - name: sflight-html5-repo-host
-      - name: sflight-uaa
+    parameters:
+      content:
+        instance:
+          existing_destinations_policy: update
+          destinations:
+            - Name: sflight-destination-html5-repository
+              ServiceInstanceName: sflight-html5-repo-host
+              ServiceKeyName: sflight-html5-repo-host-key
+              sap.cloud.service: sap.fe.cap.sflight
+            - Name: sflight-destination-uaa
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: sflight-uaa
+              ServiceKeyName: sflight-uaa-key
+              sap.cloud.service: sap.fe.cap.sflight
 
 resources:
-  # services extracted from CAP configuration
-  # 'service-plan' can be configured via 'cds.requires.<name>.vcap.plan'
   # ------------------------------------------------------------
   - name: sflight-db
   # ------------------------------------------------------------
     type: com.sap.xs.hdi-container
     parameters:
-      service: hana # or 'hanatrial' on trial landscapes
+      service: hana
       service-plan: hdi-shared
     properties:
       hdi-service-name: ${service-name}
@@ -136,11 +121,9 @@ resources:
   # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
     parameters:
-      config:
-        tenant-mode: dedicated
-        xsappname: sflight-${space-guid}
       service: xsuaa
       service-plan: application
+      path: ./xs-security.json
 
   # ------------------------------------------------------------
   - name: sflight-html5-repo-runtime
@@ -151,26 +134,6 @@ resources:
       service-plan: app-runtime
 
   # ------------------------------------------------------------
-  - name: sflight-dest-srv
-  # ------------------------------------------------------------
-    type: org.cloudfoundry.managed-service
-    parameters:
-      config:
-        HTML5Runtime_enabled: true
-        init_data:
-          instance:
-            destinations:
-              - Name: ui5
-                Authentication: NoAuthentication
-                ProxyType: Internet
-                Type: HTTP
-                URL: https://ui5.sap.com
-            existing_destinations_policy: update
-        version: 1.0.0
-      service: destination
-      service-plan: lite
-
-  # ------------------------------------------------------------
   - name: sflight-html5-repo-host
   # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
@@ -179,9 +142,10 @@ resources:
       service-plan: app-host
 
   # ------------------------------------------------------------
-  - name: sflight-portal
+  - name: sflight-destination-service
   # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
     parameters:
-      service-plan: standard
-      service: portal
+      service: destination
+      service-plan: lite
+      path: ./destination.json
