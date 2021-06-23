@@ -9,15 +9,15 @@ import static java.lang.Boolean.FALSE;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import com.sap.cds.services.cds.CdsService;
-import com.sap.cds.services.handler.annotations.Before;
 import org.springframework.stereotype.Component;
 
 import com.sap.cds.ql.Select;
 import com.sap.cds.ql.Update;
+import com.sap.cds.services.cds.CdsService;
 import com.sap.cds.services.draft.DraftService;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.After;
+import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.ServiceName;
 
 import cds.gen.travelservice.Booking;
@@ -56,40 +56,51 @@ public class RecalculatePriceHandler implements EventHandler {
 		recalculateAndApplyPriceOnBookingChange(travelUUID, false);
 	}
 
-	@After(event = { DraftService.EVENT_DRAFT_NEW,
-			DraftService.EVENT_DRAFT_PATCH }, entity = BookingSupplement_.CDS_NAME)
+	@After(event = { DraftService.EVENT_DRAFT_NEW, DraftService.EVENT_DRAFT_PATCH,
+			DraftService.EVENT_DRAFT_SAVE }, entity = BookingSupplement_.CDS_NAME)
 	public void recalculateTravelPriceIfPriceWasUpdated(final BookingSupplement bookingSupplement) {
 		var travelUUID = (String) db.run(Select.from(BOOKING_SUPPLEMENT)
-				.columns(bs -> bs.get("to_Booking.to_Travel.TravelUUID").as(TRAVEL_UUID)).where(bs -> bs
-						.BookSupplUUID().eq(bookingSupplement.getBookSupplUUID()).and(bs.IsActiveEntity().eq(FALSE))))
+				.columns(bs -> bs.get("to_Booking.to_Travel.TravelUUID").as(TRAVEL_UUID)).where(bs -> bs.BookSupplUUID()
+						.eq(bookingSupplement.getBookSupplUUID()).and(bs.IsActiveEntity().eq(FALSE))))
 				.single().get(TRAVEL_UUID);
 		recalculateAndApplyPriceOnBookingChange(travelUUID, false);
 	}
 
-	@Before(event = {CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE}, entity = Travel_.CDS_NAME)
+	@Before(event = { CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE }, entity = Travel_.CDS_NAME)
 	public void recalculateTravelBeforeCreateAndUpdate(final Travel travel) {
-		travel.setTotalPrice(calculateTotalPriceForTravel(travel.getTravelUUID(), true));
+		travel.setTotalPrice(calculatePriceFromTravelObject(travel));
 	}
 
 	private void recalculateAndApplyPriceOnBookingChange(final String travelUUID, boolean isActiveEntity) {
 
 		BigDecimal totalPrice = calculateTotalPriceForTravel(travelUUID, isActiveEntity);
 		var update = Update.entity(TRAVEL).data(Map.of("TravelUUID", travelUUID, "TotalPrice", totalPrice));
-		if(isActiveEntity) {
+		if (isActiveEntity) {
 			db.run(update);
 		} else {
 			db.patchDraft(update);
 		}
 	}
 
+	private BigDecimal calculatePriceFromTravelObject(final Travel travel) {
+		BigDecimal flightPriceSum = travel.getToBooking().stream().map(Booking::getFlightPrice).reduce(BigDecimal.ZERO,
+				BigDecimal::add);
+		BigDecimal supplementPriceSum = BigDecimal.ZERO;
+		for (Booking booking : travel.getToBooking()) {
+			supplementPriceSum = supplementPriceSum.add(booking.getToBookSupplement().stream()
+					.map(BookingSupplement::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add));
+		}
+
+		return travel.getBookingFee().add(flightPriceSum).add(supplementPriceSum);
+	}
+
 	private BigDecimal calculateTotalPriceForTravel(String travelUUID, boolean isActiveEntity) {
 		// get booking fee
 		var bookingFee = BigDecimal.valueOf(0);
-		var bookingFeeRow = db.run(Select.from(TRAVEL).columns(Travel_::BookingFee)
-				.where(t -> t.TravelUUID().eq(travelUUID).and(t.IsActiveEntity().eq(isActiveEntity))
-						.and(t.BookingFee().isNotNull()))
-				.limit(1)).first();
-		if(bookingFeeRow.isPresent()) {
+		var bookingFeeRow = db.run(Select.from(TRAVEL).columns(Travel_::BookingFee).where(t -> t.TravelUUID()
+				.eq(travelUUID).and(t.IsActiveEntity().eq(isActiveEntity)).and(t.BookingFee().isNotNull())).limit(1))
+				.first();
+		if (bookingFeeRow.isPresent()) {
 			bookingFee = (BigDecimal) bookingFeeRow.get().get("BookingFee");
 		}
 
@@ -97,22 +108,20 @@ public class RecalculatePriceHandler implements EventHandler {
 		var flightPriceSum = new BigDecimal(0);
 		var flighPriceRow = db.run(Select.from(BOOKING).columns(c -> sum(c.FlightPrice()).as("FlightPriceSum"))
 				.groupBy(c -> c.get("to_Travel.TravelUUID"))
-				.having(c -> c.to_Travel().TravelUUID().eq(travelUUID)
-						.and(c.IsActiveEntity().eq(isActiveEntity))))
+				.having(c -> c.to_Travel().TravelUUID().eq(travelUUID).and(c.IsActiveEntity().eq(isActiveEntity))))
 				.first();
-		if(flighPriceRow.isPresent()) {
-			flightPriceSum = BigDecimal.valueOf((Integer) flighPriceRow.get().get("FlightPriceSum"));
+		if (flighPriceRow.isPresent()) {
+			flightPriceSum = new BigDecimal(flighPriceRow.get().get("FlightPriceSum").toString());
 		}
 
 		// get sum of the prices of all bookingsupplements for the travel
 		var supplementPriceSum = new BigDecimal(0);
 		var supplmentPriceSumRow = db.run(Select.from(BOOKING_SUPPLEMENT).columns(c -> sum(c.Price()).as("PriceSum"))
 				.groupBy(c -> c.get("to_Booking.to_Travel.TravelUUID"))
-				.having(c -> c.to_Travel().TravelUUID().eq(travelUUID)
-						.and(c.IsActiveEntity().eq(isActiveEntity))))
+				.having(c -> c.to_Travel().TravelUUID().eq(travelUUID).and(c.IsActiveEntity().eq(isActiveEntity))))
 				.first();
-		if(supplmentPriceSumRow.isPresent()) {
-			supplementPriceSum = BigDecimal.valueOf((Double) supplmentPriceSumRow.get().get("PriceSum"));
+		if (supplmentPriceSumRow.isPresent()) {
+			supplementPriceSum = new BigDecimal(supplmentPriceSumRow.get().get("PriceSum").toString());
 		}
 
 		// update travel's total price
