@@ -12,12 +12,12 @@ init() {
   /**
    * Fill in virtual elements to control status of UI elements.
    */
-  this.after ('each', 'Travel', any => {
-    const { code: status } = any.TravelStatus || {}
-    any.acceptEnabled = status !== 'A'
-    any.rejectEnabled = status !== 'X'
-    any.deductDiscountEnabled = status !== 'A'
-  })
+  // this.after ('each', 'Travel', any => {
+  //   const { code: status } = any.TravelStatus || {}
+  //   any.acceptEnabled = status !== 'A'
+  //   any.rejectEnabled = status !== 'X'
+  //   any.deductDiscountEnabled = status !== 'A'
+  // })
 
 
   /**
