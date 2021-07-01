@@ -23,7 +23,7 @@ modules:
       - name: sflight-db
       - name: sflight-uaa
     provides:
-      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+      - name: srv-api # required by consumers of CAP services (e.g. approuter, destinations)
         properties:
           srv-url: ${default-url}
     build-parameters:
@@ -95,19 +95,14 @@ modules:
         instance:
           existing_destinations_policy: update
           destinations:
-            - Name: sflight-destination-html5-repository
+            - Name: sflight-html5-repository
               ServiceInstanceName: sflight-html5-repo-host
               ServiceKeyName: sflight-html5-repo-host-key
               sap.cloud.service: sap.fe.cap.sflight
-            - Name: sflight-destination-uaa
+            - Name: sflight-uaa
               Authentication: OAuth2UserTokenExchange
               ServiceInstanceName: sflight-uaa
               ServiceKeyName: sflight-uaa-key
-              sap.cloud.service: sap.fe.cap.sflight
-            - Name: sflight-destination-srv
-              Authentication: OAuth2UserTokenExchange
-              ServiceInstanceName: sflight-uaa
-              ServiceKeyName: sflight-srv-key
               sap.cloud.service: sap.fe.cap.sflight
 
 resources:
@@ -160,20 +155,23 @@ resources:
   - name: sflight-destination-service
   # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
+    requires:
+      - name: srv-api
     parameters:
       service: destination
       service-plan: lite
       config:
+        version: 1.0.0
         HTML5Runtime_enabled: true
         init_data:
           instance:
+            existing_destinations_policy: update
             destinations:
-              - Name: sflight-srv-api
-                URL: "~{srv-api/srv-url}"
+              - Name: sflight-srv
+                URL: ~{srv-api/srv-url}
+                Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
-                Authentication: NoAuthentication
                 HTML5.ForwardAuthToken: true
-            existing_destinations_policy: ignore
-    requires:
-      - name: srv-api
+                sap.cloud.service: sap.fe.cap.sflight
+
