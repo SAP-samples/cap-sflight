@@ -3,10 +3,9 @@
 This is a sample app for the travel reference scenario, built with the [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap) and [SAP Fiori elements](https://experience.sap.com/fiori-design-web/smart-templates).
 
 The purpose of this sample app is to:
-
-- Demonstrate SAP Fiori annotations
-- Demonstrate and compare SAP Fiori features on various stacks (CAP Node.js, CAP Java SDK, ABAP)
-- Run UI test suites on various stacks
+* Demonstrate SAP Fiori annotations
+* Demonstrate and compare SAP Fiori features on various stacks (CAP Node.js, CAP Java SDK, ABAP)
+* Run UI test suites on various stacks
 
 ![Process Travels Page](img.png)
 
@@ -19,6 +18,7 @@ currently simply sums up the single prices ignoring the currencies.
 
 ![](https://github.com/SAP-samples/cap-sflight/workflows/CI/badge.svg)
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/cap-sflight)](https://api.reuse.software/info/github.com/SAP-samples/cap-sflight)
+
 
 ## SAP Fiori UI with Node.js Backend
 
@@ -72,16 +72,16 @@ The build results will the stored in directory `mta_archives`.
 1. Log in to the target space
 2. Deploy the MTA archive using the CF CLI: `cf deploy mta_archives/capire.sflight_1.0.0.mtar`
 
-## Creating a Fiori App from Scratch
+## Creating a SAP Fiori App from Scratch
 
 If you want to implement an SAP Fiori app, follow these tutorials:
 
-- [Create a List Report Object Page App with SAP Fiori Tools](https://developers.sap.com/group.fiori-tools-lrop.html)
-- [Developing SAP Fiori applications with SAP Fiori Tools](https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US)
+* [Create a List Report Object Page App with SAP Fiori Tools](https://developers.sap.com/group.fiori-tools-lrop.html)
+* [Developing SAP Fiori applications with SAP Fiori Tools](https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US)
 
 ## Get Support
 
-In case you've a question, find a bug, or otherwise need support, use our [community](https://answers.sap.com/tags/9f13aee1-834c-4105-8e43-ee442775e5ce) to get more visibility.
+In case you've a question, find a bug, or otherwise need support, use the [SAP Community](https://answers.sap.com/tags/9f13aee1-834c-4105-8e43-ee442775e5ce) to get more visibility.
 
 ## License
 
