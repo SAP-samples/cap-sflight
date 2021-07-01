@@ -1,7 +1,7 @@
 _schema-version: "3.2"
 ID: capire.sflight
 version: 1.0.0
-description: "CAP flight demo scenario"
+description: "CAP sflight demo"
 
 parameters:
   enable-parallel-deployments: true
@@ -104,6 +104,11 @@ modules:
               ServiceInstanceName: sflight-uaa
               ServiceKeyName: sflight-uaa-key
               sap.cloud.service: sap.fe.cap.sflight
+            - Name: sflight-destination-srv
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: sflight-uaa
+              ServiceKeyName: sflight-srv-key
+              sap.cloud.service: sap.fe.cap.sflight
 
 resources:
   # ------------------------------------------------------------
@@ -123,7 +128,17 @@ resources:
     parameters:
       service: xsuaa
       service-plan: application
-      path: ./xs-security.json
+      config:
+        xsappname: sflight
+        tenant-mode: dedicated
+        scopes:
+          - name: uaa.user
+            description: UAA
+        role-templates:
+          - name: Token_Exchange
+            description: UAA
+            scope-references:
+              - uaa.user
 
   # ------------------------------------------------------------
   - name: sflight-html5-repo-runtime
@@ -148,4 +163,17 @@ resources:
     parameters:
       service: destination
       service-plan: lite
-      path: ./destination.json
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            destinations:
+              - Name: sflight-srv-api
+                URL: "~{srv-api/srv-url}"
+                Type: HTTP
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.ForwardAuthToken: true
+            existing_destinations_policy: ignore
+    requires:
+      - name: srv-api
