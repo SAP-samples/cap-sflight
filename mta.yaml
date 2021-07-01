@@ -29,18 +29,18 @@ modules:
     build-parameters:
       ignore: ["node_modules/"]
 
-#  # -------------------- SIDECAR MODULE ------------------------
-#  - name: sflight-db-deployer
-#  # ------------------------------------------------------------
-#    type: hdb
-#    path: gen/db
-#    parameters:
-#      buildpack: nodejs_buildpack
-#    requires:
-#      - name: sflight-db
-#      - name: sflight-uaa
-#    build-parameters:
-#      ignore: ["node_modules/"]
+  # -------------------- SIDECAR MODULE ------------------------
+  - name: sflight-db-deployer
+  # ------------------------------------------------------------
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: sflight-db
+      - name: sflight-uaa
+    build-parameters:
+      ignore: ["node_modules/"]
 
   # ------------------ APPLICATION CONTENT ---------------------
   - name: sflight-appcontent
@@ -74,7 +74,7 @@ modules:
 
   # ------------------ DESTINATION CONTENT ---------------------
   - name: sflight-destinationcontent
-    # ------------------------------------------------------------
+  # ------------------------------------------------------------
     type: com.sap.application.content
     build-parameters:
       no-source: true
