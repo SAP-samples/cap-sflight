@@ -48,6 +48,7 @@ modules:
     type: com.sap.application.content
     path: app
     requires:
+      - name: sflight-destination-service
       - name: sflight-html5-repo-host
         parameters:
           content-target: true
@@ -173,5 +174,4 @@ resources:
                 Type: HTTP
                 ProxyType: Internet
                 HTML5.ForwardAuthToken: true
-                sap.cloud.service: sap.fe.cap.sflight
-
+                HTML5.DynamicDestination: true
