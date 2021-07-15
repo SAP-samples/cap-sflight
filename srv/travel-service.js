@@ -36,7 +36,7 @@ init() {
    */
   this.before ('NEW', 'Booking', async (req) => {
     const { to_Travel_TravelUUID } = req.data
-    const { status } = await SELECT `TravelID as ID, TravelStatus_code as status` .from (Travel.drafts, to_Travel_TravelUUID)
+    const { status } = await SELECT `TravelStatus_code as status` .from (Travel.drafts, to_Travel_TravelUUID)
     if (status === 'X') throw req.reject (400, 'Cannot add new bookings to rejected travels.')
     const { maxID } = await SELECT.one `max(BookingID) as maxID` .from (Booking.drafts) .where ({to_Travel_TravelUUID})
     req.data.BookingID = maxID + 1
