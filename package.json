@@ -1,8 +1,8 @@
 {
   "name": "@capire/sflight",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "CAP flight demo scenario",
-  "repository": "https://github.tools.sap/cap/sflight",
+  "repository": "https://github.com/SAP-samples/cap-sflight",
   "dependencies": {
     "@sap/cds": "^5.1",
     "express": "^4"

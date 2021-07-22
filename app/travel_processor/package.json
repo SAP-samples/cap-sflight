@@ -13,22 +13,22 @@
     "sapui5"
   ],
   "devDependencies": {
-    "@sap/ux-specification": "^1.84.10",
-    "@sap/ux-ui5-tooling": "^1.1.10",
-    "@ui5/cli": "^2.10.3",
+    "@sap/ux-specification": "^1.90.3",
+    "@sap/ux-ui5-tooling": "^1.2.3",
+    "@ui5/cli": "^2.11.3",
     "@ui5/fs": "^2.0.6",
     "@ui5/logger": "^2.0.1",
-    "http-proxy-middleware": "^1.3.1",
-    "karma": "^6.3.2",
+    "http-proxy-middleware": "^2.0.1",
+    "karma": "^6.3.4",
     "karma-chrome-launcher": "^3.1.0",
     "karma-mocha-reporter": "^2.2.5",
     "karma-qunit": "^4.1.2",
-    "karma-ui5": "^2.3.3",
-    "mbt": "^1.1.1",
-    "puppeteer": "^9.1.0",
-    "qunit": "^2.15.0",
+    "karma-ui5": "^2.3.4",
+    "mbt": "^1.2.1",
+    "puppeteer": "^10.1.0",
+    "qunit": "^2.16.0",
     "rimraf": "^3.0.2",
-    "ui5-task-zipper": "^0.4.2"
+    "ui5-task-zipper": "^0.4.3"
   },
   "ui5": {
     "dependencies": [
