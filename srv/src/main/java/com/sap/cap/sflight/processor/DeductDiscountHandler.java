@@ -10,6 +10,7 @@ import com.sap.cds.services.draft.DraftService;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
+import com.sap.cds.services.persistence.PersistenceService;
 import static java.lang.Boolean.TRUE;
 import org.springframework.stereotype.Component;
 
@@ -20,16 +21,18 @@ import java.math.MathContext;
 @ServiceName(TravelService_.CDS_NAME)
 public class DeductDiscountHandler implements EventHandler {
 
-	private final DraftService db;
+	private final PersistenceService persistenceService;
+	private final DraftService draftService;
 
-	public DeductDiscountHandler(DraftService db) {
-		this.db = db;
+	public DeductDiscountHandler(PersistenceService persistenceService, DraftService draftService) {
+		this.persistenceService = persistenceService;
+		this.draftService = draftService;
 	}
 
 	@On(event = "deductDiscount", entity = Travel_.CDS_NAME)
 	public void deductDiscount(final DeductDiscountContext context) {
 
-		var travel = db.run(context.getCqn()).single(Travel.class);
+		var travel = draftService.run(context.getCqn()).single(Travel.class);
 		BigDecimal discount = BigDecimal.valueOf(context.getPercent())
 				.divide(BigDecimal.valueOf(100), new MathContext(3));
 
@@ -44,13 +47,15 @@ public class DeductDiscountHandler implements EventHandler {
 		update.setTotalPrice(deductedTotalPrice);
 		update.setBookingFee(deductedBookingFee);
 
-		var updateCqn = Update.entity(TRAVEL)
-				.where(t -> t.TravelUUID().eq(travel.getTravelUUID()).and(t.IsActiveEntity().eq(travel.getIsActiveEntity()))).data(update);
 
 		if (TRUE.equals(travel.getIsActiveEntity())) {
-			db.run(updateCqn);
+			var updateCqn = Update.entity(TRAVEL)
+					.where(t -> t.TravelUUID().eq(travel.getTravelUUID())).data(update);
+			persistenceService.run(updateCqn);
 		} else {
-			db.patchDraft(updateCqn);
+			var updateCqn = Update.entity(TRAVEL)
+					.where(t -> t.TravelUUID().eq(travel.getTravelUUID()).and(t.IsActiveEntity().eq(travel.getIsActiveEntity()))).data(update);
+			draftService.patchDraft(updateCqn);
 		}
 
 		context.setResult(travel);

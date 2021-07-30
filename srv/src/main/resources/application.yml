@@ -9,6 +9,7 @@ spring:
         initialization-mode: always
         hikari:
             maximum-pool-size: 1
+logging.level.com.sap.cds.impl: DEBUG
 management:
     endpoints:
         web:

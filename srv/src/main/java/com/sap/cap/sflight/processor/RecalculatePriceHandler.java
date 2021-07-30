@@ -37,12 +37,12 @@ public class RecalculatePriceHandler implements EventHandler {
 		this.db = db;
 	}
 
-	@Before(event = DraftService.EVENT_DRAFT_PATCH, entity = Travel_.CDS_NAME)
-	public void recalculatePriceOnBookingFeeChange(final Travel travel) {
-		if (travel.getTotalPrice() == null) {
-			recalculateAndApplyPriceOnBookingChange(travel.getTravelUUID());
-		}
-	}
+	//@Before(event = DraftService.EVENT_DRAFT_PATCH, entity = Travel_.CDS_NAME)
+	//public void recalculatePriceOnBookingFeeChange(final Travel travel) {
+	//	if (travel.getTotalPrice() == null) {
+	//		recalculateAndApplyPriceOnBookingChange(travel.getTravelUUID());
+	//	}
+	//}
 
 	@Before(event = CdsService.EVENT_UPDATE, entity = Travel_.CDS_NAME)
 	public void recalculatePriceAfterUpdate(final Travel travel) {
@@ -71,7 +71,7 @@ public class RecalculatePriceHandler implements EventHandler {
 
 		BigDecimal totalPrice = calculateTotalPriceForTravel(travelUUID);
 		var update = Update.entity(TRAVEL).data(Map.of("TravelUUID", travelUUID, "TotalPrice", totalPrice));
-		db.run(update);
+		db.patchDraft(update);
 	}
 
 	private BigDecimal calculateTotalPriceFromTravelObject(final Travel travel) {
