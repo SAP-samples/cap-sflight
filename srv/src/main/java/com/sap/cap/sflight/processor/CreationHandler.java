@@ -1,14 +1,23 @@
 package com.sap.cap.sflight.processor;
 
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import cds.gen.travelservice.Booking;
 import cds.gen.travelservice.BookingSupplement;
 import cds.gen.travelservice.BookingSupplement_;
+import cds.gen.travelservice.DraftActivateContext;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
-import static cds.gen.travelservice.TravelService_.TRAVEL;
 import cds.gen.travelservice.TravelStatus;
 import cds.gen.travelservice.Travel_;
 import com.sap.cds.ql.Select;
+import com.sap.cds.ql.Update;
 import com.sap.cds.services.cds.CdsService;
 import com.sap.cds.services.draft.DraftService;
 import com.sap.cds.services.handler.EventHandler;
@@ -18,22 +27,18 @@ import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import static cds.gen.travelservice.TravelService_.TRAVEL;
 
 @Component
 @ServiceName(TravelService_.CDS_NAME)
 public class CreationHandler implements EventHandler {
 	private static final String MAX_ID = "maxId";
 
-	private final PersistenceService cdsService;
+	private final PersistenceService persistenceService;
 	private final DraftService draftService;
 
-	public CreationHandler(PersistenceService cdsService, DraftService draftService) {
-		this.cdsService = cdsService;
+	public CreationHandler(PersistenceService persistenceService, DraftService draftService) {
+		this.persistenceService = persistenceService;
 		this.draftService = draftService;
 	}
 
@@ -46,6 +51,18 @@ public class CreationHandler implements EventHandler {
 				}
 			}
 		}
+	}
+
+	@On(event = DraftService.EVENT_DRAFT_SAVE, entity = Travel_.CDS_NAME)
+	public void saveComputedValues(DraftActivateContext ctx) {
+		draftService.run(ctx.getCqn()).first().ifPresent(travelDraftRow -> {
+			Travel travelDraft = travelDraftRow.as(Travel.class);
+			Map<String, Object> data = new HashMap<>();
+			data.put("TravelUUID", travelDraft.getTravelUUID());
+			data.put("IsActiveEntity", true);
+			data.put("TravelStatus_code", travelDraft.getTravelStatusCode());
+			persistenceService.run(Update.entity(Travel_.class).data(data));
+		});
 	}
 
 	@Before(event = { CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE }, entity = Travel_.CDS_NAME)
@@ -71,7 +88,7 @@ public class CreationHandler implements EventHandler {
 	public void calculateTravelIdBeforeCreation(final Travel travel) {
 		if (travel.getTravelID() == null || travel.getTravelID() == 0) {
 			Select<Travel_> maxIdSelect = Select.from(TRAVEL).columns(e -> e.TravelID().max().as(MAX_ID));
-			Integer currentMaxId = (Integer) cdsService.run(maxIdSelect).first().map(maxId -> maxId.get(MAX_ID))
+			Integer currentMaxId = (Integer) persistenceService.run(maxIdSelect).first().map(maxId -> maxId.get(MAX_ID))
 					.orElse(0);
 			travel.setTravelID(++currentMaxId);
 		}
