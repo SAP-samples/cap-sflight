@@ -60,6 +60,7 @@ public class CreationHandler implements EventHandler {
 			Map<String, Object> data = new HashMap<>();
 			data.put("TravelUUID", travelDraft.getTravelUUID());
 			data.put("IsActiveEntity", true);
+			data.put("TotalPrice", travelDraft.getTotalPrice());
 			data.put("TravelStatus_code", travelDraft.getTravelStatusCode());
 			persistenceService.run(Update.entity(Travel_.class).data(data));
 		});
