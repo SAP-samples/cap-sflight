@@ -72,9 +72,6 @@
 				<groupId>com.sap.cds</groupId>
 				<artifactId>cds-maven-plugin</artifactId>
 				<version>${cds.services.version}</version>
-				<configuration>
-					<nodeVersion>${node.version}</nodeVersion>
-				</configuration>
 				<executions>
 					<execution>
 						<id>cds.clean</id>
@@ -88,10 +85,6 @@
 						<goals>
 							<goal>install-node</goal>
 						</goals>
-						<configuration>
-							<skip>${cdsdk-global}</skip>
-							<downloadUrl>${node.url}</downloadUrl>
-						</configuration>
 					</execution>
 
 					<execution>
@@ -100,7 +93,6 @@
 							<goal>install-cdsdk</goal>
 						</goals>
 						<configuration>
-							<skip>${cdsdk-global}</skip>
 							<version>${cdsdk.version}</version>
 						</configuration>
 					</execution>

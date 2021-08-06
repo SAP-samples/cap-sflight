@@ -18,8 +18,6 @@
 		<spring.boot.version>2.4.4</spring.boot.version>
 
 		<cdsdk.version>^4</cdsdk.version>
-		<node.version>v12.22.1</node.version>
-		<node.url>https://nodejs.org/dist/</node.url>
 	</properties>
 
 	<modules>
