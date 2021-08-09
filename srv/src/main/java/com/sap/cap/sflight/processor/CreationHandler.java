@@ -82,7 +82,6 @@ public class CreationHandler implements EventHandler {
 						travel.getTravelID(), travel.getBeginDate());
 			}
 		}
-
 	}
 
 	@On(event = CdsService.EVENT_CREATE, entity = Travel_.CDS_NAME)
@@ -93,17 +92,41 @@ public class CreationHandler implements EventHandler {
 					.orElse(0);
 			travel.setTravelID(++currentMaxId);
 		}
-
 	}
 
 	@On(event = { CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE, }, entity = Travel_.CDS_NAME)
 	public void fillBookingIdsAferCreationAndUpdate(final Travel travel) {
 		if (travel.getToBooking() != null) {
-			addBookingIdsToBookings(travel);
+			addBookingIds(travel);
+			addBookingSupplementIds(travel);
+
 		}
 	}
 
-	private void addBookingIdsToBookings(Travel travel) {
+	private void addBookingSupplementIds(Travel travel) {
+
+		travel.getToBooking().stream()
+				.filter(booking -> booking.getToBookSupplement() != null && !booking.getToBookSupplement().isEmpty())
+				.forEach(booking -> {
+					List<BookingSupplement> bookingSupplements = booking.getToBookSupplement();
+
+					List<BookingSupplement> bookingSupplementsWithoutIds = bookingSupplements.stream()
+							.filter(bookingSupplement -> bookingSupplement.getBookingSupplementID() == null || bookingSupplement.getBookingSupplementID() == 0)
+							.collect(Collectors.toList());
+
+					Integer currentMaxBookingSupplementId = bookingSupplements.stream()
+							.filter(bs -> Objects.nonNull(bs.getBookingSupplementID()))
+							.max(Comparator.comparing(BookingSupplement::getBookingSupplementID))
+							.map(BookingSupplement::getBookingSupplementID).orElse(0);
+
+					for (BookingSupplement bookingSupplement : bookingSupplementsWithoutIds) {
+						bookingSupplement.setBookingSupplementID(++currentMaxBookingSupplementId);
+					}
+				});
+
+	}
+
+	private void addBookingIds(Travel travel) {
 		List<Booking> bookingsWithoutId = travel.getToBooking().stream()
 				.filter(booking -> booking.getBookingID() == null || booking.getBookingID() == 0)
 				.collect(Collectors.toList());
@@ -111,6 +134,7 @@ public class CreationHandler implements EventHandler {
 		Integer currentMaxBookingId = travel.getToBooking().stream()
 				.filter(booking -> Objects.nonNull(booking.getBookingID()))
 				.max(Comparator.comparing(Booking::getBookingID)).map(Booking::getBookingID).orElse(0);
+
 		for (Booking booking : bookingsWithoutId) {
 			booking.setBookingID(++currentMaxBookingId);
 		}
