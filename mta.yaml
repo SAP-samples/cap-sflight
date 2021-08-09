@@ -1,0 +1,86 @@
+_schema-version: "3.2"
+ID: capire.sflight
+version: 1.0.0
+description: "CAP sflight demo"
+
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install --production
+        - npx -p @sap/cds-dk cds build --production
+
+modules:
+  # --------------------- SERVER MODULE ------------------------
+  - name: sflight-srv
+  # ------------------------------------------------------------
+    type: java
+    path: srv
+#    parameters:
+#      memory: 1024M
+#      disk-quota: 256M
+#      buildpack: sap_java_buildpack
+    properties:
+      SPRING_PROFILES_ACTIVE: cloud
+      JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
+      JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: 11.+ } }'
+    requires:
+      - name: sflight-db
+      - name: sflight-uaa
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter, destinations)
+        properties:
+          srv-url: ${default-url}
+    build-parameters:
+      builder: custom
+      commands:
+        - mvn clean package -DskipTests=true
+      build-result: target/*-exec.jar
+      ignore: ["node_modules/"]
+
+  # -------------------- SIDECAR MODULE ------------------------
+  - name: sflight-db-deployer
+  # ------------------------------------------------------------
+    type: hdb
+    path: db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: sflight-db
+      - name: sflight-uaa
+    build-parameters:
+      ignore: ["node_modules/"]
+
+
+resources:
+  # ------------------------------------------------------------
+  - name: sflight-db
+  # ------------------------------------------------------------
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}
+
+  # ------------------------------------------------------------
+  - name: sflight-uaa
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      config:
+        xsappname: sflight
+        tenant-mode: dedicated
+        scopes:
+          - name: uaa.user
+            description: UAA
+        role-templates:
+          - name: Token_Exchange
+            description: UAA
+            scope-references:
+              - uaa.user
