@@ -31,21 +31,15 @@ import java.util.Optional;
 public class RecalculatePriceHandler implements EventHandler {
 
 	private static final String TRAVEL_UUID = "travelUUID";
-	private final DraftService db;
+	private final DraftService draftService;
 
-	public RecalculatePriceHandler(DraftService db) {
-		this.db = db;
+	public RecalculatePriceHandler(DraftService draftService) {
+		this.draftService = draftService;
 	}
-
-	//@Before(event = DraftService.EVENT_DRAFT_PATCH, entity = Travel_.CDS_NAME)
-	//public void recalculatePriceOnBookingFeeChange(final Travel travel) {
-	//	if (travel.getTotalPrice() == null) {
-	//		recalculateAndApplyPriceOnBookingChange(travel.getTravelUUID());
-	//	}
-	//}
 
 	@Before(event = CdsService.EVENT_UPDATE, entity = Travel_.CDS_NAME)
 	public void recalculatePriceAfterUpdate(final Travel travel) {
+		//TODO: revisit - is only partial data in case of active update
 		if (travel.getToBooking() != null && travel.getBookingFee() != null) {
 			travel.setTotalPrice(calculateTotalPriceFromTravelObject(travel));
 		}
@@ -53,7 +47,7 @@ public class RecalculatePriceHandler implements EventHandler {
 
 	@Before(event = { DraftService.EVENT_DRAFT_PATCH, DraftService.EVENT_DRAFT_NEW }, entity = Booking_.CDS_NAME)
 	public void recalculateTravelPriceIfFlightPriceWasUpdated(final Booking booking) {
-		db.run(Select.from(BOOKING).columns(bs -> bs.get("to_Travel.TravelUUID").as(TRAVEL_UUID))
+		draftService.run(Select.from(BOOKING).columns(bs -> bs.get("to_Travel.TravelUUID").as(TRAVEL_UUID))
 				.where(bs -> bs.BookingUUID().eq(booking.getBookingUUID()).and(bs.IsActiveEntity().eq(FALSE)))).first()
 				.ifPresent(row -> recalculateAndApplyPriceOnBookingChange((String) row.get(TRAVEL_UUID)));
 	}
@@ -61,7 +55,7 @@ public class RecalculatePriceHandler implements EventHandler {
 	@Before(event = { DraftService.EVENT_DRAFT_NEW, DraftService.EVENT_DRAFT_PATCH,
 			DraftService.EVENT_DRAFT_SAVE }, entity = BookingSupplement_.CDS_NAME)
 	public void recalculateTravelPriceIfPriceWasUpdated(final BookingSupplement bookingSupplement) {
-		db.run(Select.from(BOOKING_SUPPLEMENT).columns(bs -> bs.get("to_Booking.to_Travel.TravelUUID").as(TRAVEL_UUID))
+		draftService.run(Select.from(BOOKING_SUPPLEMENT).columns(bs -> bs.get("to_Booking.to_Travel.TravelUUID").as(TRAVEL_UUID))
 				.where(bs -> bs.BookSupplUUID().eq(bookingSupplement.getBookSupplUUID())
 						.and(bs.IsActiveEntity().eq(FALSE)))).first()
 				.ifPresent(row -> recalculateAndApplyPriceOnBookingChange((String) row.get(TRAVEL_UUID)));
@@ -71,7 +65,7 @@ public class RecalculatePriceHandler implements EventHandler {
 
 		BigDecimal totalPrice = calculateTotalPriceForTravel(travelUUID);
 		var update = Update.entity(TRAVEL).data(Map.of("TravelUUID", travelUUID, "TotalPrice", totalPrice));
-		db.patchDraft(update);
+		draftService.patchDraft(update);
 	}
 
 	private BigDecimal calculateTotalPriceFromTravelObject(final Travel travel) {
@@ -91,7 +85,7 @@ public class RecalculatePriceHandler implements EventHandler {
 	private BigDecimal calculateTotalPriceForTravel(String travelUUID) {
 		// get booking fee
 		var bookingFee = BigDecimal.valueOf(0);
-		var bookingFeeRow = db.run(Select.from(TRAVEL).columns(Travel_::BookingFee)
+		var bookingFeeRow = draftService.run(Select.from(TRAVEL).columns(Travel_::BookingFee)
 				.where(t -> t.TravelUUID().eq(travelUUID).and(t.IsActiveEntity().eq(false))
 						.and(t.BookingFee().isNotNull())).limit(1)).first();
 		if (bookingFeeRow.isPresent()) {
@@ -100,7 +94,7 @@ public class RecalculatePriceHandler implements EventHandler {
 
 		// get sum of flightprices from all bookings
 		var flightPriceSum = new BigDecimal(0);
-		var flighPriceRow = db.run(Select.from(BOOKING).columns(c -> sum(c.FlightPrice()).as("FlightPriceSum"))
+		var flighPriceRow = draftService.run(Select.from(BOOKING).columns(c -> sum(c.FlightPrice()).as("FlightPriceSum"))
 				.groupBy(c -> c.get("to_Travel.TravelUUID"))
 				.having(c -> c.to_Travel().TravelUUID().eq(travelUUID).and(c.IsActiveEntity().eq(false)))).first();
 
@@ -110,7 +104,7 @@ public class RecalculatePriceHandler implements EventHandler {
 
 		// get sum of the prices of all bookingsupplements for the travel
 		var supplementPriceSum = new BigDecimal(0);
-		var supplmentPriceSumRow = db.run(Select.from(BOOKING_SUPPLEMENT).columns(c -> sum(c.Price()).as("PriceSum"))
+		var supplmentPriceSumRow = draftService.run(Select.from(BOOKING_SUPPLEMENT).columns(c -> sum(c.Price()).as("PriceSum"))
 				.groupBy(c -> c.get("to_Booking.to_Travel.TravelUUID"))
 				.having(c -> c.to_Travel().TravelUUID().eq(travelUUID).and(c.IsActiveEntity().eq(false)))).first();
 		if (supplmentPriceSumRow.isPresent() && supplmentPriceSumRow.get().size() > 0) {
