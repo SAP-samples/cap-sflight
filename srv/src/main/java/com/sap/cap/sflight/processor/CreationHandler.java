@@ -53,14 +53,13 @@ public class CreationHandler implements EventHandler {
 		}
 	}
 
-	@On(event = DraftService.EVENT_DRAFT_SAVE, entity = Travel_.CDS_NAME)
+	@Before(event = DraftService.EVENT_DRAFT_SAVE, entity = Travel_.CDS_NAME)
 	public void saveComputedValues(DraftActivateContext ctx) {
 		draftService.run(ctx.getCqn()).first().ifPresent(travelDraftRow -> {
 			Travel travelDraft = travelDraftRow.as(Travel.class);
 			Map<String, Object> data = new HashMap<>();
 			data.put("TravelUUID", travelDraft.getTravelUUID());
 			data.put("IsActiveEntity", true);
-			data.put("TotalPrice", travelDraft.getTotalPrice());
 			data.put("TravelStatus_code", travelDraft.getTravelStatusCode());
 			persistenceService.run(Update.entity(Travel_.class).data(data));
 		});
