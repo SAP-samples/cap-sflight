@@ -7,7 +7,6 @@ import cds.gen.travelservice.TravelService_;
 import static cds.gen.travelservice.TravelService_.TRAVEL;
 import cds.gen.travelservice.Travel_;
 import com.sap.cds.ql.Update;
-import com.sap.cds.services.cds.ApplicationService;
 import com.sap.cds.services.cds.CdsService;
 import com.sap.cds.services.draft.DraftService;
 import com.sap.cds.services.handler.EventHandler;
@@ -25,18 +24,15 @@ import java.util.Optional;
 @ServiceName(TravelService_.CDS_NAME)
 public class ApprovalHandler implements EventHandler {
 
-	public static final String OPEN = "O";
 	private static final String REJECT_TRAVEL = "rejectTravel";
 	private static final String ACCEPT_TRAVEL = "acceptTravel";
 
 	private final PersistenceService persistenceService;
-	private final ApplicationService applicationService;
 	private final DraftService draftService;
 
-	public ApprovalHandler(PersistenceService persistenceService, ApplicationService applicationService,
+	public ApprovalHandler(PersistenceService persistenceService,
 			DraftService draftService) {
 		this.persistenceService = persistenceService;
-		this.applicationService = applicationService;
 		this.draftService = draftService;
 	}
 
@@ -54,7 +50,7 @@ public class ApprovalHandler implements EventHandler {
 	@Before(event = ACCEPT_TRAVEL, entity = Travel_.CDS_NAME)
 	public void beforeAcceptTravel(final AcceptTravelContext context) {
 
-		applicationService.run(context.getCqn()).first().ifPresent(row -> {
+		persistenceService.run(context.getCqn()).first().ifPresent(row -> {
 			var travel = row.as(Travel.class);
 			checkIfTravelHasExceptedStatus(travel, "O");
 		});
@@ -62,7 +58,7 @@ public class ApprovalHandler implements EventHandler {
 
 	@Before(event = REJECT_TRAVEL, entity = Travel_.CDS_NAME)
 	public void beforeRejectTravel(final RejectTravelContext context) {
-		applicationService.run(context.getCqn()).first().ifPresent(row -> {
+		persistenceService.run(context.getCqn()).first().ifPresent(row -> {
 			var travel = row.as(Travel.class);
 			checkIfTravelHasExceptedStatus(travel, "O");
 		});
@@ -70,14 +66,14 @@ public class ApprovalHandler implements EventHandler {
 
 	@On(event = REJECT_TRAVEL)
 	public void onRejectTravel(final RejectTravelContext context) {
-		var travel = applicationService.run(context.getCqn()).single().as(Travel.class);
+		var travel = persistenceService.run(context.getCqn()).single().as(Travel.class);
 		updateStatusForTravelId(travel.getTravelUUID(), "X", travel.getIsActiveEntity());
 		context.setCompleted();
 	}
 
 	@On(event = { ACCEPT_TRAVEL }, entity = Travel_.CDS_NAME)
 	public void onAcceptTravel(final AcceptTravelContext context) {
-		var travel = applicationService.run(context.getCqn()).single().as(Travel.class);
+		var travel = persistenceService.run(context.getCqn()).single().as(Travel.class);
 		updateStatusForTravelId(travel.getTravelUUID(), "A", travel.getIsActiveEntity());
 		context.setCompleted();
 	}
