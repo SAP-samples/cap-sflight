@@ -1,5 +1,2 @@
 {
-    "hana": {
-        "deploy-format": "hdbtable"
-    }
 }

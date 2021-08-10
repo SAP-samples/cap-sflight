@@ -26,6 +26,9 @@
         "kind": "sql"
       }
     },
+    "hana": {
+      "deploy-format": "hdbtable"
+    },
     "log": {
       "service": true
     },
