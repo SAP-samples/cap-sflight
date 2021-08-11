@@ -92,7 +92,7 @@ public class RecalculatePriceHandler implements EventHandler {
 
 	@After(event = { DraftService.EVENT_DRAFT_PATCH }, entity = Travel_.CDS_NAME)
 	public void recalculateTravelPriceIfTravelWasUpdated(final Travel travel) {
-		if (travel.getBookingFee() != null) { // only for patched booking fee
+		if (travel.getTravelUUID() != null && travel.getBookingFee() != null) { // only for patched booking fee
 			String travelUUID = travel.getTravelUUID();
 			travel.setTotalPrice(calculateNewTotalPriceForDraft(travelUUID));
 		}
