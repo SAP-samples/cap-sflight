@@ -13,7 +13,7 @@
     "sapui5"
   ],
   "devDependencies": {
-    "@sap/ux-specification": "^1.90.3",
+    "@sap/ux-specification": "latest",
     "@sap/ux-ui5-tooling": "^1.2.3",
     "@ui5/cli": "^2.11.3",
     "@ui5/fs": "^2.0.6",

@@ -4,7 +4,10 @@
   "description": "CAP flight demo scenario",
   "repository": "https://github.com/SAP-samples/cap-sflight",
   "dependencies": {
+    "@sap/audit-logging": "^5.0.0",
     "@sap/cds": "^5.1",
+    "@sap/xsenv": "^3.1.1",
+    "@sap/xssec": "^3.2.2",
     "express": "^4"
   },
   "devDependencies": {
@@ -24,6 +27,9 @@
     "requires": {
       "db": {
         "kind": "sql"
+      },
+      "uaa": {
+        "kind": "xsuaa"
       }
     },
     "hana": {

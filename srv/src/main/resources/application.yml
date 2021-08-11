@@ -32,3 +32,7 @@ management:
         web:
             exposure:
                 include: "*"
+cds:
+    odata-v4:
+        endpoint:
+            path: "/"

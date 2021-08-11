@@ -15,7 +15,7 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "/processor/",
+        "uri": "processor/",
         "type": "OData",
         "settings": {
           "odataVersion": "4.0"
@@ -46,6 +46,14 @@
   },
   "sap.ui": {
     "technology": "UI5",
+    "icons": {
+      "icon": "sap-icon://flight",
+      "favIcon": "sap-icon://flight",
+      "phone": "sap-icon://flight",
+      "phone@2": "sap-icon://flight",
+      "tablet": "sap-icon://flight",
+      "tablet@2": "sap-icon://flight"
+    },
     "deviceTypes": {
       "desktop": true,
       "tablet": true,
@@ -185,5 +193,8 @@
     "_version": "1.1.0",
     "registrationIds": [],
     "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "service": "sap.fe.cap.sflight"
   }
 }
