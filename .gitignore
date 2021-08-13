@@ -3,6 +3,7 @@ _out
 *.db
 connection.properties
 default-*.json
+schema.sql
 gen/
 node_modules/
 target/
