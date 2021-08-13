@@ -5,6 +5,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "java",
+      "name": "Launch SFlightApplication",
+      "request": "launch",
+      "mainClass": "com.sap.cap.sflight.SFlightApplication",
+      "projectName": "srv"
+    },
+    {
       "name": "cds watch",
       "command": "npx cds watch",
       "env": {
@@ -19,6 +26,6 @@
         "**/cds/lib/req/cls.js",
         "**/odata-v4/okra/**"
       ]
-    },
+    }
   ]
 }
