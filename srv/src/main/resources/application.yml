@@ -9,7 +9,7 @@ spring:
         initialization-mode: always
         hikari:
             maximum-pool-size: 1
-logging.level.com.sap.cds.impl: DEBUG
+
 management:
     endpoints:
         web:
@@ -24,9 +24,6 @@ cds:
 ---
 spring:
     profiles: cloud
-    datasource:
-        hikari:
-            maximum-pool-size: 200
 management:
     endpoints:
         web:
