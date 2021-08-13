@@ -1,4 +1,4 @@
-package com.sap.cap.sflight;
+package com.sap.cap.sflight.processor;
 
 import com.sap.cds.services.ErrorStatuses;
 import com.sap.cds.services.ServiceException;
