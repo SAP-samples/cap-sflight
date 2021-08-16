@@ -55,8 +55,7 @@ public class CreationHandler implements EventHandler {
 
 	@Before(event = DraftService.EVENT_DRAFT_SAVE, entity = Travel_.CDS_NAME)
 	public void saveComputedValues(DraftActivateContext ctx) {
-		draftService.run(ctx.getCqn()).first().ifPresent(travelDraftRow -> {
-			Travel travelDraft = travelDraftRow.as(Travel.class);
+		draftService.run(ctx.getCqn()).first(Travel.class).ifPresent(travelDraft -> {
 			Map<String, Object> data = new HashMap<>();
 			data.put("TravelUUID", travelDraft.getTravelUUID());
 			data.put("IsActiveEntity", true);
@@ -71,19 +70,19 @@ public class CreationHandler implements EventHandler {
 		if (travel.getBeginDate() != null && travel.getEndDate() != null) {
 			if (travel.getBeginDate().isAfter(travel.getEndDate())) {
 				throw new IllegalTravelDateException(
-						"Travel with travelID {} has illegal " + "travel dates. End date {} is before begin date {}.",
+						"Travel with travelID {} has illegal travel dates. End date {} is before begin date {}.",
 						travel.getTravelID(), travel.getBeginDate(), travel.getEndDate());
 			}
 
 			if (travel.getBeginDate().isBefore(LocalDate.now().atStartOfDay().toLocalDate())) {
 				throw new IllegalTravelDateException(
-						"Travel with travelID {} has illegal travel " + "dates: Begin date {} must not be in the past.",
+						"Travel with travelID {} has illegal travel dates: Begin date {} must not be in the past.",
 						travel.getTravelID(), travel.getBeginDate());
 			}
 		}
 	}
 
-	@On(event = CdsService.EVENT_CREATE, entity = Travel_.CDS_NAME)
+	@Before(event = CdsService.EVENT_CREATE, entity = Travel_.CDS_NAME)
 	public void calculateTravelIdBeforeCreation(final Travel travel) {
 		if (travel.getTravelID() == null || travel.getTravelID() == 0) {
 			Select<Travel_> maxIdSelect = Select.from(TRAVEL).columns(e -> e.TravelID().max().as(MAX_ID));
@@ -93,12 +92,11 @@ public class CreationHandler implements EventHandler {
 		}
 	}
 
-	@On(event = { CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE, }, entity = Travel_.CDS_NAME)
-	public void fillBookingIdsAferCreationAndUpdate(final Travel travel) {
+	@Before(event = { CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE, }, entity = Travel_.CDS_NAME)
+	public void fillBookingIdsBeforeCreationAndUpdate(final Travel travel) {
 		if (travel.getToBooking() != null) {
 			addBookingIds(travel);
 			addBookingSupplementIds(travel);
-
 		}
 	}
 
@@ -122,7 +120,6 @@ public class CreationHandler implements EventHandler {
 						bookingSupplement.setBookingSupplementID(++currentMaxBookingSupplementId);
 					}
 				});
-
 	}
 
 	private void addBookingIds(Travel travel) {

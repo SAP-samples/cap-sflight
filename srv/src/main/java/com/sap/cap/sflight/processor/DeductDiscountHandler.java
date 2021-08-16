@@ -29,10 +29,11 @@ public class DeductDiscountHandler implements EventHandler {
 		this.draftService = draftService;
 	}
 
-	@On(event = "deductDiscount", entity = Travel_.CDS_NAME)
+	@On(entity = Travel_.CDS_NAME)
 	public void deductDiscount(final DeductDiscountContext context) {
 
 		var travel = draftService.run(context.getCqn()).single(Travel.class);
+
 		BigDecimal discount = BigDecimal.valueOf(context.getPercent())
 				.divide(BigDecimal.valueOf(100), new MathContext(3));
 
