@@ -1,14 +1,13 @@
----
-spring:
-    profiles: default
-    resources:
-        static-locations: "file:./app"
-
 management:
     endpoints:
         web:
             exposure:
                 include: "*"
+---
+spring:
+    profiles: default
+    resources:
+        static-locations: "file:./app"
 cds:
     security:
         authenticate-unknown-endpoints: false
@@ -18,8 +17,3 @@ cds:
 ---
 spring:
     profiles: cloud
-management:
-    endpoints:
-        web:
-            exposure:
-                include: "*"
