@@ -1,5 +1,7 @@
 package com.sap.cap.sflight.processor;
 
+import static cds.gen.travelservice.TravelService_.TRAVEL;
+
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -7,6 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import com.sap.cds.ql.Select;
+import com.sap.cds.ql.Update;
+import com.sap.cds.services.cds.CdsService;
+import com.sap.cds.services.draft.DraftService;
+import com.sap.cds.services.handler.EventHandler;
+import com.sap.cds.services.handler.annotations.Before;
+import com.sap.cds.services.handler.annotations.ServiceName;
+import com.sap.cds.services.persistence.PersistenceService;
+
+import org.springframework.stereotype.Component;
 
 import cds.gen.travelservice.Booking;
 import cds.gen.travelservice.BookingSupplement;
@@ -16,18 +29,6 @@ import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
 import cds.gen.travelservice.TravelStatus;
 import cds.gen.travelservice.Travel_;
-import com.sap.cds.ql.Select;
-import com.sap.cds.ql.Update;
-import com.sap.cds.services.cds.CdsService;
-import com.sap.cds.services.draft.DraftService;
-import com.sap.cds.services.handler.EventHandler;
-import com.sap.cds.services.handler.annotations.Before;
-import com.sap.cds.services.handler.annotations.On;
-import com.sap.cds.services.handler.annotations.ServiceName;
-import com.sap.cds.services.persistence.PersistenceService;
-import org.springframework.stereotype.Component;
-
-import static cds.gen.travelservice.TravelService_.TRAVEL;
 
 @Component
 @ServiceName(TravelService_.CDS_NAME)
