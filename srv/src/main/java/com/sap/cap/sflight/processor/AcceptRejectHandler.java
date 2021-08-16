@@ -22,22 +22,20 @@ import java.util.Optional;
 
 @Component
 @ServiceName(TravelService_.CDS_NAME)
-public class ApprovalHandler implements EventHandler {
-
-	private static final String REJECT_TRAVEL = "rejectTravel";
-	private static final String ACCEPT_TRAVEL = "acceptTravel";
+public class AcceptRejectHandler implements EventHandler {
 
 	private final PersistenceService persistenceService;
 	private final DraftService draftService;
 
-	public ApprovalHandler(PersistenceService persistenceService,
+	public AcceptRejectHandler(PersistenceService persistenceService,
 			DraftService draftService) {
 		this.persistenceService = persistenceService;
 		this.draftService = draftService;
 	}
 
-	@After(event = CdsService.EVENT_READ, entity = Travel_.CDS_NAME)
+	@After(event = CdsService.EVENT_READ)
 	public void setUiEnabledFields(final List<Travel> travels) {
+		//calculate virtual elements for UI elements being enabled/disabled
 		travels.forEach(travel -> {
 			if (travel.getTravelStatus() != null) {
 				travel.setAcceptEnabled(!travel.getTravelStatus().getCode().equalsIgnoreCase("A"));
@@ -47,33 +45,31 @@ public class ApprovalHandler implements EventHandler {
 		});
 	}
 
-	@Before(event = ACCEPT_TRAVEL, entity = Travel_.CDS_NAME)
+	@Before
 	public void beforeAcceptTravel(final AcceptTravelContext context) {
 
-		persistenceService.run(context.getCqn()).first().ifPresent(row -> {
-			var travel = row.as(Travel.class);
+		draftService.run(context.getCqn()).first(Travel.class).ifPresent(travel -> {
 			checkIfTravelHasExceptedStatus(travel, "O");
 		});
 	}
 
-	@Before(event = REJECT_TRAVEL, entity = Travel_.CDS_NAME)
+	@Before
 	public void beforeRejectTravel(final RejectTravelContext context) {
-		persistenceService.run(context.getCqn()).first().ifPresent(row -> {
-			var travel = row.as(Travel.class);
+		draftService.run(context.getCqn()).first(Travel.class).ifPresent(travel -> {
 			checkIfTravelHasExceptedStatus(travel, "O");
 		});
 	}
 
-	@On(event = REJECT_TRAVEL)
+	@On
 	public void onRejectTravel(final RejectTravelContext context) {
-		var travel = persistenceService.run(context.getCqn()).single().as(Travel.class);
+		var travel = draftService.run(context.getCqn()).single(Travel.class);
 		updateStatusForTravelId(travel.getTravelUUID(), "X", travel.getIsActiveEntity());
 		context.setCompleted();
 	}
 
-	@On(event = { ACCEPT_TRAVEL }, entity = Travel_.CDS_NAME)
+	@On
 	public void onAcceptTravel(final AcceptTravelContext context) {
-		var travel = persistenceService.run(context.getCqn()).single().as(Travel.class);
+		var travel = draftService.run(context.getCqn()).single(Travel.class);
 		updateStatusForTravelId(travel.getTravelUUID(), "A", travel.getIsActiveEntity());
 		context.setCompleted();
 	}
@@ -94,7 +90,7 @@ public class ApprovalHandler implements EventHandler {
 	private void checkIfTravelHasExceptedStatus(Travel travel, String status) {
 		if (travel.getTravelStatusCode() != null && !travel.getTravelStatusCode().equalsIgnoreCase(status)) {
 			throw new TravelAlreadyRejectedException(
-					"Travel with Id {} does not have expected status " + " {} but already has status {}.",
+					"Travel with Id {} does not have expected status {} but already has status {}.",
 					travel.getTravelID(), status, travel.getTravelStatusCode());
 		}
 	}
