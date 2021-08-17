@@ -83,7 +83,7 @@ public class RecalculatePriceHandler implements EventHandler {
 		return bookingFee.add(flightPriceSum).add(supplementPriceSum);
 	}
 
-	@After(event = CdsService.EVENT_UPDATE, entity = Travel_.CDS_NAME)
+	@After(event = {CdsService.EVENT_UPDATE, CdsService.EVENT_CREATE}, entity = Travel_.CDS_NAME)
 	public void calculateNewTotalPriceForActiveTravel(Travel travel) {
 		String travelUUID = travel.getTravelUUID();
 		if (travelUUID.isEmpty()) {
@@ -101,7 +101,7 @@ public class RecalculatePriceHandler implements EventHandler {
 	public void recalculateTravelPriceIfTravelWasUpdated(final Travel travel) {
 		if (travel.getTravelUUID() != null && travel.getBookingFee() != null) { // only for patched booking fee
 			String travelUUID = travel.getTravelUUID();
-			travel.setTotalPrice(calculateNewTotalPriceForDraft(travelUUID));
+			travel.setTotalPrice(calculateAndPatchNewTotalPriceForDraft(travelUUID));
 		}
 	}
 
@@ -111,7 +111,7 @@ public class RecalculatePriceHandler implements EventHandler {
 				.where(bs -> bs.BookingUUID().eq(booking.getBookingUUID())
 						.and(bs.IsActiveEntity().eq(FALSE))))
 				.first()
-				.ifPresent(row -> calculateNewTotalPriceForDraft((String) row.get(TRAVEL_UUID)));
+				.ifPresent(row -> calculateAndPatchNewTotalPriceForDraft((String) row.get(TRAVEL_UUID)));
 	}
 
 	@After(event = { DraftService.EVENT_DRAFT_NEW, DraftService.EVENT_DRAFT_PATCH,
@@ -122,10 +122,10 @@ public class RecalculatePriceHandler implements EventHandler {
 				.where(bs -> bs.BookSupplUUID().eq(bookingSupplement.getBookSupplUUID())
 						.and(bs.IsActiveEntity().eq(FALSE))))
 				.first()
-				.ifPresent(row -> calculateNewTotalPriceForDraft((String) row.get(TRAVEL_UUID)));
+				.ifPresent(row -> calculateAndPatchNewTotalPriceForDraft((String) row.get(TRAVEL_UUID)));
 	}
 
-	private BigDecimal calculateNewTotalPriceForDraft(final String travelUUID) {
+	private BigDecimal calculateAndPatchNewTotalPriceForDraft(final String travelUUID) {
 
 		BigDecimal totalPrice = calculateTotalPriceForTravel(draftService, travelUUID, false);
 		var update = Update.entity(TRAVEL).data(Map.of("TravelUUID", travelUUID, "TotalPrice", totalPrice));
