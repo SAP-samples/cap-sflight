@@ -43,8 +43,16 @@ public class CreationHandler implements EventHandler {
 		this.draftService = draftService;
 	}
 
-	@Before(event = { CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE }, entity = Travel_.CDS_NAME)
+	@Before(event = { CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE, DraftService.EVENT_DRAFT_CREATE}, entity = Travel_.CDS_NAME)
 	public void setBookingDateIfNotProvided(final Travel travel) {
+		if (travel.getBeginDate() == null) {
+			travel.setBeginDate(LocalDate.now());
+		}
+
+		if (travel.getEndDate() == null) {
+			travel.setEndDate(LocalDate.now().plusDays(1));
+		}
+
 		if (travel.getToBooking() != null) {
 			for (Booking booking : travel.getToBooking()) {
 				if (booking.getBookingDate() == null) {
@@ -109,7 +117,8 @@ public class CreationHandler implements EventHandler {
 					List<BookingSupplement> bookingSupplements = booking.getToBookSupplement();
 
 					List<BookingSupplement> bookingSupplementsWithoutIds = bookingSupplements.stream()
-							.filter(bookingSupplement -> bookingSupplement.getBookingSupplementID() == null || bookingSupplement.getBookingSupplementID() == 0)
+							.filter(bookingSupplement -> bookingSupplement.getBookingSupplementID() == null
+									|| bookingSupplement.getBookingSupplementID() == 0)
 							.collect(Collectors.toList());
 
 					Integer currentMaxBookingSupplementId = bookingSupplements.stream()
