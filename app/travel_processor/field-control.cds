@@ -17,7 +17,7 @@ extend projection TravelService.Travel with {
 
 annotate TravelService.Travel {
   //TravelStatus  @mandatory;
-  //BookingFee    @mandatory;
+  BookingFee    @Common.FieldControl   : TravelStatus.fieldControl;
   BeginDate       @mandatory;
   EndDate         @mandatory;
   to_Agency       @mandatory;
