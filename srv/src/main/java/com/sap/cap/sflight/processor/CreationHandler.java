@@ -64,6 +64,15 @@ public class CreationHandler implements EventHandler {
 
 	@Before(event = DraftService.EVENT_DRAFT_SAVE, entity = Travel_.CDS_NAME)
 	public void saveComputedValues(DraftActivateContext ctx) {
+
+		/*
+		* Elements annotated with @Core.computed are not transferred during
+		* DRAFT_SAVE. Normally, we'd re-compute the @Core.computed values after
+		* DRAFT_SAVE and store them to the active version. For the TravelStatus_code
+		* this is not possible as they originate as the result of a custom action
+		* and thus cannot be re-computed. We have to take them from the draft version and
+		* store them to the active version *before* the DRAFT_SAVE event.
+		*/
 		draftService.run(ctx.getCqn()).first(Travel.class).ifPresent(travelDraft -> {
 			Map<String, Object> data = new HashMap<>();
 			data.put("TravelUUID", travelDraft.getTravelUUID());
