@@ -39,8 +39,7 @@ public class AcceptRejectHandler implements EventHandler {
 			if (travel.getTravelStatus() != null) {
 				travel.setAcceptEnabled(!travel.getTravelStatus().getCode().equalsIgnoreCase("A"));
 				travel.setRejectEnabled(!travel.getTravelStatus().getCode().equalsIgnoreCase("X"));
-				travel.setDeductDiscountEnabled(
-						!travel.getTravelStatus().getCode().equalsIgnoreCase("A"));
+				travel.setDeductDiscountEnabled(!travel.getTravelStatus().getCode().equalsIgnoreCase("A"));
 			}
 		});
 	}
@@ -48,16 +47,14 @@ public class AcceptRejectHandler implements EventHandler {
 	@Before(entity = Travel_.CDS_NAME)
 	public void beforeAcceptTravel(final AcceptTravelContext context) {
 
-		draftService.run(context.getCqn()).first(Travel.class).ifPresent(travel -> {
-			checkIfTravelHasExceptedStatus(travel, "O");
-		});
+		draftService.run(context.getCqn()).first(Travel.class)
+				.ifPresent(travel -> checkIfTravelHasExceptedStatus(travel, "O"));
 	}
 
 	@Before(entity = Travel_.CDS_NAME)
 	public void beforeRejectTravel(final RejectTravelContext context) {
-		draftService.run(context.getCqn()).first(Travel.class).ifPresent(travel -> {
-			checkIfTravelHasExceptedStatus(travel, "O");
-		});
+		draftService.run(context.getCqn()).first(Travel.class)
+				.ifPresent(travel -> checkIfTravelHasExceptedStatus(travel, "O"));
 	}
 
 	@On(entity = Travel_.CDS_NAME)
