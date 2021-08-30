@@ -6,7 +6,7 @@ metadata:
 
 framework:
   name: SAPUI5
-  version: 1.89.0
+  version: 1.92.1
   libraries:
     - name: sap.ui.core
     - name: sap.fe.templates
