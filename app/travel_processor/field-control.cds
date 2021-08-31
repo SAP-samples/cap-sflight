@@ -23,6 +23,7 @@ annotate TravelService.Travel {
   EndDate         @Common.FieldControl   : TravelStatus.fieldControl;
   to_Agency       @Common.FieldControl   : TravelStatus.fieldControl;
   to_Customer     @Common.FieldControl   : TravelStatus.fieldControl;
+
 } actions {
   rejectTravel @(
     Core.OperationAvailable : in.rejectEnabled,
