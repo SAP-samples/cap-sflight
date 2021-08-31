@@ -3,7 +3,7 @@ specVersion: "1.0"
 metadata:
   name: sap.fe.cap.travel
 type: application
-ui5Version:
+ui5Version: 1.92.1
 ui5Theme: sap_fiori_3
 resources:
   configuration:

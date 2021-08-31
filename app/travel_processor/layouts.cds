@@ -42,7 +42,7 @@ annotate TravelService.Travel with @UI : {
     { Value : BookingFee             },
     { Value : TotalPrice             },
     { Value : Description            },
-    { Value : TravelStatus_code      }
+    { $Type : 'UI.DataField', Value : TravelStatus_code, Criticality : TravelStatus.criticality }
   ],
   Facets : [{
     $Type  : 'UI.CollectionFacet',
@@ -68,7 +68,12 @@ annotate TravelService.Travel with @UI : {
     { Value : BookingFee             },
     { Value : TotalPrice             },
     { Value : Description            },
-    { Value : TravelStatus_code, Label : '{i18n>Status}' }  // label only necessary if differs from title of element
+    {
+      $Type       : 'UI.DataField',
+      Value       : TravelStatus_code,
+      Criticality : TravelStatus.criticality,
+      Label : '{i18n>Status}' // label only necessary if differs from title of element
+    }
   ]},
 };
 
@@ -87,6 +92,7 @@ annotate TravelService.Booking with @UI : {
   },
   SelectionFields : [],
   LineItem : [
+    { Value : to_Carrier.AirlinePicURL,  Label : '  '},
     { Value : BookingID,             Label : '{i18n>BookingNumber}' },
     { Value : BookingDate            },
     { Value : to_Customer_CustomerID },

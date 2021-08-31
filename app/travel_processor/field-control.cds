@@ -16,12 +16,14 @@ extend projection TravelService.Travel with {
 }
 
 annotate TravelService.Travel {
-  //TravelStatus  @mandatory;
-  //BookingFee    @mandatory;
-  BeginDate       @mandatory;
-  EndDate         @mandatory;
-  to_Agency       @mandatory;
-  to_Customer     @mandatory;
+
+  Description @Common.FieldControl   : TravelStatus.fieldControl;
+  BookingFee    @Common.FieldControl   : TravelStatus.fieldControl;
+  BeginDate       @Common.FieldControl   : TravelStatus.fieldControl;
+  EndDate         @Common.FieldControl   : TravelStatus.fieldControl;
+  to_Agency       @Common.FieldControl   : TravelStatus.fieldControl;
+  to_Customer     @Common.FieldControl   : TravelStatus.fieldControl;
+
 } actions {
   rejectTravel @(
     Core.OperationAvailable : in.rejectEnabled,
@@ -47,16 +49,20 @@ annotate TravelService.Travel {
 
 annotate TravelService.Booking {
   BookingDate   @Core.Computed;
-  ConnectionID  @mandatory;
-  FlightDate    @mandatory;
-  BookingStatus @mandatory;
-  to_Carrier    @mandatory;
-  to_Customer   @mandatory;
+  ConnectionID  @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
+  FlightDate    @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
+  FlightPrice   @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
+  BookingStatus @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
+  to_Carrier    @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
+  to_Customer   @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
 };
 
 annotate TravelService.BookingSupplement {
-  Price         @mandatory;
-  to_Supplement @mandatory;
+  Price         @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
+  to_Supplement @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
+  to_Booking          @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
+  to_Travel           @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
+  
 };
 
 annotate Currency with @Common.UnitSpecificScale : Decimals;
