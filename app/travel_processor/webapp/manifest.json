@@ -140,12 +140,11 @@
               "controlConfiguration": {
                 "to_Booking/@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
-                    "type": "GridTable",
-                    "condensedTableLayout": true,
-                    "personalization": {
-                      "column": true,
-                      "sort": false
-                    },
+                    "type": "ResponsiveTable",
+                     "personalization": {
+                       "column": true,
+                       "sort": false
+                     },
                     "creationMode": {
                       "name": "Inline",
                       "createAtEnd": true
