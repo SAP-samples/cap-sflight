@@ -5,6 +5,7 @@ using TravelService from '../../srv/travel-service';
 //
 
 annotate TravelService.Travel with @UI : {
+  
   Identification : [
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.acceptTravel',   Label  : '{i18n>AcceptTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.rejectTravel',   Label  : '{i18n>RejectTravel}'   },
@@ -13,7 +14,14 @@ annotate TravelService.Travel with @UI : {
   HeaderInfo : {
     TypeName       : '{i18n>Travel}',
     TypeNamePlural : '{i18n>Travels}',
-    Title          : { Value : TravelID }
+    Title          : {
+      $Type : 'UI.DataField', 
+      Value : TravelID 
+    },
+    Description    : {
+      $Type : 'UI.DataField',
+      Value : '{i18n>TravelID}'
+    }
   },
   PresentationVariant : {
     Text           : 'Default',
@@ -48,12 +56,26 @@ annotate TravelService.Travel with @UI : {
     $Type  : 'UI.CollectionFacet',
     Label  : '{i18n>Travel}',
     ID     : 'Travel',
-    Facets : [{  // travel details
-      $Type  : 'UI.ReferenceFacet',
-      ID     : 'TravelData',
-      Target : '@UI.FieldGroup#TravelData',
-      Label  : '{i18n>Travel}'
-    }]
+    Facets : [
+      {  // travel details
+        $Type  : 'UI.ReferenceFacet',
+        ID     : 'TravelData',
+        Target : '@UI.FieldGroup#TravelData',
+        Label  : '{i18n>Travel}'
+      },
+      {  // price information
+        $Type  : 'UI.ReferenceFacet',
+        ID     : 'PriceData',
+        Target : '@UI.FieldGroup#PricesGroup',
+        Label  : '{i18n>Prices}'
+      },
+      {  // date information
+        $Type  : 'UI.ReferenceFacet',
+        ID     : 'DateData',
+        Target : '@UI.FieldGroup#DatesGroup',
+        Label  : '{i18n>Dates}'
+      }
+      ]
   }, {  // booking list
     $Type  : 'UI.ReferenceFacet',
     Target : 'to_Booking/@UI.LineItem',
@@ -63,10 +85,6 @@ annotate TravelService.Travel with @UI : {
     { Value : TravelID               },
     { Value : to_Agency_AgencyID     },
     { Value : to_Customer_CustomerID },
-    { Value : BeginDate              },
-    { Value : EndDate                },
-    { Value : BookingFee             },
-    { Value : TotalPrice             },
     { Value : Description            },
     {
       $Type       : 'UI.DataField',
@@ -75,6 +93,14 @@ annotate TravelService.Travel with @UI : {
       Label : '{i18n>Status}' // label only necessary if differs from title of element
     }
   ]},
+  FieldGroup #DatesGroup : {Data : [
+    { $Type : 'UI.DataField', Value : BeginDate },
+    { $Type : 'UI.DataField', Value : EndDate }
+  ]},
+  FieldGroup #PricesGroup : {Data : [
+    { $Type : 'UI.DataField', Value : BookingFee },
+    { $Type : 'UI.DataField', Value : TotalPrice }
+  ]}
 };
 
 annotate TravelService.Booking with @UI : {
@@ -84,7 +110,11 @@ annotate TravelService.Booking with @UI : {
   HeaderInfo : {
     TypeName       : '{i18n>Bookings}',
     TypeNamePlural : '{i18n>Bookings}',
-    Title          : { Value : BookingID }
+    Title          : { Value : BookingID },
+    Description    : {
+      $Type : 'UI.DataField',
+      Value : '{i18n>BookingID}'
+    }
   },
   PresentationVariant : {
     Text           : 'Default',
