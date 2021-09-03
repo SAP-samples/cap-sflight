@@ -61,17 +61,17 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
 
         // Starting date
         When.onTheDetailPage
-          .onForm({ section: "Travel", fieldGroup: "TravelData" })
+          .onForm({ section: "Travel", fieldGroup: "DateData" })
           .iChangeField({ property: "BeginDate" }, "Jan 1, 2023");
 
         // End date
         When.onTheDetailPage
-          .onForm({ section: "Travel", fieldGroup: "TravelData" })
+          .onForm({ section: "Travel", fieldGroup: "DateData" })
           .iChangeField({ property: "EndDate" }, "Dec 31, 2024");
 
         // Booking fee
         When.onTheDetailPage
-          .onForm({ section: "Travel", fieldGroup: "TravelData" })
+          .onForm({ section: "Travel", fieldGroup: "PriceData" })
           .iChangeField({ property: "BookingFee" }, "50.00");
 
         // Description

@@ -17,7 +17,6 @@ extend projection TravelService.Travel with {
 
 annotate TravelService.Travel {
 
-  Description @Common.FieldControl   : TravelStatus.fieldControl;
   BookingFee    @Common.FieldControl   : TravelStatus.fieldControl;
   BeginDate       @Common.FieldControl   : TravelStatus.fieldControl;
   EndDate         @Common.FieldControl   : TravelStatus.fieldControl;
@@ -47,6 +46,13 @@ annotate TravelService.Travel {
   );
 }
 
+annotate TravelService.Booking with @UI.CreateHidden : to_Travel.TravelStatus.createDeleteHidden;
+
+// ERROR:
+//annotate TravelService.Booking with @UI.DeleteHidden : to_Travel.TravelStatus.createDeleteHidden;
+// OK:
+//annotate TravelService.Booking with @UI.DeleteHidden : true;
+
 annotate TravelService.Booking {
   BookingDate   @Core.Computed;
   ConnectionID  @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
@@ -56,6 +62,15 @@ annotate TravelService.Booking {
   to_Carrier    @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
   to_Customer   @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
 };
+
+// ERROR:
+//annotate TravelService.BookingSupplement with @UI.CreateHidden : to_Travel.TravelStatus.createDeleteHidden;
+// OK:
+//annotate TravelService.BookingSupplement with @UI.CreateHidden : true;
+// ERROR:
+//annotate TravelService.BookingSupplement with @UI.DeleteHidden : to_Travel.TravelStatus.createDeleteHidden;
+// OK:
+//annotate TravelService.BookingSupplement with @UI.DeleteHidden : true;
 
 annotate TravelService.BookingSupplement {
   Price         @Common.FieldControl   : to_Travel.TravelStatus.fieldControl;
