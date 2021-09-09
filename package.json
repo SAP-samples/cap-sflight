@@ -21,6 +21,9 @@
     "qunit": "^2.9.3",
     "sqlite3": "^5.0.2"
   },
+  "engines": {
+    "node": ">=14"
+  },
   "scripts": {
     "start": "cds run",
     "test": "jest --runInBand"
@@ -32,6 +35,11 @@
       },
       "uaa": {
         "kind": "xsuaa"
+      },
+      "auth": {
+        "[development]": {
+          "strategy": "dummy"
+        }
       }
     },
     "hana": {
