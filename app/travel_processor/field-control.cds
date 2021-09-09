@@ -17,7 +17,6 @@ extend projection TravelService.Travel with {
 
 annotate TravelService.Travel {
 
-  Description @Common.FieldControl   : TravelStatus.fieldControl;
   BookingFee    @Common.FieldControl   : TravelStatus.fieldControl;
   BeginDate       @Common.FieldControl   : TravelStatus.fieldControl;
   EndDate         @Common.FieldControl   : TravelStatus.fieldControl;
@@ -46,6 +45,8 @@ annotate TravelService.Travel {
     Common.SideEffects.TargetProperties : ['in/deductDiscountEnabled'],
   );
 }
+
+annotate TravelService.Booking with @UI.CreateHidden : to_Travel.TravelStatus.createDeleteHidden;
 
 annotate TravelService.Booking {
   BookingDate   @Core.Computed;
