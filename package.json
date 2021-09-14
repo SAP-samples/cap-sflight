@@ -18,7 +18,8 @@
   },
   "scripts": {
     "start": "cds run",
-    "test": "jest --runInBand"
+    "test": "jest",
+    "test:mocha": "npx mocha --timeout 20000"
   },
   "cds": {
     "requires": {
@@ -37,7 +38,8 @@
     "app/travel_processor"
   ],
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testTimeout": 20000
   },
   "license": "SAP SAMPLE CODE LICENSE",
   "private": true

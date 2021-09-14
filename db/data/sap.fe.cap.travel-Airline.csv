@@ -1,17 +1,6 @@
-AirlineID;Name;CurrencyCode_code
-AA;American Airlines Inc.;USD
-AC;Air Canada;CAD
-AF;Air France;EUR
-AZ;Alitalia Societa Aerea Italiana S.p.A.;EUR
-BA;British Airways p.l.c.;GBP
-FJ;Air Pacific Limited t/a Fiji Airway;USD
-CO;Cobaltair Ltd. dba Cobalt;USD
-DL;Delta Air Lines, Inc.;USD
-LH;Deutsche Lufthansa AG;EUR
-NG;AL-Naser Wings;EUR
-JL;Japan Airlines Co., Ltd.;JPY
-QF;Qantas Airways Ltd.;AUD
-SA;South African Airways;ZAR
-SQ;Singapore Airlines Limited;SGD
-SR;Sundair GmbH;CHF
-UA;United Airlines, Inc.;USD
+AirlineID;Name;CurrencyCode_code;AirlinePicURL
+GA;Green Albatros;CAD;https://raw.githubusercontent.com/SAP-samples/fiori-elements-opensap/main/week1/images/airlines/Green-Albatross-logo.png
+FA;Fly Africa;ZAR;https://raw.githubusercontent.com/SAP-samples/fiori-elements-opensap/main/week1/images/airlines/Fly-Africa-logo.png
+EA;European Airlines;EUR;https://raw.githubusercontent.com/SAP-samples/fiori-elements-opensap/main/week1/images/airlines/European-Airlines-logo.png
+OC;Oceania;USD;https://raw.githubusercontent.com/SAP-samples/fiori-elements-opensap/main/week1/images/airlines/Oceania-logo.png
+SW;Sunset Wings;USD;https://raw.githubusercontent.com/SAP-samples/fiori-elements-opensap/main/week1/images/airlines/Sunset-Wings-logo.png

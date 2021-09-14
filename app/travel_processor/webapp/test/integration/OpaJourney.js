@@ -24,7 +24,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
       opaTest(
         "#2: Object Page: Check Object Page loads",
         function (Given, When, Then) {
-          When.onTheMainPage.onTable().iPressRow({ TravelID: "4,133" });
+          When.onTheMainPage.onTable().iPressRow({ TravelID: "4133" });
           Then.onTheDetailPage.iSeeThisPage();
 
           When.iNavigateBack();
@@ -61,17 +61,17 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
 
         // Starting date
         When.onTheDetailPage
-          .onForm({ section: "Travel", fieldGroup: "TravelData" })
+          .onForm({ section: "Travel", fieldGroup: "DateData" })
           .iChangeField({ property: "BeginDate" }, "Jan 1, 2023");
 
         // End date
         When.onTheDetailPage
-          .onForm({ section: "Travel", fieldGroup: "TravelData" })
+          .onForm({ section: "Travel", fieldGroup: "DateData" })
           .iChangeField({ property: "EndDate" }, "Dec 31, 2024");
 
         // Booking fee
         When.onTheDetailPage
-          .onForm({ section: "Travel", fieldGroup: "TravelData" })
+          .onForm({ section: "Travel", fieldGroup: "PriceData" })
           .iChangeField({ property: "BookingFee" }, "50.00");
 
         // Description
@@ -126,7 +126,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
             );
 
           // select first row
-          Given.onTheMainPage.onTable().iSelectRows({ TravelID: "4,132" });
+          Given.onTheMainPage.onTable().iSelectRows({ TravelID: "4132" });
 
           // Check that bound action is now active after selection
           Then.onTheMainPage
@@ -139,7 +139,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           // check that "Travel status" is Open
           Then.onTheMainPage
             .onTable()
-            .iCheckRows({ TravelID: "4,132", "Travel Status": "Open" }, 1);
+            .iCheckRows({ TravelID: "4132", "Travel Status": "Open" }, 1);
 
           // trigger action
           When.onTheMainPage.onTable().iExecuteAction({
@@ -150,18 +150,18 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           // check that "Travel status" is now Accepted
           Then.onTheMainPage
             .onTable()
-            .iCheckRows({ TravelID: "4,132", "Travel Status": "Accepted" }, 1);
+            .iCheckRows({ TravelID: "4132", "Travel Status": "Accepted" }, 1);
 
           // unselect first row
-          Given.onTheMainPage.onTable().iSelectRows({ TravelID: "4,132" });
+          Given.onTheMainPage.onTable().iSelectRows({ TravelID: "4132" });
 
           // select 2nd row
-          Given.onTheMainPage.onTable().iSelectRows({ TravelID: "4,131" });
+          Given.onTheMainPage.onTable().iSelectRows({ TravelID: "4131" });
 
           // check that "Travel status" is Open
           Then.onTheMainPage
             .onTable()
-            .iCheckRows({ TravelID: "4,131", "Travel Status": "Open" }, 1);
+            .iCheckRows({ TravelID: "4131", "Travel Status": "Open" }, 1);
 
           // trigger action
           When.onTheMainPage.onTable().iExecuteAction({
@@ -172,10 +172,10 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           // check that "Travel status" is Open
           Then.onTheMainPage
             .onTable()
-            .iCheckRows({ TravelID: "4,131", "Travel Status": "Canceled" }, 1);
+            .iCheckRows({ TravelID: "4131", "Travel Status": "Canceled" }, 1);
 
           // unselect 2nd row
-          Given.onTheMainPage.onTable().iSelectRows({ TravelID: "4,131" });
+          Given.onTheMainPage.onTable().iSelectRows({ TravelID: "4131" });
 
           Then.onTheMainPage.iSeeThisPage();
         }
