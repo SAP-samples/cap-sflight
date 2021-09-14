@@ -4,7 +4,8 @@
   "description": "CAP flight demo scenario",
   "repository": "https://github.com/SAP-samples/cap-sflight",
   "dependencies": {
-    "@sap/cds": "^5.1",
+    "@sap/cds": "git+https://github.tools.sap/cap/cds.git#runtime/ui-flex-prod",
+    "@sap/cds-dk": "^4.3.3",
     "express": "^4"
   },
   "devDependencies": {
@@ -22,8 +23,12 @@
   },
   "cds": {
     "requires": {
+      "uiflex": {
+        "model": "@sap/cds/libx/_runtime/fiori/uiflex/extensibility"
+      },
       "db": {
-        "kind": "sql"
+        "kind": "sqlite",
+        "model": "*"
       }
     },
     "log": {

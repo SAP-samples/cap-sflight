@@ -35,16 +35,38 @@
         },
       };
     </script>
+    <script>
+      var sSelectedUI5Version = new URL(window.location).searchParams.get("ui5-version") || "nightly";
+      var mAvailableVersions = {
+        local: "http://localhost:8080",
+        untested: "https://sapui5untested.int.sap.eu2.hana.ondemand.com",
+        nightly: "https://sapui5nightly.int.sap.eu2.hana.ondemand.com",
+        stable: "https://ui5.sap.com"
+      };
+      var sUI5Url = mAvailableVersions[sSelectedUI5Version];
+      if (!sUI5Url) {
+        throw new Error(`Invalid UI5 version: ${sSelectedUI5Version}. Valid options: ${Object.keys(mAvailableVersions).join(", ")}`);
+      }
 
-    <script src="https://ui5.sap.com/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
-    <script
-      src="https://ui5.sap.com/resources/sap-ui-core.js"
-      data-sap-ui-libs="sap.m, sap.ushell, sap.fe.templates"
-      data-sap-ui-compatVersion="edge"
-      data-sap-ui-theme="sap_fiori_3"
-      data-sap-ui-frameOptions="allow"
-      data-sap-ui-bindingSyntax="complex"
-    ></script>
+      document.write(`
+        <script
+          src="${sUI5Url}/test-resources/sap/ushell/bootstrap/sandbox.js"
+        ><\/script>`
+      );
+      // Write the script synchronously as sap-ui-core uses document.write internally and it
+      // isn't possible to write into a document from an asynchronously loaded external script
+      document.write(`
+        <script
+          id="sap-ui-bootstrap"
+          src="${sUI5Url}/resources/sap-ui-core.js"
+          data-sap-ui-libs="sap.m, sap.ushell, sap.fe.templates"
+          data-sap-ui-compatVersion="edge"
+          data-sap-ui-theme="sap_fiori_3"
+          data-sap-ui-frameOptions="allow"
+          data-sap-ui-bindingSyntax="complex"
+        ><\/script>`
+      );
+    </script>
     <script>
       sap.ui.getCore().attachInit(function () {
         sap.ushell.Container.createRenderer().placeAt("content");

@@ -1,4 +1,5 @@
 using { Currency, custom.managed, sap.common.CodeList } from './common';
+using { extensible } from '@sap/cds/common';
 using {
   sap.fe.cap.travel.Airline,
   sap.fe.cap.travel.Passenger,
@@ -9,7 +10,7 @@ using {
 
 namespace sap.fe.cap.travel;
 
-entity Travel : managed {
+entity Travel : managed, extensible {
   key TravelUUID : UUID;
   TravelID       : Integer @readonly default 0;
   BeginDate      : Date;
@@ -24,7 +25,7 @@ entity Travel : managed {
   to_Booking     : Composition of many Booking on to_Booking.to_Travel = $self;
 };
 
-entity Booking : managed {
+entity Booking : managed, extensible {
   key BookingUUID   : UUID;
   BookingID         : Integer @Core.Computed;
   BookingDate       : Date;

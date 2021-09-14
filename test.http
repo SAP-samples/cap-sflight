@@ -1,0 +1,28 @@
+###
+
+# Add integer extension field to Travel
+POST http://localhost:4004/extensibility/addExtension
+Content-Type: application/json
+
+{
+  "extensions": [
+    "{\"extend\":\"TravelService.Travel\",\"elements\":{\"abc\":{\"name\":\"abc\",\"type\":\"cds.Integer\", \"default\": {\"val\": 555}}}}"
+  ]
+}
+
+###
+
+# Add string extension field to Booking
+POST http://localhost:4004/extensibility/addExtension
+Content-Type: application/json
+
+{
+  "extensions": [
+    "{\"extend\":\"TravelService.Booking\",\"elements\":{\"bla\":{\"name\":\"bla\",\"type\":\"cds.String\", \"default\": {\"val\": \"abc\"}}}}"
+  ]
+}
+
+###
+
+GET http://localhost:4004/extensibility/getExtensibleEntities(service='TravelService')
+Content-Type: application/json
