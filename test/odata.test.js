@@ -41,7 +41,6 @@ describe ("Basic Querying", () => {
 
 
 describe('Basic OData', () => {
-  jest.setTimeout(20000);
 
   it('serves $metadata documents in v4', async () => {
     const { headers, status, data } = await GET `/processor/$metadata`
