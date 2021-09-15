@@ -22,6 +22,11 @@
     "test:mocha": "npx mocha --timeout 20000"
   },
   "cds": {
+    "cdsc": {
+      "beta": {
+        "nestedProjections": true
+      }
+    },
     "requires": {
       "db": {
         "kind": "sql"
