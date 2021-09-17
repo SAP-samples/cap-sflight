@@ -10,7 +10,6 @@ build-parameters:
   before-all:
     - builder: custom
       commands:
-        - npm install --production
         - npx -p @sap/cds-dk cds build --production
 
 modules:
@@ -70,7 +69,7 @@ modules:
       builder: custom
       commands:
         - npm install
-        - npm run build:cf
+        - npm run build
       supported-platforms: []
 
   # ------------------ DESTINATION CONTENT ---------------------

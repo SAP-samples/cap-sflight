@@ -6,14 +6,14 @@
   "dependencies": {
     "@sap/audit-logging": "^5.0.0",
     "@sap/cds": "^5.1",
-    "@sap/hana-client": "^2.8.20",
-    "@sap/xsenv": "^3.1.0",
-    "@sap/xssec": "^3.2.0",
+    "@sap/hana-client": "^2.9.28",
+    "@sap/xsenv": "^3.1.1",
+    "@sap/xssec": "^3.2.7",
     "express": "^4",
     "passport": "^0.4.1"
   },
   "devDependencies": {
-    "@sap/ux-specification": "^1.84",
+    "@sap/ux-specification": "^1.90.9",
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",

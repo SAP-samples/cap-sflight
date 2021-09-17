@@ -66,7 +66,7 @@ Build the project from the command line:
 ```shell
 mbt build
 ```
-The build results will the stored in directory `mta_archives`.
+The build results will be stored in directory `mta_archives`.
 
 ### Deploy
 1. Log in to the target space
