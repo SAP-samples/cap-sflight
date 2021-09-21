@@ -46,6 +46,14 @@
   },
   "sap.ui": {
     "technology": "UI5",
+    "icons": {
+      "icon": "sap-icon://flight",
+      "favIcon": "sap-icon://flight",
+      "phone": "sap-icon://flight",
+      "phone@2": "sap-icon://flight",
+      "tablet": "sap-icon://flight",
+      "tablet@2": "sap-icon://flight"
+    },
     "deviceTypes": {
       "desktop": true,
       "tablet": true,
@@ -140,12 +148,11 @@
               "controlConfiguration": {
                 "to_Booking/@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
-                    "type": "GridTable",
-                    "condensedTableLayout": true,
-                    "personalization": {
-                      "column": true,
-                      "sort": false
-                    },
+                    "type": "ResponsiveTable",
+                     "personalization": {
+                       "column": true,
+                       "sort": false
+                     },
                     "creationMode": {
                       "name": "Inline",
                       "createAtEnd": true
@@ -185,5 +192,8 @@
     "_version": "1.1.0",
     "registrationIds": [],
     "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "service": "sap.fe.cap.sflight"
   }
 }

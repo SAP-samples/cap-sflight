@@ -67,6 +67,7 @@ module.exports = function (config) {
       },
     },
     ui5: {
+      url: "https://ui5.sap.com",
       mode: "script",
       config: {
         bindingSyntax: "complex",
