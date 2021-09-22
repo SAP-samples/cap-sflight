@@ -26,6 +26,7 @@
   },
   "scripts": {
     "start": "cds run",
+    "lint": "npx eslint .",
     "test": "jest",
     "test:mocha": "npx mocha --timeout 20000"
   },
