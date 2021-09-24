@@ -1,8 +1,29 @@
 package com.sap.cap.sflight.processor;
 
+import static cds.gen.travelservice.TravelService_.BOOKING;
+import static cds.gen.travelservice.TravelService_.BOOKING_SUPPLEMENT;
+import static cds.gen.travelservice.TravelService_.TRAVEL;
+import static com.sap.cds.ql.CQL.sum;
+import static java.lang.Boolean.FALSE;
+
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.sap.cds.ql.Select;
+import com.sap.cds.ql.Update;
+import com.sap.cds.services.ErrorStatuses;
+import com.sap.cds.services.ServiceException;
+import com.sap.cds.services.cds.CdsService;
+import com.sap.cds.services.cds.CqnService;
+import com.sap.cds.services.draft.DraftService;
+import com.sap.cds.services.handler.EventHandler;
+import com.sap.cds.services.handler.annotations.After;
+import com.sap.cds.services.handler.annotations.Before;
+import com.sap.cds.services.handler.annotations.ServiceName;
+import com.sap.cds.services.persistence.PersistenceService;
+
+import org.springframework.stereotype.Component;
 
 import cds.gen.travelservice.Booking;
 import cds.gen.travelservice.BookingSupplement;
@@ -11,22 +32,6 @@ import cds.gen.travelservice.Booking_;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
 import cds.gen.travelservice.Travel_;
-import com.sap.cds.ql.Select;
-import com.sap.cds.ql.Update;
-import com.sap.cds.services.cds.CdsService;
-import com.sap.cds.services.cds.CqnService;
-import com.sap.cds.services.draft.DraftService;
-import com.sap.cds.services.handler.EventHandler;
-import com.sap.cds.services.handler.annotations.After;
-import com.sap.cds.services.handler.annotations.ServiceName;
-import com.sap.cds.services.persistence.PersistenceService;
-import org.springframework.stereotype.Component;
-
-import static cds.gen.travelservice.TravelService_.BOOKING;
-import static cds.gen.travelservice.TravelService_.BOOKING_SUPPLEMENT;
-import static cds.gen.travelservice.TravelService_.TRAVEL;
-import static com.sap.cds.ql.CQL.sum;
-import static java.lang.Boolean.FALSE;
 
 @Component
 @ServiceName(TravelService_.CDS_NAME)
@@ -40,7 +45,10 @@ public class RecalculatePriceHandler implements EventHandler {
 		this.persistenceService = persistenceService;
 	}
 
-	//TODO: before handler for CREATE and UPDATE booking / bookingSupplement -> only for draft patch!
+	@Before(event = {CqnService.EVENT_CREATE, CqnService.EVENT_UPDATE}, entity = {Booking_.CDS_NAME, BookingSupplement_.CDS_NAME})
+	public void disableUpdateAndCreateForBookingAndBookingSupplement() {
+		throw new ServiceException(ErrorStatuses.BAD_REQUEST, "error.booking.only_patch");
+	}
 
 	private static BigDecimal calculateTotalPriceForTravel(CqnService db, String travelUUID,
 			boolean isActiveEntity) {
