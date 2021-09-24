@@ -1,6 +1,5 @@
 package com.sap.cap.sflight.processor;
 
-import static cds.gen.travelservice.TravelService_.TRAVEL;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -75,9 +74,9 @@ public class CreationHandler implements EventHandler {
 		*/
 		draftService.run(ctx.getCqn()).first(Travel.class).ifPresent(travelDraft -> {
 			Map<String, Object> data = new HashMap<>();
-			data.put("TravelUUID", travelDraft.getTravelUUID());
-			data.put("IsActiveEntity", true);
-			data.put("TravelStatus_code", travelDraft.getTravelStatusCode());
+			data.put(Travel.TRAVEL_UUID, travelDraft.getTravelUUID());
+			data.put(Travel.IS_ACTIVE_ENTITY, true);
+			data.put(Travel.TRAVEL_STATUS_CODE , travelDraft.getTravelStatusCode());
 			persistenceService.run(Update.entity(Travel_.class).data(data));
 		});
 	}
@@ -87,23 +86,20 @@ public class CreationHandler implements EventHandler {
 
 		if (travel.getBeginDate() != null && travel.getEndDate() != null) {
 			if (travel.getBeginDate().isAfter(travel.getEndDate())) {
-				throw new IllegalTravelDateException(
-						"Travel with travelID {} has illegal travel dates. End date {} is before begin date {}.",
-						travel.getTravelID(), travel.getBeginDate(), travel.getEndDate());
+				throw new IllegalTravelDateException("error.travel.date.illegal", travel.getTravelID(),
+						travel.getBeginDate(), travel.getEndDate());
 			}
 
 			if (travel.getBeginDate().isBefore(LocalDate.now().atStartOfDay().toLocalDate())) {
-				throw new IllegalTravelDateException(
-						"Travel with travelID {} has illegal travel dates: Begin date {} must not be in the past.",
-						travel.getTravelID(), travel.getBeginDate());
+				throw new IllegalTravelDateException("error.travel.date.past", travel.getTravelID(),
+						travel.getBeginDate());
 			}
 		}
 	}
 
-	@Before(event = CdsService.EVENT_CREATE, entity = Travel_.CDS_NAME)
-	public void calculateTravelIdBeforeCreation(final Travel travel) {
+ void calculateTravelIdBeforeCreation(final Travel travel) {
 		if (travel.getTravelID() == null || travel.getTravelID() == 0) {
-			Select<Travel_> maxIdSelect = Select.from(TRAVEL).columns(e -> e.TravelID().max().as(MAX_ID));
+			Select<Travel_> maxIdSelect = Select.from(TravelService_.TRAVEL).columns(e -> e.TravelID().max().as(MAX_ID));
 			Integer currentMaxId = (Integer) persistenceService.run(maxIdSelect).first().map(maxId -> maxId.get(MAX_ID))
 					.orElse(0);
 			travel.setTravelID(++currentMaxId);
@@ -173,5 +169,4 @@ public class CreationHandler implements EventHandler {
 			bookingSupplement.setBookingSupplementID(0);
 		}
 	}
-
 }

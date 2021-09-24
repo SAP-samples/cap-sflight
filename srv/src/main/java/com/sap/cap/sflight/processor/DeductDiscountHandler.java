@@ -1,31 +1,31 @@
 package com.sap.cap.sflight.processor;
 
-import cds.gen.travelservice.DeductDiscountContext;
-import cds.gen.travelservice.Travel;
-import cds.gen.travelservice.TravelService_;
 import static cds.gen.travelservice.TravelService_.TRAVEL;
-import cds.gen.travelservice.Travel_;
+import static java.lang.Boolean.TRUE;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 import com.sap.cds.ql.Update;
 import com.sap.cds.services.draft.DraftService;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
-import com.sap.cds.services.persistence.PersistenceService;
-import static java.lang.Boolean.TRUE;
+
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
+import cds.gen.travelservice.DeductDiscountContext;
+import cds.gen.travelservice.Travel;
+import cds.gen.travelservice.TravelService_;
+import cds.gen.travelservice.Travel_;
 
 @Component
 @ServiceName(TravelService_.CDS_NAME)
 public class DeductDiscountHandler implements EventHandler {
 
-	private final PersistenceService persistenceService;
 	private final DraftService draftService;
 
-	public DeductDiscountHandler(PersistenceService persistenceService, DraftService draftService) {
-		this.persistenceService = persistenceService;
+	public DeductDiscountHandler(DraftService draftService) {
 		this.draftService = draftService;
 	}
 
@@ -49,10 +49,11 @@ public class DeductDiscountHandler implements EventHandler {
 		update.setBookingFee(deductedBookingFee);
 
 
+		//throw exception if travel.getIsActiveEntity is null!.
 		if (TRUE.equals(travel.getIsActiveEntity())) {
 			var updateCqn = Update.entity(TRAVEL)
 					.where(t -> t.TravelUUID().eq(travel.getTravelUUID())).data(update);
-			persistenceService.run(updateCqn);
+			draftService.run(updateCqn);
 		} else {
 			var updateCqn = Update.entity(TRAVEL)
 					.where(t -> t.TravelUUID().eq(travel.getTravelUUID()).and(t.IsActiveEntity().eq(travel.getIsActiveEntity()))).data(update);
