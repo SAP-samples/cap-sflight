@@ -7,8 +7,8 @@
     "description": "{{description}}",
     "i18n": {
       "bundleName": "sap.fe.cap.travel.i18n.i18n",
-      "supportedLocales": [""],
-      "fallbackLocale": ""
+      "supportedLocales": ["en", "de", "fr"],
+      "fallbackLocale": "en"
     },
     "applicationVersion": {
       "version": "1.0.0"
