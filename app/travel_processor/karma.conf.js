@@ -1,3 +1,4 @@
+/*eslint no-unused-vars: 0*/
 function ODataServicesFactory(config, logger) {
   const { exec } = require("child_process"),
     { createProxyMiddleware } = require("http-proxy-middleware"),
