@@ -108,7 +108,9 @@ init() {
         SELECT `BookingUUID` .from (Booking.drafts) .where ({ to_Travel_TravelUUID: travel })
       })
     ])
-    return UPDATE (Travel.drafts,travel) .with ({ TotalPrice: BookingFee + FlightPrices + SupplPrices })
+
+    // SAP Hana driver return decimals as string
+    return UPDATE (Travel.drafts,travel) .with ({ TotalPrice: Number(BookingFee) + Number(FlightPrices) + Number(SupplPrices) })
   }
 
 
@@ -118,7 +120,7 @@ init() {
   this.before ('SAVE', 'Travel', req => {
     const { BeginDate, EndDate } = req.data, today = (new Date).toISOString().slice(0,10)
     if (BeginDate < today) req.error (400, `Begin Date ${BeginDate} must not be before today ${today}.`, 'in/BeginDate')
-    if (BeginDate > EndDate) req.error (400, `Begin Date ${BeginDate} must be befroe End Date ${EndDate}.`, 'in/BeginDate')
+    if (BeginDate > EndDate) req.error (400, `Begin Date ${BeginDate} must be before End Date ${EndDate}.`, 'in/BeginDate')
   })
 
 
