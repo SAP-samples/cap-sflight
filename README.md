@@ -53,7 +53,7 @@ The project contains a configuration for deploying the CAP services and the SAP 
   
 #### Local Machine
 
-- Install the Cloud Foundry command-line interface. See [this tutorial](https://developers.sap.com/tutorials/hcp-create-trial-account.html) for more details.
+- Install the Cloud Foundry command line interface (CLI). See this [tutorial](https://developers.sap.com/tutorials/cp-cf-download-cli.html) for more details.
 - Install the [MultiApps CF CLI Plugin](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin):
 
   ```shell
@@ -61,7 +61,7 @@ The project contains a configuration for deploying the CAP services and the SAP 
   cf install-plugin multiapps
   ```
 
-- Install the [MTA build tool](https://github.com/SAP/cloud-mta-build-tool) globally:
+- Install the [Cloud MTA Build Tool](https://github.com/SAP/cloud-mta-build-tool) globally:
 
   ```shell
   npm install -g mbt
