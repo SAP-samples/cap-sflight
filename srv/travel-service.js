@@ -100,17 +100,12 @@ init() {
   /**
    * Helper to re-calculate a Travel's TotalPrice from BookingFees, FlightPrices and Supplement Prices.
    */
-  this._update_totals4 = async function (travel) {
-    const [{ BookingFee }, { FlightPrices }, { SupplPrices }] = await cds.read ([
-      SELECT.one `BookingFee` .from (Travel.drafts,travel),
-      SELECT.one `sum(FlightPrice) as FlightPrices` .from (Booking.drafts) .where ({ to_Travel_TravelUUID: travel }),
-      SELECT.one `sum(Price) as SupplPrices` .from (BookingSupplement.drafts) .where ({ to_Booking_BookingUUID: /* in: */
-        SELECT `BookingUUID` .from (Booking.drafts) .where ({ to_Travel_TravelUUID: travel })
-      })
-    ])
-
-    // SAP Hana driver return decimals as string
-    return UPDATE (Travel.drafts,travel) .with ({ TotalPrice: Number(BookingFee) + Number(FlightPrices) + Number(SupplPrices) })
+  this._update_totals4 = function (travel) {
+    return UPDATE (Travel.drafts, travel) .with ({ TotalPrice: CXL `coalesce (BookingFee, 0) + ${
+      SELECT `coalesce (sum (FlightPrice + ${
+        SELECT `coalesce (sum (Price),0)` .from (BookingSupplement.drafts) .where `to_Booking_BookingUUID = BookingUUID`
+      }),0)` .from (Booking.drafts) .where `to_Travel_TravelUUID = TravelUUID`
+    }` })
   }
 
 
