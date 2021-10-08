@@ -150,6 +150,7 @@ describe('Basic OData', () => {
 
     // Ensure it is not in accepted state as that would disallow changing
     await POST (Draft +`/TravelService.rejectTravel`)
+    await PATCH (Draft, { BeginDate: '2222-01-01', EndDate: '2222-01-02' })
 
     // Change the Travel's Booking Fee
     await PATCH (Draft, { BookingFee: '120' })
