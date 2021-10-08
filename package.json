@@ -7,7 +7,6 @@
     "@sap/audit-logging": "^5.0.0",
     "@sap/cds": "^5.4.5",
     "hdb": "^0.18.3",
-    "@sap/xsenv": "^3.1.1",
     "@sap/xssec": "^3.2.7",
     "express": "^4",
     "passport": "^0.4.1"
