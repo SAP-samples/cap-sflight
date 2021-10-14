@@ -9,8 +9,12 @@ spring:
     resources:
         static-locations: "file:./app"
 cds:
-    security:
-        authenticate-unknown-endpoints: false
+    security.mock.users:
+    - name: admin
+      password: admin
+      roles:
+      - admin
+      
     odata-v4:
         endpoint:
             path: "/"
