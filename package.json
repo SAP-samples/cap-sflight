@@ -19,8 +19,7 @@
     "chai-subset": "^1.6.0",
     "jest": "^27.1.0",
     "qunit": "^2.9.3",
-    "sqlite3": "^5.0.2",
-    "http-proxy-middleware": "^2.0.0"
+    "sqlite3": "^5.0.2"
   },
   "engines": {
     "node": ">=14"

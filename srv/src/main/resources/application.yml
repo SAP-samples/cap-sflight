@@ -14,10 +14,14 @@ cds:
       password: admin
       roles:
       - admin
-      
+
     odata-v4:
         endpoint:
             path: "/"
+
+server:
+    port: 4004
+
 ---
 spring:
     profiles: cloud
