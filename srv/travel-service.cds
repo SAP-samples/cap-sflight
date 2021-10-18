@@ -1,6 +1,6 @@
 using { sap.fe.cap.travel as my } from '../db/schema';
 
-service TravelService @(path:'/processor') {
+service TravelService @(path:'/processor', requires: 'authenticated-user') {
 
   entity Travel_ as select from my.Travel {
     TravelUUID,

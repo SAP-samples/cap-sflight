@@ -40,7 +40,49 @@ http://localhost:4004/travel_processor/webapp/test/integration/opaTests.qunit.ht
 Test documentation is available at:
 https://ui5.sap.com/#/api/sap.fe.test
 
-## Creating a SAP Fiori App from Scratch
+## Deployment to SAP Business Technology Platform
+
+The project contains a configuration for deploying the CAP services and the SAP Fiori app to the SAP Business Technology Platform (SAP BTP) using a managed application router. The app then becomes visible in the content manager of the SAP Launchpad service.
+
+### Prerequisites
+#### SAP Business Technology Platform
+
+- Create a [trial account on SAP BTP](https://www.sap.com/products/business-technology-platform/trial.html). See this [tutorial](https://developers.sap.com/tutorials/hcp-create-trial-account.html) for more information. Alternatively, you can use a subaccount in a productive environment.
+- Subscribe to the [SAP Launchpad service](https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html).
+- Create an [SAP HANA Cloud service instance](https://developers.sap.com/tutorials/btp-app-hana-cloud-setup.html#08480ec0-ac70-4d47-a759-dc5cb0eb1d58) or use an existing one.
+  
+#### Local Machine
+
+- Install the Cloud Foundry command line interface (CLI). See this [tutorial](https://developers.sap.com/tutorials/cp-cf-download-cli.html) for more details.
+- Install the [MultiApps CF CLI Plugin](https://github.com/cloudfoundry-incubator/multiapps-cli-plugin):
+
+  ```shell
+  cf add-plugin-repo CF-Community https://plugins.cloudfoundry.org
+  cf install-plugin multiapps
+  ```
+
+- Install the [Cloud MTA Build Tool](https://github.com/SAP/cloud-mta-build-tool) globally:
+
+  ```shell
+  npm install -g mbt
+   ```
+
+### Build the Project
+
+Build the project from the command line:
+
+```shell
+mbt build
+```
+
+The build results will be stored in the directory `mta_archives`.
+
+### Deploy
+
+1. Log in to the target space.
+2. Deploy the MTA archive using the CF CLI: `cf deploy mta_archives/capire.sflight_1.0.0.mtar`
+
+## Creating an SAP Fiori App from Scratch
 
 If you want to implement an SAP Fiori app, follow these tutorials:
 

@@ -41,7 +41,6 @@ describe ("Basic Querying", () => {
 
 
 describe('Basic OData', () => {
-  jest.setTimeout(20000);
 
   it('serves $metadata documents in v4', async () => {
     const { headers, status, data } = await GET `/processor/$metadata`
@@ -151,6 +150,7 @@ describe('Basic OData', () => {
 
     // Ensure it is not in accepted state as that would disallow changing
     await POST (Draft +`/TravelService.rejectTravel`)
+    await PATCH (Draft, { BeginDate: '2222-01-01', EndDate: '2222-01-02' })
 
     // Change the Travel's Booking Fee
     await PATCH (Draft, { BookingFee: '120' })

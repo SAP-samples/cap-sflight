@@ -13,11 +13,10 @@ builder:
     excludes:
       - "/test/**"
       - "/localService/**"
-      - "index.html"
   customTasks:
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
-        archiveName: sapfecaptravel
+        archiveName: travel-processor
         additionalFiles:
           - xs-app.json

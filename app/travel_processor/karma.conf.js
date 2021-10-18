@@ -1,3 +1,4 @@
+/*eslint no-unused-vars: 0*/
 function ODataServicesFactory(config, logger) {
   const { exec } = require("child_process"),
     { createProxyMiddleware } = require("http-proxy-middleware"),
@@ -67,6 +68,7 @@ module.exports = function (config) {
       },
     },
     ui5: {
+      url: "https://ui5.sap.com",
       mode: "script",
       config: {
         bindingSyntax: "complex",

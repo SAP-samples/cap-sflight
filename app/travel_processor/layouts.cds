@@ -5,7 +5,7 @@ using TravelService from '../../srv/travel-service';
 //
 
 annotate TravelService.Travel with @UI : {
-  
+
   Identification : [
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.acceptTravel',   Label  : '{i18n>AcceptTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.rejectTravel',   Label  : '{i18n>RejectTravel}'   },
@@ -15,11 +15,11 @@ annotate TravelService.Travel with @UI : {
     TypeName       : '{i18n>Travel}',
     TypeNamePlural : '{i18n>Travels}',
     Title          : {
-      $Type : 'UI.DataField', 
-      Value : TravelID 
+      $Type : 'UI.DataField',
+      Value : TravelID
     },
     Description    : {
-      $Type : 'UI.DataField',
+      $Type : 'UI.DataField',
       Value : '{i18n>TravelID}'
     }
   },
@@ -50,7 +50,7 @@ annotate TravelService.Travel with @UI : {
     { Value : BookingFee             },
     { Value : TotalPrice             },
     { Value : Description            },
-    { $Type : 'UI.DataField', Value : TravelStatus_code, Criticality : TravelStatus.criticality }
+    { $Type : 'UI.DataField', Value : TravelStatus_code, Criticality : TravelStatus.criticality }
   ],
   Facets : [{
     $Type  : 'UI.CollectionFacet',
@@ -112,7 +112,7 @@ annotate TravelService.Booking with @UI : {
     TypeNamePlural : '{i18n>Bookings}',
     Title          : { Value : BookingID },
     Description    : {
-      $Type : 'UI.DataField',
+      $Type : 'UI.DataField',
       Value : '{i18n>BookingID}'
     }
   },
