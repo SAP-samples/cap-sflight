@@ -36,7 +36,10 @@
         "kind": "uiflex"
       },
       "db": {
-        "kind": "sqlite"
+        "kind": "sqlite",
+        "credentials": {
+          "database": "sqlite.db"
+        }
       },
       "uaa": {
         "kind": "xsuaa"
