@@ -6,20 +6,29 @@
   "dependencies": {
     "@sap/cds": "git+https://github.tools.sap/cap/cds.git#runtime/ui-flex-prod",
     "@sap/cds-dk": "^4.3.3",
-    "express": "^4"
+    "@sap/audit-logging": "^5.0.0",
+    "hdb": "^0.18.3",
+    "@sap/xssec": "^3.2.7",
+    "express": "^4",
+    "passport": "^0.4.1"
   },
   "devDependencies": {
-    "@sap/ux-specification": "^1.84",
+    "@sap/ux-specification": "^1.90.9",
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",
-    "jest": "^26.6.3",
+    "jest": "^27.1.0",
     "qunit": "^2.9.3",
     "sqlite3": "^5.0.2"
   },
+  "engines": {
+    "node": ">=14"
+  },
   "scripts": {
     "start": "cds run",
-    "test": "jest --runInBand"
+    "lint": "npx eslint .",
+    "test": "jest",
+    "test:mocha": "npx mocha --timeout 20000"
   },
   "cds": {
     "requires": {
@@ -29,7 +38,18 @@
       "db": {
         "kind": "sqlite",
         "model": "*"
+      },
+      "uaa": {
+        "kind": "xsuaa"
+      },
+      "auth": {
+        "[development]": {
+          "strategy": "dummy"
+        }
       }
+    },
+    "hana": {
+      "deploy-format": "hdbtable"
     },
     "log": {
       "service": true
@@ -42,7 +62,8 @@
     "app/travel_processor"
   ],
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testTimeout": 20000
   },
   "license": "SAP SAMPLE CODE LICENSE",
   "private": true
