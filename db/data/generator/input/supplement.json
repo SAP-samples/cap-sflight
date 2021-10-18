@@ -1,0 +1,338 @@
+[
+  {
+    "supplement_id": "BV-0001",
+    "price": "2.30",
+    "supplement_category": "BV",
+    "description": "Hot Chocolate",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "BV-0002",
+    "price": "7.50",
+    "supplement_category": "BV",
+    "description": "Alcohol free Champagne",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "BV-0003",
+    "price": "3.50",
+    "supplement_category": "BV",
+    "description": "Coke",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "BV-0004",
+    "price": "3.50",
+    "supplement_category": "BV",
+    "description": "Orange Lemonade",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "BV-0005",
+    "price": "3.50",
+    "supplement_category": "BV",
+    "description": "Apple Juice",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "BV-0006",
+    "price": "3.50",
+    "supplement_category": "BV",
+    "description": "Pear Juice",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "BV-0007",
+    "price": "3.50",
+    "supplement_category": "BV",
+    "description": "Mango Juice",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "BV-0008",
+    "price": "3.50",
+    "supplement_category": "BV",
+    "description": "Lemon Lemonade",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "BV-0009",
+    "price": "4.50",
+    "supplement_category": "BV",
+    "description": "Tomato Juice",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0001",
+    "price": "3.00",
+    "supplement_category": "ML",
+    "description": "Black Forest Cake",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0002",
+    "price": "2.00",
+    "supplement_category": "ML",
+    "description": "Chocolate Cake",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0003",
+    "price": "1.50",
+    "supplement_category": "ML",
+    "description": "Apple Pie",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0004",
+    "price": "1.50",
+    "supplement_category": "ML",
+    "description": "Pear Pie",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0005",
+    "price": "8.00",
+    "supplement_category": "ML",
+    "description": "Nice Salad",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0006",
+    "price": "9.00",
+    "supplement_category": "ML",
+    "description": "Paris Salad",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0007",
+    "price": "12.00",
+    "supplement_category": "ML",
+    "description": "Hamburg Salad with Eggs",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0008",
+    "price": "25.00",
+    "supplement_category": "ML",
+    "description": "Quail with French Salad and Black Forest Cake",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0009",
+    "price": "13.00",
+    "supplement_category": "ML",
+    "description": "Duck on Lettuce",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0010",
+    "price": "5.00",
+    "supplement_category": "ML",
+    "description": "Carpaccio",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0011",
+    "price": "7.00",
+    "supplement_category": "ML",
+    "description": "Seasonal Salad",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0012",
+    "price": "16.00",
+    "supplement_category": "ML",
+    "description": "Hamburg Salad with Fresh Shrimps",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0013",
+    "price": "17.00",
+    "supplement_category": "ML",
+    "description": "Quail",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0014",
+    "price": "14.00",
+    "supplement_category": "ML",
+    "description": "Wiener Schnitzel",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0015",
+    "price": "13.00",
+    "supplement_category": "ML",
+    "description": "Pork Schnitzel",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0016",
+    "price": "14.00",
+    "supplement_category": "ML",
+    "description": "Schnitzel with Pepper Sauce",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0017",
+    "price": "11.00",
+    "supplement_category": "ML",
+    "description": "Chicken and French Fries",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0018",
+    "price": "12.00",
+    "supplement_category": "ML",
+    "description": "Turkey Steak",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0019",
+    "price": "15.00",
+    "supplement_category": "ML",
+    "description": "Bavarian Duck",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0020",
+    "price": "14.00",
+    "supplement_category": "ML",
+    "description": "Knuckle of Pork",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0021",
+    "price": "22.00",
+    "supplement_category": "ML",
+    "description": "Fillet of Beef",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0022",
+    "price": "21.00",
+    "supplement_category": "ML",
+    "description": "Trout Au Bleu",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0023",
+    "price": "20.00",
+    "supplement_category": "ML",
+    "description": "Trout Meuniere",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0024",
+    "price": "17.00",
+    "supplement_category": "ML",
+    "description": "Monkfish",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0025",
+    "price": "12.00",
+    "supplement_category": "ML",
+    "description": "Sole",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0026",
+    "price": "6.00",
+    "supplement_category": "ML",
+    "description": "Mini Fried Sole",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0027",
+    "price": "14.00",
+    "supplement_category": "ML",
+    "description": "Salmon in a Bearnaise Sauce",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0028",
+    "price": "15.00",
+    "supplement_category": "ML",
+    "description": "Salmon Lasagne",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0029",
+    "price": "3.00",
+    "supplement_category": "ML",
+    "description": "Chocolate Ice Cream",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0030",
+    "price": "2.50",
+    "supplement_category": "ML",
+    "description": "Vanilla Ice Cream",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0031",
+    "price": "4.50",
+    "supplement_category": "ML",
+    "description": "Vanilla Ice Cream with Hot Cherries",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0032",
+    "price": "4.50",
+    "supplement_category": "ML",
+    "description": "Vanilla Ice Cream with Hot Raspberries",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0033",
+    "price": "4.00",
+    "supplement_category": "ML",
+    "description": "Apple Strudel",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0034",
+    "price": "4.00",
+    "supplement_category": "ML",
+    "description": "Raspberry Sorbet",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "ML-0035",
+    "price": "4.00",
+    "supplement_category": "ML",
+    "description": "Strawberry Sorbet",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "LU-0001",
+    "price": "40.00",
+    "supplement_category": "LU",
+    "description": "Extra baggage 5 kgs",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "LU-0002",
+    "price": "15.00",
+    "supplement_category": "LU",
+    "description": "Luggage transfer from airport to hotel",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "LU-0003",
+    "price": "75.00",
+    "supplement_category": "LU",
+    "description": "Luggage pickup from home and return",
+    "currency_code": "EUR"
+  },
+  {
+    "supplement_id": "LU-0004",
+    "price": "80.00",
+    "supplement_category": "LU",
+    "description": "Bulky goods like sports equipment",
+    "currency_code": "EUR"
+  }
+]
