@@ -15,8 +15,10 @@ extend projection TravelService.Travel with {
   virtual null as deductDiscountEnabled : Boolean @UI.Hidden,
 }
 
-annotate TravelService.Travel {
-
+annotate TravelService.Travel with @(Common.SideEffects: {
+  SourceProperties: [BookingFee],
+  TargetProperties: ['TotalPrice']
+}){
   BookingFee    @Common.FieldControl  : TravelStatus.fieldControl;
   BeginDate       @Common.FieldControl  : TravelStatus.fieldControl;
   EndDate         @Common.FieldControl  : TravelStatus.fieldControl;
