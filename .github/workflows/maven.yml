@@ -26,8 +26,8 @@ jobs:
       with:
         java-version: ${{ matrix.java-version }}
 
-#    - name: Build with Maven
-#      run: mvn -B clean verify
+    - name: Build with Maven
+      run: mvn -B clean verify
 
     - name: Run integration tests - Manage Travels
       working-directory: ./app/travel_processor
