@@ -1,4 +1,5 @@
-using { Currency, custom.managed, sap.common.CodeList } from './common';
+using { managed } from '@sap/cds/common';
+using { Currency, sap.common.CodeList } from './common';
 using {
   sap.fe.cap.travel.Airline,
   sap.fe.cap.travel.Passenger,
