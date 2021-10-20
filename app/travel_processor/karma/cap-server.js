@@ -42,8 +42,8 @@ function createKarmaMiddleware(serverUrl, auth) {
 
 async function java() {
     const isReady = (data) => {
-        const port = data.match(/started on port\(s\): (?<port>\d+)/)?.groups?.port
-        if (port) return new URL(`http://localhost:${port}`)
+        const started = data.match(/started on port\(s\): (?<port>\d+)/)
+        if (started) return new URL(`http://localhost:${(started.groups.port)}`)
     }
     const serverUrl = await spawnServer("mvn", ["spring-boot:run", "-Dserver.port=0"], "../../srv", isReady)
 
@@ -52,8 +52,8 @@ async function java() {
 
 async function node() {
     const isReady = (data) => {
-        const url = data.match(/server listening on {.*url:.*'(?<url>.+)'.*}/)?.groups?.url
-        if (url) return new URL(url)
+        const started = data.match(/server listening on {.*url:.*'(?<url>.+)'.*}/)
+        if (started) return new URL(started.groups.url)
     }
     const serverUrl = await spawnServer("npm", ["start"], "../..", isReady)
 
