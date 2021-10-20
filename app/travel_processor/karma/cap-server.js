@@ -50,12 +50,7 @@ async function java() {
   };
   const serverUrl = await spawnServer(
     "mvn",
-    [
-      "spring-boot:run",
-      "-Dserver.port=0",
-      "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn",
-      "-Dorg.slf4j.simpleLogger.defaultLogLevel=warn",
-    ],
+    ["spring-boot:run", "-B", "-Dserver.port=0"],
     "../../srv",
     isReady
   );
