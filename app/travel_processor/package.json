@@ -6,7 +6,8 @@
     "build": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateManifestBundle generateCachebusterInfo",
     "start": "ui5 serve",
     "test": "karma start",
-    "test:local": "karma start --browsers=CustomChrome"
+    "test:node": "npm test -- --ci --server=node",
+    "test:java": "npm test -- --ci --server=java"
   },
   "keywords": [
     "ui5",
@@ -16,8 +17,8 @@
   "devDependencies": {
     "@sap/ux-specification": "^1.90.9",
     "@ui5/cli": "^2.12.1",
-    "ui5-middleware-http-proxy": "^2.0.0",
-    "http-proxy-middleware": "^2.0.1",
+    "cross-spawn": "^7.0.3",
+    "http-proxy": "^1.18.1",
     "karma": "^6.3.4",
     "karma-chrome-launcher": "^3.1.0",
     "karma-mocha-reporter": "^2.2.5",
@@ -25,6 +26,7 @@
     "karma-ui5": "^2.3.4",
     "puppeteer": "^10.1.0",
     "qunit": "^2.16.0",
+    "ui5-middleware-http-proxy": "^2.0.0",
     "ui5-task-zipper": "^0.4.3"
   },
   "ui5": {

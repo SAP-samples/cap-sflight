@@ -20,9 +20,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Java ${{ matrix.java-version }}
       uses: actions/setup-java@v1
       with:
         java-version: ${{ matrix.java-version }}
+
     - name: Build with Maven
       run: mvn -B clean verify
+
+    - name: Run integration tests - Manage Travels
+      working-directory: ./app/travel_processor
+      run: |
+        npm ci
+        npm test -- --ci --server=java
