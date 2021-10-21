@@ -149,10 +149,10 @@
                 "to_Booking/@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
                     "type": "ResponsiveTable",
-                     "personalization": {
-                       "column": true,
-                       "sort": false
-                     },
+                    "personalization": {
+                      "column": true,
+                      "sort": false
+                    },
                     "creationMode": {
                       "name": "Inline",
                       "createAtEnd": true
