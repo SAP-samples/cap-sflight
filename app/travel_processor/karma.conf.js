@@ -14,6 +14,7 @@ module.exports = async (config) => {
       "/base/webapp/processor": "/processor",
     },
     client: {
+      captureConsole: false,
       qunit: {
         showUI: true,
         testTimeout: 100000,

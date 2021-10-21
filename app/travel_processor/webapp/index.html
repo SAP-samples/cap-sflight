@@ -46,10 +46,12 @@
       data-sap-ui-bindingSyntax="complex"
     ></script>
     <script>
-      sap.ushell.Container.createRenderer(undefined, true).then(function (
-        oRenderer
-      ) {
-        oRenderer.placeAt("content");
+      sap.ui.getCore().attachInit(function () {
+        sap.ushell.Container.createRenderer(undefined, true).then(function (
+          oRenderer
+        ) {
+          oRenderer.placeAt("content");
+        });
       });
 
       sap.ui
