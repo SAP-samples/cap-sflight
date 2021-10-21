@@ -31,8 +31,8 @@ jobs:
     - run: npm run test
     - run: npm run test:mocha
 
-    - name: Run UI Tests - Travel Processor
+    - name: Run integration tests - Manage Travels
       working-directory: ./app/travel_processor
       run: |
         npm ci
-        npm test
+        npm test -- --ci

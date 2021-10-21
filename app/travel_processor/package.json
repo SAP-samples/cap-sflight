@@ -2,10 +2,13 @@
   "name": "travel-processor",
   "private": true,
   "main": "webapp/index.html",
+  "engines": {
+    "node": ">=14",
+    "npm": ">=7"
+  },
   "scripts": {
     "build": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateManifestBundle generateCachebusterInfo",
-    "test": "karma start",
-    "test:local": "karma start --browsers=CustomChrome"
+    "test": "karma start"
   },
   "keywords": [
     "ui5",
@@ -13,17 +16,18 @@
     "sapui5"
   ],
   "devDependencies": {
-    "@sap/ux-specification": "^1.90.9",
-    "@ui5/cli": "^2.12.1",
-    "http-proxy-middleware": "^2.0.1",
-    "karma": "^6.3.4",
+    "@sap/ux-specification": "^1.90.12",
+    "@ui5/cli": "^2.14.0",
+    "cross-spawn": "^7.0.3",
+    "http-proxy": "^1.18.1",
+    "karma": "^6.3.5",
     "karma-chrome-launcher": "^3.1.0",
     "karma-mocha-reporter": "^2.2.5",
     "karma-qunit": "^4.1.2",
     "karma-ui5": "^2.3.4",
-    "puppeteer": "^10.1.0",
-    "qunit": "^2.16.0",
-    "ui5-task-zipper": "^0.4.3"
+    "puppeteer": "^10.4.0",
+    "qunit": "^2.17.2",
+    "ui5-task-zipper": "^0.4.4"
   },
   "ui5": {
     "dependencies": [

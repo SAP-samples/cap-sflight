@@ -1,33 +1,36 @@
 {
   "name": "@capire/sflight",
   "version": "1.0.0",
+  "private": true,
   "description": "CAP flight demo scenario",
+  "license": "SAP SAMPLE CODE LICENSE",
   "repository": "https://github.com/SAP-samples/cap-sflight",
+  "engines": {
+    "node": ">=14",
+    "npm": ">=7"
+  },
+  "scripts": {
+    "lint": "npx eslint .",
+    "start": "cds run",
+    "test": "jest",
+    "test:mocha": "npx mocha --timeout 20000"
+  },
   "dependencies": {
     "@sap/audit-logging": "^5.0.0",
     "@sap/cds": "^5.4.5",
-    "hdb": "^0.18.3",
     "@sap/xssec": "^3.2.7",
     "express": "^4",
+    "hdb": "^0.18.3",
     "passport": "^0.4.1"
   },
   "devDependencies": {
-    "@sap/ux-specification": "^1.90.9",
+    "@sap/ux-specification": "^1.90.12",
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",
     "jest": "^27.1.0",
     "qunit": "^2.9.3",
     "sqlite3": "^5.0.2"
-  },
-  "engines": {
-    "node": ">=14"
-  },
-  "scripts": {
-    "start": "cds run",
-    "lint": "npx eslint .",
-    "test": "jest",
-    "test:mocha": "npx mocha --timeout 20000"
   },
   "cds": {
     "requires": {
@@ -53,13 +56,11 @@
       "preserve_computed": true
     }
   },
-  "sapux": [
-    "app/travel_processor"
-  ],
   "jest": {
     "testEnvironment": "node",
     "testTimeout": 20000
   },
-  "license": "SAP SAMPLE CODE LICENSE",
-  "private": true
+  "sapux": [
+    "app/travel_processor"
+  ]
 }
