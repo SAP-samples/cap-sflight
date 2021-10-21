@@ -18,7 +18,6 @@ function spawnServer(cmd, args, cwd, fnIsReady) {
 
     proc.on("close", reject);
     proc.stdout.on("data", checkServerReady);
-    proc.stdout.pipe(process.stdout);
   });
 }
 
