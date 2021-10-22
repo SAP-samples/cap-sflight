@@ -25,13 +25,9 @@ class TravelSmokeTest {
     void testReadTravels() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/processor/Travel")).andExpect(status().isOk())
                 .andExpect(jsonPath("$.value[0].TravelID").value(equalTo(175)))
-                .andExpect(jsonPath("$.value[0].BeginDate").value(containsString("2020-12-10")))
-                .andExpect(jsonPath("$.value[0].EndDate").value(containsString("2021-10-06")))
                 .andExpect(jsonPath("$.value[0].createdBy").value(containsString("Hansmann")))
                 .andExpect(jsonPath("$.value[0].LastChangedBy").value(containsString("Deichgraeber")))
                 .andExpect(jsonPath("$.value[1].TravelID").value(equalTo(431)))
-                .andExpect(jsonPath("$.value[1].BeginDate").value(containsString("2021-10-07")))
-                .andExpect(jsonPath("$.value[1].EndDate").value(containsString("2021-10-07")))
                 .andExpect(jsonPath("$.value[1].createdBy").value(containsString("Mueller")))
                 .andExpect(jsonPath("$.value[1].LastChangedBy").value(containsString("Lautenbach"))) ;
     }
