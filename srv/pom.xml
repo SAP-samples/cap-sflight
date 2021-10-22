@@ -22,23 +22,9 @@
 			<artifactId>cds-starter-spring-boot-odata</artifactId>
 		</dependency>
 
-		<!-- disable this as it transitively depends on spring-security which we don't want at the moment
-                <dependency>
-                    <groupId>com.sap.cds</groupId>
-                    <artifactId>cds-starter-cloudfoundry</artifactId>
-                </dependency>
-                -->
-
-		<!-- remove once cds-starter-cloudfoundry is added again -->
 		<dependency>
 			<groupId>com.sap.cds</groupId>
-			<artifactId>cds-feature-cloudfoundry</artifactId>
-		</dependency>
-
-		<!-- remove once cds-starter-cloudfoundry is added again -->
-		<dependency>
-			<groupId>com.sap.cds</groupId>
-			<artifactId>cds-feature-hana</artifactId>
+			<artifactId>cds-starter-cloudfoundry</artifactId>
 		</dependency>
 
 		<dependency>
@@ -55,6 +41,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 
