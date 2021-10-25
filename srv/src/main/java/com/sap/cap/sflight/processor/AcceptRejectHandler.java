@@ -2,8 +2,9 @@ package com.sap.cap.sflight.processor;
 
 import static cds.gen.travelservice.TravelService_.TRAVEL;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 import com.sap.cds.ql.Update;
 import com.sap.cds.services.cds.CdsService;
@@ -13,6 +14,7 @@ import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
+import com.sap.cds.services.persistence.PersistenceService;
 
 import org.springframework.stereotype.Component;
 
@@ -30,11 +32,13 @@ public class AcceptRejectHandler implements EventHandler {
 	private static final String TRAVEL_STATUS_ACCEPTED = "A";
 	private static final String TRAVEL_STATUS_CANCELLED = "X";
 
+	private final PersistenceService persistenceService;
 	private final DraftService draftService;
 
 
-	public AcceptRejectHandler(DraftService draftService) {
+	public AcceptRejectHandler(DraftService draftService, PersistenceService persistenceService) {
 		this.draftService = draftService;
+		this.persistenceService = persistenceService;
 	}
 
 	@After(entity = Travel_.CDS_NAME, event = CdsService.EVENT_READ)
@@ -76,16 +80,20 @@ public class AcceptRejectHandler implements EventHandler {
 		context.setCompleted();
 	}
 
-	private Optional<Travel> updateStatusForTravelId(String travelUUID, String newStatus, boolean isActiveEntity) {
+	private void updateStatusForTravelId(String travelUUID, String newStatus, boolean isActiveEntity) {
 
 		if (isActiveEntity) {
-			Update<Travel_> travelUpdate = Update.entity(TRAVEL).data(Travel.TRAVEL_STATUS_CODE, newStatus)
-					.where(t -> t.TravelUUID().eq(travelUUID));
-			return draftService.run(travelUpdate).first(Travel.class);
+			Map<String, Object> data = new HashMap<>();
+			data.put(Travel.TRAVEL_UUID, travelUUID);
+			data.put(Travel.IS_ACTIVE_ENTITY, true);
+			data.put(Travel.TRAVEL_STATUS_CODE , newStatus);
+
+			persistenceService.run(Update.entity(Travel_.class).data(data));
 		} else {
-			Update<Travel_> travelUpdateDraft = Update.entity(TRAVEL).data(Travel.TRAVEL_STATUS_CODE, newStatus)
-					.where(t -> t.TravelUUID().eq(travelUUID).and(t.IsActiveEntity().eq(false)));
-			return draftService.patchDraft(travelUpdateDraft).first(Travel.class);
+			Update<Travel_> travelUpdateDraft = Update.entity(TRAVEL)
+					.where(t -> t.TravelUUID().eq(travelUUID).and(t.IsActiveEntity().eq(false)))
+					.data(Travel.TRAVEL_STATUS_CODE, newStatus);
+			draftService.patchDraft(travelUpdateDraft).first(Travel.class);
 		}
 	}
 
