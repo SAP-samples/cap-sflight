@@ -22,6 +22,7 @@ import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
+import com.sap.cds.services.utils.StringUtils;
 
 import org.springframework.stereotype.Component;
 
@@ -103,7 +104,7 @@ public class RecalculatePriceHandler implements EventHandler {
 		*/
 
 		String travelUUID = travel.getTravelUUID();
-		if (travelUUID.isEmpty()) {
+		if (StringUtils.isEmpty(travelUUID)) {
 			return;
 		}
 		travel.setTotalPrice(calculateTotalPriceForTravel(persistenceService, travelUUID, true));
