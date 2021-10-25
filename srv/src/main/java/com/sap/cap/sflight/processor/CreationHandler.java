@@ -97,7 +97,8 @@ public class CreationHandler implements EventHandler {
 		}
 	}
 
- void calculateTravelIdBeforeCreation(final Travel travel) {
+	@Before(event = CdsService.EVENT_CREATE, entity = Travel_.CDS_NAME)
+	public void calculateTravelIdBeforeCreation(final Travel travel) {
 		if (travel.getTravelID() == null || travel.getTravelID() == 0) {
 			Select<Travel_> maxIdSelect = Select.from(TravelService_.TRAVEL).columns(e -> e.TravelID().max().as(MAX_ID));
 			Integer currentMaxId = (Integer) persistenceService.run(maxIdSelect).first().map(maxId -> maxId.get(MAX_ID))
