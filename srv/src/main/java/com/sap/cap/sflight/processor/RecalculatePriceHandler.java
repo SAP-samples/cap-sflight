@@ -67,9 +67,9 @@ public class RecalculatePriceHandler implements EventHandler {
 
 		// get sum of flight prices from all bookings
 		var flightPriceSum = new BigDecimal(0);
-		var flightPriceRow = db.run(Select.from(BOOKING).columns(c -> sum(c.FlightPrice()).as("FlightPriceSum"))
-				.groupBy(Booking_::to_Travel_TravelUUID).having(c -> c.to_Travel().TravelUUID()
-						.eq(travelUUID).and(c.IsActiveEntity().eq(isActiveEntity))))
+		var flightPriceRow = db
+				.run(Select.from(BOOKING).columns(b -> sum(b.FlightPrice()).as("FlightPriceSum"))
+						.where(b -> b.to_Travel_TravelUUID().eq(travelUUID).and(b.IsActiveEntity().eq(isActiveEntity))))
 				.first();
 
 		if (flightPriceRow.isPresent() && flightPriceRow.get().size() > 0) {
@@ -80,9 +80,7 @@ public class RecalculatePriceHandler implements EventHandler {
 		var supplementPriceSum = new BigDecimal(0);
 		var supplementPriceSumRow = db
 				.run(Select.from(BOOKING_SUPPLEMENT).columns(c -> sum(c.Price()).as("PriceSum"))
-						.groupBy(c -> c.to_Booking().to_Travel().TravelUUID())
-						.having(c -> c.to_Travel().TravelUUID().eq(travelUUID)
-								.and(c.IsActiveEntity().eq(isActiveEntity))))
+						.where(b -> b.to_Travel_TravelUUID().eq(travelUUID).and(b.IsActiveEntity().eq(isActiveEntity))))
 				.first();
 		if (supplementPriceSumRow.isPresent() && supplementPriceSumRow.get().size() > 0) {
 			supplementPriceSum = new BigDecimal(supplementPriceSumRow.get().get("PriceSum").toString());
