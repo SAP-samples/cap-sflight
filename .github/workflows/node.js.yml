@@ -35,4 +35,4 @@ jobs:
       working-directory: ./app/travel_processor
       run: |
         npm ci
-        npm test -- --ci
+        npm test -- --ci --server=node

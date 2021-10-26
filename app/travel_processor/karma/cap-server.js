@@ -42,6 +42,21 @@ function createKarmaMiddleware(serverUrl, auth) {
   return { "middleware:cap-proxy": ["factory", middleware] };
 }
 
+async function java() {
+  const isReady = (data) => {
+    const started = data.match(/started on port\(s\): (?<port>\d+)/);
+    if (started) return new URL(`http://localhost:${started.groups.port}`);
+  };
+  const serverUrl = await spawnServer(
+    "mvn",
+    ["spring-boot:run", "-B", "-Dserver.port=0"],
+    "../../srv",
+    isReady
+  );
+
+  return createKarmaMiddleware(serverUrl, { user: "admin", password: "admin" });
+}
+
 async function node() {
   const isReady = (data) => {
     const started = data.match(/server listening on {.*url:.*'(?<url>.+)'.*}/);
@@ -52,4 +67,4 @@ async function node() {
   return createKarmaMiddleware(serverUrl, { user: "admin", password: "admin" });
 }
 
-module.exports = { node };
+module.exports = { java, node };

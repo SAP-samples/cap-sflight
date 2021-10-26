@@ -54,6 +54,12 @@
     },
     "features": {
       "preserve_computed": true
+    },
+    "build": {
+      "[node]": {
+        "target": "gen",
+        "tasks": [{"for": "node-cf"}, {"for": "hana"}]
+      }
     }
   },
   "jest": {

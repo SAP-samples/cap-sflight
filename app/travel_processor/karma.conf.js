@@ -4,7 +4,8 @@ const puppeteer = require("puppeteer"),
 process.env.CHROME_BIN = puppeteer.executablePath();
 
 module.exports = async (config) => {
-  const cap = await capServer.node();
+  // start the CAP server (either specify CLI arg --server=node or --server=java)
+  const cap = await capServer[config.server]();
 
   config.set({
     frameworks: ["ui5", "qunit"],
