@@ -40,6 +40,29 @@ http://localhost:4004/travel_processor/webapp/test/integration/opaTests.qunit.ht
 Test documentation is available at:
 https://ui5.sap.com/#/api/sap.fe.test
 
+## SAP Fiori UI with Java Backend
+
+### Build and Run
+
+1. In a console, execute `npm ci` in the root folder of your project.
+2. In a console, execute `mvn spring-boot:run` in the root folder of your project.
+3. In another console, execute `npm start` in folder `app\travel_processor` of your project (this starts the middleware)
+
+Note: If you acces the CAP Java server directly without middleware, you will have to enter mock user credentials admin / admin which are maintained in file application.yml.
+
+### Accessing the SAP Fiori App
+
+Open this link in your browser:
+http://localhost:8080/index.html
+
+### Integration Tests
+
+To start OPA tests, open this link in your browser:
+http://localhost:8080/test/integration/opaTests.qunit.html
+
+Test documentation is available at:
+https://ui5.sap.com/#/api/sap.fe.test
+
 ## Deployment to SAP Business Technology Platform
 
 The project contains a configuration for deploying the CAP services and the SAP Fiori app to the SAP Business Technology Platform (SAP BTP) using a managed application router. The app then becomes visible in the content manager of the SAP Launchpad service.
