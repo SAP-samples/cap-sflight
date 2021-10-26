@@ -59,7 +59,8 @@ cds.extend (cds.Request) .with (class {
       // prepare target query
       const q = SELECT.one.from(target,key)
       const {from:{ref},where} = q.SELECT
-      ref[ref.length-1] = { id: ref[ref.length-1], where, cardinality:{max:1} }
+      if (cds.version < '5.6.0')
+        ref[ref.length-1] = { id: ref[ref.length-1], where, cardinality:{max:1} }
       target = {ref}
     }
     return super._target = target
