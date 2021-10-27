@@ -48,7 +48,7 @@ https://ui5.sap.com/#/api/sap.fe.test
 2. In a console, execute `mvn spring-boot:run` in the root folder of your project.
 3. In another console, execute `npm start` in folder `app\travel_processor` of your project (this starts the middleware)
 
-Note: If you acces the CAP Java server directly without middleware, you will have to enter mock user credentials admin / admin which are maintained in file application.yml.
+Note: If you access the CAP Java server directly without middleware, you will have to enter mock user credentials admin / admin which are maintained in file application.yml.
 
 ### Accessing the SAP Fiori App
 
@@ -70,7 +70,7 @@ The project contains a configuration for deploying the CAP services and the SAP 
 ### Prerequisites
 #### SAP Business Technology Platform
 
-- Create a [trial account on SAP BTP](https://www.sap.com/products/business-technology-platform/trial.html). See this [tutorial](https://developers.sap.com/tutorials/hcp-create-trial-account.html) for more information. Alternatively, you can use a subaccount in a productive environment.
+- Create a [trial account on SAP BTP](https://www.sap.com/products/business-technology-platform/trial.html). See this [tutorial](https://developers.sap.com/tutorials/hcp-create-trial-account.html) for more information. Alternatively, you can use a sub-account in a productive environment.
 - Subscribe to the [SAP Launchpad service](https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html).
 - Create an [SAP HANA Cloud service instance](https://developers.sap.com/tutorials/btp-app-hana-cloud-setup.html#08480ec0-ac70-4d47-a759-dc5cb0eb1d58) or use an existing one.
   
