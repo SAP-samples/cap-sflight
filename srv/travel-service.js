@@ -90,7 +90,7 @@ init() {
   this.after ('PATCH', 'BookingSupplement', async (_,req) => { if ('Price' in req.data) {
     // We need to fetch the Travel's UUID for the given Supplement target
     const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (Booking.drafts)
-      .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (BookingSupplement.drafts, req.data.BookSupplUUID) }`
+      .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (BookingSupplement.drafts).where({BookSupplUUID:req.data.BookSupplUUID}) }`
       // .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (req._target) }`
       //> REVISIT: req._target not supported for subselects -> see tests
     return this._update_totals4 (travel)
