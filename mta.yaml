@@ -10,7 +10,8 @@ build-parameters:
   before-all:
     - builder: custom
       commands:
-        - npx -p @sap/cds-dk cds build --production
+        # set 'CDS_ENV=node' to pick the 'node' build profile settings, defined in package.json
+        - CDS_ENV=node npx -p @sap/cds-dk cds build --production
 
 modules:
   # --------------------- SERVER MODULE ------------------------
