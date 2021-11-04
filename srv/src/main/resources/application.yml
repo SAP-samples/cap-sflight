@@ -25,3 +25,8 @@ server:
 ---
 spring:
     profiles: cloud
+
+cds:
+    odata-v4:
+        endpoint:
+            path: "/"
