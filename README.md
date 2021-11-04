@@ -65,7 +65,7 @@ https://ui5.sap.com/#/api/sap.fe.test
 
 ## Deployment to SAP Business Technology Platform
 
-The project contains a configuration for deploying the CAP services and the SAP Fiori app to the SAP Business Technology Platform (SAP BTP) using a managed application router. The app then becomes visible in the content manager of the SAP Launchpad service.
+The project contains a configuration for deploying the CAP services (with Node.js Backend) and the SAP Fiori app to the SAP Business Technology Platform (SAP BTP) using a managed application router. The app then becomes visible in the content manager of the SAP Launchpad service.
 
 ### Prerequisites
 #### SAP Business Technology Platform
@@ -104,6 +104,10 @@ The build results will be stored in the directory `mta_archives`.
 
 1. Log in to the target space.
 2. Deploy the MTA archive using the CF CLI: `cf deploy mta_archives/capire.sflight_1.0.0.mtar`
+
+### Assign Role Collection
+
+In the SAP BTP Cockpit, assign the Role Collection `admin-{spacename}` to your user.
 
 ## Creating an SAP Fiori App from Scratch
 
