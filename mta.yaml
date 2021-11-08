@@ -11,7 +11,7 @@ build-parameters:
     - builder: custom
       commands:
         # set 'CDS_ENV=node' to pick the 'node' build profile settings, defined in package.json
-        - CDS_ENV=node npx -p @sap/cds-dk cds build --production
+        - npx -p @sap/cds-dk cds build --profile production,node
 
 modules:
   # --------------------- SERVER MODULE ------------------------
@@ -124,17 +124,15 @@ resources:
     parameters:
       service: xsuaa
       service-plan: application
+      path: ./app/travel_processor/xs-security.json
       config:
         xsappname: sflight
         tenant-mode: dedicated
-        scopes:
-          - name: uaa.user
-            description: UAA
-        role-templates:
-          - name: Token_Exchange
-            description: UAA
-            scope-references:
-              - uaa.user
+        role-collections:
+          - name: 'admin-${space}'
+            description: Manage Travels
+            role-template-references:
+              - $XSAPPNAME.admin
 
   # ------------------------------------------------------------
   - name: sflight-html5-repo-runtime
