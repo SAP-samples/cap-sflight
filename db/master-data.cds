@@ -8,7 +8,7 @@ entity Airline : MasterData {
   key AirlineID : String(3);
   Name          : String(40);
   CurrencyCode  : Currency;
-  AirlinePicURL : String      @UI         : {IsImageURL : true};
+  AirlinePicURL : String      @UI : {IsImageURL : true};
 
 };
 

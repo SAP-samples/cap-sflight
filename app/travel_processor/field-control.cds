@@ -19,11 +19,11 @@ annotate TravelService.Travel with @(Common.SideEffects: {
   SourceProperties: [BookingFee],
   TargetProperties: ['TotalPrice']
 }){
-  BookingFee    @Common.FieldControl  : TravelStatus.fieldControl;
-  BeginDate       @Common.FieldControl  : TravelStatus.fieldControl;
-  EndDate         @Common.FieldControl  : TravelStatus.fieldControl;
-  to_Agency       @Common.FieldControl  : TravelStatus.fieldControl;
-  to_Customer     @Common.FieldControl  : TravelStatus.fieldControl;
+  BookingFee  @Common.FieldControl  : TravelStatus.fieldControl;
+  BeginDate   @Common.FieldControl  : TravelStatus.fieldControl;
+  EndDate     @Common.FieldControl  : TravelStatus.fieldControl;
+  to_Agency   @Common.FieldControl  : TravelStatus.fieldControl;
+  to_Customer @Common.FieldControl  : TravelStatus.fieldControl;
 
 } actions {
   rejectTravel @(
@@ -63,8 +63,8 @@ annotate TravelService.Booking {
 annotate TravelService.BookingSupplement {
   Price         @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
   to_Supplement @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Booking          @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Travel           @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
+  to_Booking    @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
+  to_Travel     @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
 
 };
 
