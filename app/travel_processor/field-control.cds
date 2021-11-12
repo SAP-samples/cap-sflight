@@ -30,7 +30,8 @@ annotate TravelService.Travel with @(Common.SideEffects: {
     Common.SideEffects.TargetProperties : [
       'in/TravelStatus_code',
       'in/acceptEnabled',
-      'in/rejectEnabled'
+      'in/rejectEnabled',
+      'in/deductDiscountEnabled'
     ],
   );
   acceptTravel @(
@@ -38,12 +39,12 @@ annotate TravelService.Travel with @(Common.SideEffects: {
     Common.SideEffects.TargetProperties : [
       'in/TravelStatus_code',
       'in/acceptEnabled',
-      'in/rejectEnabled'
+      'in/rejectEnabled',
+      'in/deductDiscountEnabled'
     ],
   );
   deductDiscount @(
     Core.OperationAvailable : in.deductDiscountEnabled,
-    Common.SideEffects.TargetProperties : ['in/deductDiscountEnabled'],
   );
 }
 
