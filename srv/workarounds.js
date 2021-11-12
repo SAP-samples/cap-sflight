@@ -49,21 +49,34 @@ cds.extend (cds.Request) .with (class {
    * req.target referred to by the incomming request. It also transparently
    * points to .drafts persistence, if in a draft scenario.
    */
-   get _target() {
-    let {target} = this, [key] = this.params
-    if (key && this.path.indexOf('/') < 0) { //> .../draftActivate
-      // deviate to draft?
-      const {IsActiveEntity} = key
-      if (IsActiveEntity !== undefined) Object.defineProperty (key,'IsActiveEntity',{value:IsActiveEntity, enumerable:false}) //> skip as key in cqn
-      if (IsActiveEntity === 'false') target = target.drafts // REVISIT: Why is IsActiveEntity a string, and not a boolean?
-      // prepare target query
-      const q = SELECT.one.from(target,key)
-      const {from:{ref},where} = q.SELECT
-      if (cds.version < '5.6.0')
-        ref[ref.length-1] = { id: ref[ref.length-1], where, cardinality:{max:1} }
-      target = {ref}
+   get _target() { // > targetEntry -> and this is always only one
+    // TODO: should also replace req.query for bound actions/functions
+    const q = this.query
+    const ref = q && ( // for CRUD queries...
+      // PARKED: q.SELECT ? q.SELECT.from.ref   || [ q.SELECT.from ] :
+      // PARKED: q.INSERT ? q.INSERT.into.ref   || [ q.INSERT.into ] :
+      q.UPDATE ? q.UPDATE.entity.ref || [ q.UPDATE.entity ] :
+      q.DELETE ? q.DELETE.from.ref   || [ q.DELETE.from ] : undefined
+     ) || ( // for bound actions...
+      this.path.split('/').map ((each,i) => {
+        let key = this.params[i]
+        return !key ? each : SELECT.from(each,key).SELECT.from.ref[0]
+      })
+    )
+    if (ref) {
+      const last = ref[ref.length-1]
+      if (last.where) { // handle draft requests
+        let k = last.where.findIndex (({ref}) => ref && ref[0] === 'IsActiveEntity')
+        if (k >= 0) {
+          let {val} =  last.where[k+2]
+          if (val === false || val === 'false') last.id += '_drafts' // REVISIT: should be false, not 'false'
+          if (k>0) --k // also remove a leading or trailing 'and'
+          last.where = last.where.slice(0,k) .concat (last.where.slice(k+4))
+        }
+      }
+      return this._set ('_target', {ref})
     }
-    return super._target = target
+    else return this._set ('_target', undefined)
   }
 
 })
