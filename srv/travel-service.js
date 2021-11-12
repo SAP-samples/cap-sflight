@@ -16,7 +16,7 @@ init() {
     const status = any.TravelStatus && any.TravelStatus.code || any.TravelStatus_code
     any.acceptEnabled = status !== 'A'
     any.rejectEnabled = status !== 'X'
-    any.deductDiscountEnabled = status === 'O'
+    any.deductDiscountEnabled = status === 'O' || status === undefined
   }
   this.after ('each', 'Travel', _calculateButtonAvailability)
   this.after ('EDIT', 'Travel', _calculateButtonAvailability)
