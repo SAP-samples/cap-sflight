@@ -106,7 +106,8 @@ annotate my.Booking {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'MaximumSeats'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'OccupiedSeats'}
     ],
-    SearchSupported : true
+    SearchSupported : true,
+    PresentationVariantQualifier: 'SortOrderPV'  // use presentation variant to sort by FlightDate desc
   };
 
   FlightDate @Common.ValueList: {
