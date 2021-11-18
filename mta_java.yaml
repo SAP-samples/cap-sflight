@@ -10,7 +10,8 @@ build-parameters:
   before-all:
     - builder: custom
       commands:
-        - npx -p @sap/cds-dk cds build --profile production
+        - npx -p @sap/cds-dk cds build --profile production,java
+        - npx -p @sap/cds-dk cds build --profile production,hana
 
 modules:
   # --------------------- SERVER MODULE ------------------------
