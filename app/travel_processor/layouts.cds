@@ -117,8 +117,16 @@ annotate TravelService.Booking with @UI : {
     }
   },
   PresentationVariant : {
-    Text           : 'Default',
-    Visualizations : ['@UI.LineItem']
+//    Text           : 'Default',
+    Visualizations : ['@UI.LineItem'],
+    RequestAtLeast : [
+      BookingID
+    ],
+    SortOrder      : [{
+//      $Type      : 'Common.SortOrderType',
+      Property   : BookingID,
+      Descending : true
+    }]
   },
   SelectionFields : [],
   LineItem : [
@@ -168,6 +176,15 @@ annotate TravelService.BookingSupplement with @UI : {
     TypeNamePlural : '{i18n>BookingSupplements}',
     Title          : { Value : BookingSupplementID },
     Description    : { Value : BookingSupplementID }
+  },
+  PresentationVariant : {
+    Text           : 'Default',
+    Visualizations : ['@UI.LineItem'],
+    SortOrder      : [{
+      $Type      : 'Common.SortOrderType',
+      Property   : BookingSupplementID,
+      Descending : true
+    }]
   },
   LineItem : [
     { Value : BookingSupplementID                                       },
