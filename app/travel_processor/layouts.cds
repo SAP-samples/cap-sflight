@@ -121,7 +121,7 @@ annotate TravelService.Booking with @UI : {
     SortOrder      : [{
       $Type      : 'Common.SortOrderType',
       Property   : BookingID,
-      Descending : true
+      Descending : false
     }]
   },
   SelectionFields : [],
@@ -179,7 +179,7 @@ annotate TravelService.BookingSupplement with @UI : {
     SortOrder      : [{
       $Type      : 'Common.SortOrderType',
       Property   : BookingSupplementID,
-      Descending : true
+      Descending : false
     }]
   },
   LineItem : [
