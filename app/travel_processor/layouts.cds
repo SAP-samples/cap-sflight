@@ -78,7 +78,7 @@ annotate TravelService.Travel with @UI : {
       ]
   }, {  // booking list
     $Type  : 'UI.ReferenceFacet',
-    Target : 'to_Booking/@UI.LineItem',
+    Target : 'to_Booking/@UI.PresentationVariant',
     Label  : '{i18n>Booking}'
   }],
   FieldGroup#TravelData : { Data : [
@@ -117,8 +117,12 @@ annotate TravelService.Booking with @UI : {
     }
   },
   PresentationVariant : {
-    Text           : 'Default',
-    Visualizations : ['@UI.LineItem']
+    Visualizations : ['@UI.LineItem'],
+    SortOrder      : [{
+      $Type      : 'Common.SortOrderType',
+      Property   : BookingID,
+      Descending : false
+    }]
   },
   SelectionFields : [],
   LineItem : [
@@ -144,7 +148,7 @@ annotate TravelService.Booking with @UI : {
     }]
   }, {  // supplements list
     $Type  : 'UI.ReferenceFacet',
-    Target : 'to_BookSupplement/@UI.LineItem',
+    Target : 'to_BookSupplement/@UI.PresentationVariant',
     Label  : '{i18n>BookingSupplement}'
   }],
   FieldGroup #BookingData : { Data : [
@@ -168,6 +172,15 @@ annotate TravelService.BookingSupplement with @UI : {
     TypeNamePlural : '{i18n>BookingSupplements}',
     Title          : { Value : BookingSupplementID },
     Description    : { Value : BookingSupplementID }
+  },
+  PresentationVariant : {
+    Text           : 'Default',
+    Visualizations : ['@UI.LineItem'],
+    SortOrder      : [{
+      $Type      : 'Common.SortOrderType',
+      Property   : BookingSupplementID,
+      Descending : false
+    }]
   },
   LineItem : [
     { Value : BookingSupplementID                                       },
