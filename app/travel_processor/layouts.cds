@@ -188,3 +188,13 @@ annotate TravelService.BookingSupplement with @UI : {
     { Value : Price,                      Label : '{i18n>ProductPrice}' }
   ],
 };
+
+annotate TravelService.Flight with @UI : {
+  PresentationVariant#SortOrderPV : {    // used in the value help for ConnectionId in Bookings
+    Visualizations : ['@UI.LineItem'],
+    SortOrder      : [{
+      Property   : FlightDate,
+      Descending : true
+    }]
+  }
+};
