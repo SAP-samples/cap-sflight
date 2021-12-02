@@ -5,7 +5,7 @@ using TravelService from '../../srv/travel-service';
 //
 
 // Workarounds for overly strict OData libs and clients
-annotate cds.UUID with @Core.Computed  @odata.Type : 'Edm.String';
+annotate cds.UUID with @Core.ComputedDefaultValue  @odata.Type: 'Edm.String';
 
 // Add fields to control enablement of action buttons on UI
 extend projection TravelService.Travel with {
