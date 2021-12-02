@@ -24,8 +24,10 @@ init() {
 
   /**
    * Fill in primary keys for new Travels.
+   * Note: In contrast to Bookings and BookingSupplements that has to happen
+   * upon SAVE, as multiple users could create new Travels concurrently.
    */
-  this.before ('NEW', 'Travel', async req => {
+  this.before ('CREATE', 'Travel', async req => {
     const { maxID } = await SELECT.one `max(TravelID) as maxID` .from (Travel) .forUpdate()
     req.data.TravelID = maxID + 1
   })
