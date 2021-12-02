@@ -24,11 +24,9 @@ init() {
 
   /**
    * Fill in primary keys for new Travels.
-   * Note: In contrast to Bookings and BookingSupplements that has to happen
-   * upon SAVE, as multiple users could create new Travels concurrently.
    */
-  this.before ('CREATE', 'Travel', async req => {
-    const { maxID } = await SELECT.one `max(TravelID) as maxID` .from (Travel)
+  this.before ('NEW', 'Travel', async req => {
+    const { maxID } = await SELECT.one `max(TravelID) as maxID` .from (Travel) .forUpdate()
     req.data.TravelID = maxID + 1
   })
 
@@ -40,7 +38,7 @@ init() {
     const { to_Travel_TravelUUID } = req.data
     const { status } = await SELECT `TravelStatus_code as status` .from (Travel.drafts, to_Travel_TravelUUID)
     if (status === 'X') throw req.reject (400, 'Cannot add new bookings to rejected travels.')
-    const { maxID } = await SELECT.one `max(BookingID) as maxID` .from (Booking.drafts) .where ({to_Travel_TravelUUID})
+    const { maxID } = await SELECT.one `max(BookingID) as maxID` .from (Booking.drafts) .where ({to_Travel_TravelUUID}) .forUpdate()
     req.data.BookingID = maxID + 1
     req.data.BookingStatus_code = 'N'
     req.data.BookingDate = (new Date).toISOString().slice(0,10) // today
@@ -52,7 +50,7 @@ init() {
    */
   this.before ('NEW', 'BookingSupplement', async (req) => {
     const { to_Booking_BookingUUID } = req.data
-    const { maxID } = await SELECT.one `max(BookingSupplementID) as maxID` .from (BookingSupplement.drafts) .where ({to_Booking_BookingUUID})
+    const { maxID } = await SELECT.one `max(BookingSupplementID) as maxID` .from (BookingSupplement.drafts) .where ({to_Booking_BookingUUID}) .forUpdate()
     req.data.BookingSupplementID = maxID + 1
   })
 
