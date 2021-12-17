@@ -478,7 +478,7 @@ function getGenerator() {
         description: getDescription(bookings),
         status: travelStatus,
         createdBy: ran.entryOf(lastNames).last_name,
-        createdat: createdAt,
+        createdAt: createdAt,
         lastchangedby: ran.entryOf(lastNames).last_name,
         lastchangedat: lastChangedAt,
         bookings: bookings
@@ -653,7 +653,7 @@ function travelToString(t) {
     t.description,
     t.status,
     t.createdBy,
-    t.createdat,
+    t.createdAt,
     t.lastchangedby,
     t.lastchangedat
   ].join(';');
