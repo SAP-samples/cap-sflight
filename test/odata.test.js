@@ -56,17 +56,17 @@ describe('Basic OData', () => {
   it('GET /processor/Travel', async () => {
     const { data } = await GET(`/processor/Travel?$filter=TravelUUID eq '00667221A8E4645C17002DF03754AB66'`)
     expect(data.value).to.containSubset([{
-      BeginDate: '2020-12-10',
+      BeginDate: '2021-11-04',
       BookingFee: 60,
-      createdAt: '2020-11-22T19:42:07.000Z',
+      createdAt: '2021-10-17T18:42:07.000Z',
       createdBy: 'Hansmann',
       CurrencyCode_code: 'SGD',
       Description: 'Sightseeing in Singapore',
-      EndDate: '2021-10-06',
+      EndDate: '2022-08-31',
       HasActiveEntity: false,
       HasDraftEntity: false,
       IsActiveEntity: true,
-      LastChangedAt: '2020-12-03T04:18:18.000Z',
+      LastChangedAt: '2021-10-28T03:18:18.000Z',
       LastChangedBy: 'Deichgraeber',
       to_Agency_AgencyID: '070029',
       to_Customer_CustomerID: '000318',
