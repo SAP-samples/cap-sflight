@@ -32,6 +32,9 @@
     "qunit": "^2.9.3",
     "sqlite3": "^5.0.2"
   },
+  "overrides": {
+    "tar": "^4.4.18"
+  },
   "cds": {
     "requires": {
       "db": {
