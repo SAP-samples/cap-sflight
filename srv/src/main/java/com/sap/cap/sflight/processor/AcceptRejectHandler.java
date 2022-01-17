@@ -1,11 +1,12 @@
 package com.sap.cap.sflight.processor;
 
-import static cds.gen.travelservice.TravelService_.TRAVEL;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import cds.gen.travelservice.AcceptTravelContext;
+import cds.gen.travelservice.RejectTravelContext;
+import cds.gen.travelservice.Travel;
+import cds.gen.travelservice.TravelService_;
+import cds.gen.travelservice.Travel_;
 import com.sap.cds.ql.Update;
 import com.sap.cds.services.cds.CdsService;
 import com.sap.cds.services.draft.DraftService;
@@ -15,14 +16,9 @@ import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
-
 import org.springframework.stereotype.Component;
 
-import cds.gen.travelservice.AcceptTravelContext;
-import cds.gen.travelservice.RejectTravelContext;
-import cds.gen.travelservice.Travel;
-import cds.gen.travelservice.TravelService_;
-import cds.gen.travelservice.Travel_;
+import static cds.gen.travelservice.TravelService_.TRAVEL;
 
 @Component
 @ServiceName(TravelService_.CDS_NAME)
@@ -57,13 +53,13 @@ public class AcceptRejectHandler implements EventHandler {
 	public void beforeAcceptTravel(final AcceptTravelContext context) {
 
 		draftService.run(context.getCqn()).first(Travel.class)
-				.ifPresent(travel -> checkIfTravelHasExceptedStatus(travel, TRAVEL_STATUS_OPEN));
+				.ifPresent(this::checkIfTravelHasExceptedStatus);
 	}
 
 	@Before(entity = Travel_.CDS_NAME)
 	public void beforeRejectTravel(final RejectTravelContext context) {
 		draftService.run(context.getCqn()).first(Travel.class)
-				.ifPresent(travel -> checkIfTravelHasExceptedStatus(travel, TRAVEL_STATUS_OPEN));
+				.ifPresent(this::checkIfTravelHasExceptedStatus);
 	}
 
 	@On(entity = Travel_.CDS_NAME)
@@ -83,12 +79,9 @@ public class AcceptRejectHandler implements EventHandler {
 	private void updateStatusForTravelId(String travelUUID, String newStatus, boolean isActiveEntity) {
 
 		if (isActiveEntity) {
-			Map<String, Object> data = new HashMap<>();
-			data.put(Travel.TRAVEL_UUID, travelUUID);
-			data.put(Travel.IS_ACTIVE_ENTITY, true);
-			data.put(Travel.TRAVEL_STATUS_CODE , newStatus);
-
-			persistenceService.run(Update.entity(Travel_.class).data(data));
+			persistenceService.run(Update.entity(TRAVEL)
+					.where(t -> t.TravelUUID().eq(travelUUID))
+					.data(Travel.TRAVEL_STATUS_CODE, newStatus));
 		} else {
 			Update<Travel_> travelUpdateDraft = Update.entity(TRAVEL)
 					.where(t -> t.TravelUUID().eq(travelUUID).and(t.IsActiveEntity().eq(false)))
@@ -97,10 +90,11 @@ public class AcceptRejectHandler implements EventHandler {
 		}
 	}
 
-	private void checkIfTravelHasExceptedStatus(Travel travel, String status) {
-		if (travel.getTravelStatusCode() != null && !travel.getTravelStatusCode().equalsIgnoreCase(status)) {
-			throw new IllegalTravelStatusException("error.travel.status.unexpected",
-					travel.getTravelID(), status, travel.getTravelStatusCode());
+	private void checkIfTravelHasExceptedStatus(Travel travel) {
+		if (travel.getTravelStatusCode() != null && !travel.getTravelStatusCode()
+				.equalsIgnoreCase(AcceptRejectHandler.TRAVEL_STATUS_OPEN)) {
+			throw new IllegalTravelStatusException("error.travel.status.unexpected", travel.getTravelID(),
+					AcceptRejectHandler.TRAVEL_STATUS_OPEN, travel.getTravelStatusCode());
 		}
 	}
 }
