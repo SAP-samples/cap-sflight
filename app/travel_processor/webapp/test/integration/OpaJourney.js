@@ -7,9 +7,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
     start: function () {
       QUnit.module("Sample journey");
       opaTest("#000: Start", function (Given, When, Then) {
-        Given.iResetTestData().and.iStartMyApp("travel-process", {
-          "sap-language": "EN",
-        });
+        Given.iResetTestData().and.iStartMyApp("", { "sap-language": "EN" });
       });
       return Journey;
     },
@@ -84,7 +82,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
         Then.onTheDetailPage.onFooter().iCheckDraftStateSaved();
         When.onTheDetailPage.onFooter().iExecuteSave();
         Then.onTheDetailPage.iSeeThisPage().and.iSeeObjectPageInDisplayMode();
-        When.onTheShell.iNavigateBack();
+        When.iNavigateBack();
       });
 
       opaTest("#4: List report: Delete travel", function (Given, When, Then) {
@@ -108,8 +106,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           .and.when.onDialog()
           .iConfirm();
         Then.onTheMainPage
-          .iSeeDeleteConfirmation()
-          .and.onTable()
+          .onTable()
           .iCheckDelete({ visible: true, enabled: false });
       });
 
