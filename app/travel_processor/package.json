@@ -9,9 +9,9 @@
   "scripts": {
     "build": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateManifestBundle generateCachebusterInfo",
     "start": "ui5 serve",
-    "test": "karma start",
-    "test:node": "npm test -- --server=node",
-    "test:java": "npm test -- --server=java"
+    "test": "npm run test:node && npm run test:java",
+    "test:node": "karma start --server=node",
+    "test:java": "karma start --server=java"
   },
   "keywords": [
     "ui5",
