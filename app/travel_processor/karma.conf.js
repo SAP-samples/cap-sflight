@@ -30,7 +30,7 @@ module.exports = async (config) => {
         animation: false,
         libs: "sap.fe.core,sap.ui.core,sap.fe.test",
         compatVersion: "edge",
-        theme: "sap_fiori_3",
+        theme: "sap_horizon",
         logLevel: "ERROR",
         resourceRoots: {
           "sap.fe.cap.travel": "./base/webapp",

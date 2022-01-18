@@ -19,19 +19,18 @@
     "sapui5"
   ],
   "devDependencies": {
-    "@sap/ux-specification": "^1.90.12",
-    "@ui5/cli": "^2.14.0",
+    "@ui5/cli": "^2.14.2",
     "cross-spawn": "^7.0.3",
     "http-proxy": "^1.18.1",
-    "karma": "^6.3.5",
+    "karma": "^6.3.11",
     "karma-chrome-launcher": "^3.1.0",
     "karma-mocha-reporter": "^2.2.5",
     "karma-qunit": "^4.1.2",
-    "karma-ui5": "^2.3.4",
-    "puppeteer": "^10.4.0",
+    "karma-ui5": "^2.4.0",
+    "puppeteer": "^13.1.1",
     "qunit": "^2.17.2",
     "ui5-middleware-http-proxy": "^2.0.0",
-    "ui5-task-zipper": "^0.4.4"
+    "ui5-task-zipper": "^0.4.7"
   },
   "ui5": {
     "dependencies": [

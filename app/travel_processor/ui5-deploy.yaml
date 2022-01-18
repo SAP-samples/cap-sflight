@@ -4,7 +4,7 @@ metadata:
   name: sap.fe.cap.travel
 type: application
 ui5Version: 1.92.1
-ui5Theme: sap_fiori_3
+ui5Theme: sap_horizon
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
