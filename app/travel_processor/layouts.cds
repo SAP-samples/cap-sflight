@@ -191,7 +191,6 @@ annotate TravelService.BookingSupplement with @UI : {
 
 annotate TravelService.Flight with @UI : {
   PresentationVariant#SortOrderPV : {    // used in the value help for ConnectionId in Bookings
-    Visualizations : ['@UI.LineItem'],
     SortOrder      : [{
       Property   : FlightDate,
       Descending : true
