@@ -16,7 +16,6 @@
     "test:mocha": "npx mocha --timeout 20000"
   },
   "dependencies": {
-    "@sap/audit-logging": "^5.0.0",
     "@sap/cds": "^5.4.5",
     "@sap/xssec": "^3.2.7",
     "express": "^4",
@@ -24,7 +23,7 @@
     "passport": "^0.4.1"
   },
   "devDependencies": {
-    "@sap/ux-specification": "^1.90.12",
+    "@sap/ux-specification": "^1.96.0",
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",
