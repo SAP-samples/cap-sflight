@@ -1,0 +1,9 @@
+{
+    "name": "ui-deployer",
+    "scripts": {
+        "start": "node node_modules/@sap/html5-app-deployer/index.js"
+    },
+    "dependencies": {
+        "@sap/html5-app-deployer": "^3.2.0"
+    }
+}

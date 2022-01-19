@@ -85,7 +85,7 @@ The configuration file `mta.yaml` is for the Node.js backend of the app. If you 
 - Create a [trial account on SAP BTP](https://www.sap.com/products/business-technology-platform/trial.html). See this [tutorial](https://developers.sap.com/tutorials/hcp-create-trial-account.html) for more information. Alternatively, you can use a sub-account in a productive environment.
 - Subscribe to the [SAP Launchpad Service](https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html).
 - Create an [SAP HANA Cloud Service instance](https://developers.sap.com/tutorials/btp-app-hana-cloud-setup.html#08480ec0-ac70-4d47-a759-dc5cb0eb1d58) or use an existing one.
-  
+
 #### Local Machine
 
 - Install the Cloud Foundry command line interface (CLI). See this [tutorial](https://developers.sap.com/tutorials/cp-cf-download-cli.html) for more details.
@@ -135,6 +135,156 @@ You need to have access to a HANA Cloud instance and SAP BTP.
 The running application is now connected to its own HDI container/schema. Please keep in mind that the credentials for
 that HDI container are stored locally on your filesystem (default-env.json).
 
+## Deployment to SAP Business Technology Platform - Kyma Runtime
+
+## Preconditions
+
+- BTP Subaccount with Kyma Runtime
+- BTP Service Operator installed in the Kyma Runtime
+- BTP Subaccount with Cloud Foundry Space
+- HANA Cloud instance available for your Cloud Foundry space
+- BTP Entitlements for: *HANA HDI Services & Container* plan *hdi-shared*, *Launchpad Service* plan *standard*
+- Container Registry
+- Command Line Tools: `kubectl`, `kubectl-oidc_login`, `pack`, `docker`, `helm`, `cf`
+- Logged into Kyma Runtime (with `kubectl` CLI), Cloud Foundry space (with `cf` CLI) and Container Registry (with `docker login`)
+
+### Add Deployment Files
+
+CAP tooling provides your a Helm chart for deployment to Kyma.
+
+Add the CAP Helm chart with the required features to this project:
+
+```bash
+cds add helm
+cds add helm:html5_apps_deployer
+```
+
+### Configuration
+
+This project contains a pre-configured configuration file `values.yaml`, you just need to do the following changes in this file:
+
+- `<your-container-registry>` - full-qualified hostname of your container registry
+- `domain`- full-qualified domain name used to access applications in your Kyma cluster
+
+### Prepare Kubernetes Namespace
+
+1. Export the kubeconfig.yaml
+
+    ```
+    set KUBECONFIG=~/.kube/cap-kyma-app-config
+    ```
+
+2. Setting the namespace
+
+    ```
+    kubectl config set-context --current --namespace=<<NAMESPACE>>
+    ```
+
+#### Create container registry secret
+
+Create a secret `container-registry` with credentials to access the container registry:
+
+```
+bash ./scripts/create-container-registry-secret.sh
+```
+
+The *Docker Server* is the full-qualified hostname of your container registry.
+
+#### Create a secret for your HDI container
+
+```
+./scripts/create-db-secret.sh sflight-db
+```
+
+### Build - Node.js
+
+The `CDS_ENV=node` env variable needs to be provided to build for Node.js. The application will be built for Java by default.
+
+```
+CDS_ENV=node cds build --production
+```
+**Build data base deployer image:**
+
+```
+pack build $YOUR_CONTAINER_REGISTRY/sflight-hana-deployer \
+     --path gen/db \
+     --buildpack gcr.io/paketo-buildpacks/nodejs:0.16.1 \
+     --builder paketobuildpacks/builder:base
+```
+(Replace `$YOUR_CONTAINER_REGISTRY` with the full-qualified hostname of your container registry)
+
+**Build image for CAP service:**
+
+```
+pack build \
+     $YOUR_CONTAINER_REGISTRY/sflight-srv \
+     --path "gen/srv" \
+     --buildpack gcr.io/paketo-buildpacks/nodejs \
+     --builder paketobuildpacks/builder:base
+```
+
+### Build - Java
+
+**Build data base deployer image:**
+
+```
+cds build --production
+```
+
+```
+pack build $YOUR_CONTAINER_REGISTRY/sflight-hana-deployer \
+     --path db \
+     --buildpack gcr.io/paketo-buildpacks/nodejs:0.16.1 \
+     --builder paketobuildpacks/builder:base
+```
+
+(Replace `$YOUR_CONTAINER_REGISTRY` the full-qualified hostname of your container registry)
+
+**Build image for CAP service:**
+
+```
+mvn package
+```
+
+```
+pack build $YOUR_CONTAINER_REGISTRY/sflight-srv \
+     --path srv/target/*-exec.jar \
+     --buildpack gcr.io/paketo-buildpacks/sap-machine \
+     --buildpack gcr.io/paketo-buildpacks/java \
+     --builder paketobuildpacks/builder:base \
+     --env SPRING_PROFILES_ACTIVE=cloud
+```
+
+### Build HTML5 application deployer image
+
+```
+bash ./scripts/build-ui-image.sh
+```
+
+### Push docker images
+
+You can push all the docker images to your docker registry, using:
+
+```
+docker push $YOUR_CONTAINER_REGISTRY/sflight-hana-deployer
+docker push $YOUR_CONTAINER_REGISTRY/sflight-srv
+docker push $YOUR_CONTAINER_REGISTRY/sflight-html5-deployer
+```
+
+### Deployment
+
+```
+helm upgrade sflight ./chart --install -f values.yaml
+```
+
+### Test the UI
+
+4. Create Launchpad Service subscription in the BTP Cockpit
+5. Create a role collection `sflight`
+6. Add role `admin` of `sflight.tXYZ` application to role collection
+7. Add your user to the role collection
+8. Goto **HTML5 Applications**
+9. Start HTML5 app `sapfecaptravel`
 ## Creating an SAP Fiori App from Scratch
 
 If you want to implement an SAP Fiori app, follow these tutorials:

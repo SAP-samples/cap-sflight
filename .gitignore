@@ -41,3 +41,8 @@ dist/
 .classpath
 # .vscode/*
 # IMPORTANT: Do not exclude .vscode please!
+
+# Local dev
+.env
+.values.yaml
+.cdsrc-private.json
