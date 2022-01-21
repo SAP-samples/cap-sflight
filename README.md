@@ -109,6 +109,18 @@ The build results will be stored in the directory `mta_archives`.
 
 In the SAP BTP Cockpit, assign the role collection `admin-{spacename}` to your user.
 
+### Local Development with a HANA Cloud Instance
+
+You need to have access to a HANA Cloud instance and SAP BTP.
+
+1. Deploy the HDI content to a HANA HDI container (which is newly created on first call): `cds deploy --to hana`.
+2. Start the application with the Spring Profile `cloud`.
+   1. From Maven: `mvn spring-boot:run -Dspring-boot.run.profiles=cloud`
+   2. From your IDE with the JVM argument `-Dspring.profiles.active=cloud` or env variable `spring.profiles.active=cloud`
+
+The running application is now connected to its own HDI container/schema. Please keep in mind that the credentials for
+that HDI container are stored locally on your filesystem (default-env.json).
+
 ## Creating an SAP Fiori App from Scratch
 
 If you want to implement an SAP Fiori app, follow these tutorials:
