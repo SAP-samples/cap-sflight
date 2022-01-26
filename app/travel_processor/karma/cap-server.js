@@ -1,4 +1,5 @@
 const spawn = require("cross-spawn"),
+  kill = require("tree-kill"),
   HttpProxy = require("http-proxy");
 
 function spawnServer(cmd, args, cwd, fnIsReady) {
@@ -12,7 +13,7 @@ function spawnServer(cmd, args, cwd, fnIsReady) {
       const targetUrl = fnIsReady(data.toString());
       if (targetUrl) {
         proc.stdout.removeListener("data", checkServerReady);
-        resolve(targetUrl);
+        resolve([targetUrl, proc.pid]);
       }
     };
 
@@ -21,24 +22,26 @@ function spawnServer(cmd, args, cwd, fnIsReady) {
   });
 }
 
-function createKarmaMiddleware(serverUrl, auth) {
+function createKarmaMiddleware(serverUrl, pid, auth) {
   const proxyOptions = {
     target: serverUrl,
     auth: auth ? `${auth.user}:${auth.password}` : undefined,
   };
 
-  const middleware = (logFactory) => {
+  const middleware = (logFactory, emitter) => {
     const log = logFactory.create("cap-server");
 
     const proxy = new HttpProxy(proxyOptions);
     proxy.on("error", (data) => log.error(data.toString()));
+
+    emitter.on("browser_complete_with_no_more_retries", () => kill(pid));
 
     return (req, res) => {
       proxy.web(req, res);
     };
   };
 
-  middleware.$inject = ["logger"];
+  middleware.$inject = ["logger", "emitter"];
   return { "middleware:cap-proxy": ["factory", middleware] };
 }
 
@@ -62,9 +65,9 @@ async function node() {
     const started = data.match(/server listening on {.*url:.*'(?<url>.+)'.*}/);
     if (started) return new URL(started.groups.url);
   };
-  const serverUrl = await spawnServer("npm", ["start"], "../..", isReady);
+  const [serverUrl, pid] = await spawnServer("npm", ["start"], "../..", isReady);
 
-  return createKarmaMiddleware(serverUrl, { user: "admin", password: "admin" });
+  return createKarmaMiddleware(serverUrl, pid, { user: "admin", password: "admin" });
 }
 
 module.exports = { java, node };
