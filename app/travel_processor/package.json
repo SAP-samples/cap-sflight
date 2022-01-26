@@ -29,6 +29,7 @@
     "karma-ui5": "^2.4.0",
     "puppeteer": "^13.1.1",
     "qunit": "^2.17.2",
+    "tree-kill": "^1.2.2",
     "ui5-middleware-http-proxy": "^2.0.0",
     "ui5-task-zipper": "^0.4.7"
   },
