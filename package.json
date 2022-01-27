@@ -29,7 +29,7 @@
     "chai-subset": "^1.6.0",
     "jest": "^27.1.0",
     "qunit": "^2.9.3",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "npm:@mendix/sqlite3@^5.0.2"
   },
   "overrides": {
     "tar": "^4.4.18"
