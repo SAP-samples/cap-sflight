@@ -35,7 +35,7 @@ http://localhost:4004/travel_processor/webapp/index.html
 ### Integration Tests
 
 To start OPA tests, open this link in your browser:
-http://localhost:4004/travel_processor/webapp/test/integration/opaTests.qunit.html
+http://localhost:4004/travel_processor/webapp/test/integration/Opa.qunit.html
 
 Test documentation is available at:
 https://ui5.sap.com/#/api/sap.fe.test
@@ -58,7 +58,7 @@ http://localhost:8080/index.html
 ### Integration Tests
 
 To start OPA tests, open this link in your browser:
-http://localhost:8080/test/integration/opaTests.qunit.html
+http://localhost:8080/test/integration/Opa.qunit.html
 
 Test documentation is available at:
 https://ui5.sap.com/#/api/sap.fe.test
