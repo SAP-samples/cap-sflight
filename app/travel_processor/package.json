@@ -10,8 +10,8 @@
     "build": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateManifestBundle generateCachebusterInfo",
     "start": "ui5 serve",
     "test": "npm run test:node && npm run test:java",
-    "test:node": "karma start --server=node",
-    "test:java": "karma start --server=java"
+    "test:java": "karma start --server=java",
+    "test:node": "karma start --server=node"
   },
   "keywords": [
     "ui5",
@@ -22,20 +22,17 @@
     "@ui5/cli": "^2.14.4",
     "cross-spawn": "^7.0.3",
     "http-proxy": "^1.18.1",
-    "karma": "^6.3.12",
+    "karma": "^6.3.13",
     "karma-chrome-launcher": "^3.1.0",
-    "karma-mocha-reporter": "^2.2.5",
-    "karma-qunit": "^4.1.2",
     "karma-ui5": "^2.4.0",
-    "puppeteer": "^13.1.2",
-    "qunit": "^2.17.2",
-    "ui5-middleware-http-proxy": "^2.0.0",
+    "puppeteer": "^13.1.3",
+    "ui5-middleware-simpleproxy": "^0.7.6",
     "ui5-task-zipper": "^0.4.7"
   },
   "ui5": {
     "dependencies": [
       "ui5-task-zipper",
-      "ui5-middleware-http-proxy"
+      "ui5-middleware-simpleproxy"
     ]
   }
 }

@@ -1,10 +1,9 @@
 # yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
-specVersion: "1.0"
+specVersion: "2.6"
 metadata:
   name: sap.fe.cap.travel
 type: application
-ui5Version: 1.92.1
-ui5Theme: sap_horizon
+
 resources:
   configuration:
     propertiesFileSourceEncoding: UTF-8
