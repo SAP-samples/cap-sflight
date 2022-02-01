@@ -50,14 +50,14 @@ async function java() {
     const started = data.match(/started on port\(s\): (?<port>\d+)/);
     if (started) return new URL(`http://localhost:${started.groups.port}`);
   };
-  const serverUrl = await spawnServer(
+  const [serverUrl, pid] = await spawnServer(
     "mvn",
     ["spring-boot:run", "-B", "-Dserver.port=0"],
     "../../srv",
     isReady
   );
 
-  return createKarmaMiddleware(serverUrl, { user: "admin", password: "admin" });
+  return createKarmaMiddleware(serverUrl, pid, { user: "admin", password: "admin" });
 }
 
 async function node() {
