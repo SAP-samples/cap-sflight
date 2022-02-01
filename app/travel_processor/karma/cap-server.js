@@ -33,8 +33,11 @@ function createKarmaMiddleware(serverUrl, auth) {
     const proxy = new HttpProxy(proxyOptions);
     proxy.on("error", (data) => log.error(data.toString()));
 
-    return (req, res) => {
-      proxy.web(req, res);
+    return (req, res, next) => {
+      if (req.url.startsWith("/processor")) {
+        return proxy.web(req, res);
+      }
+      return next();
     };
   };
 
