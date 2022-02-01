@@ -26,5 +26,6 @@ module.exports = async (config) => {
     plugins: [...config.plugins, await capMiddleware],
     middleware: ["cap-proxy"],
     browsers: config.ci ? ["ChromeHeadless"] : ["Chrome"],
+    singleRun: config.ci ?? config.singleRun ?? false
   });
 };
