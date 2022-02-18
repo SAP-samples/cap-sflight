@@ -127,10 +127,10 @@ resources:
       service-plan: application
       path: ./app/travel_processor/xs-security.json
       config:
-        xsappname: sflight
+        xsappname: sflight-${space}
         tenant-mode: dedicated
         role-collections:
-          - name: 'admin-${space}'
+          - name: 'sflight-admin-${space}'
             description: Manage Travels
             role-template-references:
               - $XSAPPNAME.admin
