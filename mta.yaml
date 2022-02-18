@@ -27,6 +27,7 @@ modules:
         properties:
           srv-url: ${default-url}
     build-parameters:
+      builder: npm-ci
       ignore: ["node_modules/"]
 
   # -------------------- SIDECAR MODULE ------------------------
