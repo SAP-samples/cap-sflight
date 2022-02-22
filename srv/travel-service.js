@@ -13,7 +13,7 @@ init() {
    * Fill in virtual elements to control status of UI elements.
    */
   const _calculateButtonAvailability = any => {
-    const status = any.TravelStatus && any.TravelStatus.code || any.TravelStatus_code
+    const status = any.TravelStatus_code
     any.acceptEnabled = status !== 'A'
     any.rejectEnabled = status !== 'X'
     any.deductDiscountEnabled = status === 'O'
@@ -37,10 +37,10 @@ init() {
    * Fill in defaults for new Bookings when editing Travels.
    */
   this.before ('NEW', 'Booking', async (req) => {
-    const { to_Travel_TravelUUID } = req.data
-    const { status } = await SELECT `TravelStatus_code as status` .from (Travel.drafts, to_Travel_TravelUUID)
+    const { to_Travel } = req.data
+    const { status } = await SELECT `TravelStatus.code as status` .from (Travel.drafts, to_Travel)
     if (status === 'X') throw req.reject (400, 'Cannot add new bookings to rejected travels.')
-    const { maxID } = await SELECT.one `max(BookingID) as maxID` .from (Booking.drafts) .where ({to_Travel_TravelUUID})
+    const { maxID } = await SELECT.one `max(BookingID) as maxID` .from (Booking.drafts) .where ({to_Travel})
     req.data.BookingID = maxID + 1
     req.data.BookingStatus_code = 'N'
     req.data.BookingDate = (new Date).toISOString().slice(0,10) // today
@@ -51,8 +51,8 @@ init() {
    * Fill in defaults for new BookingSupplements when editing Travels.
    */
   this.before ('NEW', 'BookingSupplement', async (req) => {
-    const { to_Booking_BookingUUID } = req.data
-    const { maxID } = await SELECT.one `max(BookingSupplementID) as maxID` .from (BookingSupplement.drafts) .where ({to_Booking_BookingUUID})
+    const { to_Booking } = req.data
+    const { maxID } = await SELECT.one `max(BookingSupplementID) as maxID` .from (BookingSupplement.drafts) .where ({to_Booking})
     req.data.BookingSupplementID = maxID + 1
   })
 
@@ -61,7 +61,7 @@ init() {
    * Changing Booking Fees is only allowed for not yet accapted Travels.
    */
   this.before ('PATCH', 'Travel', async (req) => { if ('BookingFee' in req.data) {
-    const { status } = await SELECT `TravelStatus_code as status` .from (req._target)
+    const { status } = await SELECT `TravelStatus.code as status` .from (req._target)
     if (status === 'A') req.reject(400, 'Booking fee can not be updated for accepted travels.', 'BookingFee')
   }})
 
@@ -79,7 +79,7 @@ init() {
    */
   this.after ('PATCH', 'Booking', async (_,req) => { if ('FlightPrice' in req.data) {
     // We need to fetch the Travel's UUID for the given Booking target
-    const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (req._target)
+    const { travel } = await SELECT.one `to_Travel.TravelUUID as travel` .from (req._target)
     return this._update_totals4 (travel)
   }})
 
@@ -89,10 +89,10 @@ init() {
    */
   this.after ('PATCH', 'BookingSupplement', async (_,req) => { if ('Price' in req.data) {
     // We need to fetch the Travel's UUID for the given Supplement target
-    const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (Booking.drafts)
-      .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (BookingSupplement.drafts).where({BookSupplUUID:req.data.BookSupplUUID}) }`
-      // .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (req._target) }`
-      //> REVISIT: req._target not supported for subselects -> see tests
+    const { travel } = await SELECT.one `to_Travel.TravelUUID as travel` .from (Booking.drafts)
+      .where`BookingUUID = ${ SELECT.one `to_Booking.BookingUUID` .from (BookingSupplement.drafts).where({BookSupplUUID:req.data.BookSupplUUID}) }`
+    // .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (req._target) }`
+    //> REVISIT: req._target not supported for subselects -> see tests
     return this._update_totals4 (travel)
   }})
 
@@ -101,10 +101,10 @@ init() {
    * Helper to re-calculate a Travel's TotalPrice from BookingFees, FlightPrices and Supplement Prices.
    */
   this._update_totals4 = function (travel) {
-    return UPDATE (Travel.drafts, travel) .with ({ TotalPrice: CXL `coalesce (BookingFee, 0) + ${
+    return UPDATE(Travel.drafts, travel) .with ({ TotalPrice: CXL`coalesce (BookingFee, 0) + ${
       SELECT `coalesce (sum (FlightPrice + ${
-        SELECT `coalesce (sum (Price),0)` .from (BookingSupplement.drafts) .where `to_Booking_BookingUUID = BookingUUID`
-      }),0)` .from (Booking.drafts) .where `to_Travel_TravelUUID = TravelUUID`
+        SELECT `coalesce (sum (Price),0)` .from (BookingSupplement.drafts) .where `to_Booking.BookingUUID = BookingUUID`
+      }),0)` .from (Booking.drafts) .where `to_Travel.TravelUUID = TravelUUID`
     }` })
   }
 
@@ -123,19 +123,19 @@ init() {
   // Action Implementations...
   //
 
-  this.on ('acceptTravel', req => UPDATE (req._target) .with ({TravelStatus_code:'A'}))
-  this.on ('rejectTravel', req => UPDATE (req._target) .with ({TravelStatus_code:'X'}))
+  this.on ('acceptTravel', req => UPDATE (req._target) .with ({TravelStatus:{code:'A'}}))
+  this.on ('rejectTravel', req => UPDATE (req._target) .with ({TravelStatus:{code:'X'}}))
   this.on ('deductDiscount', async req => {
     let discount = req.data.percent / 100
     let succeeded = await UPDATE (req._target)
-      .where `TravelStatus_code != 'A'`
+      .where `TravelStatus.code != 'A'`
       .and `BookingFee is not null`
       .with (`
         TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3),
         BookingFee = round (BookingFee - BookingFee * ${discount}, 3)
       `)
     if (!succeeded) { //> let's find out why...
-      let travel = await SELECT.one `TravelID as ID, TravelStatus_code as status, BookingFee` .from (req._target)
+      let travel = await SELECT.one `TravelID as ID, TravelStatus.code as status, BookingFee` .from (req._target)
       if (!travel) throw req.reject (404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
       if (travel.status === 'A') req.reject (400, `Travel "${travel.ID}" has been approved already.`)
       if (travel.BookingFee == null) throw req.reject (404, `No discount possible, as travel "${travel.ID}" does not yet have a booking fee added.`)
