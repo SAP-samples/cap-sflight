@@ -1,0 +1,73 @@
+on:
+  workflow_call:
+    inputs:
+      cf-api:
+        type: string
+        required: false
+        default: 'https://api.cf.eu10.hana.ondemand.com'
+      cf-org:
+        type: string
+        required: true
+      cf-space:
+        type: string
+        required: true
+      btp-subdomain:
+        type: string
+        required: true
+      btp-subaccount-id:
+        type: string
+        required: true
+      mta-yaml:
+        description: relative path to mta.yaml
+        type: string
+        required: false
+        default: '.'
+    secrets:
+      username:
+        required: true
+      password:
+        required: true
+    outputs:
+      ui_app_url:
+        value: ${{ jobs.deployment.outputs.ui_app_url }}
+
+jobs:
+
+  deployment:
+    name: To BTP
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.url }}
+    concurrency: staging
+    env:
+      CF_API: ${{ inputs.cf-api }}
+      CF_ORG: ${{ inputs.cf-org }}
+      CF_USERNAME: ${{ secrets.username }}
+      CF_PASSWORD: ${{ secrets.password }}
+    outputs:
+      ui_app_url: ${{ steps.deploy.outputs.url }}
+    steps:
+    - name: Set more variables
+      run: |
+        echo "CF_SPACE=$GITHUB_HEAD_REF" >> $GITHUB_ENV
+        echo "ROLECOLL_ADMIN=sflight-admin-${GITHUB_HEAD_REF}" >> $GITHUB_ENV
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 16
+    - name: MTA build
+      run: npx mbt build -s ${{ inputs.mta-yaml }} -t gen --mtar sflight.mtar
+    - name: CF Deploy
+      id: deploy
+      uses: ./.github/actions/cf-deploy
+      with:
+        createspace: true
+        mtafile: gen/sflight.mtar
+        findurl_command: "cf html5-list -di sflight-destination-service -rt launchpad -u"
+    - name: Assign Roles
+      uses: ./.github/actions/btp
+      with:
+        subdomain: ${{ inputs.btp-subdomain }}
+        subaccount_id: ${{ inputs.btp-subaccount-id }}
+        command: 'btp assign security/role-collection ${{ env.ROLECOLL_ADMIN }} --to-user ${{ env.CF_USERNAME }}'
