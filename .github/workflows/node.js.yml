@@ -38,44 +38,16 @@ jobs:
         npm run test:node -- --ci
 
   deployment:
-    name: Deploy to BTP
-    runs-on: ubuntu-latest
-    environment:
-      name: staging
-      url: ${{ steps.deploy.outputs.url }}
-    concurrency: staging
-    env:
-      BTP_SUBACCOUNT_ID: ce45c62b-1233-46d8-a12f-c0af88118ff1
-      CF_API: 'https://api.cf.eu10.hana.ondemand.com'
-      CF_ORG: 36c55d9etrial
-      CF_USERNAME: ${{ secrets.CF_USERNAME }}
-      CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
-    outputs:
-      ui_app_url: ${{ steps.deploy.outputs.url }}
-    steps:
-    - name: Set more variables
-      run: |
-        echo "CF_SPACE=$GITHUB_HEAD_REF" >> $GITHUB_ENV
-        echo "ROLECOLL_ADMIN=sflight-admin-${GITHUB_HEAD_REF}" >> $GITHUB_ENV
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 16
-    - name: MTA build
-      run: npx mbt build -t gen --mtar sflight.mtar
-    - name: CF Deploy
-      id: deploy
-      uses: ./.github/actions/cf-deploy
-      with:
-        createspace: true
-        mtafile: gen/sflight.mtar
-        findurl_command: "cf html5-list -di sflight-destination-service -rt launchpad -u"
-    - name: Assign Roles
-      uses: ./.github/actions/btp
-      with:
-        subdomain: ${{ env.CF_ORG }}-ga
-        subaccount_id: ${{ env.BTP_SUBACCOUNT_ID }}
-        command: 'btp assign security/role-collection ${{ env.ROLECOLL_ADMIN }} --to-user ${{ env.CF_USERNAME }}'
+    name: Deploy
+    uses: ./.github/workflows/deploy-btp.yml
+    with:
+      btp-subaccount-id: ce45c62b-1233-46d8-a12f-c0af88118ff1
+      btp-subdomain: 36c55d9etrial-ga
+      cf-org: 36c55d9etrial
+      cf-space: ${{ github.head_ref }}
+    secrets:
+      username: ${{ secrets.CF_USERNAME }}
+      password: ${{ secrets.CF_PASSWORD }}
 
   e2etest:
     name: E2E Tests
@@ -85,4 +57,3 @@ jobs:
     - name: More UI tests
       run: |
         echo ${{ needs.deployment.outputs.ui_app_url }}
-#       ...
