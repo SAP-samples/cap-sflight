@@ -1,0 +1,16 @@
+name: 'BTP'
+description: Performs BTP operations
+inputs:
+  subdomain:
+    description: Name of BTp subdomain
+    required: true
+  subaccount_id:
+    description: ID of BTP subaccount
+    required: false
+  command:
+    description: The command to execute
+    required: false
+
+runs:
+  using: docker
+  image: Dockerfile
