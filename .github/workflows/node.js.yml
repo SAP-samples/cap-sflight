@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: staging
-      url: ${{ steps.deploy.outputs.ui_app_url }}
+      url: ${{ steps.deploy.outputs.url }}
     concurrency: staging
     env:
       BTP_SUBACCOUNT_ID: ce45c62b-1233-46d8-a12f-c0af88118ff1
@@ -51,47 +51,31 @@ jobs:
       CF_USERNAME: ${{ secrets.CF_USERNAME }}
       CF_PASSWORD: ${{ secrets.CF_PASSWORD }}
     outputs:
-      ui_app_url: ${{ steps.deploy.outputs.ui_app_url }}
+      ui_app_url: ${{ steps.deploy.outputs.url }}
     steps:
     - name: Set more variables
       run: |
         echo "CF_SPACE=$GITHUB_HEAD_REF" >> $GITHUB_ENV
-        echo "SCOPE_ADMIN=sflight-admin-${GITHUB_HEAD_REF}" >> $GITHUB_ENV
+        echo "ROLECOLL_ADMIN=sflight-admin-${GITHUB_HEAD_REF}" >> $GITHUB_ENV
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
       with:
         node-version: 16
-    - name: Setup BTP CLI  # https://blogs.sap.com/2021/09/01/sap-tech-bytes-btp-cli-installation/
-      run: |
-        curl --remote-name --location --url "https://raw.githubusercontent.com/SAP-samples/sap-tech-bytes/2021-09-01-btp-cli/getbtpcli"
-        chmod +x getbtpcli
-        echo | ./getbtpcli
     - name: MTA build
       run: npx mbt build -t gen --mtar sflight.mtar
     - name: CF Deploy
       id: deploy
-      run: >
-        docker run
-        -e CF_API -e CF_ORG -e CF_SPACE -e CF_USERNAME -e CF_PASSWORD
-        -v $PWD:/home/piper/app
-        --user root
-        ppiper/cf-cli
-        bash -c '
-          cf api $CF_API &&
-          cf auth &&
-          cf create-space "$CF_SPACE" -o "$CF_ORG" &&
-          cf target -o "$CF_ORG" -s "$CF_SPACE" &&
-          cf deploy app/gen/sflight.mtar -f &&
-          cf install-plugin -r CF-Community "html5-plugin" -f &&
-          cf html5-list -di sflight-destination-service -rt launchpad -u | grep -o "https.*\s" > app/url.txt
-        ' &&
-        echo "UI app URL is: $(cat url.txt)" &&
-        echo "::set-output name=ui_app_url::$(cat url.txt)"
+      uses: ./.github/actions/cf-deploy
+      with:
+        createspace: true
+        mtafile: gen/sflight.mtar
+        findurl_command: "cf html5-list -di sflight-destination-service -rt launchpad -u"
     - name: Assign Roles
-      run: |
-        ~/bin/btp login --user $CF_USERNAME --password $CF_PASSWORD --subdomain ${CF_ORG}-ga
-        ~/bin/btp target --subaccount $BTP_SUBACCOUNT_ID
-        ~/bin/btp assign security/role-collection "$SCOPE_ADMIN" --to-user $CF_USERNAME
+      uses: ./.github/actions/btp
+      with:
+        subdomain: ${{ env.CF_ORG }}-ga
+        subaccount_id: ${{ env.BTP_SUBACCOUNT_ID }}
+        command: 'btp assign security/role-collection ${{ env.ROLECOLL_ADMIN }} --to-user ${{ env.CF_USERNAME }}'
 
   e2etest:
     name: E2E Tests
