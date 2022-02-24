@@ -3,7 +3,7 @@ set -e
 
 INPUT_USERNAME=${INPUT_USERNAME:-$CF_USERNAME}
 INPUT_PASSWORD=${INPUT_PASSWORD:-$CF_PASSWORD}
-btp login --user "${INPUT_USERNAME}" --password "${INPUT_PASSWORD}" --subdomain "${INPUT_SUBDOMAIN}"
+btp login --url "${INPUT_CLI_URL}" --user "${INPUT_USERNAME}" --password "${INPUT_PASSWORD}" --subdomain "${INPUT_SUBDOMAIN}"
 
 if [ ! -z "${INPUT_SUBACCOUNT_ID}" ]; then
   btp target --subaccount "${INPUT_SUBACCOUNT_ID}"

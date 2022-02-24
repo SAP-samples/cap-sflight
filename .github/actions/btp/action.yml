@@ -1,8 +1,12 @@
 name: 'BTP'
 description: Performs BTP operations
 inputs:
+  cli_url:
+    description: The API endpoint for the CLI
+    required: false
+    default: https://cpcli.cf.eu10.hana.ondemand.com
   subdomain:
-    description: Name of BTp subdomain
+    description: Name of BTP subdomain
     required: true
   subaccount_id:
     description: ID of BTP subaccount

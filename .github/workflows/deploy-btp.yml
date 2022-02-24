@@ -1,20 +1,30 @@
 on:
   workflow_call:
     inputs:
+      btp-subdomain:
+        type: string
+        required: false
+        default: 284dfa06-4fb6-445e-809c-263b132a0840
+      btp-subaccount-id:
+        type: string
+        required: false
+        default: 1e4c6bcd-71c5-42c6-88ab-636e3a6dc12e
+      btp-cli-url:
+        type: string
+        required: false
+        default: https://cpcli.cf.sap.hana.ondemand.com
       cf-api:
         type: string
         required: false
-        default: 'https://api.cf.eu10.hana.ondemand.com'
+        default: 'https://api.cf.eu12.hana.ondemand.com'
       cf-org:
         type: string
-        required: true
+        required: false
+        default: cap-sflight
       cf-space:
         type: string
         required: true
-      btp-subdomain:
-        type: string
-        required: true
-      btp-subaccount-id:
+      role-collection:
         type: string
         required: true
       mta-source-dir:
@@ -56,7 +66,7 @@ jobs:
       CF_SPACE: ${{ inputs.cf-space }}
       CF_USERNAME: ${{ secrets.username }}
       CF_PASSWORD: ${{ secrets.password }}
-      ROLE_COLL: sflight-admin-${{ inputs.cf-space }}
+      ROLE_COLL: ${{ inputs.role-collection }}
     outputs:
       ui_app_url: ${{ steps.deploy.outputs.url }}
 
@@ -86,6 +96,7 @@ jobs:
     - name: Assign Roles
       uses: ./.github/actions/btp
       with:
+        cli_url: ${{ inputs.btp-cli-url }}
         subdomain: ${{ inputs.btp-subdomain }}
         subaccount_id: ${{ inputs.btp-subaccount-id }}
         command: 'btp assign security/role-collection ${{ env.ROLE_COLL }} --to-user ${{ env.CF_USERNAME }}'
