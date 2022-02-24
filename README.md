@@ -1,6 +1,6 @@
 # Welcome to the CAP SFLIGHT App
 
-This is a sample app for the travel reference scenario, built with the [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap) and [SAP Fiori elements](https://experience.sap.com/fiori-design-web/smart-templates).
+This is a sample app for the travel reference scenario, built with the [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap) and [SAP Fiori Elements](https://experience.sap.com/fiori-design-web/smart-templates).
 
 The purpose of this sample app is to:
 * Demonstrate SAP Fiori annotations
@@ -35,7 +35,7 @@ http://localhost:4004/travel_processor/webapp/index.html
 ### Integration Tests
 
 To start OPA tests, open this link in your browser:
-http://localhost:4004/travel_processor/webapp/test/integration/opaTests.qunit.html
+http://localhost:4004/travel_processor/webapp/test/integration/Opa.qunit.html
 
 Test documentation is available at:
 https://ui5.sap.com/#/api/sap.fe.test
@@ -58,7 +58,7 @@ http://localhost:8080/index.html
 ### Integration Tests
 
 To start OPA tests, open this link in your browser:
-http://localhost:8080/test/integration/opaTests.qunit.html
+http://localhost:8080/test/integration/Opa.qunit.html
 
 Test documentation is available at:
 https://ui5.sap.com/#/api/sap.fe.test
@@ -71,8 +71,8 @@ The project contains a configuration for deploying the CAP services (with Node.j
 #### SAP Business Technology Platform
 
 - Create a [trial account on SAP BTP](https://www.sap.com/products/business-technology-platform/trial.html). See this [tutorial](https://developers.sap.com/tutorials/hcp-create-trial-account.html) for more information. Alternatively, you can use a sub-account in a productive environment.
-- Subscribe to the [SAP Launchpad service](https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html).
-- Create an [SAP HANA Cloud service instance](https://developers.sap.com/tutorials/btp-app-hana-cloud-setup.html#08480ec0-ac70-4d47-a759-dc5cb0eb1d58) or use an existing one.
+- Subscribe to the [SAP Launchpad Service](https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html).
+- Create an [SAP HANA Cloud Service instance](https://developers.sap.com/tutorials/btp-app-hana-cloud-setup.html#08480ec0-ac70-4d47-a759-dc5cb0eb1d58) or use an existing one.
   
 #### Local Machine
 
@@ -109,6 +109,18 @@ The build results will be stored in the directory `mta_archives`.
 
 In the SAP BTP Cockpit, assign the role collection `admin-{spacename}` to your user.
 
+### Local Development with a HANA Cloud Instance
+
+You need to have access to a HANA Cloud instance and SAP BTP.
+
+1. Deploy the HDI content to a HANA HDI container (which is newly created on first call): `cds deploy --to hana`.
+2. Start the application with the Spring Profile `cloud`.
+   1. From Maven: `mvn spring-boot:run -Dspring-boot.run.profiles=cloud`
+   2. From your IDE with the JVM argument `-Dspring.profiles.active=cloud` or env variable `spring.profiles.active=cloud`
+
+The running application is now connected to its own HDI container/schema. Please keep in mind that the credentials for
+that HDI container are stored locally on your filesystem (default-env.json).
+
 ## Creating an SAP Fiori App from Scratch
 
 If you want to implement an SAP Fiori app, follow these tutorials:
@@ -122,4 +134,4 @@ In case you've a question, find a bug, or otherwise need support, use the [SAP C
 
 ## License
 
-Copyright (c) 2021 SAP SE or an SAP affiliate company. All rights reserved. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSES/Apache-2.0.txt) file.
+Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSES/Apache-2.0.txt) file.
