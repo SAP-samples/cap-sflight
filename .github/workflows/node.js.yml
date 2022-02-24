@@ -8,12 +8,11 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+    types: [ labeled, opened, synchronize, reopened ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       fail-fast: false
       matrix:
@@ -39,6 +38,7 @@ jobs:
 
   deployment:
     name: Deploy
+    if: ${{ github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'deploy') }}  # run only if label is set
     uses: ./.github/workflows/deploy-btp.yml
     with:
       btp-subaccount-id: ce45c62b-1233-46d8-a12f-c0af88118ff1
