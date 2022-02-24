@@ -1,4 +1,4 @@
-using TravelService from '../../srv/travel-service';
+using TravelService from '../srv/travel-service';
 
 //
 // annotations that control the behavior of fields and actions

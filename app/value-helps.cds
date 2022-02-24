@@ -1,4 +1,4 @@
-using { sap.fe.cap.travel as my } from '../../db/schema';
+using { sap.fe.cap.travel as my } from '../db/schema';
 
 //
 // annotations for value helps

@@ -1,4 +1,4 @@
-using TravelService from '../../srv/travel-service';
+using TravelService from '../srv/travel-service';
 
 //
 // annotatios that control the fiori layout
