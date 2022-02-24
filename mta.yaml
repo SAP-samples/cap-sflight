@@ -1,7 +1,7 @@
 _schema-version: "3.2"
-ID: capire.sflight
+ID: capire.sflightN
 version: 1.0.0
-description: "CAP sflight demo"
+description: "CAP sflight demo (Node)"
 
 parameters:
   enable-parallel-deployments: true
@@ -15,13 +15,13 @@ build-parameters:
 
 modules:
   # --------------------- SERVER MODULE ------------------------
-  - name: sflight-srv
+  - name: sflightN-srv
   # ------------------------------------------------------------
     type: nodejs
     path: gen/srv
     requires:
-      - name: sflight-db
-      - name: sflight-uaa
+      - name: sflightN-db
+      - name: sflightN-uaa
     provides:
       - name: srv-api # required by consumers of CAP services (e.g. approuter, destinations)
         properties:
@@ -30,38 +30,38 @@ modules:
       ignore: ["node_modules/"]
 
   # -------------------- SIDECAR MODULE ------------------------
-  - name: sflight-db-deployer
+  - name: sflightN-db-deployer
   # ------------------------------------------------------------
     type: hdb
     path: gen/db
     parameters:
       buildpack: nodejs_buildpack
     requires:
-      - name: sflight-db
-      - name: sflight-uaa
+      - name: sflightN-db
+      - name: sflightN-uaa
     build-parameters:
       ignore: ["node_modules/"]
 
   # ------------------ APPLICATION CONTENT ---------------------
-  - name: sflight-appcontent
+  - name: sflightN-appcontent
   # ------------------------------------------------------------
     type: com.sap.application.content
     path: app
     requires:
-      - name: sflight-destination-service
-      - name: sflight-html5-repo-host
+      - name: sflightN-destination-service
+      - name: sflightN-html5-repo-host
         parameters:
           content-target: true
     build-parameters:
       build-result: resources
       requires:
-        - name: sflight-app-travel-processor
+        - name: sflightN-app-travel-processor
           artifacts:
             - travel-processor.zip
           target-path: resources/
 
   # ------------- APPLICATION: TRAVEL PROCESSOR ----------------
-  - name: sflight-app-travel-processor
+  - name: sflightN-app-travel-processor
   # ------------------------------------------------------------
     type: html5
     path: app/travel_processor
@@ -74,21 +74,21 @@ modules:
       supported-platforms: []
 
   # ------------------ DESTINATION CONTENT ---------------------
-  - name: sflight-destinationcontent
+  - name: sflightN-destinationcontent
   # ------------------------------------------------------------
     type: com.sap.application.content
     build-parameters:
       no-source: true
     requires:
-      - name: sflight-uaa
+      - name: sflightN-uaa
         parameters:
           service-key:
-            name: sflight-uaa-key
-      - name: sflight-html5-repo-host
+            name: sflightN-uaa-key
+      - name: sflightN-html5-repo-host
         parameters:
           service-key:
-            name: sflight-html5-repo-host-key
-      - name: sflight-destination-service
+            name: sflightN-html5-repo-host-key
+      - name: sflightN-destination-service
         parameters:
           content-target: true
     parameters:
@@ -96,19 +96,19 @@ modules:
         instance:
           existing_destinations_policy: update
           destinations:
-            - Name: sflight-html5-repository
-              ServiceInstanceName: sflight-html5-repo-host
-              ServiceKeyName: sflight-html5-repo-host-key
-              sap.cloud.service: sap.fe.cap.sflight
-            - Name: sflight-uaa
+            - Name: sflightN-html5-repository
+              ServiceInstanceName: sflightN-html5-repo-host
+              ServiceKeyName: sflightN-html5-repo-host-key
+              sap.cloud.service: sap.fe.cap.sflightN
+            - Name: sflightN-uaa
               Authentication: OAuth2UserTokenExchange
-              ServiceInstanceName: sflight-uaa
-              ServiceKeyName: sflight-uaa-key
-              sap.cloud.service: sap.fe.cap.sflight
+              ServiceInstanceName: sflightN-uaa
+              ServiceKeyName: sflightN-uaa-key
+              sap.cloud.service: sap.fe.cap.sflightN
 
 resources:
   # ------------------------------------------------------------
-  - name: sflight-db
+  - name: sflightN-db
   # ------------------------------------------------------------
     type: com.sap.xs.hdi-container
     parameters:
@@ -118,7 +118,7 @@ resources:
       hdi-service-name: ${service-name}
 
   # ------------------------------------------------------------
-  - name: sflight-uaa
+  - name: sflightN-uaa
   # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
     parameters:
@@ -126,7 +126,7 @@ resources:
       service-plan: application
       path: ./app/travel_processor/xs-security.json
       config:
-        xsappname: sflight
+        xsappname: sflightN
         tenant-mode: dedicated
         role-collections:
           - name: 'admin-${space}'
@@ -135,7 +135,7 @@ resources:
               - $XSAPPNAME.admin
 
   # ------------------------------------------------------------
-  - name: sflight-html5-repo-runtime
+  - name: sflightN-html5-repo-runtime
   # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
     parameters:
@@ -143,7 +143,7 @@ resources:
       service-plan: app-runtime
 
   # ------------------------------------------------------------
-  - name: sflight-html5-repo-host
+  - name: sflightN-html5-repo-host
   # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
     parameters:
@@ -151,7 +151,7 @@ resources:
       service-plan: app-host
 
   # ------------------------------------------------------------
-  - name: sflight-destination-service
+  - name: sflightN-destination-service
   # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
     requires:
@@ -166,7 +166,7 @@ resources:
           instance:
             existing_destinations_policy: update
             destinations:
-              - Name: sflight-srv
+              - Name: sflightN-srv
                 URL: ~{srv-api/srv-url}
                 Authentication: NoAuthentication
                 Type: HTTP

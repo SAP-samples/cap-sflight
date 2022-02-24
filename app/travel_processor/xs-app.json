@@ -5,7 +5,7 @@
     {
       "source": "^/processor/(.*)$",
       "target": "/processor/$1",
-      "destination": "sflight-srv",
+      "destination": "sflightN-srv",
       "authenticationType": "xsuaa",
       "csrfProtection": false
     },

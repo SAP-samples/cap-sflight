@@ -9,7 +9,7 @@ sap.ui.define(["sap/fe/test/ListReport"], function (ListReport) {
 
   return new ListReport(
     {
-      appId: "sap.fe.cap.travel",
+      appId: "sap.fe.cap.travelN",
       componentId: "TravelList",
       entitySet: "Travel",
     },

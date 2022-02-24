@@ -1,12 +1,12 @@
 {
   "_version": "1.32.0",
   "sap.app": {
-    "id": "sap.fe.cap.travel",
+    "id": "sap.fe.cap.travelN",
     "type": "application",
     "title": "{{title}}",
     "description": "{{description}}",
     "i18n": {
-      "bundleName": "sap.fe.cap.travel.i18n.i18n",
+      "bundleName": "sap.fe.cap.travelN.i18n.i18n",
       "supportedLocales": ["en", "de", "fr"],
       "fallbackLocale": "en"
     },
@@ -37,8 +37,8 @@
           },
           "semanticObject": "travel",
           "action": "process",
-          "title": "Process Travels",
-          "subTitle": "Process travels",
+          "title": "Process Travels (Node)",
+          "subTitle": "Process travels (Node)",
           "icon": "sap-icon://flight"
         }
       }
@@ -77,7 +77,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "sap.fe.cap.travel.i18n.i18n",
+          "bundleName": "sap.fe.cap.travelN.i18n.i18n",
           "supportedLocales": ["en", "de", "fr"],
           "fallbackLocale": "en"
         }
@@ -194,6 +194,6 @@
     "archeType": "transactional"
   },
   "sap.cloud": {
-    "service": "sap.fe.cap.sflight"
+    "service": "sap.fe.cap.sflightN"
   }
 }

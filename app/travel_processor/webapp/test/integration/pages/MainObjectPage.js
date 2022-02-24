@@ -9,7 +9,7 @@ sap.ui.define(["sap/fe/test/ObjectPage"], function (ObjectPage) {
 
   return new ObjectPage(
     {
-      appId: "sap.fe.cap.travel",
+      appId: "sap.fe.cap.travelN",
       componentId: "TravelObjectPage",
       entitySet: "Travel",
     },
