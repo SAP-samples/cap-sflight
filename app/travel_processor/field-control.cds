@@ -49,6 +49,7 @@ annotate TravelService.Travel with @(Common.SideEffects: {
 }
 
 annotate TravelService.Booking with @UI.CreateHidden : to_Travel.TravelStatus.createDeleteHidden;
+annotate TravelService.Booking with @UI.DeleteHidden : to_Travel.TravelStatus.createDeleteHidden;
 
 annotate TravelService.Booking {
   BookingDate   @Core.Computed;
@@ -59,6 +60,23 @@ annotate TravelService.Booking {
   to_Carrier    @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
   to_Customer   @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
 };
+
+annotate TravelService.Booking with @(
+  Capabilities.NavigationRestrictions : {
+    RestrictedProperties : [
+      {
+        NavigationProperty : to_BookSupplement,
+        InsertRestrictions : {
+          Insertable : to_Travel.TravelStatus.insertDeleteRestriction
+        },
+        DeleteRestrictions : {
+          Deletable : to_Travel.TravelStatus.insertDeleteRestriction
+        }
+      }
+    ]
+  }
+);
+
 
 annotate TravelService.BookingSupplement {
   Price         @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
