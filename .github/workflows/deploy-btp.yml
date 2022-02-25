@@ -91,7 +91,7 @@ jobs:
       with:
         createspace: true
         mtafile: ${{ inputs.mtar-dir }}/${{ inputs.mtar-file }}
-        findurl_command: "cf html5-list -di sflight-destination-service -rt launchpad -u"
+        findurl_command: "cf html5-list -di sflight-destination-service -u"
 
     - name: Assign Roles
       uses: ./.github/actions/btp

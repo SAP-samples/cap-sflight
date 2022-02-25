@@ -194,6 +194,7 @@
     "archeType": "transactional"
   },
   "sap.cloud": {
+    "public": true,
     "service": "sap.fe.cap.sflight"
   }
 }
