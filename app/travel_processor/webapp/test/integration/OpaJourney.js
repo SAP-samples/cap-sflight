@@ -220,7 +220,6 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           When.onTheDetailPage.onTable({ property: "to_Booking" }).iPressRow({ "BookingID": "1" });
           
           Then.onTheDetailItemPage.iSeeThisPage();
-			    
           // Check fields
           When.onTheDetailItemPage.iGoToSection("Booking");
         
@@ -301,10 +300,8 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           When.onTheDetailPage.onTable({ property: "to_Booking" }).iPressRow({ "BookingID": "2" });
           
           Then.onTheDetailItemPage.iSeeThisPage();
-			    
           // Check fields
-          When.onTheDetailItemPage.iGoToSection("Booking");
-        
+          When.onTheDetailItemPage.iGoToSection("Booking");        
           // Flight Price
           Then.onTheDetailItemPage
           .onForm({ section: "Booking", fieldGroup: "BookingData" })
