@@ -56,7 +56,14 @@
     "build": {
       "[node]": {
         "target": "gen",
-        "tasks": [{"for": "node-cf"}, {"for": "hana"}]
+        "tasks": [
+          {
+            "for": "node-cf"
+          },
+          {
+            "for": "hana"
+          }
+        ]
       }
     }
   },
