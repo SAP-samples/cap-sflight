@@ -5,19 +5,16 @@ updates:
 - package-ecosystem: npm
   directory: /
   versioning-strategy: increase-if-necessary
-  rebase-strategy: disabled
   schedule:
     interval: daily
 
 - package-ecosystem: npm
   directory: /app/travel_processor
   versioning-strategy: increase-if-necessary
-  rebase-strategy: disabled
   schedule:
     interval: daily
 
 - package-ecosystem: maven
   directory: /
-  rebase-strategy: disabled
   schedule:
     interval: daily
