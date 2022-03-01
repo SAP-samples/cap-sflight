@@ -5,6 +5,7 @@ function spawnServer(cmd, args, cwd, fnIsReady) {
   return new Promise((resolve, reject) => {
     const proc = spawn(cmd, args, {
       cwd,
+      env: Object.assign({PORT:0}, process.env),
       stdio: ["ignore", "pipe", "inherit"],
     });
 
@@ -16,8 +17,12 @@ function spawnServer(cmd, args, cwd, fnIsReady) {
       }
     };
 
+
     proc.on("close", reject);
     proc.stdout.on("data", checkServerReady);
+
+    // clean up sub process
+    process.on('exit', ()=> { if (proc)  proc.kill(); } )
   });
 }
 
