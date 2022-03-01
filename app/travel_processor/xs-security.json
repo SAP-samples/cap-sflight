@@ -1,6 +1,4 @@
 {
-  "xsappname": "sflight",
-  "tenant-mode": "dedicated",
   "scopes": [
     {
       "name": "$XSAPPNAME.admin",
