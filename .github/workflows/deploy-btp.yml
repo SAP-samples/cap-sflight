@@ -82,7 +82,7 @@ jobs:
       id: cache
       with:
         path: ${{ inputs.mtar-dir }}/${{ inputs.mtar-file }}
-        key: ${{ runner.os }}-${{ hashFiles('_i18n/**','app/**','db/**','srv/**','*.json','**/mta.yaml','pom.xml') }}
+        key: ${{ runner.os }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('_i18n/**','app/**','db/**','srv/**','*.json','**/mta.yaml','pom.xml') }}
 
     - name: MTA build
       if: steps.cache.outputs.cache-hit != 'true'
