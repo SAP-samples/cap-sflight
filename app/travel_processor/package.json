@@ -26,7 +26,7 @@
     "karma-chrome-launcher": "^3.1.0",
     "karma-ui5": "^2.4.0",
     "puppeteer": "^13.1.3",
-    "ui5-middleware-simpleproxy": "^0.7.6",
+    "ui5-middleware-simpleproxy": "^0.8.0",
     "ui5-task-zipper": "^0.4.7"
   },
   "ui5": {
