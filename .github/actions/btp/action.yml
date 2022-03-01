@@ -11,6 +11,9 @@ inputs:
   subaccount_id:
     description: ID of BTP subaccount
     required: false
+  role_collection:
+    description: A role collection to assign to $CF_USER
+    required: false
   command:
     description: The command to execute
     required: false

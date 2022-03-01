@@ -46,6 +46,7 @@ jobs:
     secrets:
       username: ${{ secrets.CF_USERNAME }}
       password: ${{ secrets.CF_PASSWORD }}
+      grant-users: ${{ secrets.GRANT_USERS }}
 
   e2etest:
     name: E2E Tests

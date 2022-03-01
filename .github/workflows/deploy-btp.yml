@@ -47,6 +47,9 @@ on:
         required: true
       password:
         required: true
+      grant-users:
+        description: List of users to assign the role role-collection to
+        required: false
     outputs:
       ui_app_url:
         value: ${{ jobs.deployment.outputs.ui_app_url }}
@@ -66,7 +69,7 @@ jobs:
       CF_SPACE: ${{ inputs.cf-space }}
       CF_USERNAME: ${{ secrets.username }}
       CF_PASSWORD: ${{ secrets.password }}
-      ROLE_COLL: ${{ inputs.role-collection }}
+      GRANT_USERS: ${{ secrets.grant-users }}
     outputs:
       ui_app_url: ${{ steps.deploy.outputs.url }}
 
@@ -91,7 +94,7 @@ jobs:
       with:
         createspace: true
         mtafile: ${{ inputs.mtar-dir }}/${{ inputs.mtar-file }}
-        findurl_command: "cf html5-list -di sflight-destination-service -u"
+        findurl_command: 'cf html5-list -di sflight-destination-service -u'
 
     - name: Assign Roles
       uses: ./.github/actions/btp
@@ -99,4 +102,4 @@ jobs:
         cli_url: ${{ inputs.btp-cli-url }}
         subdomain: ${{ inputs.btp-subdomain }}
         subaccount_id: ${{ inputs.btp-subaccount-id }}
-        command: 'btp assign security/role-collection ${{ env.ROLE_COLL }} --to-user ${{ env.CF_USERNAME }}'
+        role_collection: ${{ inputs.role-collection }}
