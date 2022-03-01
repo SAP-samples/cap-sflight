@@ -41,8 +41,8 @@ jobs:
     if: ${{ github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'deploy') }}  # run only if label is set
     uses: ./.github/workflows/deploy-btp.yml
     with:
-      cf-space: staging-${{ github.head_ref }}
-      role-collection: sflight-admin-staging-${{ github.head_ref }}  # must match to mta.yaml
+      cf-space: staging-${{ github.head_ref || github.ref_name }}
+      role-collection: sflight-admin-staging-${{ github.head_ref || github.ref_name }}  # must match to mta.yaml
     secrets:
       username: ${{ secrets.CF_USERNAME }}
       password: ${{ secrets.CF_PASSWORD }}
