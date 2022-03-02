@@ -20,6 +20,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
         }
       );
 
+      
       opaTest(
         "#2: Object Page: Check Object Page loads",
         function (Given, When, Then) {
@@ -178,6 +179,163 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           Then.onTheMainPage.iSeeThisPage();
         }
       );
+
+      opaTest(
+        "#6: Object Page: Check details for accepted travel",
+        function (Given, When, Then) {
+          // Open travelk with travel status = "Accepted"
+          When.onTheMainPage.onTable().iPressRow({ TravelID: "4133" });
+          Then.onTheDetailPage.iSeeThisPage();
+
+          When.onTheDetailPage.onHeader().iExecuteAction("Edit");
+          Then.onTheDetailPage.iSeeObjectPageInEditMode();
+
+          When.onTheDetailPage.iGoToSection("Header");
+
+          When.onTheDetailPage.iGoToSection("Booking");
+          // Check buttons for bookings
+          Then.onTheDetailPage
+						.onTable({ property: "to_Booking" })
+						.iCheckDelete({ visible: false, enabled: false })
+						.and.iCheckCreate({ visible: false, enabled: false });
+
+          // Check fields
+          When.onTheDetailPage.iGoToSection("Travel");
+           // Starting date
+          Then.onTheDetailPage
+          .onForm({ section: "Travel", fieldGroup: "DateData" })
+          .iCheckField({ property: "BeginDate" }, 
+                        { value: "Sep 1, 2022" },
+                        { editable: false });
+
+          // Booking fee
+          Then.onTheDetailPage
+            .onForm({ section: "Travel", fieldGroup: "PriceData" })
+            .iCheckField({ property: "BookingFee" }, 
+                         { editable: false });
+
+        
+
+          When.onTheDetailPage.iGoToSection("Booking");
+          When.onTheDetailPage.onTable({ property: "to_Booking" }).iPressRow({ "BookingID": "1" });
+          
+          Then.onTheDetailItemPage.iSeeThisPage();
+          // Check fields
+          When.onTheDetailItemPage.iGoToSection("Booking");
+        
+          // Flight Price
+          Then.onTheDetailItemPage
+          .onForm({ section: "Booking", fieldGroup: "BookingData" })
+          .iCheckField({ property: "FlightPrice" }, 
+                       { editable: false });
+
+          // Flight Number
+          Then.onTheDetailItemPage
+          .onForm({ section: "Booking", fieldGroup: "BookingData" })
+          .iCheckField({ property: "ConnectionID" }, 
+                        { value: "0018" },
+                        { editable: false });
+  
+          // Check buttons for booking supplements
+          When.onTheDetailItemPage.iGoToSection("Booking Supplement");
+          When.onTheDetailItemPage
+            .onTable({ property: "to_BookSupplement" }).iSelectRows({ "BookingSupplementID": "1" });
+          Then.onTheDetailItemPage
+						.onTable({ property: "to_BookSupplement" })
+						.iCheckDelete({ visible: true, enabled: false })
+						.and.iCheckCreate({ visible: true, enabled: false });
+          
+
+          When.iNavigateBack();
+          Then.onTheDetailPage.iSeeThisPage();
+          
+          When.onTheDetailPage.onFooter().iExecuteCancel();
+          Then.onTheDetailPage.iSeeObjectPageInDisplayMode();
+
+          When.iNavigateBack();
+          Then.onTheMainPage.iSeeThisPage();
+        }
+      );
+
+      opaTest(
+        "#7: Object Page: Check details for open travel",
+        function (Given, When, Then) {
+          // Open travel with travel status = "open"
+          When.onTheMainPage.onTable().iPressRow({ TravelID: "4129" });
+          Then.onTheDetailPage.iSeeThisPage();
+
+          When.onTheDetailPage.onHeader().iExecuteAction("Edit");
+          Then.onTheDetailPage.iSeeObjectPageInEditMode();
+
+          When.onTheDetailPage.iGoToSection("Header");
+
+          When.onTheDetailPage.iGoToSection("Booking");
+          // Check buttons
+          When.onTheDetailPage
+            .onTable({ property: "to_Booking" })
+            .iSelectRows({ "BookingID": "2" });
+          Then.onTheDetailPage
+						.onTable({ property: "to_Booking" })
+						.iCheckDelete({ visible: true, enabled: true })
+						.and.iCheckCreate({ visible: true, enabled: true });
+
+          // Check fields
+          When.onTheDetailPage.iGoToSection("Travel");
+           // Starting date
+          Then.onTheDetailPage
+          .onForm({ section: "Travel", fieldGroup: "DateData" })
+          .iCheckField({ property: "BeginDate" }, 
+                        { value: "Sep 1, 2022" },
+                        { editable: true });
+
+          // Booking fee
+          Then.onTheDetailPage
+            .onForm({ section: "Travel", fieldGroup: "PriceData" })
+            .iCheckField({ property: "BookingFee" }, 
+                         { editable: true });
+
+        
+
+          When.onTheDetailPage.iGoToSection("Booking");
+          When.onTheDetailPage.onTable({ property: "to_Booking" }).iPressRow({ "BookingID": "2" });
+          
+          Then.onTheDetailItemPage.iSeeThisPage();
+          // Check fields
+          When.onTheDetailItemPage.iGoToSection("Booking");        
+          // Flight Price
+          Then.onTheDetailItemPage
+          .onForm({ section: "Booking", fieldGroup: "BookingData" })
+          .iCheckField({ property: "FlightPrice" },                       
+                       { editable: true });
+
+          // Flight Number
+          Then.onTheDetailItemPage
+          .onForm({ section: "Booking", fieldGroup: "BookingData" })
+          .iCheckField({ property: "ConnectionID" }, 
+                        { value: "0018" },
+                        { editable: true });
+  
+          // Check buttons for booking supplements
+          When.onTheDetailItemPage.iGoToSection("Booking Supplement");
+          When.onTheDetailItemPage
+            .onTable({ property: "to_BookSupplement" }).iSelectRows({ "BookingSupplementID": "1" });
+          Then.onTheDetailItemPage
+						.onTable({ property: "to_BookSupplement" })
+						.iCheckDelete({ visible: true, enabled: true })
+						.and.iCheckCreate({ visible: true, enabled: true });
+          
+
+          When.iNavigateBack();
+          Then.onTheDetailPage.iSeeThisPage();
+          
+          When.onTheDetailPage.onFooter().iExecuteCancel();
+          Then.onTheDetailPage.iSeeObjectPageInDisplayMode();
+
+          When.iNavigateBack();
+          Then.onTheMainPage.iSeeThisPage();
+        }
+      );
+
 
       return Journey;
     },
