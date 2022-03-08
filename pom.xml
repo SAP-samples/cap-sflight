@@ -14,7 +14,7 @@
 
 		<!-- DEPENDENCIES VERSION -->
 		<jdk.version>11</jdk.version>
-		<cds.services.version>1.22.1</cds.services.version>
+		<cds.services.version>1.22.2</cds.services.version>
 		<spring.boot.version>2.6.4</spring.boot.version>
 
 		<cdsdk.version>^4</cdsdk.version>
