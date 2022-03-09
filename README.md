@@ -65,7 +65,9 @@ https://ui5.sap.com/#/api/sap.fe.test
 
 ## Deployment to SAP Business Technology Platform
 
-The project contains a configuration for deploying the CAP services (with Node.js backend) and the SAP Fiori app to the SAP Business Technology Platform (SAP BTP) using a managed application router. The app then becomes visible in the content manager of the SAP Launchpad service.
+The project contains a configuration for deploying the CAP services and the SAP Fiori app to the SAP Business Technology Platform (SAP BTP) using a managed application router. The app then becomes visible in the content manager of the SAP Launchpad service.
+
+The configuration file `mta.yaml` is for the Node.js backend of the app. If you want to deploy the Java backend, copy `mta-java.yaml` to `mta.yaml`.
 
 ### Prerequisites
 #### SAP Business Technology Platform

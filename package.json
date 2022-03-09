@@ -64,6 +64,14 @@
             "for": "hana"
           }
         ]
+      },
+      "[java]": {
+        "target": ".",
+        "tasks": [{"for": "java-cf"}]
+      },
+      "[hana]": {
+        "target": "gen",
+        "tasks": [{"for": "hana"}]
       }
     }
   },
