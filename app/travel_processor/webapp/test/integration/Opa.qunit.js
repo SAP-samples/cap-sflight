@@ -3,9 +3,10 @@ sap.ui.define(
     "sap/fe/test/JourneyRunner",
     "sap/fe/cap/travel/test/integration/pages/MainListReport",
     "sap/fe/cap/travel/test/integration/pages/MainObjectPage",
+    "sap/fe/cap/travel/test/integration/pages/ItemObjectPage",
     "sap/fe/cap/travel/test/integration/OpaJourney",
   ],
-  function (JourneyRunner, MainListReport, MainObjectPage, Journey) {
+  function (JourneyRunner, MainListReport, MainObjectPage, ItemObjectPage, Journey) {
     "use strict";
 
     var journeyRunner = new JourneyRunner({
@@ -19,6 +20,7 @@ sap.ui.define(
         pages: {
           onTheMainPage: MainListReport,
           onTheDetailPage: MainObjectPage,
+          onTheDetailItemPage: ItemObjectPage
         },
       },
       Journey.run

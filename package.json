@@ -18,8 +18,8 @@
     "@sap/cds": "^5.4.5",
     "@sap/xssec": "^3.2.7",
     "express": "^4",
-    "hdb": "^0.18.3",
-    "passport": "^0.4.1"
+    "hdb": "^0.19.1",
+    "passport": "^0.5.2"
   },
   "devDependencies": {
     "@sap/ux-specification": "^1.96.0",
@@ -56,7 +56,14 @@
     "build": {
       "[node]": {
         "target": "gen",
-        "tasks": [{"for": "node-cf"}, {"for": "hana"}]
+        "tasks": [
+          {
+            "for": "node-cf"
+          },
+          {
+            "for": "hana"
+          }
+        ]
       },
       "[java]": {
         "target": ".",

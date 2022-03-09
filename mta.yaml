@@ -27,6 +27,7 @@ modules:
         properties:
           srv-url: ${default-url}
     build-parameters:
+      builder: npm-ci
       ignore: ["node_modules/"]
 
   # -------------------- SIDECAR MODULE ------------------------
@@ -126,10 +127,10 @@ resources:
       service-plan: application
       path: ./app/travel_processor/xs-security.json
       config:
-        xsappname: sflight
+        xsappname: sflight-${space}
         tenant-mode: dedicated
         role-collections:
-          - name: 'admin-${space}'
+          - name: 'sflight-admin-${space}'
             description: Manage Travels
             role-template-references:
               - $XSAPPNAME.admin
@@ -173,3 +174,4 @@ resources:
                 ProxyType: Internet
                 HTML5.ForwardAuthToken: true
                 HTML5.DynamicDestination: true
+
