@@ -39,8 +39,26 @@
         "kind": "xsuaa"
       },
       "auth": {
-        "[development]": {
-          "strategy": "dummy"
+        "[xxxdevelopment]": {
+          "xxxstrategy": "dummy"
+        },
+        "kind": "basic-auth",
+        "users": {
+          "alice": {
+            "password": "alice"
+          },
+          "bob": {
+            "password": "bob",
+            "roles": ["reviewer"]
+          },
+          "clara": {
+            "password": "clara",
+            "roles": ["processor"]
+          },
+          "dan": {
+            "password": "dan",
+            "roles": ["admin"]
+          }
         }
       }
     },
