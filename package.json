@@ -35,12 +35,9 @@
       "db": {
         "kind": "sql"
       },
-      "uaa": {
-        "kind": "xsuaa"
-      },
       "auth": {
         "[development]": {
-          "strategy": "dummy"
+          "kind": "dummy-auth"
         }
       }
     },
