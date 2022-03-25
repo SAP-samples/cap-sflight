@@ -137,8 +137,16 @@ resources:
         xsappname: sflight-${space}
         tenant-mode: dedicated
         role-collections:
+          - name: 'sflight-reviewer-${space}'
+            description: Review travels
+            role-template-references:
+              - $XSAPPNAME.reviewer
+          - name: 'sflight-processor-${space}'
+            description: Process travels
+            role-template-references:
+              - $XSAPPNAME.processor
           - name: 'sflight-admin-${space}'
-            description: Manage Travels
+            description: Manage travels
             role-template-references:
               - $XSAPPNAME.admin
 

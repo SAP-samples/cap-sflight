@@ -39,25 +39,22 @@
         "kind": "xsuaa"
       },
       "auth": {
-        "[xxxdevelopment]": {
-          "xxxstrategy": "dummy"
-        },
-        "kind": "basic-auth",
-        "users": {
-          "alice": {
-            "password": "alice"
-          },
-          "bob": {
-            "password": "bob",
-            "roles": ["reviewer"]
-          },
-          "clara": {
-            "password": "clara",
-            "roles": ["processor"]
-          },
-          "dan": {
-            "password": "dan",
-            "roles": ["admin"]
+        "[development]": {
+          "strategy": "dummy",
+          "kind": "basic-auth",
+          "users": {
+            "rose": {
+              "password": "",
+              "roles": []
+            },
+            "martha": {
+              "password": "",
+              "roles": ["reviewer"]
+            },
+            "amy": {
+              "password": "",
+              "roles": ["processor"]
+            }
           }
         }
       }

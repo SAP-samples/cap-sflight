@@ -10,6 +10,16 @@ spring:
         static-locations: "file:./app"
 cds:
     security.mock.users:
+    - name: rose
+      password:
+    - name: martha
+      password:
+      roles:
+        - reviewer
+    - name: amy
+      password:
+      roles:
+        - processor
     - name: admin
       password: admin
       roles:
