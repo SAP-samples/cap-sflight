@@ -31,7 +31,6 @@ public class AcceptRejectHandler implements EventHandler {
 	private final PersistenceService persistenceService;
 	private final DraftService draftService;
 
-
 	public AcceptRejectHandler(DraftService draftService, PersistenceService persistenceService) {
 		this.draftService = draftService;
 		this.persistenceService = persistenceService;
@@ -44,7 +43,8 @@ public class AcceptRejectHandler implements EventHandler {
 			if (travel.getTravelStatus() != null) {
 				travel.setAcceptEnabled(!travel.getTravelStatus().getCode().equalsIgnoreCase(TRAVEL_STATUS_ACCEPTED));
 				travel.setRejectEnabled(!travel.getTravelStatus().getCode().equalsIgnoreCase(TRAVEL_STATUS_CANCELLED));
-				travel.setDeductDiscountEnabled(!travel.getTravelStatus().getCode().equalsIgnoreCase(TRAVEL_STATUS_ACCEPTED));
+				travel.setDeductDiscountEnabled(
+						!travel.getTravelStatus().getCode().equalsIgnoreCase(TRAVEL_STATUS_ACCEPTED));
 			}
 		});
 	}
@@ -52,35 +52,36 @@ public class AcceptRejectHandler implements EventHandler {
 	@Before(entity = Travel_.CDS_NAME)
 	public void beforeAcceptTravel(final AcceptTravelContext context) {
 
-		draftService.run(context.getCqn()).first(Travel.class)
-				.ifPresent(this::checkIfTravelHasExceptedStatus);
+		draftService.run(context.getCqn()).first(Travel.class).ifPresent(this::checkIfTravelHasExceptedStatus);
 	}
 
 	@Before(entity = Travel_.CDS_NAME)
 	public void beforeRejectTravel(final RejectTravelContext context) {
-		draftService.run(context.getCqn()).first(Travel.class)
-				.ifPresent(this::checkIfTravelHasExceptedStatus);
+		draftService.run(context.getCqn()).first(Travel.class).ifPresent(this::checkIfTravelHasExceptedStatus);
 	}
 
 	@On(entity = Travel_.CDS_NAME)
 	public void onRejectTravel(final RejectTravelContext context) {
 		var travel = draftService.run(context.getCqn()).single(Travel.class);
-		updateStatusForTravelId(travel.getTravelUUID(), TRAVEL_STATUS_CANCELLED, travel.getIsActiveEntity());
+		context.getCdsRuntime().requestContext().privilegedUser().run(ctx -> {
+			updateStatusForTravelId(travel.getTravelUUID(), TRAVEL_STATUS_CANCELLED, travel.getIsActiveEntity());
+		});
 		context.setCompleted();
 	}
 
 	@On(entity = Travel_.CDS_NAME)
 	public void onAcceptTravel(final AcceptTravelContext context) {
 		var travel = draftService.run(context.getCqn()).single(Travel.class);
-		updateStatusForTravelId(travel.getTravelUUID(), TRAVEL_STATUS_ACCEPTED, travel.getIsActiveEntity());
+		context.getCdsRuntime().requestContext().privilegedUser().run(ctx -> {
+			updateStatusForTravelId(travel.getTravelUUID(), TRAVEL_STATUS_ACCEPTED, travel.getIsActiveEntity());
+		});
 		context.setCompleted();
 	}
 
 	private void updateStatusForTravelId(String travelUUID, String newStatus, boolean isActiveEntity) {
 
 		if (isActiveEntity) {
-			persistenceService.run(Update.entity(TRAVEL)
-					.where(t -> t.TravelUUID().eq(travelUUID))
+			persistenceService.run(Update.entity(TRAVEL).where(t -> t.TravelUUID().eq(travelUUID))
 					.data(Travel.TRAVEL_STATUS_CODE, newStatus));
 		} else {
 			Update<Travel_> travelUpdateDraft = Update.entity(TRAVEL)
