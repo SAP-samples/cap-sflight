@@ -44,15 +44,15 @@
           "kind": "basic-auth",
           "users": {
             "rose": {
-              "password": "",
+              "password": "rose",
               "roles": []
             },
             "martha": {
-              "password": "",
+              "password": "martha",
               "roles": ["reviewer"]
             },
             "amy": {
-              "password": "",
+              "password": "amy",
               "roles": ["processor"]
             }
           }
