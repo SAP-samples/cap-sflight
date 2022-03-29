@@ -11,13 +11,13 @@ spring:
 cds:
     security.mock.users:
     - name: rose
-      password:
+      password: rose
     - name: martha
-      password:
+      password: martha
       roles:
         - reviewer
     - name: amy
-      password:
+      password: amy
       roles:
         - processor
     - name: admin
