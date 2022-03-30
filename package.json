@@ -46,7 +46,6 @@
       "[development]": {
         "auth": {
           "kind": "dummy-auth",
-          "xxx-kind": "basic-auth",
           "users": {
             "rose": {
               "password": "rose",
