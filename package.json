@@ -31,6 +31,11 @@
     "sqlite3": "npm:@mendix/sqlite3@^5.0.2"
   },
   "cds": {
+    "cdsc": {
+      "beta": {
+        "nestedProjections": true
+      }
+    },
     "requires": {
       "db": {
         "kind": "sql"
