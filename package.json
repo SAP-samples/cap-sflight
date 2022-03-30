@@ -35,11 +35,16 @@
       "db": {
         "kind": "sql"
       },
-      "uaa": {
-        "kind": "xsuaa"
+      "[production]": {
+        "db": {
+          "kind": "hana-cloud"
+        },
+        "auth": {
+          "kind": "xsuaa"
+        }
       },
-      "auth": {
-        "[development]": {
+      "[development]": {
+        "auth": {
           "kind": "dummy-auth",
           "xxx-kind": "basic-auth",
           "users": {
@@ -58,9 +63,6 @@
           }
         }
       }
-    },
-    "hana": {
-      "deploy-format": "hdbtable"
     },
     "log": {
       "service": true
