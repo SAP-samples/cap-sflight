@@ -9,8 +9,6 @@ The purpose of this sample app is to:
 
 ![Process Travels Page](img.png)
 
-Currently the app is only available for the CAP Node.js stack. A version for CAP Java SDK will follow soon.
-
 The app still contains some workarounds that are going to be addressed over time.
 In some cases, the model and the handlers can be improved or simplified once further planned CAP features become available.
 In other cases, the app itself could be improved. For example, calculation of the total price for a travel
