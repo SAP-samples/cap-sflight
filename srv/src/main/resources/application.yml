@@ -6,8 +6,7 @@ management:
 ---
 spring:
     profiles: default
-    resources:
-        static-locations: "file:./app"
+    web.resources.static-locations: "file:./app"
 cds:
     security.mock.users:
     - name: rose
