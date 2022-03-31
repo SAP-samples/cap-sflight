@@ -49,16 +49,19 @@ public class DeductDiscountHandler implements EventHandler {
 		update.setBookingFee(deductedBookingFee);
 
 
-		//throw exception if travel.getIsActiveEntity is null!.
-		if (TRUE.equals(travel.getIsActiveEntity())) {
-			var updateCqn = Update.entity(TRAVEL)
-					.where(t -> t.TravelUUID().eq(travel.getTravelUUID())).data(update);
-			draftService.run(updateCqn);
-		} else {
-			var updateCqn = Update.entity(TRAVEL)
-					.where(t -> t.TravelUUID().eq(travel.getTravelUUID()).and(t.IsActiveEntity().eq(travel.getIsActiveEntity()))).data(update);
-			draftService.patchDraft(updateCqn);
-		}
+		context.getCdsRuntime().requestContext().privilegedUser().run(ctx -> {
+			//throw exception if travel.getIsActiveEntity is null!.
+			if (TRUE.equals(travel.getIsActiveEntity())) {
+				var updateCqn = Update.entity(TRAVEL)
+						.where(t -> t.TravelUUID().eq(travel.getTravelUUID())).data(update);
+				draftService.run(updateCqn);
+			} else {
+				var updateCqn = Update.entity(TRAVEL)
+						.where(t -> t.TravelUUID().eq(travel.getTravelUUID()).and(t.IsActiveEntity().eq(travel.getIsActiveEntity()))).data(update);
+				draftService.patchDraft(updateCqn);
+			}
+		});
+
 
 		context.setResult(travel);
 		context.setCompleted();

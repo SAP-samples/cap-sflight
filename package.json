@@ -35,17 +35,33 @@
       "db": {
         "kind": "sql"
       },
-      "uaa": {
-        "kind": "xsuaa"
+      "[production]": {
+        "db": {
+          "kind": "hana-cloud"
+        },
+        "auth": {
+          "kind": "xsuaa"
+        }
       },
-      "auth": {
-        "[development]": {
-          "strategy": "dummy"
+      "[development]": {
+        "auth": {
+          "kind": "dummy-auth",
+          "users": {
+            "rose": {
+              "password": "rose",
+              "roles": []
+            },
+            "martha": {
+              "password": "martha",
+              "roles": ["reviewer"]
+            },
+            "amy": {
+              "password": "amy",
+              "roles": ["processor"]
+            }
+          }
         }
       }
-    },
-    "hana": {
-      "deploy-format": "hdbtable"
     },
     "log": {
       "service": true

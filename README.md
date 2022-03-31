@@ -107,7 +107,9 @@ The build results will be stored in the directory `mta_archives`.
 
 ### Assign Role Collection
 
-In the SAP BTP Cockpit, assign the role collection `admin-{spacename}` to your user.
+Any authorized user has read access to the app. For further authorization, assign a role collection to your user in the SAP BTP Cockpit:
+* `sflight-reviewer-{spacename}` for executing actions *Accept Travel*, *Reject Travel*, and *Deduct Discount*
+* `sflight-processor-{spacename}` for full write access
 
 ### Local Development with a HANA Cloud Instance
 
