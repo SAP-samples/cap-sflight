@@ -19,6 +19,7 @@
     "sapui5"
   ],
   "devDependencies": {
+    "@sap/ui5-builder-webide-extension": "^1.1.7",
     "@ui5/cli": "^2.14.4",
     "cross-spawn": "^7.0.3",
     "http-proxy": "^1.18.1",
@@ -31,6 +32,7 @@
   },
   "ui5": {
     "dependencies": [
+      "@sap/ui5-builder-webide-extension",
       "ui5-task-zipper",
       "ui5-middleware-simpleproxy"
     ]
