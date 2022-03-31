@@ -4,6 +4,7 @@ version: 1.0.0
 description: "CAP sflight demo"
 
 parameters:
+  deploy_mode: html5-repo
   enable-parallel-deployments: true
 
 build-parameters:
