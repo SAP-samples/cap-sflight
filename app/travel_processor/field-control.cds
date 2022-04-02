@@ -9,10 +9,9 @@ annotate cds.UUID with @Core.Computed  @odata.Type : 'Edm.String';
 
 // Add fields to control enablement of action buttons on UI
 extend projection TravelService.Travel with {
-  // REVISIT: shall be improved by omitting "null as"
-  virtual null as acceptEnabled         : Boolean @UI.Hidden,
-  virtual null as rejectEnabled         : Boolean @UI.Hidden,
-  virtual null as deductDiscountEnabled : Boolean @UI.Hidden,
+  CASE when TravelStatus.code = 'A' then false else true end as acceptEnabled : Boolean @UI.Hidden,
+  CASE when TravelStatus.code = 'X' then false else true end as rejectEnabled : Boolean @UI.Hidden,
+  CASE when TravelStatus.code = 'O' then true else false end as deductDiscountEnabled : Boolean @UI.Hidden,
 }
 
 annotate TravelService.Travel with @(Common.SideEffects: {
@@ -31,7 +30,8 @@ annotate TravelService.Travel with @(Common.SideEffects: {
     Common.SideEffects.TargetProperties : [
       'in/TravelStatus_code',
       'in/acceptEnabled',
-      'in/rejectEnabled'
+      'in/rejectEnabled',
+      'in/deductDiscountEnabled'
     ],
   );
   acceptTravel @(
@@ -39,12 +39,12 @@ annotate TravelService.Travel with @(Common.SideEffects: {
     Common.SideEffects.TargetProperties : [
       'in/TravelStatus_code',
       'in/acceptEnabled',
-      'in/rejectEnabled'
+      'in/rejectEnabled',
+      'in/deductDiscountEnabled'
     ],
   );
   deductDiscount @(
     Core.OperationAvailable : in.deductDiscountEnabled,
-    Common.SideEffects.TargetProperties : ['in/deductDiscountEnabled'],
   );
 }
 
