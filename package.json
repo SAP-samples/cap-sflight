@@ -15,7 +15,7 @@
     "test:mocha": "npx mocha --timeout 20000"
   },
   "dependencies": {
-    "@sap/cds": "^5.4.5",
+    "@sap/cds": ">=5.4.5",
     "@sap/xssec": "^3.2.7",
     "express": "^4",
     "hdb": "^0.19.1",
