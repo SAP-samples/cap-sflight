@@ -16,11 +16,11 @@ annotate TravelService.Travel with @UI : {
     TypeNamePlural : '{i18n>Travels}',
     Title          : {
       $Type : 'UI.DataField',
-      Value : TravelID
+      Value : Description
     },
     Description    : {
       $Type : 'UI.DataField',
-      Value : '{i18n>TravelID}'
+      Value : TravelID
     }
   },
   PresentationVariant : {
@@ -33,7 +33,6 @@ annotate TravelService.Travel with @UI : {
     }]
   },
   SelectionFields : [
-    TravelID,
     to_Agency_AgencyID,
     to_Customer_CustomerID,
     TravelStatus_code
@@ -42,26 +41,36 @@ annotate TravelService.Travel with @UI : {
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.acceptTravel',   Label  : '{i18n>AcceptTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.rejectTravel',   Label  : '{i18n>RejectTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.deductDiscount', Label  : '{i18n>DeductDiscount}' },
-    { Value : TravelID               },
+    {
+      Value : TravelID,
+      ![@UI.Importance] : #High
+    },
     { Value : to_Agency_AgencyID     },
-    { Value : to_Customer_CustomerID },
+    {
+      Value : to_Customer_CustomerID,
+      ![@UI.Importance] : #High
+    },
     { Value : BeginDate              },
     { Value : EndDate                },
     { Value : BookingFee             },
     { Value : TotalPrice             },
-    { Value : Description            },
-    { $Type : 'UI.DataField', Value : TravelStatus_code, Criticality : TravelStatus.criticality }
+    {
+      $Type : 'UI.DataField',
+      Value : TravelStatus_code,
+      Criticality : TravelStatus.criticality,
+      ![@UI.Importance] : #High
+    }
   ],
   Facets : [{
     $Type  : 'UI.CollectionFacet',
-    Label  : '{i18n>Travel}',
+    Label  : '{i18n>GeneralInformation}',
     ID     : 'Travel',
     Facets : [
       {  // travel details
         $Type  : 'UI.ReferenceFacet',
         ID     : 'TravelData',
         Target : '@UI.FieldGroup#TravelData',
-        Label  : '{i18n>Travel}'
+        Label  : '{i18n>GeneralInformation}'
       },
       {  // price information
         $Type  : 'UI.ReferenceFacet',
@@ -79,7 +88,7 @@ annotate TravelService.Travel with @UI : {
   }, {  // booking list
     $Type  : 'UI.ReferenceFacet',
     Target : 'to_Booking/@UI.PresentationVariant',
-    Label  : '{i18n>Booking}'
+    Label  : '{i18n>Bookings}'
   }],
   FieldGroup#TravelData : { Data : [
     { Value : TravelID               },
@@ -110,11 +119,8 @@ annotate TravelService.Booking with @UI : {
   HeaderInfo : {
     TypeName       : '{i18n>Bookings}',
     TypeNamePlural : '{i18n>Bookings}',
-    Title          : { Value : BookingID },
-    Description    : {
-      $Type : 'UI.DataField',
-      Value : '{i18n>BookingID}'
-    }
+    Title          : { Value : to_Customer.LastName },
+    Description    : { Value : BookingID }
   },
   PresentationVariant : {
     Visualizations : ['@UI.LineItem'],
@@ -127,7 +133,7 @@ annotate TravelService.Booking with @UI : {
   SelectionFields : [],
   LineItem : [
     { Value : to_Carrier.AirlinePicURL,  Label : '  '},
-    { Value : BookingID,             Label : '{i18n>BookingNumber}' },
+    { Value : BookingID              },
     { Value : BookingDate            },
     { Value : to_Customer_CustomerID },
     { Value : to_Carrier_AirlineID   },
@@ -138,28 +144,36 @@ annotate TravelService.Booking with @UI : {
   ],
   Facets : [{
     $Type  : 'UI.CollectionFacet',
-    Label  : '{i18n>Booking}',
+    Label  : '{i18n>GeneralInformation}',
     ID     : 'Booking',
     Facets : [{  // booking details
       $Type  : 'UI.ReferenceFacet',
       ID     : 'BookingData',
-      Target : '@UI.FieldGroup#BookingData',
-      Label  : 'Booking'
+      Target : '@UI.FieldGroup#GeneralInformation',
+      Label  : '{i18n>Booking}'
+    }, {  // flight details
+      $Type  : 'UI.ReferenceFacet',
+      ID     : 'FlightData',
+      Target : '@UI.FieldGroup#Flight',
+      Label  : '{i18n>Flight}'
     }]
   }, {  // supplements list
     $Type  : 'UI.ReferenceFacet',
     Target : 'to_BookSupplement/@UI.PresentationVariant',
-    Label  : '{i18n>BookingSupplement}'
+    Label  : '{i18n>BookingSupplements}'
   }],
-  FieldGroup #BookingData : { Data : [
+  FieldGroup #GeneralInformation : { Data : [
     { Value : BookingID              },
     { Value : BookingDate,           },
     { Value : to_Customer_CustomerID },
+    { Value : BookingDate,           },
+    { Value : BookingStatus_code     }
+  ]},
+  FieldGroup #Flight : { Data : [
     { Value : to_Carrier_AirlineID   },
     { Value : ConnectionID           },
     { Value : FlightDate             },
-    { Value : FlightPrice            },
-    { Value : BookingStatus_code     }
+    { Value : FlightPrice            }
   ]},
 };
 
