@@ -20,11 +20,11 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
         }
       );
 
-      
+
       opaTest(
         "#2: Object Page: Check Object Page loads",
         function (Given, When, Then) {
-          When.onTheMainPage.onTable().iPressRow({ TravelID: "4133" });
+          When.onTheMainPage.onTable().iPressRow({ Travel: "4,133" });
           Then.onTheDetailPage.iSeeThisPage();
 
           When.iNavigateBack();
@@ -39,7 +39,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
         // Click on Create button
         When.onTheMainPage.onTable().iExecuteAction("Create");
         Then.onTheDetailPage.iSeeObjectPageInEditMode();
-        When.onTheDetailPage.iOpenSectionWithTitle("Travel");
+        When.onTheDetailPage.iOpenSectionWithTitle("General Information");
 
         // Value help Agency ID
         When.onTheDetailPage
@@ -96,7 +96,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
         // select row to be deleted
         Given.onTheMainPage
           .onTable()
-          .iSelectRows({ Description: "Travel for deletion" });
+          .iSelectRows({ Travel: "Travel for deletion" });
 
         Then.onTheMainPage
           .onTable()
@@ -125,7 +125,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
             );
 
           // select first row
-          Given.onTheMainPage.onTable().iSelectRows({ TravelID: "4132" });
+          Given.onTheMainPage.onTable().iSelectRows({ Travel: "4,132" });
 
           // Check that bound action is now active after selection
           Then.onTheMainPage
@@ -138,7 +138,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           // check that "Travel status" is Open
           Then.onTheMainPage
             .onTable()
-            .iCheckRows({ TravelID: "4132", "Travel Status": "Open" }, 1);
+            .iCheckRows({ Travel: "4,132", "Travel Status": "Open" }, 1);
 
           // trigger action
           When.onTheMainPage.onTable().iExecuteAction({
@@ -149,18 +149,18 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           // check that "Travel status" is now Accepted
           Then.onTheMainPage
             .onTable()
-            .iCheckRows({ TravelID: "4132", "Travel Status": "Accepted" }, 1);
+            .iCheckRows({ Travel: "4,132", "Travel Status": "Accepted" }, 1);
 
           // unselect first row
-          Given.onTheMainPage.onTable().iSelectRows({ TravelID: "4132" });
+          Given.onTheMainPage.onTable().iSelectRows({ Travel: "4,132" });
 
           // select 2nd row
-          Given.onTheMainPage.onTable().iSelectRows({ TravelID: "4131" });
+          Given.onTheMainPage.onTable().iSelectRows({ Travel: "4,131" });
 
           // check that "Travel status" is Open
           Then.onTheMainPage
             .onTable()
-            .iCheckRows({ TravelID: "4131", "Travel Status": "Open" }, 1);
+            .iCheckRows({ Travel: "4,131", "Travel Status": "Open" }, 1);
 
           // trigger action
           When.onTheMainPage.onTable().iExecuteAction({
@@ -171,10 +171,10 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           // check that "Travel status" is Open
           Then.onTheMainPage
             .onTable()
-            .iCheckRows({ TravelID: "4131", "Travel Status": "Canceled" }, 1);
+            .iCheckRows({ Travel: "4,131", "Travel Status": "Canceled" }, 1);
 
           // unselect 2nd row
-          Given.onTheMainPage.onTable().iSelectRows({ TravelID: "4131" });
+          Given.onTheMainPage.onTable().iSelectRows({ Travel: "4,131" });
 
           Then.onTheMainPage.iSeeThisPage();
         }
@@ -184,13 +184,11 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
         "#6: Object Page: Check details for accepted travel",
         function (Given, When, Then) {
           // Open travelk with travel status = "Accepted"
-          When.onTheMainPage.onTable().iPressRow({ TravelID: "4133" });
+          When.onTheMainPage.onTable().iPressRow({ Travel: "4,133" });
           Then.onTheDetailPage.iSeeThisPage();
 
           When.onTheDetailPage.onHeader().iExecuteAction("Edit");
           Then.onTheDetailPage.iSeeObjectPageInEditMode();
-
-          When.onTheDetailPage.iGoToSection("Header");
 
           When.onTheDetailPage.iGoToSection("Booking");
           // Check buttons for bookings
@@ -204,38 +202,38 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
            // Starting date
           Then.onTheDetailPage
           .onForm({ section: "Travel", fieldGroup: "DateData" })
-          .iCheckField({ property: "BeginDate" }, 
+          .iCheckField({ property: "BeginDate" },
                         { value: "Sep 1, 2022" },
                         { editable: false });
 
           // Booking fee
           Then.onTheDetailPage
             .onForm({ section: "Travel", fieldGroup: "PriceData" })
-            .iCheckField({ property: "BookingFee" }, 
+            .iCheckField({ property: "BookingFee" },
                          { editable: false });
 
-        
 
-          When.onTheDetailPage.iGoToSection("Booking");
+
+          When.onTheDetailPage.iGoToSection("General Information");
           When.onTheDetailPage.onTable({ property: "to_Booking" }).iPressRow({ "BookingID": "1" });
-          
+
           Then.onTheDetailItemPage.iSeeThisPage();
           // Check fields
-          When.onTheDetailItemPage.iGoToSection("Booking");
-        
+          When.onTheDetailItemPage.iGoToSection("General Information");
+
           // Flight Price
           Then.onTheDetailItemPage
-          .onForm({ section: "Booking", fieldGroup: "BookingData" })
-          .iCheckField({ property: "FlightPrice" }, 
+          .onForm({ section: "Booking", fieldGroup: "FlightData" })
+          .iCheckField({ property: "FlightPrice" },
                        { editable: false });
 
           // Flight Number
           Then.onTheDetailItemPage
-          .onForm({ section: "Booking", fieldGroup: "BookingData" })
-          .iCheckField({ property: "ConnectionID" }, 
+          .onForm({ section: "Booking", fieldGroup: "FlightData" })
+          .iCheckField({ property: "ConnectionID" },
                         { value: "0018" },
                         { editable: false });
-  
+
           // Check buttons for booking supplements
           When.onTheDetailItemPage.iGoToSection("Booking Supplement");
           When.onTheDetailItemPage
@@ -244,11 +242,11 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
 						.onTable({ property: "to_BookSupplement" })
 						.iCheckDelete({ visible: true, enabled: false })
 						.and.iCheckCreate({ visible: true, enabled: false });
-          
+
 
           When.iNavigateBack();
           Then.onTheDetailPage.iSeeThisPage();
-          
+
           When.onTheDetailPage.onFooter().iExecuteCancel();
           Then.onTheDetailPage.iSeeObjectPageInDisplayMode();
 
@@ -261,13 +259,11 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
         "#7: Object Page: Check details for open travel",
         function (Given, When, Then) {
           // Open travel with travel status = "open"
-          When.onTheMainPage.onTable().iPressRow({ TravelID: "4129" });
+          When.onTheMainPage.onTable().iPressRow({ Travel: "4,129" });
           Then.onTheDetailPage.iSeeThisPage();
 
           When.onTheDetailPage.onHeader().iExecuteAction("Edit");
           Then.onTheDetailPage.iSeeObjectPageInEditMode();
-
-          When.onTheDetailPage.iGoToSection("Header");
 
           When.onTheDetailPage.iGoToSection("Booking");
           // Check buttons
@@ -284,50 +280,50 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
            // Starting date
           Then.onTheDetailPage
           .onForm({ section: "Travel", fieldGroup: "DateData" })
-          .iCheckField({ property: "BeginDate" }, 
+          .iCheckField({ property: "BeginDate" },
                         { value: "Sep 1, 2022" },
                         { editable: true });
 
           // Booking fee
           Then.onTheDetailPage
             .onForm({ section: "Travel", fieldGroup: "PriceData" })
-            .iCheckField({ property: "BookingFee" }, 
+            .iCheckField({ property: "BookingFee" },
                          { editable: true });
 
-        
 
-          When.onTheDetailPage.iGoToSection("Booking");
+
+          When.onTheDetailPage.iGoToSection("General Information");
           When.onTheDetailPage.onTable({ property: "to_Booking" }).iPressRow({ "BookingID": "2" });
-          
+
           Then.onTheDetailItemPage.iSeeThisPage();
           // Check fields
-          When.onTheDetailItemPage.iGoToSection("Booking");        
+          When.onTheDetailItemPage.iGoToSection("General Information");
           // Flight Price
           Then.onTheDetailItemPage
-          .onForm({ section: "Booking", fieldGroup: "BookingData" })
-          .iCheckField({ property: "FlightPrice" },                       
+          .onForm({ section: "Booking", fieldGroup: "FlightData" })
+          .iCheckField({ property: "FlightPrice" },
                        { editable: true });
 
           // Flight Number
           Then.onTheDetailItemPage
-          .onForm({ section: "Booking", fieldGroup: "BookingData" })
-          .iCheckField({ property: "ConnectionID" }, 
+          .onForm({ section: "Booking", fieldGroup: "FlightData" })
+          .iCheckField({ property: "ConnectionID" },
                         { value: "0018" },
                         { editable: true });
-  
+
           // Check buttons for booking supplements
-          When.onTheDetailItemPage.iGoToSection("Booking Supplement");
+          When.onTheDetailItemPage.iGoToSection("Booking Supplements");
           When.onTheDetailItemPage
             .onTable({ property: "to_BookSupplement" }).iSelectRows({ "BookingSupplementID": "1" });
           Then.onTheDetailItemPage
 						.onTable({ property: "to_BookSupplement" })
 						.iCheckDelete({ visible: true, enabled: true })
 						.and.iCheckCreate({ visible: true, enabled: true });
-          
+
 
           When.iNavigateBack();
           Then.onTheDetailPage.iSeeThisPage();
-          
+
           When.onTheDetailPage.onFooter().iExecuteCancel();
           Then.onTheDetailPage.iSeeObjectPageInDisplayMode();
 
