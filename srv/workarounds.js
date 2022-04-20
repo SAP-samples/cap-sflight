@@ -55,7 +55,11 @@ cds.extend (cds.Request) .with (class {
       // deviate to draft?
       const {IsActiveEntity} = key
       if (IsActiveEntity !== undefined) Object.defineProperty (key,'IsActiveEntity',{value:IsActiveEntity, enumerable:false}) //> skip as key in cqn
-      if (IsActiveEntity === 'false') target = target.drafts // REVISIT: Why is IsActiveEntity a string, and not a boolean?
+      if (cds.version < '6.0.0') {
+        if (IsActiveEntity === 'false') target = target.drafts
+      } else {
+        if (IsActiveEntity === false) target = target.drafts
+      }
       // prepare target query
       const q = SELECT.one.from(target,key)
       const {from:{ref},where} = q.SELECT
