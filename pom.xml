@@ -64,7 +64,6 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${spring.boot.version}</version>
 				<configuration>
-					<fork>false</fork>
 					<skip>true</skip>
 				</configuration>
 			</plugin>
