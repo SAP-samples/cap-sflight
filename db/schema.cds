@@ -18,7 +18,7 @@ entity Travel : managed {
   TotalPrice     : Decimal(16, 3) @readonly;
   CurrencyCode   : Currency;
   Description    : String(1024);
-  TravelStatus   : Association to TravelStatus  @readonly;
+  TravelStatus   : Association to TravelStatus @readonly;
   to_Agency      : Association to TravelAgency;
   to_Customer    : Association to Passenger;
   to_Booking     : Composition of many Booking on to_Booking.to_Travel = $self;
@@ -71,4 +71,8 @@ entity TravelStatus : CodeList {
     Accepted = 'A';
     Canceled = 'X';
   } default 'O'; //> will be used for foreign keys as well
+  criticality : Integer; //  2: yellow colour,  3: green colour, 0: unknown
+  fieldControl: Integer @odata.Type:'Edm.Byte'; // 1: #ReadOnly, 7: #Mandatory
+  createDeleteHidden: Boolean;
+  insertDeleteRestriction: Boolean; // = NOT createDeleteHidden
 }

@@ -1,29 +1,66 @@
 {
   "name": "@capire/sflight",
   "version": "1.0.0",
+  "private": true,
   "description": "CAP flight demo scenario",
+  "license": "SAP SAMPLE CODE LICENSE",
   "repository": "https://github.com/SAP-samples/cap-sflight",
+  "engines": {
+    "node": ">=14"
+  },
+  "scripts": {
+    "lint": "npx eslint .",
+    "start": "cds run",
+    "test": "jest",
+    "test:mocha": "npx mocha --timeout 20000"
+  },
   "dependencies": {
-    "@sap/cds": "^5.1",
-    "express": "^4"
+    "@sap/cds": ">=5.4.5",
+    "@sap/xssec": "^3.2.7",
+    "express": "^4",
+    "hdb": "^0.19.1",
+    "passport": "^0.5.2"
   },
   "devDependencies": {
-    "@sap/ux-specification": "^1.84",
+    "@sap/ux-specification": "^1.96.0",
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",
-    "jest": "^26.6.3",
+    "jest": "^27.1.0",
     "qunit": "^2.9.3",
-    "sqlite3": "^5.0.2"
-  },
-  "scripts": {
-    "start": "cds run",
-    "test": "jest --runInBand"
+    "sqlite3": "^5"
   },
   "cds": {
     "requires": {
       "db": {
         "kind": "sql"
+      },
+      "[production]": {
+        "db": {
+          "kind": "hana-cloud"
+        },
+        "auth": {
+          "kind": "xsuaa"
+        }
+      },
+      "[development]": {
+        "auth": {
+          "kind": "dummy-auth",
+          "users": {
+            "rose": {
+              "password": "rose",
+              "roles": []
+            },
+            "martha": {
+              "password": "martha",
+              "roles": ["reviewer"]
+            },
+            "amy": {
+              "password": "amy",
+              "roles": ["processor"]
+            }
+          }
+        }
       }
     },
     "log": {
@@ -31,14 +68,34 @@
     },
     "features": {
       "preserve_computed": true
+    },
+    "build": {
+      "[node]": {
+        "target": "gen",
+        "tasks": [
+          {
+            "for": "node-cf"
+          },
+          {
+            "for": "hana"
+          }
+        ]
+      },
+      "[java]": {
+        "target": ".",
+        "tasks": [{"for": "java-cf"}]
+      },
+      "[hana]": {
+        "target": "gen",
+        "tasks": [{"for": "hana"}]
+      }
     }
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 20000
   },
   "sapux": [
     "app/travel_processor"
-  ],
-  "jest": {
-    "testEnvironment": "node"
-  },
-  "license": "SAP SAMPLE CODE LICENSE",
-  "private": true
+  ]
 }

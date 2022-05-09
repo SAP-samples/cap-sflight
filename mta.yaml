@@ -1,0 +1,185 @@
+_schema-version: "3.2"
+ID: capire.sflight
+version: 1.0.0
+description: "CAP sflight demo"
+
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        # set 'CDS_ENV=node' to pick the 'node' build profile settings, defined in package.json
+        - npx -p @sap/cds-dk cds build --profile production,node
+
+modules:
+  # --------------------- SERVER MODULE ------------------------
+  - name: sflight-srv
+  # ------------------------------------------------------------
+    type: nodejs
+    path: gen/srv
+    requires:
+      - name: sflight-db
+      - name: sflight-uaa
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter, destinations)
+        properties:
+          srv-url: ${default-url}
+    build-parameters:
+      builder: npm-ci
+      ignore: ["node_modules/"]
+
+  # -------------------- SIDECAR MODULE ------------------------
+  - name: sflight-db-deployer
+  # ------------------------------------------------------------
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: sflight-db
+      - name: sflight-uaa
+    build-parameters:
+      ignore: ["node_modules/"]
+
+  # ------------------ APPLICATION CONTENT ---------------------
+  - name: sflight-appcontent
+  # ------------------------------------------------------------
+    type: com.sap.application.content
+    path: app
+    requires:
+      - name: sflight-destination-service
+      - name: sflight-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: sflight-app-travel-processor
+          artifacts:
+            - travel-processor.zip
+          target-path: resources/
+
+  # ------------- APPLICATION: TRAVEL PROCESSOR ----------------
+  - name: sflight-app-travel-processor
+  # ------------------------------------------------------------
+    type: html5
+    path: app/travel_processor
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+      supported-platforms: []
+
+  # ------------------ DESTINATION CONTENT ---------------------
+  - name: sflight-destinationcontent
+  # ------------------------------------------------------------
+    type: com.sap.application.content
+    build-parameters:
+      no-source: true
+    requires:
+      - name: sflight-uaa
+        parameters:
+          service-key:
+            name: sflight-uaa-key
+      - name: sflight-html5-repo-host
+        parameters:
+          service-key:
+            name: sflight-html5-repo-host-key
+      - name: sflight-destination-service
+        parameters:
+          content-target: true
+    parameters:
+      content:
+        instance:
+          existing_destinations_policy: update
+          destinations:
+            - Name: sflight-html5-repository
+              ServiceInstanceName: sflight-html5-repo-host
+              ServiceKeyName: sflight-html5-repo-host-key
+              sap.cloud.service: sap.fe.cap.sflight
+            - Name: sflight-uaa
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: sflight-uaa
+              ServiceKeyName: sflight-uaa-key
+              sap.cloud.service: sap.fe.cap.sflight
+
+resources:
+  # ------------------------------------------------------------
+  - name: sflight-db
+  # ------------------------------------------------------------
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}
+
+  # ------------------------------------------------------------
+  - name: sflight-uaa
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./app/travel_processor/xs-security.json
+      config:
+        xsappname: sflight-${space}
+        tenant-mode: dedicated
+        role-collections:
+          - name: 'sflight-reviewer-${space}'
+            description: Review travels
+            role-template-references:
+              - $XSAPPNAME.reviewer
+          - name: 'sflight-processor-${space}'
+            description: Process travels
+            role-template-references:
+              - $XSAPPNAME.processor
+          - name: 'sflight-admin-${space}'
+            description: Manage travels
+            role-template-references:
+              - $XSAPPNAME.admin
+
+  # ------------------------------------------------------------
+  - name: sflight-html5-repo-runtime
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+
+  # ------------------------------------------------------------
+  - name: sflight-html5-repo-host
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+
+  # ------------------------------------------------------------
+  - name: sflight-destination-service
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    requires:
+      - name: srv-api
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        version: 1.0.0
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: sflight-srv
+                URL: ~{srv-api/srv-url}
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+                HTML5.ForwardAuthToken: true
+                HTML5.DynamicDestination: true
+

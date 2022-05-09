@@ -9,15 +9,17 @@ init() {
   const { Travel, Booking, BookingSupplement } = this.entities
 
 
-  /**
-   * Fill in virtual elements to control status of UI elements.
-   */
-  // this.after ('each', 'Travel', any => {
-  //   const { code: status } = any.TravelStatus || {}
-  //   any.acceptEnabled = status !== 'A'
-  //   any.rejectEnabled = status !== 'X'
-  //   any.deductDiscountEnabled = status !== 'A'
-  // })
+//  /**
+//   * Fill in virtual elements to control status of UI elements.
+//   */
+//  const _calculateButtonAvailability = any => {
+//    const status = any.TravelStatus && any.TravelStatus.code || any.TravelStatus_code
+//    any.acceptEnabled = status !== 'A'
+//    any.rejectEnabled = status !== 'X'
+//    any.deductDiscountEnabled = status === 'O'
+//  }
+//  this.after ('each', 'Travel', _calculateButtonAvailability)
+//  this.after ('EDIT', 'Travel', _calculateButtonAvailability)
 
 
   /**
@@ -36,7 +38,7 @@ init() {
    */
   this.before ('NEW', 'Booking', async (req) => {
     const { to_Travel_TravelUUID } = req.data
-    const { status } = await SELECT `TravelID as ID, TravelStatus_code as status` .from (Travel.drafts, to_Travel_TravelUUID)
+    const { status } = await SELECT `TravelStatus_code as status` .from (Travel.drafts, to_Travel_TravelUUID)
     if (status === 'X') throw req.reject (400, 'Cannot add new bookings to rejected travels.')
     const { maxID } = await SELECT.one `max(BookingID) as maxID` .from (Booking.drafts) .where ({to_Travel_TravelUUID})
     req.data.BookingID = maxID + 1
@@ -88,7 +90,7 @@ init() {
   this.after ('PATCH', 'BookingSupplement', async (_,req) => { if ('Price' in req.data) {
     // We need to fetch the Travel's UUID for the given Supplement target
     const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (Booking.drafts)
-      .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (BookingSupplement.drafts, req.data.BookSupplUUID) }`
+      .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (BookingSupplement.drafts).where({BookSupplUUID:req.data.BookSupplUUID}) }`
       // .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (req._target) }`
       //> REVISIT: req._target not supported for subselects -> see tests
     return this._update_totals4 (travel)
@@ -98,15 +100,12 @@ init() {
   /**
    * Helper to re-calculate a Travel's TotalPrice from BookingFees, FlightPrices and Supplement Prices.
    */
-  this._update_totals4 = async function (travel) {
-    const [{ BookingFee }, { FlightPrices }, { SupplPrices }] = await cds.read ([
-      SELECT.one `BookingFee` .from (Travel.drafts,travel),
-      SELECT.one `sum(FlightPrice) as FlightPrices` .from (Booking.drafts) .where ({ to_Travel_TravelUUID: travel }),
-      SELECT.one `sum(Price) as SupplPrices` .from (BookingSupplement.drafts) .where ({ to_Booking_BookingUUID: /* in: */
-        SELECT `BookingUUID` .from (Booking.drafts) .where ({ to_Travel_TravelUUID: travel })
-      })
-    ])
-    return UPDATE (Travel.drafts,travel) .with ({ TotalPrice: BookingFee + FlightPrices + SupplPrices })
+  this._update_totals4 = function (travel) {
+    return UPDATE (Travel.drafts, travel) .with ({ TotalPrice: CXL `coalesce (BookingFee, 0) + ${
+      SELECT `coalesce (sum (FlightPrice + ${
+        SELECT `coalesce (sum (Price),0)` .from (BookingSupplement.drafts) .where `to_Booking_BookingUUID = BookingUUID`
+      }),0)` .from (Booking.drafts) .where `to_Travel_TravelUUID = TravelUUID`
+    }` })
   }
 
 
@@ -116,7 +115,7 @@ init() {
   this.before ('SAVE', 'Travel', req => {
     const { BeginDate, EndDate } = req.data, today = (new Date).toISOString().slice(0,10)
     if (BeginDate < today) req.error (400, `Begin Date ${BeginDate} must not be before today ${today}.`, 'in/BeginDate')
-    if (BeginDate > EndDate) req.error (400, `Begin Date ${BeginDate} must be befroe End Date ${EndDate}.`, 'in/BeginDate')
+    if (BeginDate > EndDate) req.error (400, `Begin Date ${BeginDate} must be before End Date ${EndDate}.`, 'in/BeginDate')
   })
 
 

@@ -18,7 +18,8 @@
         "CDL": true,
         "CQL": true,
         "CXL": true,
-        "cds": true
+        "cds": true,
+        "sap": true
     },
     "rules": {
         "no-console": "off",

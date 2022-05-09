@@ -1,16 +1,18 @@
 sap.ui.define(
   [
     "sap/fe/test/JourneyRunner",
-    "test/integration/pages/MainListReport",
-    "test/integration/pages/MainObjectPage",
-    "test/integration/OpaJourney",
+    "sap/fe/cap/travel/test/integration/pages/MainListReport",
+    "sap/fe/cap/travel/test/integration/pages/MainObjectPage",
+    "sap/fe/cap/travel/test/integration/pages/ItemObjectPage",
+    "sap/fe/cap/travel/test/integration/OpaJourney",
   ],
-  function (JourneyRunner, MainListReport, MainObjectPage, Journey) {
+  function (JourneyRunner, MainListReport, MainObjectPage, ItemObjectPage, Journey) {
     "use strict";
 
     var journeyRunner = new JourneyRunner({
       // start index.html in web folder
       launchUrl: sap.ui.require.toUrl("sap/fe/cap/travel") + "/index.html",
+      opaConfig: { timeout: 20 },
     });
 
     journeyRunner.run(
@@ -18,6 +20,7 @@ sap.ui.define(
         pages: {
           onTheMainPage: MainListReport,
           onTheDetailPage: MainObjectPage,
+          onTheDetailItemPage: ItemObjectPage
         },
       },
       Journey.run

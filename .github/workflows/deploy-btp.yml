@@ -1,0 +1,105 @@
+on:
+  workflow_call:
+    inputs:
+      btp-subdomain:
+        type: string
+        required: false
+        default: 284dfa06-4fb6-445e-809c-263b132a0840
+      btp-subaccount-id:
+        type: string
+        required: false
+        default: 1e4c6bcd-71c5-42c6-88ab-636e3a6dc12e
+      btp-cli-url:
+        type: string
+        required: false
+        default: https://cpcli.cf.sap.hana.ondemand.com
+      cf-api:
+        type: string
+        required: false
+        default: 'https://api.cf.eu12.hana.ondemand.com'
+      cf-org:
+        type: string
+        required: false
+        default: cap-sflight
+      cf-space:
+        type: string
+        required: true
+      role-collection:
+        type: string
+        required: true
+      mta-source-dir:
+        description: relative path to dir with mta.yaml
+        type: string
+        required: false
+        default: '.'
+      mtar-dir:
+        description: path to dir with mtar
+        type: string
+        required: false
+        default: gen
+      mtar-file:
+        description: file name of mtar
+        type: string
+        required: false
+        default: sflight.mtar
+    secrets:
+      username:
+        required: true
+      password:
+        required: true
+      grant-users:
+        description: List of users to assign the role role-collection to
+        required: false
+    outputs:
+      ui_app_url:
+        value: ${{ jobs.deployment.outputs.ui_app_url }}
+
+jobs:
+
+  deployment:
+    name: To BTP
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: ${{ steps.deploy.outputs.url }}
+    concurrency: staging
+    env:
+      CF_API: ${{ inputs.cf-api }}
+      CF_ORG: ${{ inputs.cf-org }}
+      CF_SPACE: ${{ inputs.cf-space }}
+      CF_USERNAME: ${{ secrets.username }}
+      CF_PASSWORD: ${{ secrets.password }}
+      GRANT_USERS: ${{ secrets.grant-users }}
+    outputs:
+      ui_app_url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 16
+    - uses: actions/cache@v2
+      id: cache
+      with:
+        path: ${{ inputs.mtar-dir }}/${{ inputs.mtar-file }}
+        key: ${{ runner.os }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('_i18n/**','app/**','db/**','srv/**','*.json','**/mta.yaml','pom.xml') }}
+
+    - name: MTA build
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: npx mbt build -s ${{ inputs.mta-source-dir }} -t ${{ inputs.mtar-dir }} --mtar ${{ inputs.mtar-file }}
+
+    - name: CF Deploy
+      id: deploy
+      uses: ./.github/actions/cf-deploy
+      with:
+        createspace: true
+        mtafile: ${{ inputs.mtar-dir }}/${{ inputs.mtar-file }}
+        findurl_command: 'cf html5-list -di sflight-destination-service -u'
+
+    - name: Assign Roles
+      uses: ./.github/actions/btp
+      with:
+        cli_url: ${{ inputs.btp-cli-url }}
+        subdomain: ${{ inputs.btp-subdomain }}
+        subaccount_id: ${{ inputs.btp-subaccount-id }}
+        role_collection: ${{ inputs.role-collection }}

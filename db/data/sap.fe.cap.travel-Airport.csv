@@ -12,9 +12,9 @@ ZRH;Zürich Airport;Zurich;CH
 RTM;Rotterdam The Hague Airport;Rotterdam;NL
 FCO;Leonardo da Vinci–Fiumicino Airport;Rome;IT
 VCE;Venice Marco Polo Airport;Venice;IT
-LCY;London City Airport;London;UK
-LGW;Gatwick Airport;London;UK
-LHR;Heathrow Airport;London;UK
+LCY;London City Airport;London;GB
+LGW;Gatwick Airport;London;GB
+LHR;Heathrow Airport;London;GB
 MAD;Adolfo Suárez Madrid–Barajas Airport;Madrid;ES
 VKO;Vnukovo International Airport;Moscow;RU
 SVO;Sheremetyevo International Airport;Moscow;RU
@@ -37,7 +37,7 @@ HAV;José Martí International Airport;Havana;CU
 ASP;Alice Springs Airport;Alice Springs, Northern Territory;AU
 ACE;Lanzarote Airport;Lanzarote, Canary Islands;ES
 HRE;Harare International Airport;Harare;ZW
-GCJ;Grand Central Airport;Johannesburg;SA
+GCJ;Grand Central Airport;Johannesburg;ZA
 NRT;Narita International Airport;Tokyo, Honshu;JP
 ITM;Osaka International Airport;Osaka, Honshu;JP
 KIX;Kansai International Airport;Osaka, Honshu;JP

@@ -3,6 +3,7 @@ _out
 *.db
 connection.properties
 default-*.json
+schema.sql
 gen/
 node_modules/
 target/
@@ -15,6 +16,7 @@ target/
 *_mta_build_tmp
 *.mtar
 mta_archives/
+/Makefile_*.mta
 
 # Other
 .DS_Store
@@ -26,6 +28,8 @@ mta_archives/
 
 srv/src/main/resources/edmx/**
 dist/
+/app/resources/
+/app/router/package-lock.json
 
 
 # IDEs

@@ -41,7 +41,6 @@ describe ("Basic Querying", () => {
 
 
 describe('Basic OData', () => {
-  jest.setTimeout(20000);
 
   it('serves $metadata documents in v4', async () => {
     const { headers, status, data } = await GET `/processor/$metadata`
@@ -57,17 +56,17 @@ describe('Basic OData', () => {
   it('GET /processor/Travel', async () => {
     const { data } = await GET(`/processor/Travel?$filter=TravelUUID eq '00667221A8E4645C17002DF03754AB66'`)
     expect(data.value).to.containSubset([{
-      BeginDate: '2020-12-10',
+      BeginDate: '2021-11-04',
       BookingFee: 60,
-      createdAt: '2020-11-22T19:42:07.000Z',
+      createdAt: '2021-10-17T18:42:07.000Z',
       createdBy: 'Hansmann',
       CurrencyCode_code: 'SGD',
       Description: 'Sightseeing in Singapore',
-      EndDate: '2021-10-06',
+      EndDate: '2022-08-31',
       HasActiveEntity: false,
       HasDraftEntity: false,
       IsActiveEntity: true,
-      LastChangedAt: '2020-12-03T04:18:18.000Z',
+      LastChangedAt: '2021-10-28T03:18:18.000Z',
       LastChangedBy: 'Deichgraeber',
       to_Agency_AgencyID: '070029',
       to_Customer_CustomerID: '000318',
@@ -151,6 +150,7 @@ describe('Basic OData', () => {
 
     // Ensure it is not in accepted state as that would disallow changing
     await POST (Draft +`/TravelService.rejectTravel`)
+    await PATCH (Draft, { BeginDate: '2222-01-01', EndDate: '2222-01-02' })
 
     // Change the Travel's Booking Fee
     await PATCH (Draft, { BookingFee: '120' })
