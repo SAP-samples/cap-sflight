@@ -9,19 +9,6 @@ init() {
   const { Travel, Booking, BookingSupplement } = this.entities
 
 
-//  /**
-//   * Fill in virtual elements to control status of UI elements.
-//   */
-//  const _calculateButtonAvailability = any => {
-//    const status = any.TravelStatus && any.TravelStatus.code || any.TravelStatus_code
-//    any.acceptEnabled = status !== 'A'
-//    any.rejectEnabled = status !== 'X'
-//    any.deductDiscountEnabled = status === 'O'
-//  }
-//  this.after ('each', 'Travel', _calculateButtonAvailability)
-//  this.after ('EDIT', 'Travel', _calculateButtonAvailability)
-
-
   /**
    * Fill in primary keys for new Travels.
    * Note: In contrast to Bookings and BookingSupplements that has to happen
