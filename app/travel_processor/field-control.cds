@@ -28,7 +28,7 @@ annotate TravelService.Travel with @(Common.SideEffects: {
 } actions {
   rejectTravel @(
     // Core.OperationAvailable : in.rejectEnabled,
-    Core.OperationAvailable : { $edmJson: { $If: [ { $Eq: [{$Path: 'in/TravelStatus_code'}, 'X']}, false, true] }},
+    Core.OperationAvailable : { $edmJson: { $Ne: [{$Path: 'in/TravelStatus_code'}, 'X']}},
     Common.SideEffects.TargetProperties : [
       'in/TravelStatus_code'
       // 'in/acceptEnabled',
@@ -37,7 +37,7 @@ annotate TravelService.Travel with @(Common.SideEffects: {
   );
   acceptTravel @(
     // Core.OperationAvailable : in.acceptEnabled,
-    Core.OperationAvailable : { $edmJson: { $If: [ { $Eq: [{$Path: 'in/TravelStatus_code'}, 'A']}, false, true] }},
+    Core.OperationAvailable : { $edmJson: { $Ne: [{$Path: 'in/TravelStatus_code'}, 'A']}},
     Common.SideEffects.TargetProperties : [
       'in/TravelStatus_code'
       // 'in/acceptEnabled',
@@ -46,7 +46,7 @@ annotate TravelService.Travel with @(Common.SideEffects: {
   );
   deductDiscount @(
     //Core.OperationAvailable : in.deductDiscountEnabled
-    Core.OperationAvailable : { $edmJson: { $If: [ { $Eq: [{$Path: 'in/TravelStatus_code'}, 'A']}, false, true] }}
+    Core.OperationAvailable : { $edmJson: { $Eq: [{$Path: 'in/TravelStatus_code'}, 'O']}}
     // Common.SideEffects.TargetProperties : ['in/deductDiscountEnabled'],
   );
 }
