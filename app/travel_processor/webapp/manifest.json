@@ -127,6 +127,11 @@
                     "options": {
                         "settings": {
                             "entitySet": "Travel",
+                            "controlConfiguration": {
+                                "@com.sap.vocabularies.UI.v1.SelectionFields": {
+                                    "useSemanticDateRange": true
+                                }
+                            },
                             "variantManagement": "Page",
                             "initialLoad": true,
                             "navigation": {
