@@ -36,19 +36,6 @@ public class AcceptRejectHandler implements EventHandler {
 		this.persistenceService = persistenceService;
 	}
 
-	@After(entity = Travel_.CDS_NAME, event = CdsService.EVENT_READ)
-	public void setUiEnabledFields(final List<Travel> travels) {
-		// calculate virtual elements for UI elements being enabled/disabled
-		travels.forEach(travel -> {
-			if (travel.getTravelStatus() != null) {
-				travel.setAcceptEnabled(!travel.getTravelStatus().getCode().equalsIgnoreCase(TRAVEL_STATUS_ACCEPTED));
-				travel.setRejectEnabled(!travel.getTravelStatus().getCode().equalsIgnoreCase(TRAVEL_STATUS_CANCELLED));
-				travel.setDeductDiscountEnabled(
-						!travel.getTravelStatus().getCode().equalsIgnoreCase(TRAVEL_STATUS_ACCEPTED));
-			}
-		});
-	}
-
 	@Before(entity = Travel_.CDS_NAME)
 	public void beforeAcceptTravel(final AcceptTravelContext context) {
 
