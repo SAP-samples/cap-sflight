@@ -61,16 +61,26 @@ init() {
   }})
 
   /**
-   * Update the Travel's TotalPrice when a booking supplement is deleted.
+   * Update the Travel's TotalPrice when a Booking Supplement is deleted.
    */  
-  this.on ('CANCEL', ['BookingSupplement', 'Booking'] , async (req, next) => {
-   const fromClause = req.target.name.split('.')[1] === 'Booking' ? Booking.drafts : BookingSupplement.drafts; // check, if Booking or BookingSupplement is being deleted
+  this.on ('CANCEL', 'BookingSupplement' , async (req, next) => {
    const {IsActiveEntity, ...whereClause} = req.data // remove IsActiveEntity from a copy of req.data  (property is provided as string in req.data, but expected as boolean in where clause)
-   const {to_Travel_TravelUUID : TravelUUID} = await SELECT.one.from(fromClause, b => b.to_Travel_TravelUUID).where(whereClause)
+   const {to_Travel_TravelUUID} = await SELECT.one.from(BookingSupplement.drafts, ['to_Travel_TravelUUID']).where(whereClause)
    const res = await next()
-   await this._update_totals4(TravelUUID)
+   await this._update_totals4(to_Travel_TravelUUID)
    return res
   })
+
+  /**
+   * Update the Travel's TotalPrice when a Booking is deleted.
+   */  
+     this.on ('CANCEL', 'Booking' , async (req, next) => {
+      const {IsActiveEntity, ...whereClause} = req.data // remove IsActiveEntity from a copy of req.data  (property is provided as string in req.data, but expected as boolean in where clause)
+      const {to_Travel_TravelUUID} = await SELECT.one.from(Booking.drafts, ['to_Travel_TravelUUID']).where(whereClause)
+      const res = await next()
+      await this._update_totals4(to_Travel_TravelUUID)
+      return res
+     })
 
   /**
    * Update the Travel's TotalPrice when a Booking's FlightPrice is modified.
