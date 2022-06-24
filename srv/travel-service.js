@@ -84,9 +84,7 @@ init() {
   /**
    * Update the Travel's TotalPrice when a Supplement's Price is modified.
    */
-  this.after ('PATCH', 'BookingSupplement', async (_,req) => { 
-    debugger
-    if ('Price' in req.data) {
+  this.after ('PATCH', 'BookingSupplement', async (_,req) => { if ('Price' in req.data) {
     // We need to fetch the Travel's UUID for the given Supplement target
     const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (Booking.drafts)
       .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (BookingSupplement.drafts).where({BookSupplUUID:req.data.BookSupplUUID}) }`
