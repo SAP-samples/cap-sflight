@@ -72,18 +72,6 @@ init() {
    return res
   })
 
-  // /**
-  //  * Update the Travel's TotalPrice when a booking is deleted.
-  //  */  
-  //    this.on ('CANCEL', 'Booking' , async (req, next) => {
-  //     const {IsActiveEntity, ...whereClause} = req.data // remove IsActiveEntity from a copy of req.data  (property is provided as string in req.data, but expected as boolean in where clause)
-  //     const {to_Travel_TravelUUID : TravelUUID} = await SELECT.one.from(Booking.drafts, b => b.to_Travel_TravelUUID).where(whereClause)
-  //     const res = await next()
-  //     await this._update_totals4(TravelUUID)
-  //     return res
-  //    })
-
-
   /**
    * Update the Travel's TotalPrice when a Booking's FlightPrice is modified.
    */
@@ -92,7 +80,6 @@ init() {
     const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (req._target)
     return this._update_totals4 (travel)
   }})
-
 
   /**
    * Update the Travel's TotalPrice when a Supplement's Price is modified.
