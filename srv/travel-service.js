@@ -60,6 +60,29 @@ init() {
     return this._update_totals4 (req.data.TravelUUID)
   }})
 
+  /**
+   * Update the Travel's TotalPrice when a booking supplement is deleted.
+   */  
+  this.on ('CANCEL', ['BookingSupplement', 'Booking'] , async (req, next) => {
+   const fromClause = req.target.name.split('.')[1] === 'Booking' ? Booking.drafts : BookingSupplement.drafts; // check, if Booking or BookingSupplement is being deleted
+   const {IsActiveEntity, ...whereClause} = req.data // remove IsActiveEntity from a copy of req.data  (property is provided as string in req.data, but expected as boolean in where clause)
+   const {to_Travel_TravelUUID : TravelUUID} = await SELECT.one.from(fromClause, b => b.to_Travel_TravelUUID).where(whereClause)
+   const res = await next()
+   await this._update_totals4(TravelUUID)
+   return res
+  })
+
+  // /**
+  //  * Update the Travel's TotalPrice when a booking is deleted.
+  //  */  
+  //    this.on ('CANCEL', 'Booking' , async (req, next) => {
+  //     const {IsActiveEntity, ...whereClause} = req.data // remove IsActiveEntity from a copy of req.data  (property is provided as string in req.data, but expected as boolean in where clause)
+  //     const {to_Travel_TravelUUID : TravelUUID} = await SELECT.one.from(Booking.drafts, b => b.to_Travel_TravelUUID).where(whereClause)
+  //     const res = await next()
+  //     await this._update_totals4(TravelUUID)
+  //     return res
+  //    })
+
 
   /**
    * Update the Travel's TotalPrice when a Booking's FlightPrice is modified.
@@ -74,7 +97,9 @@ init() {
   /**
    * Update the Travel's TotalPrice when a Supplement's Price is modified.
    */
-  this.after ('PATCH', 'BookingSupplement', async (_,req) => { if ('Price' in req.data) {
+  this.after ('PATCH', 'BookingSupplement', async (_,req) => { 
+    debugger
+    if ('Price' in req.data) {
     // We need to fetch the Travel's UUID for the given Supplement target
     const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (Booking.drafts)
       .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (BookingSupplement.drafts).where({BookSupplUUID:req.data.BookSupplUUID}) }`
