@@ -31,6 +31,18 @@ annotate TravelService.Travel with @(Common.SideEffects: {
   );
 }
 
+annotate TravelService.Travel @(
+    Common.SideEffects#ReactonItemCreationOrDeletion : {
+        SourceEntities : [
+            to_Booking
+        ],
+       TargetProperties : [
+           'TotalPrice'
+       ]
+    }
+);
+
+
 annotate TravelService.Booking with @UI.CreateHidden : to_Travel.TravelStatus.createDeleteHidden;
 annotate TravelService.Booking with @UI.DeleteHidden : to_Travel.TravelStatus.createDeleteHidden;
 
