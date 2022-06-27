@@ -104,10 +104,10 @@ init() {
    */
   this.on('CANCEL', Booking, async (req, next) => {
     // Find out which travel is affected before the delete
-    const { DraftAdministrativeData_DraftUUID, BookSupplUUID } = req.data
+    const { DraftAdministrativeData_DraftUUID, BookingUUID } = req.data
     const { to_Travel_TravelUUID } = await SELECT.one
       .from(Booking.drafts, ['to_Travel_TravelUUID'])
-      .where({ DraftAdministrativeData_DraftUUID, BookSupplUUID })
+      .where({ DraftAdministrativeData_DraftUUID, BookingUUID })
     // Delete handled by generic handlers
     const res = await next()
     // After the delete, update the totals
