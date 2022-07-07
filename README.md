@@ -193,7 +193,7 @@ The *Docker Server* is the full-qualified hostname of your container registry.
 #### Create a secret for your HDI container
 
 ```
-./scripts/create-db-secret.sh sflight-db
+bash ./scripts/create-db-secret.sh sflight-db
 ```
 
 ### Build - Node.js
