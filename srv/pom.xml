@@ -126,9 +126,6 @@
 						<goals>
 							<goal>install-node</goal>
 						</goals>
-						<configuration>
-							<nodeVersion>${node.version}</nodeVersion>
-						</configuration>
 					</execution>
 
 					<execution>
