@@ -137,16 +137,18 @@ that HDI container are stored locally on your filesystem (default-env.json).
 
 ## Deployment to SAP Business Technology Platform - Kyma Runtime
 
+**TIP:** You can find more information in the [Deploy Your CAP Application on SAP BTP Kyma Runtime](https://developers.sap.com/mission.btp-deploy-cap-kyma.html) tutorial and in the [Deploy to Kyma/K8s](https://cap.cloud.sap/docs/guides/deployment/deploy-to-kyma) guide of the CAP documentation.
+
 ## Preconditions
 
 - BTP Subaccount with Kyma Runtime
-- BTP Service Operator installed in the Kyma Runtime
 - BTP Subaccount with Cloud Foundry Space
 - HANA Cloud instance available for your Cloud Foundry space
 - BTP Entitlements for: *HANA HDI Services & Container* plan *hdi-shared*, *Launchpad Service* plan *standard*
 - Container Registry
 - Command Line Tools: `kubectl`, `kubectl-oidc_login`, `pack`, `docker`, `helm`, `cf`
 - Logged into Kyma Runtime (with `kubectl` CLI), Cloud Foundry space (with `cf` CLI) and Container Registry (with `docker login`)
+- `@sap/cds-dk` >= 6.0.1
 
 ### Add Deployment Files
 
@@ -277,14 +279,18 @@ docker push $YOUR_CONTAINER_REGISTRY/sflight-html5-deployer
 helm upgrade sflight ./chart --install -f values.yaml
 ```
 
-### Test the UI
+### Access the UI
 
-4. Create Launchpad Service subscription in the BTP Cockpit
-5. Create a role collection `sflight`
-6. Add role `admin` of `sflight.tXYZ` application to role collection
-7. Add your user to the role collection
-8. Goto **HTML5 Applications**
-9. Start HTML5 app `sapfecaptravel`
+1. Create Launchpad Service subscription in the BTP Cockpit
+2. Create a role collection `sflight`
+3. Add role `admin` of `sflight.tXYZ` application to role collection
+4. Add your user to the role collection
+5. Goto **HTML5 Applications**
+6. Start HTML5 application `sapfecaptravel`
+
+Additionally, you can add the UI to a Launchpad Service site like it is described in in the last two steps of [this tutorial](https://developers.sap.com/tutorials/btp-app-kyma-launchpad-service.html#9aab2dd0-18ea-4ccd-bc44-24e87c845740).
+
+
 ## Creating an SAP Fiori App from Scratch
 
 If you want to implement an SAP Fiori app, follow these tutorials:
