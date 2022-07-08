@@ -46,3 +46,6 @@ dist/
 .env
 .values.yaml
 .cdsrc-private.json
+
+# Exclude Helm chart for this example
+/chart
