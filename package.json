@@ -71,9 +71,6 @@
     "log": {
       "service": true
     },
-    "features": {
-      "preserve_computed": true
-    },
     "build": {
       "[node]": {
         "target": "gen",
