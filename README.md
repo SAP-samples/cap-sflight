@@ -22,8 +22,11 @@ currently simply sums up the single prices ignoring the currencies.
 
 ### Build and Run
 
-1. In a console, execute `npm ci` in the root folder of your project.
-2. In a console, execute `cds watch` in the root folder of your project.
+In the root folder of your project run
+```
+npm ci
+cds watch
+```
 
 ### Accessing the SAP Fiori App
 
@@ -42,16 +45,25 @@ https://ui5.sap.com/#/api/sap.fe.test
 
 ### Build and Run
 
-1. In a console, execute `npm ci` in the root folder of your project.
-2. In a console, execute `mvn spring-boot:run` in the root folder of your project.
-3. In another console, execute `npm start` in folder `app\travel_processor` of your project (this starts the middleware)
+In the root folder of your project run
+```
+npm ci
+mvn spring-boot:run
+```
 
-Note: If you access the CAP Java server directly without middleware, you will have to enter mock user credentials admin / admin which are maintained in file application.yml.
+To start the middleware, in another console execute
+```
+cd app\travel_processor
+npm start
+```
 
 ### Accessing the SAP Fiori App
 
 Open this link in your browser:
 http://localhost:8080/index.html
+
+Note: If you access the CAP Java server directly without middleware, you will have to enter mock user credentials admin / admin which are maintained in file application.yml.
+
 
 ### Integration Tests
 
