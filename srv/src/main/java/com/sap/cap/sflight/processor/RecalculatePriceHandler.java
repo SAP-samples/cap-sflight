@@ -9,9 +9,14 @@ import static java.lang.Boolean.FALSE;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
+import com.sap.cds.Row;
 import com.sap.cds.ql.Select;
 import com.sap.cds.ql.Update;
+import com.sap.cds.ql.cqn.CqnUpdate;
 import com.sap.cds.services.ErrorStatuses;
 import com.sap.cds.services.ServiceException;
 import com.sap.cds.services.cds.CdsService;
@@ -23,8 +28,6 @@ import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
 import com.sap.cds.services.utils.StringUtils;
-
-import org.springframework.stereotype.Component;
 
 import cds.gen.travelservice.Booking;
 import cds.gen.travelservice.BookingSupplement;
@@ -54,8 +57,8 @@ public class RecalculatePriceHandler implements EventHandler {
 	private static BigDecimal calculateTotalPriceForTravel(CqnService db, String travelUUID,
 			boolean isActiveEntity) {
 		// get booking fee
-		var bookingFee = BigDecimal.valueOf(0);
-		var bookingFeeRow = db
+		BigDecimal bookingFee = BigDecimal.valueOf(0);
+		Optional<Row> bookingFeeRow = db
 				.run(Select.from(TRAVEL).columns(Travel_::BookingFee)
 						.where(t -> t.TravelUUID().eq(travelUUID)
 								.and(t.IsActiveEntity().eq(isActiveEntity))
@@ -67,8 +70,8 @@ public class RecalculatePriceHandler implements EventHandler {
 		}
 
 		// get sum of flight prices from all bookings
-		var flightPriceSum = new BigDecimal(0);
-		var flightPriceRow = db
+		BigDecimal flightPriceSum = new BigDecimal(0);
+		Optional<Row> flightPriceRow = db
 				.run(Select.from(BOOKING).columns(b -> sum(b.FlightPrice()).as("FlightPriceSum"))
 						.where(b -> b.to_Travel_TravelUUID().eq(travelUUID).and(b.IsActiveEntity().eq(isActiveEntity))))
 				.first();
@@ -78,8 +81,8 @@ public class RecalculatePriceHandler implements EventHandler {
 		}
 
 		// get sum of the prices of all booking supplements for the travel
-		var supplementPriceSum = new BigDecimal(0);
-		var supplementPriceSumRow = db
+		BigDecimal supplementPriceSum = new BigDecimal(0);
+		Optional<Row> supplementPriceSumRow = db
 				.run(Select.from(BOOKING_SUPPLEMENT).columns(c -> sum(c.Price()).as("PriceSum"))
 						.where(b -> b.to_Travel_TravelUUID().eq(travelUUID).and(b.IsActiveEntity().eq(isActiveEntity))))
 				.first();
@@ -146,7 +149,10 @@ public class RecalculatePriceHandler implements EventHandler {
 	private BigDecimal calculateAndPatchNewTotalPriceForDraft(final String travelUUID) {
 
 		BigDecimal totalPrice = calculateTotalPriceForTravel(draftService, travelUUID, false);
-		var update = Update.entity(TRAVEL).data(Map.of(Travel.TRAVEL_UUID, travelUUID, Travel.TOTAL_PRICE, totalPrice));
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(Travel.TRAVEL_UUID, travelUUID);
+		map.put(Travel.TOTAL_PRICE, totalPrice);
+		CqnUpdate update = Update.entity(TRAVEL).data(map);
 		draftService.patchDraft(update);
 		return totalPrice;
 	}

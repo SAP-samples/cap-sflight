@@ -13,7 +13,7 @@
 		<revision>1.0.0-SNAPSHOT</revision>
 
 		<!-- DEPENDENCIES VERSION -->
-		<jdk.version>11</jdk.version>
+		<jdk.version>8</jdk.version>
 		<cds.services.version>1.25.0</cds.services.version>
 		<spring.boot.version>2.7.1</spring.boot.version>
 
@@ -111,9 +111,9 @@
 								<requireMavenVersion>
 									<version>3.5.0</version>
 								</requireMavenVersion>
-								<requireJavaVersion>
+								<!-- <requireJavaVersion>
 									<version>${jdk.version}</version>
-								</requireJavaVersion>
+								</requireJavaVersion> -->
 								<requireProperty>
 									<property>project.artifactId</property>
 									<regex>[^_]+</regex>
