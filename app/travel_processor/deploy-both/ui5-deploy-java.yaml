@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+specVersion: "2.6"
+metadata:
+  name: sap.fe.cap.travelJ
+type: application
+
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+builder:
+  resources:
+    excludes:
+      - "/test/**"
+      - "/localService/**"
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: travel-processor-java
+    - name: custBuildTask-manifest
+      beforeTask: generateManifestBundle
+      configuration:
+        stack: java
+    - name: custBuildTask-compPreload
+      afterTask: generateComponentPreload
+      configuration:
+        stack: java
+    - name: custBuildTask-xsApp
+      beforeTask: ui5-task-zipper
+      configuration:
+        stack: java
+---
+# Task extensions
+specVersion: "2.6"
+kind: extension
+type: task
+metadata:
+  name: custBuildTask-manifest
+task:
+  path: deploy-both/custBuildTask-manifest.js
+---
+specVersion: "2.6"
+kind: extension
+type: task
+metadata:
+  name: custBuildTask-compPreload
+task:
+  path: deploy-both/custBuildTask-compPreload.js
+---
+specVersion: "2.6"
+kind: extension
+type: task
+metadata:
+  name: custBuildTask-xsApp
+task:
+  path: deploy-both/custBuildTask-xsApp.js

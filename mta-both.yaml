@@ -1,0 +1,252 @@
+_schema-version: "3.2"
+ID: capire.sflightNJ
+version: 1.0.0
+description: "CAP sflight demo (Node&Java)"
+
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        # hana is part of node build (cannot be separated as each of them first deletes gen folder)
+        - npx -p @sap/cds-dk cds build --profile production,node
+        - npx -p @sap/cds-dk cds build --profile production,java
+
+
+modules:
+  # --------------------- SERVER MODULES -----------------------
+  - name: sflightN-srv
+  # ------------------------------------------------------------
+    type: nodejs
+    path: gen/srv
+    requires:
+      - name: sflightN-db
+      - name: sflight-uaa
+    provides:
+      - name: srvN-api # required by consumers of CAP services (e.g. approuter, destinations)
+        properties:
+          srv-url: ${default-url}
+    build-parameters:
+      builder: npm-ci
+      ignore: ["node_modules/"]
+
+  # ------------------------------------------------------------
+  - name: sflightJ-srv
+  # ------------------------------------------------------------
+    type: java
+    path: srv
+    properties:
+      SPRING_PROFILES_ACTIVE: cloud
+      JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jdk.SAPMachineJDK']"
+      JBP_CONFIG_SAP_MACHINE_JRE: '{ jre: { version: 11.+ } }'
+    requires:
+      - name: sflightJ-db
+      - name: sflight-uaa
+    provides:
+      - name: srvJ-api # required by consumers of CAP services (e.g. approuter, destinations)
+        properties:
+          srv-url: ${default-url}
+    build-parameters:
+      builder: custom
+      commands:
+        - mvn clean package -DskipTests=true
+      build-result: target/*-exec.jar
+      ignore: ["node_modules/"]
+
+
+  # -------------------- SIDECAR MODULES HDI DEPLOY ------------
+  - name: sflightN-db-deployer
+  # ------------------------------------------------------------
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: sflightN-db
+      - name: sflight-uaa
+    build-parameters:
+      ignore: ["node_modules/"]
+
+  # ------------------------------------------------------------
+  - name: sflightJ-db-deployer
+  # ------------------------------------------------------------
+  # can we avoid the 2nd (unnecessary) npm install ??? it doesn't do much, but anyway ...
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: sflightJ-db
+      - name: sflight-uaa
+    build-parameters:
+      ignore: ["node_modules/"]
+
+
+  # ------------------ APPLICATION CONTENT ---------------------
+  - name: sflight-appcontent
+  # ------------------------------------------------------------
+    type: com.sap.application.content
+    path: app
+    requires:
+      - name: sflight-destination-service
+      - name: sflight-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: sflightN-app-travel-processor
+          artifacts:
+            - travel-processor-node.zip
+          target-path: resources/
+        - name: sflightJ-app-travel-processor
+          artifacts:
+            - travel-processor-java.zip
+          target-path: resources/
+
+
+  # ------------- APPLICATION: TRAVEL PROCESSOR ----------------
+  - name: sflightN-app-travel-processor
+  # ------------------------------------------------------------
+    type: html5
+    path: app/travel_processor
+    build-parameters:
+      build-result: dist-node
+      builder: custom
+      commands:
+        # use npm ci instead?
+        - npm install
+        - npm run build:node
+      supported-platforms: []
+
+  # ------------------------------------------------------------
+  - name: sflightJ-app-travel-processor
+  # ------------------------------------------------------------
+    type: html5
+    path: app/travel_processor
+    build-parameters:
+      build-result: dist-java
+      builder: custom
+      commands:
+        # use npm ci instead?
+        - npm install
+        - npm run build:java
+      supported-platforms: []
+
+
+  # ------------------ DESTINATION CONTENT ---------------------
+  - name: sflight-destinationcontent
+  # ------------------------------------------------------------
+    type: com.sap.application.content
+    build-parameters:
+      no-source: true
+    requires:
+      - name: sflight-uaa
+        parameters:
+          service-key:
+            name: sflight-uaa-key
+      - name: sflight-html5-repo-host
+        parameters:
+          service-key:
+            name: sflight-html5-repo-host-key
+      - name: sflight-destination-service
+        parameters:
+          content-target: true
+    parameters:
+      content:
+        instance:
+          existing_destinations_policy: update
+          destinations:
+            - Name: sflight-html5-repository
+              ServiceInstanceName: sflight-html5-repo-host
+              ServiceKeyName: sflight-html5-repo-host-key
+              sap.cloud.service: sap.fe.cap.sflight
+            - Name: sflight-uaa
+              Authentication: OAuth2UserTokenExchange
+              ServiceInstanceName: sflight-uaa
+              ServiceKeyName: sflight-uaa-key
+              sap.cloud.service: sap.fe.cap.sflight
+
+
+resources:
+  # --------------------- HDI CONTAINERS -----------------------
+  - name: sflightN-db
+  # ------------------------------------------------------------
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}
+
+  # ------------------------------------------------------------
+  - name: sflightJ-db
+  # ------------------------------------------------------------
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}
+
+
+  # --------------------- UAA ----------------------------------
+  - name: sflight-uaa
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./app/travel_processor/xs-security.json
+      config:
+        xsappname: sflight-${space}
+        tenant-mode: dedicated
+        role-collections:
+          - name: 'sflight-admin-${space}'
+            description: SFlight - Manage Travels
+            role-template-references:
+              - $XSAPPNAME.admin
+
+
+  # ------------------------------------------------------------
+  - name: sflight-html5-repo-host
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+
+  # ------------------------------------------------------------
+  - name: sflight-destination-service
+  # ------------------------------------------------------------
+    type: org.cloudfoundry.managed-service
+    requires:
+      - name: srvN-api
+      - name: srvJ-api
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        version: 1.0.0
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: sflightN-srv
+                URL: ~{srvN-api/srv-url}
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+                HTML5.ForwardAuthToken: true
+                HTML5.DynamicDestination: true
+              - Name: sflightJ-srv
+                URL: ~{srvJ-api/srv-url}
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+                HTML5.ForwardAuthToken: true
+                HTML5.DynamicDestination: true
+
