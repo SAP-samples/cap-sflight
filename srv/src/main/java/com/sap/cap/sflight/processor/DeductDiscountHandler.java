@@ -6,13 +6,14 @@ import static java.lang.Boolean.TRUE;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import org.springframework.stereotype.Component;
+
 import com.sap.cds.ql.Update;
+import com.sap.cds.ql.cqn.CqnUpdate;
 import com.sap.cds.services.draft.DraftService;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
-
-import org.springframework.stereotype.Component;
 
 import cds.gen.travelservice.DeductDiscountContext;
 import cds.gen.travelservice.Travel;
@@ -32,7 +33,7 @@ public class DeductDiscountHandler implements EventHandler {
 	@On(entity = Travel_.CDS_NAME)
 	public void deductDiscount(final DeductDiscountContext context) {
 
-		var travel = draftService.run(context.getCqn()).single(Travel.class);
+		Travel travel = draftService.run(context.getCqn()).single(Travel.class);
 
 		BigDecimal discount = BigDecimal.valueOf(context.getPercent())
 				.divide(BigDecimal.valueOf(100), new MathContext(3));
@@ -52,11 +53,11 @@ public class DeductDiscountHandler implements EventHandler {
 		context.getCdsRuntime().requestContext().privilegedUser().run(ctx -> {
 			//throw exception if travel.getIsActiveEntity is null!.
 			if (TRUE.equals(travel.getIsActiveEntity())) {
-				var updateCqn = Update.entity(TRAVEL)
+				CqnUpdate updateCqn = Update.entity(TRAVEL)
 						.where(t -> t.TravelUUID().eq(travel.getTravelUUID())).data(update);
 				draftService.run(updateCqn);
 			} else {
-				var updateCqn = Update.entity(TRAVEL)
+				CqnUpdate updateCqn = Update.entity(TRAVEL)
 						.where(t -> t.TravelUUID().eq(travel.getTravelUUID()).and(t.IsActiveEntity().eq(travel.getIsActiveEntity()))).data(update);
 				draftService.patchDraft(updateCqn);
 			}
