@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@sap/ux-specification": "^1.96.0",
+    "axios": "^0",
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",
@@ -53,11 +54,15 @@
             },
             "martha": {
               "password": "martha",
-              "roles": ["reviewer"]
+              "roles": [
+                "reviewer"
+              ]
             },
             "amy": {
               "password": "amy",
-              "roles": ["processor"]
+              "roles": [
+                "processor"
+              ]
             }
           }
         }
@@ -83,11 +88,19 @@
       },
       "[java]": {
         "target": ".",
-        "tasks": [{"for": "java-cf"}]
+        "tasks": [
+          {
+            "for": "java-cf"
+          }
+        ]
       },
       "[hana]": {
         "target": "gen",
-        "tasks": [{"for": "hana"}]
+        "tasks": [
+          {
+            "for": "hana"
+          }
+        ]
       }
     }
   },
