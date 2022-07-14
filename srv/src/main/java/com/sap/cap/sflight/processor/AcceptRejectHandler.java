@@ -1,24 +1,23 @@
 package com.sap.cap.sflight.processor;
 
-import java.util.List;
+import static cds.gen.travelservice.TravelService_.TRAVEL;
+
+import org.springframework.stereotype.Component;
+
+import com.sap.cds.ql.Update;
+import com.sap.cds.ql.cqn.CqnUpdate;
+import com.sap.cds.services.draft.DraftService;
+import com.sap.cds.services.handler.EventHandler;
+import com.sap.cds.services.handler.annotations.Before;
+import com.sap.cds.services.handler.annotations.On;
+import com.sap.cds.services.handler.annotations.ServiceName;
+import com.sap.cds.services.persistence.PersistenceService;
 
 import cds.gen.travelservice.AcceptTravelContext;
 import cds.gen.travelservice.RejectTravelContext;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
 import cds.gen.travelservice.Travel_;
-import com.sap.cds.ql.Update;
-import com.sap.cds.services.cds.CdsService;
-import com.sap.cds.services.draft.DraftService;
-import com.sap.cds.services.handler.EventHandler;
-import com.sap.cds.services.handler.annotations.After;
-import com.sap.cds.services.handler.annotations.Before;
-import com.sap.cds.services.handler.annotations.On;
-import com.sap.cds.services.handler.annotations.ServiceName;
-import com.sap.cds.services.persistence.PersistenceService;
-import org.springframework.stereotype.Component;
-
-import static cds.gen.travelservice.TravelService_.TRAVEL;
 
 @Component
 @ServiceName(TravelService_.CDS_NAME)
@@ -49,7 +48,7 @@ public class AcceptRejectHandler implements EventHandler {
 
 	@On(entity = Travel_.CDS_NAME)
 	public void onRejectTravel(final RejectTravelContext context) {
-		var travel = draftService.run(context.getCqn()).single(Travel.class);
+		Travel travel = draftService.run(context.getCqn()).single(Travel.class);
 		context.getCdsRuntime().requestContext().privilegedUser().run(ctx -> {
 			updateStatusForTravelId(travel.getTravelUUID(), TRAVEL_STATUS_CANCELLED, travel.getIsActiveEntity());
 		});
@@ -58,7 +57,7 @@ public class AcceptRejectHandler implements EventHandler {
 
 	@On(entity = Travel_.CDS_NAME)
 	public void onAcceptTravel(final AcceptTravelContext context) {
-		var travel = draftService.run(context.getCqn()).single(Travel.class);
+		Travel travel = draftService.run(context.getCqn()).single(Travel.class);
 		context.getCdsRuntime().requestContext().privilegedUser().run(ctx -> {
 			updateStatusForTravelId(travel.getTravelUUID(), TRAVEL_STATUS_ACCEPTED, travel.getIsActiveEntity());
 		});
@@ -71,7 +70,7 @@ public class AcceptRejectHandler implements EventHandler {
 			persistenceService.run(Update.entity(TRAVEL).where(t -> t.TravelUUID().eq(travelUUID))
 					.data(Travel.TRAVEL_STATUS_CODE, newStatus));
 		} else {
-			Update<Travel_> travelUpdateDraft = Update.entity(TRAVEL)
+			CqnUpdate travelUpdateDraft = Update.entity(TRAVEL)
 					.where(t -> t.TravelUUID().eq(travelUUID).and(t.IsActiveEntity().eq(false)))
 					.data(Travel.TRAVEL_STATUS_CODE, newStatus);
 			draftService.patchDraft(travelUpdateDraft).first(Travel.class);
