@@ -85,7 +85,7 @@ The configuration file `mta.yaml` is for the Node.js backend of the app. If you 
 - Create a [trial account on SAP BTP](https://www.sap.com/products/business-technology-platform/trial.html). See this [tutorial](https://developers.sap.com/tutorials/hcp-create-trial-account.html) for more information. Alternatively, you can use a sub-account in a productive environment.
 - Subscribe to the [SAP Launchpad Service](https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html).
 - Create an [SAP HANA Cloud Service instance](https://developers.sap.com/tutorials/btp-app-hana-cloud-setup.html#08480ec0-ac70-4d47-a759-dc5cb0eb1d58) or use an existing one.
-  
+
 #### Local Machine
 
 - Install the Cloud Foundry command line interface (CLI). See this [tutorial](https://developers.sap.com/tutorials/cp-cf-download-cli.html) for more details.
@@ -134,6 +134,10 @@ You need to have access to a HANA Cloud instance and SAP BTP.
 
 The running application is now connected to its own HDI container/schema. Please keep in mind that the credentials for
 that HDI container are stored locally on your filesystem (default-env.json).
+
+## Deployment to SAP Business Technology Platform - Kyma Runtime
+
+The deployment to Kyma Runtime is explained in file [README-Kyma-Runtime.md](./README-Kyma-Runtime.md).
 
 ## Creating an SAP Fiori App from Scratch
 

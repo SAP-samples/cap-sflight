@@ -60,7 +60,11 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 	   </dependency>
 
-
+		<dependency>
+			<groupId>com.sap.cds</groupId>
+			<artifactId>cds-feature-k8s</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -87,7 +91,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			
 			<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
