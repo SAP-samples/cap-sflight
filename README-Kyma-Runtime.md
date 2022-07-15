@@ -1,5 +1,19 @@
 # Deployment to SAP Business Technology Platform - Kyma Runtime
 
+- [Deployment to SAP Business Technology Platform - Kyma Runtime](#deployment-to-sap-business-technology-platform---kyma-runtime)
+  - [Preconditions](#preconditions)
+  - [Add Deployment Files](#add-deployment-files)
+  - [Configuration](#configuration)
+  - [Prepare Kubernetes Namespace](#prepare-kubernetes-namespace)
+    - [Create container registry secret](#create-container-registry-secret)
+    - [Create a secret for your HDI container](#create-a-secret-for-your-hdi-container)
+  - [Build - Node.js](#build---nodejs)
+  - [Build - Java](#build---java)
+  - [Build HTML5 application deployer image](#build-html5-application-deployer-image)
+  - [Push docker images](#push-docker-images)
+  - [Deployment](#deployment)
+  - [Access the UI](#access-the-ui)
+
 **TIP:** You can find more information in the [Deploy Your CAP Application on SAP BTP Kyma Runtime](https://developers.sap.com/mission.btp-deploy-cap-kyma.html) tutorial and in the [Deploy to Kyma/K8s](https://cap.cloud.sap/docs/guides/deployment/deploy-to-kyma) guide of the CAP documentation.
 
 ## Preconditions
@@ -63,6 +77,8 @@ bash deployment/kyma/scripts/create-db-secret.sh sflight-db
 
 ## Build - Node.js
 
+Do the following steps if you want to deploy the **Node.js** application.
+
 The `CDS_ENV=node` env variable needs to be provided to build for Node.js. The application will be built for Java by default.
 
 ```
@@ -89,6 +105,8 @@ pack build \
 ```
 
 ## Build - Java
+
+Do the following steps if you want to deploy the **Java** application.
 
 **Build data base deployer image:**
 
