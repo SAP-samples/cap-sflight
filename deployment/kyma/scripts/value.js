@@ -35,4 +35,4 @@ function printProperty(file) {
     return true;
 }
 
-printProperty('.values.yaml') || printProperty('values.yaml') || printProperty('chart/values.yaml') || process.exit(1);
+printProperty('.values.yaml') || printProperty('deployment/kyma/values.yaml') || printProperty('chart/values.yaml') || process.exit(1);

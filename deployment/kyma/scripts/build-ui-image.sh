@@ -1,12 +1,13 @@
 #!/bin/bash
 
 set -e
-cd "$(dirname "$(dirname "$0")")"
+cd "$(dirname "$(npm root)")"
+DIR="$(pwd)"
 
 npm install --no-save yaml
 
 function value() {
-    node ./scripts/value.js "$1"
+    node "$DIR/deployment/kyma/scripts/value.js" "$1"
 }
 
 function image() {
@@ -37,12 +38,12 @@ for APP in app/*; do
         cp -r "$APP" gen/app
         pushd >/dev/null "gen/$APP"
 
-        node ../../../scripts/prepareUiFiles.js $CLOUD_SERVICE $DESTINATIONS
+        node "$DIR/deployment/kyma/scripts/prepareUiFiles.js" $CLOUD_SERVICE $DESTINATIONS
         npm install
         npx ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateManifestBundle generateCachebusterInfo
         cd dist
         rm manifest-bundle.zip
-        mv *.zip ../../../ui/resources
+        mv *.zip "$DIR/gen/ui/resources"
 
         popd >/dev/null
     fi
