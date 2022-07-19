@@ -83,6 +83,38 @@ init() {
     return this._update_totals4 (travel)
   }})
 
+  /**
+   * Update the Travel's TotalPrice when a Booking Supplement is deleted.
+   */
+  this.on('CANCEL', BookingSupplement, async (req, next) => {
+    // Find out which travel is affected before the delete
+    const { DraftAdministrativeData_DraftUUID, BookSupplUUID } = req.data
+    const { to_Travel_TravelUUID } = await SELECT.one
+      .from(BookingSupplement.drafts, ['to_Travel_TravelUUID'])
+      .where({ DraftAdministrativeData_DraftUUID, BookSupplUUID })
+    // Delete handled by generic handlers
+    const res = await next()
+    // After the delete, update the totals
+    await this._update_totals4(to_Travel_TravelUUID)
+    return res
+  })
+  
+  /**
+   * Update the Travel's TotalPrice when a Booking is deleted.
+   */
+  this.on('CANCEL', Booking, async (req, next) => {
+    // Find out which travel is affected before the delete
+    const { DraftAdministrativeData_DraftUUID, BookingUUID } = req.data
+    const { to_Travel_TravelUUID } = await SELECT.one
+      .from(Booking.drafts, ['to_Travel_TravelUUID'])
+      .where({ DraftAdministrativeData_DraftUUID, BookingUUID })
+    // Delete handled by generic handlers
+    const res = await next()
+    // After the delete, update the totals
+    await this._update_totals4(to_Travel_TravelUUID)
+    return res
+  })
+
 
   /**
    * Helper to re-calculate a Travel's TotalPrice from BookingFees, FlightPrices and Supplement Prices.
