@@ -22,8 +22,11 @@ currently simply sums up the single prices ignoring the currencies.
 
 ### Build and Run
 
-1. In a console, execute `npm ci` in the root folder of your project.
-2. In a console, execute `cds watch` in the root folder of your project.
+In the root folder of your project run
+```
+npm ci
+cds watch
+```
 
 ### Accessing the SAP Fiori App
 
@@ -42,16 +45,25 @@ https://ui5.sap.com/#/api/sap.fe.test
 
 ### Build and Run
 
-1. In a console, execute `npm ci` in the root folder of your project.
-2. In a console, execute `mvn spring-boot:run` in the root folder of your project.
-3. In another console, execute `npm start` in folder `app\travel_processor` of your project (this starts the middleware)
+In the root folder of your project run
+```
+npm ci
+mvn spring-boot:run
+```
 
-Note: If you access the CAP Java server directly without middleware, you will have to enter mock user credentials admin / admin which are maintained in file application.yml.
+To start the middleware, in another console execute
+```
+cd app\travel_processor
+npm start
+```
 
 ### Accessing the SAP Fiori App
 
 Open this link in your browser:
 http://localhost:8080/index.html
+
+Note: If you access the CAP Java server directly without middleware, you will have to enter mock user credentials admin / admin which are maintained in file application.yml.
+
 
 ### Integration Tests
 
@@ -73,7 +85,7 @@ The configuration file `mta.yaml` is for the Node.js backend of the app. If you 
 - Create a [trial account on SAP BTP](https://www.sap.com/products/business-technology-platform/trial.html). See this [tutorial](https://developers.sap.com/tutorials/hcp-create-trial-account.html) for more information. Alternatively, you can use a sub-account in a productive environment.
 - Subscribe to the [SAP Launchpad Service](https://developers.sap.com/tutorials/cp-portal-cloud-foundry-getting-started.html).
 - Create an [SAP HANA Cloud Service instance](https://developers.sap.com/tutorials/btp-app-hana-cloud-setup.html#08480ec0-ac70-4d47-a759-dc5cb0eb1d58) or use an existing one.
-  
+
 #### Local Machine
 
 - Install the Cloud Foundry command line interface (CLI). See this [tutorial](https://developers.sap.com/tutorials/cp-cf-download-cli.html) for more details.
@@ -122,6 +134,10 @@ You need to have access to a HANA Cloud instance and SAP BTP.
 
 The running application is now connected to its own HDI container/schema. Please keep in mind that the credentials for
 that HDI container are stored locally on your filesystem (default-env.json).
+
+## Deployment to SAP Business Technology Platform - Kyma Runtime
+
+The deployment to Kyma Runtime is explained in file [README-Kyma-Runtime.md](./README-Kyma-Runtime.md).
 
 ## Creating an SAP Fiori App from Scratch
 
