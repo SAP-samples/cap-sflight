@@ -5,7 +5,7 @@ using TravelService from '../../srv/travel-service';
 //
 
 // Workarounds for overly strict OData libs and clients
-annotate cds.UUID with @Core.Computed  @odata.Type : 'Edm.String';
+annotate cds.UUID with @Core.ComputedDefaultValue  @odata.Type: 'Edm.String';
 
 annotate TravelService.Travel with @(Common.SideEffects: {
   SourceProperties: [BookingFee],
