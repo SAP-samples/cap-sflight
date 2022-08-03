@@ -52,7 +52,7 @@ stringData:
   type: hana
   label: hana
   plan: hdi-shared
-  tags: '[ "db", "hana" ]'
+  tags: '[ "hana", "database", "relational" ]'
 EOF
 )"
 
