@@ -59,7 +59,7 @@ cds.extend (cds.Request) .with (class {
 
       // prepare target query
       const q = SELECT.one.from(target,key)
-      const {from:{ref},where} = q.SELECT
+      const {from:{ref}} = q.SELECT
       target = {ref}
     }
     return super._target = target
