@@ -25,8 +25,34 @@ metadata:
   name: $NAME
 type: Opaque
 stringData:
+  .metadata: |
+    {
+      "credentialProperties":
+        [
+          { "name": "certificate", "format": "text"},
+          { "name": "database_id", "format": "text"},
+          { "name": "driver", "format": "text"},
+          { "name": "hdi_password", "format": "text"},
+          { "name": "hdi_user", "format": "text"},
+          { "name": "host", "format": "text"},
+          { "name": "password", "format": "text"},
+          { "name": "port", "format": "text"},
+          { "name": "schema", "format": "text"},
+          { "name": "url", "format": "text"},
+          { "name": "user", "format": "text"}
+        ],
+      "metaDataProperties":
+        [
+          { "name": "plan", "format": "text" },
+          { "name": "label", "format": "text" },
+          { "name": "type", "format": "text" },
+          { "name": "tags", "format": "json" }
+        ]
+    }
   type: hana
   label: hana
+  plan: hdi-shared
+  tags: '[ "db", "hana" ]'
 EOF
 )"
 
