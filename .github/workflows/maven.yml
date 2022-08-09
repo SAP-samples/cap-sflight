@@ -34,3 +34,47 @@ jobs:
       run: |
         npm ci
         npm run test:java -- --ci
+
+  e2ekymatest:
+    name: End to End Kyma Test
+    # if: ${{ github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'deploy-kyma') }}  # run only if label is set
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setting up environment
+        run: |
+          mkdir ${HOME}/kyma-binaries
+          export PATH=${HOME}/kyma-binaries/:$PATH
+          mkdir ${HOME}/.kube
+          echo "$KUBE_CONFIG" | base64 --decode > ${HOME}/.kube/config
+          (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.23.0/pack-v0.23.0-linux.tgz" | tar -C ${HOME}/kyma-binaries/ --no-same-owner -xzv pack)
+          wget "https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz"
+          tar -xvzf helm-v3.8.0-linux-amd64.tar.gz
+          mv linux-amd64/helm ${HOME}/kyma-binaries/helm
+          curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+          chmod +x ./kubectl
+          mv ./kubectl ${HOME}/kyma-binaries/kubectl
+        
+      - name: End to End testing
+        run: |
+          releaseName=sflightjava
+          deploymentName=srv
+          releaseNamespace=cap-cicd
+          appPrefix=${releaseName}-${deploymentName}-${releaseNamespace}
+          cds add helm --force
+          cds add helm:hana_deployer
+          cds add helm:xsuaa
+          cds build --production
+          hana_image=${{secrets.IMAGEREGISTRY}}/e2e/bookshop-hana-deployer
+          srv_image=${{secrets.IMAGEREGISTRY}}/e2e/bookshop-srv
+          pack build ${hana_image} --path db --buildpack gcr.io/paketo-buildpacks/nodejs --builder paketobuildpacks/builder:base
+          mvn package
+          pack build ${srv_image} --path srv/target/bookshop-exec.jar --buildpack gcr.io/paketo-buildpacks/sap-machine --buildpack gcr.io/paketo-buildpacks/java --builder paketobuildpacks/builder:base --env SPRING_PROFILES_ACTIVE=cloud
+          cp ./chart/xs-security.json xs-security.json.tmp && jq '. |= . + {"authority":"$XSAPPNAME.admin"}' xs-security.json.tmp >./chart/xs-security.json && rm xs-security.json.tmp
+          docker push ${hana_image}
+          docker push ${srv_image}
+          helm install ${releaseName} ./chart --namespace ${releaseNamespace} --set global.imagePullSecret.name=${imeagePullSecret} --set global.domain=${domain}  --set srv.bindings.db.fromSecret=bookshop-db --set srv.image.repository=${srv_image} --set hana_deployer.image.repository=${hana_image} --set hana_deployer.bindings.hana.fromSecret=bookshop-db --set xsuaa.parameters.xsappname=bookshop-e2e-test --set srv.resources.limits.cpu=2000m --set srv.resources.limits.memory=2G --set srv.resources.requests.cpu=1000m --set srv.resources.requests.memory=2G
+          kubectl rollout status deployment ${releaseName}-${deploymentName} --timeout=3m
+          curl --max-time 10 --retry 5 --retry-delay 3 -f -LI -k https://${appPrefix}.${domain}
+          
