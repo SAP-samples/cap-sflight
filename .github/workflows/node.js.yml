@@ -88,9 +88,9 @@ jobs:
           kubectl rollout status deployment ${releaseName}-${deploymentName} --timeout=3m
           curl --max-time 10 --retry 5 --retry-delay 3 -f -LI -k https://${appPrefix}.${{secrets.DOMAIN}}
           xsuaaSecret=$(echo $(kubectl get secret ${releaseName}-${deploymentName}-auth -o json))
-          clientIDEncoded=$(jq '.data.clientid' <<< "$xsuaaSecret")
+          clientIDEncoded=$(jq '.data.clientid' <<< "$xsuaaSecret" | base64)
           echo "clientEncoded $clientIDEncoded"
-          clientSecretEncoded=$(jq '.data.clientsecret' <<< "$xsuaaSecret")
+          clientSecretEncoded=$(jq '.data.clientsecret' <<< "$xsuaaSecret" | base64)
           echo "clientSecretEncoded $clientSecretEncoded"
           
           url=$(jq -r '.data.url | @base64d' <<< "$xsuaaSecret")
