@@ -97,7 +97,7 @@ jobs:
           appPrefix=${releaseName}-${deploymentName}-${releaseNamespace}
           appUrl=https://${appPrefix}.${{secrets.DOMAIN}}
           idPwdFormatted="$clientIDEncoded:$clientSecretEncoded"
-          echo ("idPwdFormatted  $idPwdFormatted")
+          echo "idPwdFormatted  $idPwdFormatted"
           idPwd=$(echo $idPwdFormatted | base64)
           echo "----------------------------------------------------"
           echo "URL   $url"
