@@ -98,7 +98,7 @@ jobs:
           idPwd=$(echo $idPwdFormatted | base64)
           
           echo "----------------------------------------------------"
-          response=$(curl -k -H "Authorization: Basic ${idPwd}" ${url}/oauth/token?grant_type=client_credentials&response_type=token)
+          response=$(curl -kLH "Authorization: Basic ${idPwd}" ${url}/oauth/token?grant_type=client_credentials&response_type=token)
           echo $response
           echo "----------------------------------------------------"
           accessToken=$(jq -r '.access_token' <<< "$response")
