@@ -100,7 +100,7 @@ jobs:
           response=$(curl -H "Authorization: Basic ${idPwd}" ${url}/oauth/token?grant_type=client_credentials&response_type=token)
           accessToken=$(jq -r '.access_token' <<< "$response")
           status=$(curl -H "Content-Type: application/json" -H "Authorization: Bearer ${accessToken}" ${appUrl}/${endpoint})
-          echo ${status}          
+          echo "Status is ${status}"
                     
       - name: Uninstall Application
         run: |
