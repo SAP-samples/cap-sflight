@@ -97,7 +97,7 @@ jobs:
           idPwdFormatted="$clientIDEncoded:$clientSecretEncoded"
           idPwd=$(echo $idPwdFormatted | base64)
           echo "----------------------------------------------------"
-          echo "idPwd   $idPwd"
+          echo "URL   $url"
           
           echo "----------------------------------------------------"
           response=$(curl -kLH "Authorization: Basic ${idPwd}" ${url}/oauth/token?grant_type=client_credentials&response_type=token)
