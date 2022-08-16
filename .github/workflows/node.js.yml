@@ -89,7 +89,9 @@ jobs:
           curl --max-time 10 --retry 5 --retry-delay 3 -f -LI -k https://${appPrefix}.${{secrets.DOMAIN}}
           xsuaaSecret=$(echo $(kubectl get secret ${releaseName}-${deploymentName}-auth -o json))
           clientIDEncoded=$(jq '.data.clientid' <<< "$xsuaaSecret")
+          echo "clientEncoded $clientIDEncoded"
           clientSecretEncoded=$(jq '.data.clientsecret' <<< "$xsuaaSecret")
+          echo "clientSecretEncoded $clientSecretEncoded"
           
           url=$(jq -r '.data.url | @base64d' <<< "$xsuaaSecret")
           appPrefix=${releaseName}-${deploymentName}-${releaseNamespace}
