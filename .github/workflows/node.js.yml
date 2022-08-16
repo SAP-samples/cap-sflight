@@ -94,7 +94,7 @@ jobs:
           url=$(jq -r '.data.url | @base64d' <<< "$xsuaaSecret")
           appPrefix=${releaseName}-${deploymentName}-${releaseNamespace}
           appUrl=https://${appPrefix}.${{secrets.DOMAIN}}
-          idPwdFormatted="$clientID:$clientSecret"
+          idPwdFormatted="$clientIDEncoded:$clientSecretEncoded"
           idPwd=$(echo $idPwdFormatted | base64)
           
           echo "----------------------------------------------------"
