@@ -88,29 +88,22 @@ jobs:
           kubectl rollout status deployment ${releaseName}-${deploymentName} --timeout=3m
           curl --max-time 10 --retry 5 --retry-delay 3 -f -LI -k https://${appPrefix}.${{secrets.DOMAIN}}
           xsuaaSecret=$(echo $(kubectl get secret ${releaseName}-${deploymentName}-auth -o json))
-          clientIDEncoded=$(jq '.data.clientid' <<< "$xsuaaSecret")
-          echo "clientEncoded $clientIDEncoded"
-          clientSecretEncoded=$(jq '.data.clientsecret' <<< "$xsuaaSecret")
-          echo "clientSecretEncoded $clientSecretEncoded"
           
+          clientID=$(jq -r '.data.clientid | @base64d' <<< "$xsuaaSecret")
+          clientSecret=$(jq -r '.data.clientsecret | @base64d' <<< "$xsuaaSecret")
           url=$(jq -r '.data.url | @base64d' <<< "$xsuaaSecret")
           appPrefix=${releaseName}-${deploymentName}-${releaseNamespace}
           appUrl=https://${appPrefix}.${{secrets.DOMAIN}}
-          idPwdFormatted="$clientIDEncoded:$clientSecretEncoded"
-          echo "idPwdFormatted  $idPwdFormatted"
-          idPwd=$(echo $idPwdFormatted | base64)
-          echo "----------------------------------------------------"
-          echo "URL   $url"
-          echo "idPwd   $idPwd"
-          
-          echo "----------------------------------------------------"
-          response=$(curl -kLH "Authorization: Basic ${idPwd}" ${url}/oauth/token?grant_type=client_credentials&response_type=token)
-          echo $response
-          echo "----------------------------------------------------"
+          auth=$(printf "%s:%s" "$clientID" "$clientSecret" | base64 -w0)
+          echo getting token
+          finalUrl="${url}/oauth/token?grant_type=client_credentials&response_type=token"
+          response=$(curl --location --request GET "${finalUrl}" --header "Authorization: Basic ${auth}")
+          echo "Response $response"
           accessToken=$(jq -r '.access_token' <<< "$response")
-          echo $accessToken
-          status=$(curl -H "Content-Type: application/json" -H "Authorization: Bearer ${accessToken}" ${appUrl}/${endpoint})
-          echo "Status is ${status}"
+          echo ${accessToken}
+          echo getting status
+          curl --location --request GET "${appUrl}/${endpoint}" --header "Authorization: Bearer ${accessToken}"
+          echo ${status}
                     
       - name: Uninstall Application
         run: |
