@@ -102,7 +102,7 @@ jobs:
           accessToken=$(jq -r '.access_token' <<< "$response")
           echo ${accessToken}
           echo getting status
-          curl --location --request GET "${appUrl}/${endpoint}" --header "Authorization: Bearer ${accessToken}"
+          status=$(curl --location --request GET "${appUrl}/${endpoint}" --header "Authorization: Bearer ${accessToken}")
           echo ${status}
                     
       - name: Uninstall Application
