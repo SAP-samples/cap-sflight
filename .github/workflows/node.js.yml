@@ -103,8 +103,7 @@ jobs:
           echo ${accessToken}
           echo getting status
           status=$(curl -I --location --request GET "${appUrl}/${endpoint}" --header "Authorization: Bearer ${accessToken}")
-          echo ${status}
-          [ $status == 200 ] && echo "200" || echo "Not 200"
+          echo "Status is $status"
                     
       - name: Uninstall Application
         run: |
