@@ -98,7 +98,9 @@ jobs:
           
           finalUrl="${url}/oauth/token?grant_type=client_credentials&response_type=token"
           response=$(curl --fail --location --request GET "${finalUrl}" --header "Authorization: Basic ${auth}")
+          echo "response passed"
           accessToken=$(jq -r '.access_token' <<< "$response")
+          echo "Access Token $accessToken"
           status=$(curl --fail --location --request GET "${appUrl}/${endpoint}" --header "Authorization: Bearer ${accessToken}" -o /dev/null -w '%{http_code}\n' -s)
           echo "Status recieved is $status"
 
