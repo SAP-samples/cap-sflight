@@ -37,13 +37,27 @@ jobs:
         npm ci
         npm run test:node -- --ci
 
+  deployment:
+    name: Deploy
+    if: ${{ github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'deploy') }}  # run only if label is set
+    uses: ./.github/workflows/deploy-btp.yml
+    with:
+      cf-space: staging-${{ github.head_ref || github.ref_name }}
+      role-collection: sflight-admin-staging-${{ github.head_ref || github.ref_name }}  # must match to mta.yaml
+    secrets:
+      username: ${{ secrets.CF_USERNAME }}
+      password: ${{ secrets.CF_PASSWORD }}
+      grant-users: ${{ secrets.GRANT_USERS }}
+
   e2etestnode:
     name: E2E Node Tests
     runs-on: ubuntu-latest
+    needs: deployment
     steps:
       - uses: actions/checkout@v2
       - name: Set up the environment
         run: |
+          echo ${{ needs.deployment.outputs.ui_app_url }}
           npm i -g @sap/cds-dk
           sudo add-apt-repository ppa:cncf-buildpacks/pack-cli
           sudo apt-get update
@@ -101,8 +115,7 @@ jobs:
           accessToken=$(jq -r '.access_token' <<< "$response")
           status=$(curl --fail --location --request GET "${appUrl}/${endpoint}" --header "Authorization: Bearer ${accessToken}" -o /dev/null -w '%{http_code}\n' -s)
           echo "Status recieved is $status"
-
-                    
+     
       - name: Uninstall Application
         if: always()
         run: |
