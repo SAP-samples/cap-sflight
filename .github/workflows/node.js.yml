@@ -93,7 +93,7 @@ jobs:
           clientSecret=$(jq -r '.data.clientsecret | @base64d' <<< "$xsuaaSecret")
           url=$(jq -r '.data.url | @base64d' <<< "$xsuaaSecret")
           appPrefix=${releaseName}-${deploymentName}-${releaseNamespace}
-          appUrl=httpss://${appPrefix}.${{secrets.DOMAIN}}
+          appUrl=https://${appPrefix}.${{secrets.DOMAIN}}
           auth=$(printf "%s:%s" "$clientID" "$clientSecret" | base64 -w0)
           
           finalUrl="${url}/oauth/token?grant_type=client_credentials&response_type=token"
