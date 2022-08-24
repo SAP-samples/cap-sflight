@@ -132,7 +132,33 @@ init() {
    * Validate a Travel's edited data before save.
    */
   this.before ('SAVE', 'Travel', req => {
-    const { BeginDate, EndDate } = req.data, today = (new Date).toISOString().slice(0,10)
+    const { BeginDate, EndDate, BookingFee, to_Agency_AgencyID, to_Customer_CustomerID, to_Booking, TravelStatus_code } = req.data, today = (new Date).toISOString().slice(0,10)
+
+    // validate only not rejected travels
+    if (TravelStatus_code !== 'X') {
+      if (BookingFee == null) req.error(400, "Enter a booking fee", "in/BookingFee") // 0 is a valid BookingFee
+      if (!BeginDate) req.error(400, "Enter a begin date", "in/BeginDate")
+      if (!EndDate) req.error(400, "Enter an end date", "in/EndDate")
+      if (!to_Agency_AgencyID) req.error(400, "Enter a travel agency", "in/to_Agency_AgencyID")
+      if (!to_Customer_CustomerID) req.error(400, "Enter a customer", "in/to_Customer_CustomerID")
+      
+      for (const booking of to_Booking) {
+        const { BookingUUID, ConnectionID, FlightDate, FlightPrice, BookingStatus_code, to_Carrier_AirlineID, to_Customer_CustomerID } = booking
+        if (!ConnectionID) req.error(400, "Enter a flight", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/ConnectionID`)
+        if (!FlightDate) req.error(400, "Enter a flight date", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/FlightDate`)
+        if (!FlightPrice) req.error(400, "Enter a flight price", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/FlightPrice`)
+        if (!BookingStatus_code) req.error(400, "Enter a booking status", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/BookingStatus_code`)
+        if (!to_Carrier_AirlineID) req.error(400, "Enter an airline", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/to_Carrier_AirlineID`)
+        if (!to_Customer_CustomerID) req.error(400, "Enter a customer", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/to_Customer_CustomerID`)
+        
+        for (const suppl of booking.to_BookSupplement) {
+          const { BookSupplUUID, Price, to_Supplement_SupplementID } = suppl
+          if (!Price) req.error(400, "Enter a price", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/to_BookSupplement(BookSupplUUID='${BookSupplUUID}',IsActiveEntity=false)/Price`)
+          if (!to_Supplement_SupplementID) req.error(400, "Enter a supplement", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/to_BookSupplement(BookSupplUUID='${BookSupplUUID}',IsActiveEntity=false)/to_Supplement_SupplementID`)
+        }
+      }
+    }
+      
     if (BeginDate < today) req.error (400, `Begin Date ${BeginDate} must not be before today ${today}.`, 'in/BeginDate')
     if (BeginDate > EndDate) req.error (400, `Begin Date ${BeginDate} must be before End Date ${EndDate}.`, 'in/BeginDate')
   })
