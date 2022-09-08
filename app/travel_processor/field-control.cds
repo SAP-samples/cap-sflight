@@ -80,4 +80,4 @@ annotate TravelService.BookingSupplement {
 
 };
 
-annotate Currency with @Common.UnitSpecificScale : Decimals;
+annotate Currency with @Common.UnitSpecificScale : 'Decimals';
