@@ -66,14 +66,14 @@ service com.sap.cloudDataIntegrationData.FlightConnection {
 
 service com.sap.cloudDataIntegrationData.Countries {
   @DataIntegration.Extractable
-  entity Flight as projection on common.Countries {
+  entity Countries as projection on common.Countries {
     *
   } excluding {name, description, texts, localized};  // exclude localized elements for the time being
 }
 
 service com.sap.cloudDataIntegrationData.Currencies {
   @DataIntegration.Extractable
-  entity Flight as projection on common.Currencies {
+  entity Currencies as projection on common.Currencies {
     *
   } excluding {name, description, texts, localized};  // exclude localized elements for the time being
 }
