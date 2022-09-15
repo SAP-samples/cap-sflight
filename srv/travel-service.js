@@ -1,4 +1,5 @@
 const cds = require ('@sap/cds'); require('./workarounds')
+const draftImpl = require('./draft-impl')
 
 class TravelService extends cds.ApplicationService {
 init() {
@@ -7,6 +8,8 @@ init() {
    * Reflect definitions from the service's CDS model
    */
   const { Travel, Booking, BookingSupplement } = this.entities
+
+  this.on('READ', 'Travel', async function(req) { return draftImpl.onReadDrafts(req) })
 
 
   /**
