@@ -88,8 +88,7 @@ function _getKeyArray(entity) {
 const SELECTABLE_DRAFT_COLUMNS = [
   'IsActiveEntity',
   'HasDraftEntity',
-  'HasDraftEntity',
-  'DraftAdministrativeData_DraftUUID',
+  'HasActiveEntity',
 ]
 
 function _requestedDraftColumns(query) {
@@ -98,22 +97,17 @@ function _requestedDraftColumns(query) {
   const cols = []
   // if (query.SELECT.columns?.some(c => c?.ref?.[0] === hasSibling)) cols.push(hasSibling)
   for (const col of query.SELECT.columns) {
-    if (col?.ref?.[0] && SELECTABLE_DRAFT_COLUMNS.includes(col.ref[0])) cols.push(col.ref[0])
+    if (col?.ref?.[0] && SELECTABLE_DRAFT_COLUMNS.includes(col.ref[0]))
+      cols.push(col)
+    // TODO: Handle expands
   }
   return cols
 }
 
-function _calculatedDraftColumns(requested, isDraft) {
-  
-}
-
-function _requiredSiblingEntityColumns(query, isDraft) {
-  const requested = _requestedDraftColumns(query)
-  if (isDraft) return requested.filter()
-}
 
 /** Returns a new query where draft columns are removed and names are normalized to `myEntity` or `myEntity_drafts`, depending on IsActiveEntity */
 function _cleanUpQuery(query) {
+  // TODO: cleanup columns
   const clone = cds.ql
     .clone(query)
     .from({ ref: _cleanupRef(query.SELECT.from.ref) })
@@ -132,34 +126,74 @@ async function onReadDrafts(req) {
 
     const targetQuery = _cleanUpQuery(query)
     const dbTarget = _inferDbTarget(targetQuery)
+    let targetResult = await cds.tx(req).run(targetQuery)
+    if (Array.isArray(targetResult) && targetResult[0] === undefined) targetResult = [] // TODO: workaround
+
+    // not a draft-enabled entity
+    if (!dbTarget._sibling) return targetResult
+
     const isDraft = dbTarget._isDraft
-    const targetResult = await cds.tx(req).run(targetQuery)
+    const hasSelf = isDraft ? 'HasDraftEntity' : 'HasActiveEntity'
+    const hasOther = isDraft ? 'HasActiveEntity' : 'HasDraftEntity'
+
+    const requestedDraftColumns = _requestedDraftColumns(req.query)
+    const calc = {}
+    if (requestedDraftColumns.includes('IsActiveEntity'))
+      calc.IsActiveEntity = isDraft
+    if (requestedDraftColumns.includes(hasSelf)) calc[hasSelf] = false
+
+    if (!targetResult) return targetResult
     const targetResultArray = Array.isArray(targetResult)
       ? targetResult
       : [targetResult]
-    targetResultArray.forEach((row) => {
-      row.IsActiveEntity = isDraft
-    })
-    if (
-      query.SELECT.columns?.some((c) =>
-        c?.ref?.[0] === isDraft ? 'HasActiveEntity' : 'HasDraftEntity'
-      )
-    )
-      return true
-    const siblingQuery = cds.ql.clone(targetQuery).from(dbTarget._sibling)
+
+    let siblingResult
     const keys = _getKeyArray(dbTarget)
-    siblingQuery.where([
-      { list: keys.map((pk) => ({ ref: [pk] })) },
-      'in',
-      {
-        list: targetResultArray.map((row) => ({
-          list: keys.map((pk) => ({ val: row[pk] })),
-        })),
-      },
-    ])
-    console.log(siblingQuery.SELECT)
-    const siblingRes = await cds.tx(req).run(siblingQuery)
-    // TODO: Merge results
+
+    if (targetResultArray.length && requestedDraftColumns.includes(hasOther)) {
+      console.log('adding required draft columns')
+      const siblingQuery = cds.ql.clone(targetQuery).from(dbTarget._sibling)
+      siblingQuery.SELECT.columns = []
+      siblingQuery.columns(keys)
+      siblingQuery.where([
+        { list: keys.map((pk) => ({ ref: [pk] })) },
+        'in',
+        {
+          list: targetResultArray.map((row) => ({
+            list: keys.map((pk) => ({ val: row[pk] })),
+          })),
+        },
+      ])
+      siblingResult = await cds.tx(req).run(siblingQuery)
+    }
+
+    if (Array.isArray(siblingResult) && siblingResult[0] === undefined) siblingResult = [] // TODO: workaround
+
+    console.log('siblingResult:', siblingResult)
+    const siblingResultArray = !siblingResult
+      ? []
+      : Array.isArray(siblingResult)
+      ? siblingResult
+      : [siblingResult]
+
+    console.log('sibling array', siblingResultArray)
+    if (Object.keys(calc) || siblingResultArray.length)
+      targetResultArray.forEach((row) => {
+        Object.assign(row, calc) // static known properties
+        const idx = siblingResultArray.findIndex(sibling => {
+          for (const key of keys) {
+            console.log('sibling:', sibling)
+            console.log('row:', row)
+            if (sibling[key] !== row[key]) return false
+          }
+          return true
+        })
+        if (idx < 0) row[hasOther] = false
+        else {
+          row[hasOther] = true
+          siblingResultArray.splice(idx, 1) // not needed anymore
+        }
+      })
 
     return targetResult
   }
