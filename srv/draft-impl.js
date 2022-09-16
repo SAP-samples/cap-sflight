@@ -133,13 +133,15 @@ async function onReadDrafts(req) {
     if (!dbTarget._sibling) return targetResult
 
     const isDraft = dbTarget._isDraft
+
+    console.log('isDraft?:', isDraft)
     const hasSelf = isDraft ? 'HasDraftEntity' : 'HasActiveEntity'
     const hasOther = isDraft ? 'HasActiveEntity' : 'HasDraftEntity'
 
     const requestedDraftColumns = _requestedDraftColumns(req.query)
     const calc = {}
     if (requestedDraftColumns.includes('IsActiveEntity'))
-      calc.IsActiveEntity = isDraft
+      calc.IsActiveEntity = !isDraft
     if (requestedDraftColumns.includes(hasSelf)) calc[hasSelf] = false
 
     if (!targetResult) return targetResult
