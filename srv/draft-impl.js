@@ -103,15 +103,16 @@ const SELECTABLE_DRAFT_COLUMNS = [
   'IsActiveEntity',
   'HasDraftEntity',
   'HasActiveEntity',
+  'DraftAdministrativeData_DraftUUID'
 ]
 
 function _requestedDraftColumns(query) {
   if (!query.SELECT.columns || query.SELECT.columns.some((c) => c === '*'))
-    return SELECTABLE_DRAFT_COLUMNS
+    return SELECTABLE_DRAFT_COLUMNS.map(n => ({ ref: [n] }))
   const cols = []
   // if (query.SELECT.columns?.some(c => c?.ref?.[0] === hasSibling)) cols.push(hasSibling)
   for (const col of query.SELECT.columns) {
-    if (col?.ref?.[0] && SELECTABLE_DRAFT_COLUMNS.includes(col.ref[0]))
+    if (col?.ref?.[0] && (SELECTABLE_DRAFT_COLUMNS.includes(col.ref[0]) || col.ref[0] === 'DraftAdministrativeData'))
       cols.push(col)
     // TODO: Handle expands
   }
@@ -121,39 +122,42 @@ function _requestedDraftColumns(query) {
 async function _directAccess(req, cleanedup) {
   console.log('Scenario: Direct Access')
 
-  const dbTarget = _inferDbTarget(cleanedup.query)
   let targetResult = await cds.tx(req).run(cleanedup.query)
   if (Array.isArray(targetResult) && targetResult[0] === undefined)
     targetResult = [] // TODO: workaround
 
+  if (!targetResult) return targetResult
   // not a draft-enabled entity
-  if (!dbTarget._sibling) return targetResult
+  if (!cleanedup.dbTarget._sibling) return targetResult
 
-  const isDraft = dbTarget._isDraft
+  const isDraft = cleanedup.dbTarget._isDraft
 
   console.log('isDraft?:', isDraft)
   const hasSelf = isDraft ? 'HasDraftEntity' : 'HasActiveEntity'
   const hasOther = isDraft ? 'HasActiveEntity' : 'HasDraftEntity'
 
   const requestedDraftColumns = _requestedDraftColumns(req.query)
+  console.log('requested:', requestedDraftColumns)
   const calc = {}
-  if (requestedDraftColumns.includes('IsActiveEntity'))
+  if (requestedDraftColumns.some(c => c.ref?.[0] === 'IsActiveEntity'))
     calc.IsActiveEntity = !isDraft
-  if (requestedDraftColumns.includes(hasSelf)) calc[hasSelf] = false
+  if (requestedDraftColumns.some(c => c.ref?.[0] === hasSelf)) calc[hasSelf] = false
 
-  if (!targetResult) return targetResult
+  const remainingDraftColumns = requestedDraftColumns.filter(c => ![hasSelf, 'IsActiveEntity'].includes(c.ref?.[0]))
+
   const targetResultArray = Array.isArray(targetResult)
     ? targetResult
     : [targetResult]
 
   let siblingResult
-  const keys = _getKeyArray(dbTarget)
+  const keys = _getKeyArray(cleanedup.dbTarget)
 
-  if (targetResultArray.length && requestedDraftColumns.includes(hasOther)) {
-    console.log('adding required draft columns')
-    const siblingQuery = cds.ql.clone(cleanedup.query).from(dbTarget._sibling)
+  if (remainingDraftColumns) {
+    console.log('adding required draft columns', remainingDraftColumns)
+    const siblingQuery = cds.ql.clone(cleanedup.query).from(cleanedup.dbTarget._sibling)
     siblingQuery.SELECT.columns = []
     siblingQuery.columns(keys)
+    siblingQuery.columns(remainingDraftColumns)
     siblingQuery.where([
       { list: keys.map((pk) => ({ ref: [pk] })) },
       'in',
@@ -163,6 +167,8 @@ async function _directAccess(req, cleanedup) {
         })),
       },
     ])
+    console.log('SiblingQuery:', siblingQuery.target)
+    // TODO: query.target seems to be wrong
     siblingResult = await cds.tx(req).run(siblingQuery)
   }
 
@@ -191,6 +197,11 @@ async function _directAccess(req, cleanedup) {
       if (idx < 0) row[hasOther] = false
       else {
         row[hasOther] = true
+        const other = siblingResultArray[idx]
+        // merge both results
+        for (k in other) {
+          if (!(k in row)) row[k] = other[k]
+        }
         siblingResultArray.splice(idx, 1) // not needed anymore
       }
     })
