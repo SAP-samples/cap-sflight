@@ -31,9 +31,9 @@ function _cleanupRef(ref) {
 }
 
 function _cleanupWhere(where) {
-  if (!where?.length) return []
   const draftParams = {}
   const newWhere = []
+  if (!where?.length) return { draftParams, newWhere }
   for (let i = 0; i < where.length; i++) {
     const el = where[i]
     if (
@@ -55,8 +55,9 @@ function _cleanupWhere(where) {
   }
   return { draftParams, newWhere }
 }
+
 function _rmNonExistentColumns(columns, target) {
-  return columns.flatMap((c) => {
+  return columns && columns.flatMap((c) => {
     if (c?.ref && !target.elements[c.ref[0]]) return []
     return [c]
   })
@@ -64,17 +65,21 @@ function _rmNonExistentColumns(columns, target) {
 
 // TODO: We need something like cds.inferdb(req.query) to find out if the target is draft or active
 //        This is just a _temporary_ solution to get going.
+
+function _getCsn(name, model) {
+  return name?.endsWith('_drafts')
+    ? model.definitions[name.replace(/_drafts$/, '')].drafts
+    : model.definitions[name]?.actives ||
+        model.definitions[name] ||
+        cds.error`"${name}" not found in the definitions of your model`
+}
 function _inferDbTarget(query) {
   const root = query.SELECT.from.ref[0].id || query.SELECT.from.ref[0]
   const model = cds.context?.model || cds.model
-  let target = root?.endsWith('_drafts')
-    ? model.definitions[root.replace(/_drafts$/, '')].drafts
-    : model.definitions[root]?.actives ||
-      model.definitions[root] ||
-      cds.error`"${from}" not found in the definitions of your model`
+  let target = _getCsn(root, model)
   for (let i = 1; i < query.SELECT.from.ref.length; i++) {
     const nav = query.SELECT.from.ref[i]
-    if (nav) target = target.elements[nav]._target
+    if (nav) target = _getCsn(target.elements[nav].target, model)
   }
   return target
 }
@@ -104,164 +109,169 @@ function _requestedDraftColumns(query) {
   return cols
 }
 
+async function _directAccess(req, cleanedUpQuery) {
+  console.log('Scenario: Direct Access')
+
+  const dbTarget = _inferDbTarget(cleanedUpQuery)
+  let targetResult = await cds.tx(req).run(cleanedUpQuery)
+  if (Array.isArray(targetResult) && targetResult[0] === undefined)
+    targetResult = [] // TODO: workaround
+
+  // not a draft-enabled entity
+  if (!dbTarget._sibling) return targetResult
+
+  const isDraft = dbTarget._isDraft
+
+  console.log('isDraft?:', isDraft)
+  const hasSelf = isDraft ? 'HasDraftEntity' : 'HasActiveEntity'
+  const hasOther = isDraft ? 'HasActiveEntity' : 'HasDraftEntity'
+
+  const requestedDraftColumns = _requestedDraftColumns(req.query)
+  const calc = {}
+  if (requestedDraftColumns.includes('IsActiveEntity'))
+    calc.IsActiveEntity = !isDraft
+  if (requestedDraftColumns.includes(hasSelf)) calc[hasSelf] = false
+
+  if (!targetResult) return targetResult
+  const targetResultArray = Array.isArray(targetResult)
+    ? targetResult
+    : [targetResult]
+
+  let siblingResult
+  const keys = _getKeyArray(dbTarget)
+
+  if (targetResultArray.length && requestedDraftColumns.includes(hasOther)) {
+    console.log('adding required draft columns')
+    const siblingQuery = cds.ql.clone(cleanedUpQuery).from(dbTarget._sibling)
+    siblingQuery.SELECT.columns = []
+    siblingQuery.columns(keys)
+    siblingQuery.where([
+      { list: keys.map((pk) => ({ ref: [pk] })) },
+      'in',
+      {
+        list: targetResultArray.map((row) => ({
+          list: keys.map((pk) => ({ val: row[pk] })),
+        })),
+      },
+    ])
+    siblingResult = await cds.tx(req).run(siblingQuery)
+  }
+
+  if (Array.isArray(siblingResult) && siblingResult[0] === undefined)
+    siblingResult = [] // TODO: workaround
+
+  console.log('siblingResult:', siblingResult)
+  const siblingResultArray = !siblingResult
+    ? []
+    : Array.isArray(siblingResult)
+    ? siblingResult
+    : [siblingResult]
+
+  console.log('sibling array', siblingResultArray)
+  if (Object.keys(calc) || siblingResultArray.length)
+    targetResultArray.forEach((row) => {
+      Object.assign(row, calc) // static known properties
+      const idx = siblingResultArray.findIndex((sibling) => {
+        for (const key of keys) {
+          console.log('sibling:', sibling)
+          console.log('row:', row)
+          if (sibling[key] !== row[key]) return false
+        }
+        return true
+      })
+      if (idx < 0) row[hasOther] = false
+      else {
+        row[hasOther] = true
+        siblingResultArray.splice(idx, 1) // not needed anymore
+      }
+    })
+
+  return targetResult
+}
+
+async function _unchanged(req, cleanedUpQuery) {
+  console.log('Scenario: Unchanged')
+  //
+  // Alternative:
+  //
+  // const newColumns = _rmNotExistingColumns(query.SELECT.columns, target.actives)
+  // const clone = cds.ql.clone(req.query).from(target.actives)
+  // clone.SELECT.columns = newColumns
+  // clone.SELECT.where = newWhere
+  // const subSelect = SELECT.from(target.drafts).columns(keys).where(newWhere)
+  // subSelect.where(keys.flatMap(key => [{ ref: [target.actives.name, key] }, '=', { ref: [target.drafts.name, key] }, 'and']).slice(0, -1))
+  // clone.where('not exists', subSelect)
+  // return cds.tx(req).run({ SELECT: clone.SELECT }) // will not work because the reference in the subSelect is not resolved
+  //
+  console.log('cleanupwhere', cleanedUpQuery.SELECT.where)
+  const keys = _getKeyArray(req.target.drafts)
+  const draftsQuery = SELECT.from(req.target.drafts)
+    .columns(keys)
+    .where(cleanedUpQuery.SELECT.where)
+  console.log('draftsQuery:', draftsQuery.SELECT)
+  const resDrafts = await cds.tx(req).run(draftsQuery)
+  const activesColumns = _rmNonExistentColumns(
+    req.query.SELECT.columns,
+    req.target.actives
+  )
+  console.log('calc actives...')
+  const activesQuery = cds.ql.clone(req.query).from(req.target.actives)
+  activesQuery.SELECT.where = cleanedUpQuery.SELECT.where
+  activesQuery.SELECT.columns = activesColumns
+  if (resDrafts.length)
+    activesQuery.where([
+      { list: keys.map((pk) => ({ ref: [pk] })) },
+      'not in',
+      {
+        list: resDrafts.map((row) => ({
+          list: keys.map((pk) => ({ val: row[pk] })),
+        })),
+      },
+    ])
+  activesQuery.SELECT.count = req.query.SELECT.count
+  const res = await cds.tx(req).run(activesQuery)
+  res.forEach((r) => {
+    r.IsActiveEntity = true
+    r.HasDraftEntity = false
+    // TODO: expands and DraftAdministrativeData_DraftUUID
+  })
+  // if (!('$count' in res)) res.$count = 1000 // TODO: Remove
+  return res
+}
 
 /** Returns a new query where draft columns are removed and names are normalized to `myEntity` or `myEntity_drafts`, depending on IsActiveEntity */
 function _cleanUpQuery(query) {
-  // TODO: cleanup columns
   const clone = cds.ql
     .clone(query)
     .from({ ref: _cleanupRef(query.SELECT.from.ref) })
-  const { newWhere } = _cleanupWhere(query.SELECT.where)
-  if (newWhere) clone.where(newWhere)
-  return clone
+  const { draftParams, newWhere } = _cleanupWhere(query.SELECT.where)
+  clone.SELECT.where = []
+  clone.where(newWhere)
   // TODO: orderBy, groupBy, ...
+  return { query: clone, draftParams }
 }
 
 async function onReadDrafts(req) {
-  const { target, query } = req
+  const { query: cleanedUpQuery, draftParams } = _cleanUpQuery(req.query)
+  console.log('draftParams', draftParams)
+  console.log('cleaned up query', cleanedUpQuery)
 
-  if (query.SELECT.from.ref[0].where?.length > 1) {
+  if (req.query.SELECT.from.ref[0].where?.length > 1) {
     // direct access
-    console.log('Scenario: Direct Access')
-
-    const targetQuery = _cleanUpQuery(query)
-    const dbTarget = _inferDbTarget(targetQuery)
-    let targetResult = await cds.tx(req).run(targetQuery)
-    if (Array.isArray(targetResult) && targetResult[0] === undefined) targetResult = [] // TODO: workaround
-
-    // not a draft-enabled entity
-    if (!dbTarget._sibling) return targetResult
-
-    const isDraft = dbTarget._isDraft
-
-    console.log('isDraft?:', isDraft)
-    const hasSelf = isDraft ? 'HasDraftEntity' : 'HasActiveEntity'
-    const hasOther = isDraft ? 'HasActiveEntity' : 'HasDraftEntity'
-
-    const requestedDraftColumns = _requestedDraftColumns(req.query)
-    const calc = {}
-    if (requestedDraftColumns.includes('IsActiveEntity'))
-      calc.IsActiveEntity = !isDraft
-    if (requestedDraftColumns.includes(hasSelf)) calc[hasSelf] = false
-
-    if (!targetResult) return targetResult
-    const targetResultArray = Array.isArray(targetResult)
-      ? targetResult
-      : [targetResult]
-
-    let siblingResult
-    const keys = _getKeyArray(dbTarget)
-
-    if (targetResultArray.length && requestedDraftColumns.includes(hasOther)) {
-      console.log('adding required draft columns')
-      const siblingQuery = cds.ql.clone(targetQuery).from(dbTarget._sibling)
-      siblingQuery.SELECT.columns = []
-      siblingQuery.columns(keys)
-      siblingQuery.where([
-        { list: keys.map((pk) => ({ ref: [pk] })) },
-        'in',
-        {
-          list: targetResultArray.map((row) => ({
-            list: keys.map((pk) => ({ val: row[pk] })),
-          })),
-        },
-      ])
-      siblingResult = await cds.tx(req).run(siblingQuery)
-    }
-
-    if (Array.isArray(siblingResult) && siblingResult[0] === undefined) siblingResult = [] // TODO: workaround
-
-    console.log('siblingResult:', siblingResult)
-    const siblingResultArray = !siblingResult
-      ? []
-      : Array.isArray(siblingResult)
-      ? siblingResult
-      : [siblingResult]
-
-    console.log('sibling array', siblingResultArray)
-    if (Object.keys(calc) || siblingResultArray.length)
-      targetResultArray.forEach((row) => {
-        Object.assign(row, calc) // static known properties
-        const idx = siblingResultArray.findIndex(sibling => {
-          for (const key of keys) {
-            console.log('sibling:', sibling)
-            console.log('row:', row)
-            if (sibling[key] !== row[key]) return false
-          }
-          return true
-        })
-        if (idx < 0) row[hasOther] = false
-        else {
-          row[hasOther] = true
-          siblingResultArray.splice(idx, 1) // not needed anymore
-        }
-      })
-
-    return targetResult
+    return _directAccess(req, cleanedUpQuery)
   }
 
-  if (query.SELECT.where) {
-    const { draftParams, newWhere } = _cleanupWhere(query.SELECT.where)
-    console.log({ draftParams, newWhere })
-
-    const keys = _getKeyArray(target.drafts)
+  if (req.query.SELECT.where) {
+    // const { draftParams, newWhere } = _cleanupWhere(query.SELECT.where)
 
     if (
       draftParams['IsActiveEntity'] === true &&
       draftParams['HasDraftEntity'] === false
     ) {
       // Scenario: Unchanged (better solution in __alternatives.js)
-      console.log('Scenario: Unchanged')
-      //
-      // Alternative:
-      //
-      // const newColumns = _rmNotExistingColumns(query.SELECT.columns, target.actives)
-      // const clone = cds.ql.clone(req.query).from(target.actives)
-      // clone.SELECT.columns = newColumns
-      // clone.SELECT.where = newWhere
-      // const subSelect = SELECT.from(target.drafts).columns(keys).where(newWhere)
-      // subSelect.where(keys.flatMap(key => [{ ref: [target.actives.name, key] }, '=', { ref: [target.drafts.name, key] }, 'and']).slice(0, -1))
-      // clone.where('not exists', subSelect)
-      // return cds.tx(req).run({ SELECT: clone.SELECT }) // will not work because the reference in the subSelect is not resolved
-      //
-      const draftsQuery = SELECT.from(target.drafts)
-        .columns(keys)
-        .where(newWhere)
-      console.log('draftsQuery:', draftsQuery.SELECT)
-      const resDrafts = await cds.tx(req).run(draftsQuery)
-      const newColumns = _rmNonExistentColumns(
-        query.SELECT.columns,
-        target.actives
-      )
-      console.log('calc clone...')
-      const clone = cds.ql.clone(req.query).from(target.actives)
-      clone.SELECT.columns = newColumns
-      if (resDrafts.length)
-        clone.where([
-          { list: keys.map((pk) => ({ ref: [pk] })) },
-          'not in',
-          {
-            list: resDrafts.map((row) => ({
-              list: keys.map((pk) => ({ val: row[pk] })),
-            })),
-          },
-        ])
-      clone.SELECT.count = req.query.SELECT.count
-      // TODO: Calculate draft columns (trick: merge with empty results)
-      console.log('actives:', clone.SELECT)
-      console.log('actives.orderBy:', clone.SELECT.orderBy)
-      console.log('clone.SELECT', clone.SELECT)
-      const res = await cds.tx(req).run(clone)
-      res.forEach((r) => {
-        r.IsActiveEntity = true
-        r.HasDraftEntity = false
-      })
-      if (!('$count' in res)) res.$count = 1000 // TODO: Remove
-      return res
+      return _unchanged(req, cleanedUpQuery)
     }
   }
-
-  throw new Error('yep')
 }
 
 module.exports = { onReadDrafts }
