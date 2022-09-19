@@ -30,6 +30,15 @@ function _cleanupRef(ref) {
   return newRef
 }
 
+function _cleanupColumns(columns, isDraft) {
+  // TODO: nested, expands, ...
+  return columns && columns.filter(c => {
+    if (['IsActiveEntity', 'HasDraftEntity', 'SiblingEntity'].includes(c.ref?.[0])) return false
+    if (!isDraft && ['DraftAdministrativeData_DraftUUID', 'DraftAdministrativeData'].includes(c.ref?.[0])) return false 
+    return true
+  })
+}
+
 function _cleanupWhere(where) {
   const draftParams = {}
   const newWhere = []
@@ -109,11 +118,11 @@ function _requestedDraftColumns(query) {
   return cols
 }
 
-async function _directAccess(req, cleanedUpQuery) {
+async function _directAccess(req, cleanedup) {
   console.log('Scenario: Direct Access')
 
-  const dbTarget = _inferDbTarget(cleanedUpQuery)
-  let targetResult = await cds.tx(req).run(cleanedUpQuery)
+  const dbTarget = _inferDbTarget(cleanedup.query)
+  let targetResult = await cds.tx(req).run(cleanedup.query)
   if (Array.isArray(targetResult) && targetResult[0] === undefined)
     targetResult = [] // TODO: workaround
 
@@ -142,7 +151,7 @@ async function _directAccess(req, cleanedUpQuery) {
 
   if (targetResultArray.length && requestedDraftColumns.includes(hasOther)) {
     console.log('adding required draft columns')
-    const siblingQuery = cds.ql.clone(cleanedUpQuery).from(dbTarget._sibling)
+    const siblingQuery = cds.ql.clone(cleanedup.query).from(dbTarget._sibling)
     siblingQuery.SELECT.columns = []
     siblingQuery.columns(keys)
     siblingQuery.where([
@@ -189,7 +198,7 @@ async function _directAccess(req, cleanedUpQuery) {
   return targetResult
 }
 
-async function _unchanged(req, cleanedUpQuery) {
+async function _unchanged(req, cleanedup) {
   console.log('Scenario: Unchanged')
   //
   // Alternative:
@@ -203,11 +212,11 @@ async function _unchanged(req, cleanedUpQuery) {
   // clone.where('not exists', subSelect)
   // return cds.tx(req).run({ SELECT: clone.SELECT }) // will not work because the reference in the subSelect is not resolved
   //
-  console.log('cleanupwhere', cleanedUpQuery.SELECT.where)
+  console.log('cleanupwhere', cleanedup.query.SELECT.where)
   const keys = _getKeyArray(req.target.drafts)
   const draftsQuery = SELECT.from(req.target.drafts)
     .columns(keys)
-    .where(cleanedUpQuery.SELECT.where)
+    .where(cleanedup.query.SELECT.where)
   console.log('draftsQuery:', draftsQuery.SELECT)
   const resDrafts = await cds.tx(req).run(draftsQuery)
   const activesColumns = _rmNonExistentColumns(
@@ -216,7 +225,7 @@ async function _unchanged(req, cleanedUpQuery) {
   )
   console.log('calc actives...')
   const activesQuery = cds.ql.clone(req.query).from(req.target.actives)
-  activesQuery.SELECT.where = cleanedUpQuery.SELECT.where
+  activesQuery.SELECT.where = cleanedup.query.SELECT.where
   activesQuery.SELECT.columns = activesColumns
   if (resDrafts.length)
     activesQuery.where([
@@ -240,37 +249,37 @@ async function _unchanged(req, cleanedUpQuery) {
 }
 
 /** Returns a new query where draft columns are removed and names are normalized to `myEntity` or `myEntity_drafts`, depending on IsActiveEntity */
-function _cleanUpQuery(query) {
+function _cleanedup(query) {
   const clone = cds.ql
     .clone(query)
     .from({ ref: _cleanupRef(query.SELECT.from.ref) })
   const { draftParams, newWhere } = _cleanupWhere(query.SELECT.where)
+  const dbTarget = _inferDbTarget(clone)
   clone.SELECT.where = []
   clone.where(newWhere)
-  // TODO: orderBy, groupBy, ...
-  return { query: clone, draftParams }
+  clone.SELECT.columns = _cleanupColumns(clone.SELECT.columns, dbTarget._isDraft)
+  // TODO: columns, orderBy, groupBy, ...
+  return { query: clone, draftParams, dbTarget }
 }
 
 async function onReadDrafts(req) {
-  const { query: cleanedUpQuery, draftParams } = _cleanUpQuery(req.query)
-  console.log('draftParams', draftParams)
-  console.log('cleaned up query', cleanedUpQuery)
-
+  const cleanedUp = _cleanedup(req.query)
   if (req.query.SELECT.from.ref[0].where?.length > 1) {
     // direct access
-    return _directAccess(req, cleanedUpQuery)
+    return _directAccess(req, cleanedUp)
   }
 
   if (req.query.SELECT.where) {
     // const { draftParams, newWhere } = _cleanupWhere(query.SELECT.where)
 
     if (
-      draftParams['IsActiveEntity'] === true &&
-      draftParams['HasDraftEntity'] === false
+      cleanedup.draftParams['IsActiveEntity'] === true &&
+      cleanedup.draftParams['HasDraftEntity'] === false
     ) {
       // Scenario: Unchanged (better solution in __alternatives.js)
-      return _unchanged(req, cleanedUpQuery)
+      return _unchanged(req, cleanedup)
     }
+
   }
 }
 
