@@ -445,7 +445,12 @@ async function onReadDrafts(req, next) {
       return _unsavedChangesByAnotherUser(req, cleanedUp)
     }
   }
-  return _run(req, cleanedUp.query)
+
+
+  const data = await _run(req, cleanedUp.query)
+  if (!cleanedUp.dbTarget._sibling) return data 
+
+  return _mergeFromSibling(req, cleanedUp, data)
 }
 
 async function onNewDraft(req, next) {
