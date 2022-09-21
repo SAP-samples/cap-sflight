@@ -44,7 +44,7 @@ function _cleanupColumns(columns, target) {
 
 function _run(req, query) {
   // just to log all queries
-  console.log(query)
+  console.log('executing query', query)
   return cds.tx(req).run(query)
 }
 
@@ -129,9 +129,9 @@ const SELECTABLE_DRAFT_COLUMNS = [
 ]
 
 function _requestedDraftColumns(query) {
-  if (!query.SELECT.columns || query.SELECT.columns.some((c) => c === '*'))
+  if (!query.SELECT.columns)
     return SELECTABLE_DRAFT_COLUMNS.map((n) => ({ ref: [n] }))
-  const cols = []
+  const cols = (query.SELECT.columns.some((c) => c === '*')) ? SELECTABLE_DRAFT_COLUMNS.map(n => ({ ref: [n] })) : []
   // if (query.SELECT.columns?.some(c => c?.ref?.[0] === hasSibling)) cols.push(hasSibling)
   for (const col of query.SELECT.columns) {
     if (
@@ -139,7 +139,7 @@ function _requestedDraftColumns(query) {
       (SELECTABLE_DRAFT_COLUMNS.includes(col.ref[0]) ||
         col.ref[0] === 'DraftAdministrativeData')
     )
-      cols.push(col)
+      if (!cols.some(c => c?.ref && c.ref[0] === col?.ref?.[0])) cols.push(col)
     // TODO: Handle expands
   }
   return cols
@@ -401,6 +401,7 @@ function _cleanedUp(query) {
 }
 
 async function onReadDrafts(req, next) {
+  console.log('incoming query', req.query.SELECT)
   const cleanedUp = _cleanedUp(req.query)
   if (req.query.SELECT.from.ref[0].where?.length > 1) {
     // direct access
