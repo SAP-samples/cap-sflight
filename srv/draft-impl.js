@@ -50,7 +50,9 @@ function _cleanupWhere(where) {
   for (let i = 0; i < where.length; i++) {
     const el = where[i]
     if (el && typeof el === 'object' && el.xpr) {
-      const { draftParams: _draftParams, newWhere: _newWhere } = _cleanupWhere(el.xpr)
+      const { draftParams: _draftParams, newWhere: _newWhere } = _cleanupWhere(
+        el.xpr
+      )
       const newEl = {}
       newEl.xpr = _newWhere
       Object.assign(draftParams, _draftParams)
@@ -334,7 +336,8 @@ async function _ownDraft(req, cleanedUp) {
 
 async function _activeWithDraftInProcess(req, cleanedUp, { isLocked }) {
   const draftsQuery = _getDraftsQuery(req, cleanedUp)
-  const DRAFT_CANCEL_TIMEOUT_IN_SEC = ((cds.env.drafts && cds.env.drafts.cancellationTimeout) || 15) * 60
+  const DRAFT_CANCEL_TIMEOUT_IN_SEC =
+    ((cds.env.drafts && cds.env.drafts.cancellationTimeout) || 15) * 60
   draftsQuery.where([
     { ref: ['DraftAdministrativeData', 'InProcessByUser'] },
     '!=',
@@ -371,7 +374,6 @@ async function _unsavedChangesByAnotherUser(req, cleanedUp) {
   console.log('Draft Scenario: Unsaved Changes by Another User')
   return _activeWithDraftInProcess(req, cleanedUp, { isLocked: false })
 }
-
 
 async function _all(req, cleanedUp) {
   console.log('Draft Scenario: All')
@@ -425,9 +427,7 @@ async function onReadDrafts(req, next) {
       return _all(req, cleanedUp)
     }
 
-    if (
-      cleanedUp.draftParams['IsActiveEntity'] === false
-    ) {
+    if (cleanedUp.draftParams['IsActiveEntity'] === false) {
       return _ownDraft(req, cleanedUp)
     }
 
@@ -451,4 +451,61 @@ async function onReadDrafts(req, next) {
   return next()
 }
 
-module.exports = { onReadDrafts }
+async function onNewDraft(req, next) {
+  // Direct creation of a new thing
+  if (typeof req.query.INSERT.into === 'string') {
+    const DraftUUID = cds.utils.uuid()
+
+    const draftAdminData = {
+      DraftUUID,
+      CreationDateTime: req.timestamp,
+      CreatedByUser: req.user.id,
+      LastChangeDateTime: req.timestamp,
+      LastChangedByUser: req.user.id,
+      DraftIsCreatedByMe: true,
+      DraftIsProcessedByMe: true,
+      InProcessByUser: req.user.id,
+    }
+
+    const adminDataCQN = INSERT.into('DRAFT.DraftAdministrativeData').entries(
+      draftAdminData
+    )
+
+    const draftData = Object.assign(
+      {
+        DraftAdministrativeData_DraftUUID: DraftUUID,
+      },
+      req.query.INSERT.entries[0]
+    )
+    delete draftData.IsActiveEntity
+    const draftCQN = INSERT.into(req.target.drafts).entries(draftData)
+
+    console.log('adminDataCQN', adminDataCQN)
+    console.log('draftCQN', draftCQN)
+    await Promise.all(
+      // [adminDataCQN, draftCQN].map((cqn) => cds.tx(req).run(cqn))
+      [draftCQN].map((cqn) => cds.tx(req).run(cqn))
+    )
+    const resArray = await cds.tx(req).run(SELECT.from(req.target.drafts))
+    console.log(resArray)
+    const res = Object.assign(resArray[0], { IsActiveEntity: false })
+    console.log('all drafts selected:', res)
+    return res
+  }
+
+  // TODO: could also be via navigation
+
+  // const adminDataCQN = navigationToMany
+  //   ? _getUpdateDraftAdminCQN(req, req.data.DraftAdministrativeData_DraftUUID)
+  //   : _getInsertDraftAdminCQN(req, req.data.DraftAdministrativeData_DraftUUID)
+  // const insertDataCQN = _getInsertDataCQN(req, req.data.DraftAdministrativeData_DraftUUID)
+
+  // const dbtx = cds.tx(req)
+
+  // await Promise.all([dbtx.run(adminDataCQN), dbtx.run(insertDataCQN)])
+
+  // req._.readAfterWrite = true
+  // return { ...req.data, IsActiveEntity: false }
+}
+
+module.exports = { onReadDrafts, onNewDraft }

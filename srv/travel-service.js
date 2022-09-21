@@ -10,6 +10,7 @@ init() {
   const { Travel, Booking, BookingSupplement } = this.entities
 
   this.on('READ', '*', async function(req, next) { return draftImpl.onReadDrafts(req, next) })
+  this.on('NEW', '*', async function(req, next) { return draftImpl.onNewDraft(req, next) })
 
 
   /**
