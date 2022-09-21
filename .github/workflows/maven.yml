@@ -79,7 +79,7 @@ jobs:
           hana_image=${{secrets.IMAGEREGISTRY}}/e2e/github/sflight-hana-deployer
           srv_image=${{secrets.IMAGEREGISTRY}}/e2e/github/sflight-srv
           pack build ${hana_image} --path db --buildpack gcr.io/paketo-buildpacks/nodejs --builder paketobuildpacks/builder:base
-          mvn package
+          mvn -B package
           pack build ${srv_image} --path srv/target/*-exec.jar --buildpack gcr.io/paketo-buildpacks/sap-machine --buildpack gcr.io/paketo-buildpacks/java --builder paketobuildpacks/builder:base --env SPRING_PROFILES_ACTIVE=cloud
           cp ./chart/xs-security.json xs-security.json.tmp && jq '. |= . + {"authorities":["$XSAPPNAME.admin"]}' xs-security.json.tmp >./chart/xs-security.json && rm xs-security.json.tmp
           docker push ${hana_image}
