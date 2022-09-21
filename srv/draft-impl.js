@@ -217,7 +217,6 @@ async function _mergeFromSibling(
         })),
       },
     ])
-    cds.inferred(siblingQuery) // workround, remove
     const siblingResult = await _run(req, siblingQuery)
     if (!siblingResult) siblingResultArray = []
     else
