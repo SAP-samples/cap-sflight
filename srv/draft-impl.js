@@ -445,7 +445,7 @@ async function onReadDrafts(req, next) {
       return _unsavedChangesByAnotherUser(req, cleanedUp)
     }
   }
-  return next()
+  return _run(req, cleanedUp.query)
 }
 
 async function onNewDraft(req, next) {
@@ -478,7 +478,7 @@ async function onNewDraft(req, next) {
     const draftCQN = INSERT.into(req.target.drafts).entries(draftData)
 
     await Promise.all(
-      [draftCQN].map((cqn) => _run(req, cqn))
+      [adminDataCQN, draftCQN].map((cqn) => _run(req, cqn))
     )
     // do read after write instead
     const resArray = await _run(req, SELECT.from(req.target.drafts))
