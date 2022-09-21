@@ -42,6 +42,12 @@ function _cleanupColumns(columns, target) {
   )
 }
 
+function _run(req, query) {
+  // just to log all queries
+  console.log(query)
+  return cds.tx(req).run(query)
+}
+
 function _cleanupWhere(where) {
   const draftParams = {}
   const newWhere = []
@@ -212,7 +218,7 @@ async function _mergeFromSibling(
       },
     ])
     cds.inferred(siblingQuery) // workround, remove
-    const siblingResult = await cds.tx(req).run(siblingQuery)
+    const siblingResult = await _run(req, siblingQuery)
     if (!siblingResult) siblingResultArray = []
     else
       siblingResultArray = Array.isArray(siblingResult)
@@ -279,7 +285,7 @@ function _activesQueryFromDrafts(cleanedUp, resDrafts, { not = false }) {
 async function _directAccess(req, cleanedUp) {
   console.log('Draft Scenario: Direct Access')
 
-  let data = await cds.tx(req).run(cleanedUp.query)
+  let data = await _run(req, cleanedUp.query)
   if (Array.isArray(data) && data[0] === undefined) data = [] // TODO: workaround
 
   if (!data) return data
@@ -305,11 +311,11 @@ async function _unchanged(req, cleanedUp) {
   // return cds.tx(req).run({ SELECT: clone.SELECT }) // will not work because the reference in the subSelect is not resolved
   //
   const draftsQuery = _getDraftsQuery(req, cleanedUp)
-  const resDrafts = await cds.tx(req).run(draftsQuery)
+  const resDrafts = await _run(req, draftsQuery)
   console.log('got drafts', resDrafts)
   const activesQuery = _activesQueryFromDrafts(cleanedUp, resDrafts, { not: true })
   console.log('actives?', activesQuery)
-  const data = await cds.tx(req).run(activesQuery)
+  const data = await _run(req, activesQuery)
   return _mergeFromSibling(req, cleanedUp, data, {
     readSibling: false,
   }) // no need to read drafts again, all must be null
@@ -323,7 +329,7 @@ async function _ownDraft(req, cleanedUp) {
     '=',
     req.user.id
   )
-  const data = await cds.tx(req).run(draftsQuery)
+  const data = await _run(req, draftsQuery)
   return _mergeFromSibling(req, cleanedUp, data)
 }
 
@@ -349,10 +355,10 @@ async function _activeWithDraftInProcess(req, cleanedUp, { isLocked }) {
     isLocked ? '<' : '>',
     { val: DRAFT_CANCEL_TIMEOUT_IN_SEC },
   ])
-  const resDrafts = await cds.tx(req).run(draftsQuery)
+  const resDrafts = await _run(req, draftsQuery)
   const activesQuery = _activesQueryFromDrafts(cleanup, resDrafts)
   if (!activesQuery) return []
-  const data = await cds.tx(req).run(activesQuery)
+  const data = await _run(req, activesQuery)
   return _mergeFromSibling(req, cleanedUp, data, {
     readSibling: false,
   })
@@ -472,27 +478,15 @@ async function onNewDraft(req, next) {
     const draftCQN = INSERT.into(req.target.drafts).entries(draftData)
 
     await Promise.all(
-      // [adminDataCQN, draftCQN].map((cqn) => cds.tx(req).run(cqn))
-      [draftCQN].map((cqn) => cds.tx(req).run(cqn))
+      [draftCQN].map((cqn) => _run(req, cqn))
     )
-    const resArray = await cds.tx(req).run(SELECT.from(req.target.drafts))
+    // do read after write instead
+    const resArray = await _run(req, SELECT.from(req.target.drafts))
     const res = Object.assign(resArray[0], { IsActiveEntity: false })
     return res
   }
 
   // TODO: could also be via navigation
-
-  // const adminDataCQN = navigationToMany
-  //   ? _getUpdateDraftAdminCQN(req, req.data.DraftAdministrativeData_DraftUUID)
-  //   : _getInsertDraftAdminCQN(req, req.data.DraftAdministrativeData_DraftUUID)
-  // const insertDataCQN = _getInsertDataCQN(req, req.data.DraftAdministrativeData_DraftUUID)
-
-  // const dbtx = cds.tx(req)
-
-  // await Promise.all([dbtx.run(adminDataCQN), dbtx.run(insertDataCQN)])
-
-  // req._.readAfterWrite = true
-  // return { ...req.data, IsActiveEntity: false }
 }
 
 module.exports = { onReadDrafts, onNewDraft }
