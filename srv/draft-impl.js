@@ -43,7 +43,6 @@ function _cleanupColumns(columns, target) {
 }
 
 function _cleanupWhere(where) {
-  console.log('clean up where', where)
   const draftParams = {}
   const newWhere = []
   if (!where?.length) return { draftParams, newWhere }
@@ -164,12 +163,12 @@ async function _mergeFromSibling(
   data,
   { readSibling = true } = {}
 ) {
+  if (!data) return data
   const dataArray = Array.isArray(data) ? data : [data]
   if (!dataArray.length) return data // no data
   if (!cleanedUp.dbTarget._sibling) return data // not draft enabled
 
   const requestedDraftColumns = _requestedDraftColumns(req.query)
-  console.log('requested:', requestedDraftColumns)
 
   const isDraft = cleanedUp.dbTarget._isDraft
   const hasSelf = isDraft ? 'HasDraftEntity' : 'HasActiveEntity'
@@ -181,8 +180,6 @@ async function _mergeFromSibling(
     calc.IsActiveEntity = !isDraft
   if (requestedDraftColumns.some((c) => c.ref?.[0] === hasSelf))
     calc[hasSelf] = false
-
-  console.log('static calc:', calc)
 
   const remainingDraftColumns = requestedDraftColumns.filter((c) =>
     ['DraftAdministrativeData', 'DraftAdministrativeData_DraftUUID'].includes(
@@ -199,7 +196,6 @@ async function _mergeFromSibling(
   )
 
   if (mustReadSibling) {
-    console.log('selecting remaining draft columns', remainingDraftColumns)
     const siblingQuery = cds.ql
       .clone(cleanedUp.query)
       .from(cleanedUp.dbTarget._sibling)
@@ -261,26 +257,23 @@ function _getDraftsQuery(req, cleanedUp) {
   const draftsQuery = SELECT.from(req.target.drafts)
     .columns(cleanedUp.keys)
     .where(cleanedUp.query.SELECT.where) // groupby missing, but don't include top/skip!!
-  console.log('draftsQuery:', draftsQuery.SELECT)
   return draftsQuery
 }
 
-function _activesQueryFromDrafts(cleanedUp, resDrafts) {
-  console.log('calc actives...')
+function _activesQueryFromDrafts(cleanedUp, resDrafts, { not = false }) {
   const activesQuery = cds.ql.clone(cleanedUp.query)
-  if (resDrafts.length)
-    activesQuery.where([
-      { list: cleanedUp.keys.map((pk) => ({ ref: [pk] })) },
-      'not in',
-      {
-        list: resDrafts.map((row) => ({
-          list: cleanedUp.keys.map((pk) => ({ val: row[pk] })),
-        })),
-      },
-    ])
-  console.log('actives.from', activesQuery.SELECT.from)
-  console.log('actives.where', activesQuery.SELECT.where)
-  console.log('actives.columns', activesQuery.SELECT.columns)
+  if (!resDrafts || (Array.isArray(resDrafts) && !resDrafts.length)) {
+    return not ? activesQuery : undefined
+  }
+  activesQuery.where([
+    { list: cleanedUp.keys.map((pk) => ({ ref: [pk] })) },
+    'not in',
+    {
+      list: resDrafts.map((row) => ({
+        list: cleanedUp.keys.map((pk) => ({ val: row[pk] })),
+      })),
+    },
+  ])
 }
 
 async function _directAccess(req, cleanedUp) {
@@ -312,10 +305,10 @@ async function _unchanged(req, cleanedUp) {
   // return cds.tx(req).run({ SELECT: clone.SELECT }) // will not work because the reference in the subSelect is not resolved
   //
   const draftsQuery = _getDraftsQuery(req, cleanedUp)
-  console.log('draftsQuery:', draftsQuery.SELECT)
   const resDrafts = await cds.tx(req).run(draftsQuery)
-  console.log('calc actives...')
-  const activesQuery = _activesQueryFromDrafts(cleanedUp, resDrafts)
+  console.log('got drafts', resDrafts)
+  const activesQuery = _activesQueryFromDrafts(cleanedUp, resDrafts, { not: true })
+  console.log('actives?', activesQuery)
   const data = await cds.tx(req).run(activesQuery)
   return _mergeFromSibling(req, cleanedUp, data, {
     readSibling: false,
@@ -356,9 +349,9 @@ async function _activeWithDraftInProcess(req, cleanedUp, { isLocked }) {
     isLocked ? '<' : '>',
     { val: DRAFT_CANCEL_TIMEOUT_IN_SEC },
   ])
-  console.log(draftsQuery.SELECT.where)
   const resDrafts = await cds.tx(req).run(draftsQuery)
   const activesQuery = _activesQueryFromDrafts(cleanup, resDrafts)
+  if (!activesQuery) return []
   const data = await cds.tx(req).run(activesQuery)
   return _mergeFromSibling(req, cleanedUp, data, {
     readSibling: false,
@@ -389,8 +382,6 @@ function _cleanedUp(query) {
 
   const dbTarget = _inferDbTarget(clone)
   clone.SELECT.where = newWhere
-  // console.log("newWhere", newWhere)
-  // clone.where(newWhere)
   clone.SELECT.columns = _cleanupColumns(clone.SELECT.columns, dbTarget)
   // TODO: columns, orderBy, groupBy, ...
   const keys = _getKeyArray(dbTarget)
@@ -480,16 +471,12 @@ async function onNewDraft(req, next) {
     delete draftData.IsActiveEntity
     const draftCQN = INSERT.into(req.target.drafts).entries(draftData)
 
-    console.log('adminDataCQN', adminDataCQN)
-    console.log('draftCQN', draftCQN)
     await Promise.all(
       // [adminDataCQN, draftCQN].map((cqn) => cds.tx(req).run(cqn))
       [draftCQN].map((cqn) => cds.tx(req).run(cqn))
     )
     const resArray = await cds.tx(req).run(SELECT.from(req.target.drafts))
-    console.log(resArray)
     const res = Object.assign(resArray[0], { IsActiveEntity: false })
-    console.log('all drafts selected:', res)
     return res
   }
 
