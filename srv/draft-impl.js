@@ -265,7 +265,7 @@ function _getDraftsQuery(req, cleanedUp) {
   return draftsQuery
 }
 
-function _activesQueryFromDrafts(cleanedUp, resDrafts, { not = false }) {
+function _activesQueryFromDrafts(cleanedUp, resDrafts, { not = false } = {}) {
   const activesQuery = cds.ql.clone(cleanedUp.query)
   if (!resDrafts || (Array.isArray(resDrafts) && !resDrafts.length)) {
     return not ? activesQuery : undefined
@@ -355,7 +355,7 @@ async function _activeWithDraftInProcess(req, cleanedUp, { isLocked }) {
     { val: DRAFT_CANCEL_TIMEOUT_IN_SEC },
   ])
   const resDrafts = await _run(req, draftsQuery)
-  const activesQuery = _activesQueryFromDrafts(cleanup, resDrafts)
+  const activesQuery = _activesQueryFromDrafts(cleanedUp, resDrafts)
   if (!activesQuery) return []
   const data = await _run(req, activesQuery)
   return _mergeFromSibling(req, cleanedUp, data, {
