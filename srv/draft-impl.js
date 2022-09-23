@@ -187,27 +187,25 @@ async function _mergeFromSibling(
   if (requestedDraftColumns.some((c) => c.ref?.[0] === hasSelf))
     calc[hasSelf] = false
 
-  const remainingDraftColumns = requestedDraftColumns.filter((c) =>
+  const remainingDraftColumns = isDraft ? [] : requestedDraftColumns.filter((c) =>
     ['DraftAdministrativeData', 'DraftAdministrativeData_DraftUUID'].includes(
       c.ref?.[0]
     )
   )
 
-  let siblingResultArray = []
-
-  const mustReadSibling = _mustReadSibling(
-    remainingDraftColumns,
-    readSibling,
-    dataArray
+  const hasOtherRequested = requestedDraftColumns.some(
+    (c) => c.ref?.[0] === hasOther
   )
 
-  if (mustReadSibling) {
+  let siblingResultArray = []
+
+  if (remainingDraftColumns || hasOtherRequested) {
     const siblingQuery = cds.ql
       .clone(cleanedUp.query)
       .from(cleanedUp.dbTarget._sibling)
     siblingQuery.SELECT.columns = []
     siblingQuery.columns(cleanedUp.keys)
-    siblingQuery.columns(remainingDraftColumns)
+    if (remainingDraftColumns.length) siblingQuery.columns(remainingDraftColumns)
     siblingQuery.where([
       { list: cleanedUp.keys.map((pk) => ({ ref: [pk] })) },
       'in',
@@ -225,9 +223,6 @@ async function _mergeFromSibling(
         : [siblingResult]
   }
 
-  const hasOtherRequested = requestedDraftColumns.some(
-    (c) => c.ref?.[0] === hasOther
-  )
 
   if (Object.keys(calc) || siblingResultArray.length || hasOtherRequested)
     dataArray.forEach((row) => {
@@ -431,8 +426,7 @@ async function onReadDrafts(req, next) {
     if (
       cleanedUp.draftParams['IsActiveEntity'] === true &&
       cleanedUp.draftParams['SiblingEntity.IsActiveEntity'] === null &&
-      cleanedUp.draftParams['DraftAdministrativeData.InProcessByUser']?.ne ===
-        ''
+      (cleanedUp.draftParams['DraftAdministrativeData.InProcessByUser']?.ne === '' || cleanedUp.draftParams['DraftAdministrativeData.InProcessByUser']?.ne === null)
     ) {
       return _lockedByAnotherUser(req, cleanedUp)
     }
@@ -455,6 +449,7 @@ async function onReadDrafts(req, next) {
 
 async function onNewDraft(req, next) {
   // Direct creation of a new thing
+  console.log('on new draft')
   if (typeof req.query.INSERT.into === 'string') {
     const DraftUUID = cds.utils.uuid()
 
