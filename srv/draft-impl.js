@@ -280,8 +280,6 @@ async function _directAccess(req, cleanedUp) {
   console.log('Draft Scenario: Direct Access')
 
   let data = await _run(req, cleanedUp.query)
-  if (Array.isArray(data) && data[0] === undefined) data = [] // TODO: workaround
-
   if (!data) return data
 
   // not a draft-enabled entity
@@ -483,6 +481,7 @@ async function onNewDraft(req, next) {
     // do read after write instead
     const resArray = await _run(req, SELECT.from(req.target.drafts))
     const res = Object.assign(resArray[0], { IsActiveEntity: false })
+    console.log('res:', res)
     return res
   }
 
