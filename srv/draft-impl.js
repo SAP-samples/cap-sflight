@@ -272,7 +272,7 @@ function _activesQueryFromDrafts(cleanedUp, resDrafts, { not = false } = {}) {
   }
   activesQuery.where([
     { list: cleanedUp.keys.map((pk) => ({ ref: [pk] })) },
-    'not in',
+    not ? 'not in' : 'in',
     {
       list: resDrafts.map((row) => ({
         list: cleanedUp.keys.map((pk) => ({ val: row[pk] })),
