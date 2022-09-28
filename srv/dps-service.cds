@@ -20,7 +20,7 @@ service com.sap.cloudDataIntegration {
   @Capabilities.FilterRestrictions: {
     Filterable: true,
     FilterExpressionRestrictions: [
-      { Property: NamespaceID,    AllowedExpressions: #MultiValueOrSearchExpression },  // sccording to vocabulary this should be a string rather than an enum
+      { Property: NamespaceID,    AllowedExpressions: #MultiValueOrSearchExpression },  // according to vocabulary this should be a string rather than an enum
       { Property: ProviderID,     AllowedExpressions: #MultiValueOrSearchExpression },
       { Property: SubscriptionID, AllowedExpressions: #MultiValueOrSearchExpression },
       { Property: ExternalID,     AllowedExpressions: #MultiValueOrSearchExpression }
@@ -30,7 +30,7 @@ service com.sap.cloudDataIntegration {
 }
 
 
-
+@path:'/cdi-airport'
 service com.sap.cloudDataIntegrationData.Airport {
   @DataIntegration.Extractable
   entity Airport as projection on my.Airport {
@@ -39,6 +39,7 @@ service com.sap.cloudDataIntegrationData.Airport {
   };
 }
 
+@path:'/cdi-airline'
 service com.sap.cloudDataIntegrationData.Airline {
   @DataIntegration.Extractable
   entity Airline as projection on my.Airline {
@@ -47,6 +48,7 @@ service com.sap.cloudDataIntegrationData.Airline {
   };
 }
 
+@path:'/cdi-flight'
 service com.sap.cloudDataIntegrationData.Flight {
   @DataIntegration.Extractable
   entity Flight as projection on my.Flight {
@@ -55,6 +57,7 @@ service com.sap.cloudDataIntegrationData.Flight {
   } excluding {to_Airline, to_Connection};
 }
 
+@path:'/cdi-flight-connection'
 service com.sap.cloudDataIntegrationData.FlightConnection {
   @DataIntegration.Extractable
   entity FlightConnection as projection on my.FlightConnection {
@@ -64,6 +67,7 @@ service com.sap.cloudDataIntegrationData.FlightConnection {
   } excluding {to_Airline};
 }
 
+@path:'/cdi-countries'
 service com.sap.cloudDataIntegrationData.Countries {
   @DataIntegration.Extractable
   entity Countries as projection on common.Countries {
@@ -71,6 +75,7 @@ service com.sap.cloudDataIntegrationData.Countries {
   } excluding {name, description, texts, localized};  // exclude localized elements for the time being
 }
 
+@path:'/cdi-currencies'
 service com.sap.cloudDataIntegrationData.Currencies {
   @DataIntegration.Extractable
   entity Currencies as projection on common.Currencies {

@@ -1,2 +1,7 @@
 ProviderID;NamespaceID;Description;ServiceURL
-Travels;cap.sflight;List of Travels;x.y.z
+Airport;cap.sflight;List of Airports;/cdi-airport
+Airline;cap.sflight;List of Airlines;/cdi-airline
+Flight;cap.sflight;List of Flights;/cdi-flight
+FlightConnection;cap.sflight;List of FlightConnections;/cdi-flight-connection
+Countries;cap.sflight;List of Countries;/cdi-countries
+Currencies;cap.sflight;List of Currencies;/cdi-currencies
