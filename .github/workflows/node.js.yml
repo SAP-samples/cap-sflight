@@ -53,8 +53,8 @@ jobs:
     if: ${{ github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'deploy-kyma') }}  # run only if label is set
     runs-on: ubuntu-latest
     steps:
-      - name: Setting up environments
       - uses: ./.github/workflows/env.yml
+      - name: Setting up environments
 
       - name: E2E Test for Node SFlight App
         run: |

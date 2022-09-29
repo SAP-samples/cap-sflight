@@ -41,8 +41,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Setting up environments
       - uses: ./.github/workflows/env.yml
+      - name: Setting up environments
 
       - name: End to End testing
         run: |
