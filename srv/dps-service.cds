@@ -73,6 +73,8 @@ service com.sap.cloudDataIntegrationData.Countries {
   entity Countries as projection on common.Countries {
     *
   } excluding {name, description, texts, localized};  // exclude localized elements for the time being
+
+  entity Countries_texts as projection on common.Countries.texts;
 }
 
 @path:'/cdi-currencies'
@@ -81,4 +83,6 @@ service com.sap.cloudDataIntegrationData.Currencies {
   entity Currencies as projection on common.Currencies {
     *
   } excluding {name, description, texts, localized};  // exclude localized elements for the time being
+
+  entity Currencies_texts as projection on common.Currencies.texts;
 }
