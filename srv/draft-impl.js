@@ -35,7 +35,7 @@ function _cleanupColumns(columns, target) {
   // TODO: nested, expands, ...
   return (
     columns &&
-    columns.filter((c) => {
+    columns.filter(c => {
       if (c?.ref) return target.elements[c.ref[0]]
       return true
     })
@@ -55,9 +55,7 @@ function _cleanupWhere(where) {
   for (let i = 0; i < where.length; i++) {
     const el = where[i]
     if (el && typeof el === 'object' && el.xpr) {
-      const { draftParams: _draftParams, newWhere: _newWhere } = _cleanupWhere(
-        el.xpr
-      )
+      const { draftParams: _draftParams, newWhere: _newWhere } = _cleanupWhere(el.xpr)
       const newEl = {}
       newEl.xpr = _newWhere
       Object.assign(draftParams, _draftParams)
@@ -79,11 +77,10 @@ function _cleanupWhere(where) {
         ['IsActiveEntity'],
         ['HasDraftEntity'],
         ['SiblingEntity', 'IsActiveEntity'],
-        ['DraftAdministrativeData', 'InProcessByUser'],
-      ].some((r) => _isIdentical(r, el.ref))
+        ['DraftAdministrativeData', 'InProcessByUser']
+      ].some(r => _isIdentical(r, el.ref))
     ) {
-      draftParams[el.ref.join('.')] =
-        where[i + 1] === '=' ? where[i + 2].val : { ne: where[i + 2].val }
+      draftParams[el.ref.join('.')] = where[i + 1] === '=' ? where[i + 2].val : { ne: where[i + 2].val }
       if (where[i + 3] === 'and') i = i + 3
       else if (i > 0 && (where[i - 1] === 'and' || where[i - 1] === 'or')) {
         // TODO: SiblingEntity.IsActiveEntity has 'or' in case of union
@@ -125,50 +122,22 @@ const SELECTABLE_DRAFT_COLUMNS = [
   'IsActiveEntity',
   'HasDraftEntity',
   'HasActiveEntity',
-  'DraftAdministrativeData_DraftUUID',
+  'DraftAdministrativeData_DraftUUID'
 ]
 
 function _requestedDraftColumns(query) {
-  if (!query.SELECT.columns)
-    return SELECTABLE_DRAFT_COLUMNS.map((n) => ({ ref: [n] }))
-  const cols = (query.SELECT.columns.some((c) => c === '*')) ? SELECTABLE_DRAFT_COLUMNS.map(n => ({ ref: [n] })) : []
+  if (!query.SELECT.columns) return SELECTABLE_DRAFT_COLUMNS.map(n => ({ ref: [n] }))
+  const cols = query.SELECT.columns.some(c => c === '*') ? SELECTABLE_DRAFT_COLUMNS.map(n => ({ ref: [n] })) : []
   // if (query.SELECT.columns?.some(c => c?.ref?.[0] === hasSibling)) cols.push(hasSibling)
   for (const col of query.SELECT.columns) {
-    if (
-      col?.ref?.[0] &&
-      (SELECTABLE_DRAFT_COLUMNS.includes(col.ref[0]) ||
-        col.ref[0] === 'DraftAdministrativeData')
-    )
+    if (col?.ref?.[0] && (SELECTABLE_DRAFT_COLUMNS.includes(col.ref[0]) || col.ref[0] === 'DraftAdministrativeData'))
       if (!cols.some(c => c?.ref && c.ref[0] === col?.ref?.[0])) cols.push(col)
     // TODO: Handle expands
   }
   return cols
 }
 
-function _mustReadSibling(remainingDraftColumns, readSibling, dataArray) {
-  if (readSibling === false) return false
-  if (readSibling === true && remainingDraftColumns.length) return true
-  // if (
-  //   readSibling === readSiblingEnum.onDemand &&
-  //   remainingDraftColumns.length
-  // ) {
-  //   for (const data of dataArray) {
-  //     for (const remaining of remainingDraftColumns) {
-  //       // only if not already in data
-  //       // Performance optimization: we can also read only those rows which are necessary instead of a global true/false
-  //       if (!(remaining.ref[0] in data)) return true
-  //     }
-  //   }
-  //   return false
-  // }
-}
-
-async function _mergeFromSibling(
-  req,
-  cleanedUp,
-  data,
-  { readSibling = true } = {}
-) {
+async function _mergeFromSibling(req, cleanedUp, data, { readSibling = true } = {}) {
   if (!data) return data
   const dataArray = Array.isArray(data) ? data : [data]
   if (!dataArray.length) return data // no data
@@ -182,52 +151,42 @@ async function _mergeFromSibling(
 
   // Can be easily calculated
   const calc = {}
-  if (requestedDraftColumns.some((c) => c.ref?.[0] === 'IsActiveEntity'))
-    calc.IsActiveEntity = !isDraft
-  if (requestedDraftColumns.some((c) => c.ref?.[0] === hasSelf))
-    calc[hasSelf] = false
+  if (requestedDraftColumns.some(c => c.ref?.[0] === 'IsActiveEntity')) calc.IsActiveEntity = !isDraft
+  if (requestedDraftColumns.some(c => c.ref?.[0] === hasSelf)) calc[hasSelf] = false
 
-  const remainingDraftColumns = isDraft ? [] : requestedDraftColumns.filter((c) =>
-    ['DraftAdministrativeData', 'DraftAdministrativeData_DraftUUID'].includes(
-      c.ref?.[0]
-    )
-  )
+  const remainingDraftColumns = isDraft
+    ? []
+    : requestedDraftColumns.filter(c =>
+        ['DraftAdministrativeData', 'DraftAdministrativeData_DraftUUID'].includes(c.ref?.[0])
+      )
 
-  const hasOtherRequested = requestedDraftColumns.some(
-    (c) => c.ref?.[0] === hasOther
-  )
+  const hasOtherRequested = requestedDraftColumns.some(c => c.ref?.[0] === hasOther)
 
   let siblingResultArray = []
 
-  if (remainingDraftColumns || hasOtherRequested) {
-    const siblingQuery = cds.ql
-      .clone(cleanedUp.query)
-      .from(cleanedUp.dbTarget._sibling)
+  if (readSibling && (remainingDraftColumns || hasOtherRequested)) {
+    const siblingQuery = cds.ql.clone(cleanedUp.query).from(cleanedUp.dbTarget._sibling)
     siblingQuery.SELECT.columns = []
     siblingQuery.columns(cleanedUp.keys)
     if (remainingDraftColumns.length) siblingQuery.columns(remainingDraftColumns)
     siblingQuery.where([
-      { list: cleanedUp.keys.map((pk) => ({ ref: [pk] })) },
+      { list: cleanedUp.keys.map(pk => ({ ref: [pk] })) },
       'in',
       {
-        list: dataArray.map((row) => ({
-          list: cleanedUp.keys.map((pk) => ({ val: row[pk] })),
-        })),
-      },
+        list: dataArray.map(row => ({
+          list: cleanedUp.keys.map(pk => ({ val: row[pk] }))
+        }))
+      }
     ])
     const siblingResult = await _run(req, siblingQuery)
     if (!siblingResult) siblingResultArray = []
-    else
-      siblingResultArray = Array.isArray(siblingResult)
-        ? siblingResult
-        : [siblingResult]
+    else siblingResultArray = Array.isArray(siblingResult) ? siblingResult : [siblingResult]
   }
 
-
   if (Object.keys(calc) || siblingResultArray.length || hasOtherRequested)
-    dataArray.forEach((row) => {
+    dataArray.forEach(row => {
       Object.assign(row, calc)
-      const idx = siblingResultArray.findIndex((sibling) => {
+      const idx = siblingResultArray.findIndex(sibling => {
         for (const key of cleanedUp.keys) {
           if (sibling[key] !== row[key]) return false
         }
@@ -244,7 +203,7 @@ async function _mergeFromSibling(
         if (hasOtherRequested) row[hasOther] = true
         const other = siblingResultArray[idx]
         // merge both results
-        for (k in other) {
+        for (const k in other) {
           if (!(k in row)) row[k] = other[k]
         }
         siblingResultArray.splice(idx, 1) // not needed anymore, faster access next time, alternative hashmap
@@ -254,9 +213,7 @@ async function _mergeFromSibling(
 }
 
 function _getDraftsQuery(req, cleanedUp) {
-  const draftsQuery = SELECT.from(req.target.drafts)
-    .columns(cleanedUp.keys)
-    .where(cleanedUp.query.SELECT.where) // groupby missing, but don't include top/skip!!
+  const draftsQuery = SELECT.from(req.target.drafts).columns(cleanedUp.keys).where(cleanedUp.query.SELECT.where) // groupby missing, but don't include top/skip!!
   return draftsQuery
 }
 
@@ -266,13 +223,13 @@ function _activesQueryFromDrafts(cleanedUp, resDrafts, { not = false } = {}) {
     return not ? activesQuery : undefined
   }
   activesQuery.where([
-    { list: cleanedUp.keys.map((pk) => ({ ref: [pk] })) },
+    { list: cleanedUp.keys.map(pk => ({ ref: [pk] })) },
     not ? 'not in' : 'in',
     {
-      list: resDrafts.map((row) => ({
-        list: cleanedUp.keys.map((pk) => ({ val: row[pk] })),
-      })),
-    },
+      list: resDrafts.map(row => ({
+        list: cleanedUp.keys.map(pk => ({ val: row[pk] }))
+      }))
+    }
   ])
 }
 
@@ -305,30 +262,27 @@ async function _unchanged(req, cleanedUp) {
   const draftsQuery = _getDraftsQuery(req, cleanedUp)
   const resDrafts = await _run(req, draftsQuery)
   console.log('got drafts', resDrafts)
-  const activesQuery = _activesQueryFromDrafts(cleanedUp, resDrafts, { not: true })
+  const activesQuery = _activesQueryFromDrafts(cleanedUp, resDrafts, {
+    not: true
+  })
   console.log('actives?', activesQuery)
   const data = await _run(req, activesQuery)
   return _mergeFromSibling(req, cleanedUp, data, {
-    readSibling: false,
+    readSibling: false
   }) // no need to read drafts again, all must be null
 }
 
 async function _ownDraft(req, cleanedUp) {
   console.log('Draft Scenario: Own Draft')
   const draftsQuery = cds.ql.clone(cleanedUp.query)
-  draftsQuery.where(
-    { ref: ['DraftAdministrativeData', 'InProcessByUser'] },
-    '=',
-    req.user.id
-  )
+  draftsQuery.where({ ref: ['DraftAdministrativeData', 'InProcessByUser'] }, '=', req.user.id)
   const data = await _run(req, draftsQuery)
   return _mergeFromSibling(req, cleanedUp, data)
 }
 
 async function _activeWithDraftInProcess(req, cleanedUp, { isLocked }) {
   const draftsQuery = _getDraftsQuery(req, cleanedUp)
-  const DRAFT_CANCEL_TIMEOUT_IN_SEC =
-    ((cds.env.drafts && cds.env.drafts.cancellationTimeout) || 15) * 60
+  const DRAFT_CANCEL_TIMEOUT_IN_SEC = ((cds.env.drafts && cds.env.drafts.cancellationTimeout) || 15) * 60
   draftsQuery.where([
     { ref: ['DraftAdministrativeData', 'InProcessByUser'] },
     '!=',
@@ -339,20 +293,17 @@ async function _activeWithDraftInProcess(req, cleanedUp, { isLocked }) {
     'and',
     {
       func: 'seconds_between',
-      args: [
-        { ref: ['DraftAdministrativeData', 'LastChangeDateTime'] },
-        'CURRENT_TIMESTAMP',
-      ],
+      args: [{ ref: ['DraftAdministrativeData', 'LastChangeDateTime'] }, 'CURRENT_TIMESTAMP']
     },
     isLocked ? '<' : '>',
-    { val: DRAFT_CANCEL_TIMEOUT_IN_SEC },
+    { val: DRAFT_CANCEL_TIMEOUT_IN_SEC }
   ])
   const resDrafts = await _run(req, draftsQuery)
   const activesQuery = _activesQueryFromDrafts(cleanedUp, resDrafts)
   if (!activesQuery) return []
   const data = await _run(req, activesQuery)
   return _mergeFromSibling(req, cleanedUp, data, {
-    readSibling: false,
+    readSibling: false
   })
 }
 
@@ -374,9 +325,7 @@ async function _all(req, cleanedUp) {
 /** Returns a new query where draft columns are removed and names are normalized to `myEntity` or `myEntity_drafts`, depending on IsActiveEntity */
 function _cleanedUp(query) {
   const { draftParams, newWhere } = _cleanupWhere(query.SELECT.where)
-  const clone = cds.ql
-    .clone(query)
-    .from({ ref: _cleanupRef(query.SELECT.from.ref, draftParams) })
+  const clone = cds.ql.clone(query).from({ ref: _cleanupRef(query.SELECT.from.ref, draftParams) })
 
   const dbTarget = _inferDbTarget(clone)
   clone.SELECT.where = newWhere
@@ -387,26 +336,22 @@ function _cleanedUp(query) {
     query: clone,
     draftParams,
     dbTargetName: dbTarget.name,
-    keys,
+    keys
   })
   return { query: clone, draftParams, dbTarget, keys }
 }
 
-async function onReadDrafts(req, next) {
+async function onReadDrafts(req) {
   console.log('incoming query', req.query.SELECT)
+
   const cleanedUp = _cleanedUp(req.query)
+
   if (req.query.SELECT.from.ref[0].where?.length > 1) {
-    // direct access
     return _directAccess(req, cleanedUp)
   }
 
   if (req.query.SELECT.where) {
-    // const { draftParams, newWhere } = _cleanupWhere(query.SELECT.where)
-
-    if (
-      cleanedUp.draftParams['IsActiveEntity'] === true &&
-      cleanedUp.draftParams['HasDraftEntity'] === false
-    ) {
+    if (cleanedUp.draftParams['IsActiveEntity'] === true && cleanedUp.draftParams['HasDraftEntity'] === false) {
       return _unchanged(req, cleanedUp)
     }
 
@@ -424,7 +369,8 @@ async function onReadDrafts(req, next) {
     if (
       cleanedUp.draftParams['IsActiveEntity'] === true &&
       cleanedUp.draftParams['SiblingEntity.IsActiveEntity'] === null &&
-      (cleanedUp.draftParams['DraftAdministrativeData.InProcessByUser']?.ne === '' || cleanedUp.draftParams['DraftAdministrativeData.InProcessByUser']?.ne === null)
+      (cleanedUp.draftParams['DraftAdministrativeData.InProcessByUser']?.ne === '' ||
+        cleanedUp.draftParams['DraftAdministrativeData.InProcessByUser']?.ne === null)
     ) {
       return _lockedByAnotherUser(req, cleanedUp)
     }
@@ -438,9 +384,8 @@ async function onReadDrafts(req, next) {
     }
   }
 
-
   const data = await _run(req, cleanedUp.query)
-  if (!cleanedUp.dbTarget._sibling) return data 
+  if (!cleanedUp.dbTarget._sibling) return data
 
   return _mergeFromSibling(req, cleanedUp, data)
 }
@@ -459,25 +404,21 @@ async function onNewDraft(req, next) {
       LastChangedByUser: req.user.id,
       DraftIsCreatedByMe: true,
       DraftIsProcessedByMe: true,
-      InProcessByUser: req.user.id,
+      InProcessByUser: req.user.id
     }
 
-    const adminDataCQN = INSERT.into('DRAFT.DraftAdministrativeData').entries(
-      draftAdminData
-    )
+    const adminDataCQN = INSERT.into('DRAFT.DraftAdministrativeData').entries(draftAdminData)
 
     const draftData = Object.assign(
       {
-        DraftAdministrativeData_DraftUUID: DraftUUID,
+        DraftAdministrativeData_DraftUUID: DraftUUID
       },
       req.query.INSERT.entries[0]
     )
     delete draftData.IsActiveEntity
     const draftCQN = INSERT.into(req.target.drafts).entries(draftData)
 
-    await Promise.all(
-      [adminDataCQN, draftCQN].map((cqn) => _run(req, cqn))
-    )
+    await Promise.all([adminDataCQN, draftCQN].map(cqn => _run(req, cqn)))
     // do read after write instead
     const resArray = await _run(req, SELECT.from(req.target.drafts))
     const res = Object.assign(resArray[0], { IsActiveEntity: false })
