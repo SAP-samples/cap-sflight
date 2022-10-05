@@ -12,7 +12,8 @@
     "lint": "npx eslint .",
     "start": "cds run",
     "test": "jest",
-    "test:mocha": "npx mocha --timeout 20000"
+    "test:mocha": "npx mocha --timeout 20000",
+    "watch-sflight_analytics": "cds watch --open sflight_analytics/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "dependencies": {
     "@sap/cds": ">=5.4.5",
@@ -22,7 +23,7 @@
     "passport": "^0.6.0"
   },
   "devDependencies": {
-    "@sap/ux-specification": "^1.96.0",
+    "@sap/ux-specification": "^1.102.9",
     "axios": "^0",
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
@@ -109,6 +110,7 @@
     "testTimeout": 20000
   },
   "sapux": [
-    "app/travel_processor"
+    "app/travel_processor",
+    "app/sflight_analytics"
   ]
 }
