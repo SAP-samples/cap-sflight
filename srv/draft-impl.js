@@ -1,3 +1,6 @@
+
+const _isEmpty = data => !data || Array.isArray(data) && !data.length
+
 /** only compare primitive values, no functions */
 const _isIdentical = (ref1, ref2) => {
   if (ref1.length !== ref2.length) return false
@@ -31,14 +34,25 @@ function _cleanupRef(ref, outerDraftParams) {
 }
 
 /** Remove all columns which are not included in the db target */
-function _cleanupColumns(columns, target) {
-  // TODO: nested, expands, ...
+function _cleanupRefs(refs, target) {
   return (
-    columns &&
-    columns.filter(c => {
-      if (c?.ref) return target.elements[c.ref[0]]
-      return true
-    })
+    refs &&
+    refs
+      .filter(c => {
+        if (c?.ref && !target.elements[c.ref[0]]) return false
+        return true
+      })
+      .map(c => {
+        if (c?.expand)
+          return {
+            ...c,
+            expand: _cleanupRefs(
+              c.expand,
+              _getCsn(target.elements[c.ref[0]].target, cds.context?.model || cds.model)
+            )
+          }
+        return c
+      })
   )
 }
 
@@ -128,19 +142,18 @@ const SELECTABLE_DRAFT_COLUMNS = [
 function _requestedDraftColumns(query) {
   if (!query.SELECT.columns) return SELECTABLE_DRAFT_COLUMNS.map(n => ({ ref: [n] }))
   const cols = query.SELECT.columns.some(c => c === '*') ? SELECTABLE_DRAFT_COLUMNS.map(n => ({ ref: [n] })) : []
-  // if (query.SELECT.columns?.some(c => c?.ref?.[0] === hasSibling)) cols.push(hasSibling)
+
   for (const col of query.SELECT.columns) {
     if (col?.ref?.[0] && (SELECTABLE_DRAFT_COLUMNS.includes(col.ref[0]) || col.ref[0] === 'DraftAdministrativeData'))
       if (!cols.some(c => c?.ref && c.ref[0] === col?.ref?.[0])) cols.push(col)
-    // TODO: Handle expands
   }
   return cols
 }
 
 async function _mergeFromSibling(req, cleanedUp, data, { readSibling = true } = {}) {
-  if (!data) return data
+  if (_isEmpty(data)) return data
+
   const dataArray = Array.isArray(data) ? data : [data]
-  if (!dataArray.length) return data // no data
   if (!cleanedUp.dbTarget._sibling) return data // not draft enabled
 
   const requestedDraftColumns = _requestedDraftColumns(req.query)
@@ -235,13 +248,7 @@ function _activesQueryFromDrafts(cleanedUp, resDrafts, { not = false } = {}) {
 
 async function _directAccess(req, cleanedUp) {
   console.log('Draft Scenario: Direct Access')
-
   let data = await _run(req, cleanedUp.query)
-  if (!data) return data
-
-  // not a draft-enabled entity
-  if (!cleanedUp.dbTarget._sibling) return data
-
   return _mergeFromSibling(req, cleanedUp, data)
 }
 
@@ -329,8 +336,10 @@ function _cleanedUp(query) {
 
   const dbTarget = _inferDbTarget(clone)
   clone.SELECT.where = newWhere
-  clone.SELECT.columns = _cleanupColumns(clone.SELECT.columns, dbTarget)
-  // TODO: columns, orderBy, groupBy, ...
+  clone.SELECT.columns = _cleanupRefs(clone.SELECT.columns, dbTarget)
+  if (clone.SELECT.orderBy) clone.SELECT.orderBy = _cleanupRefs(clone.SELECT.orderBy, dbTarget)
+  if (clone.SELECT.groupBy) clone.SELECT.groupBy = _cleanupRefs(clone.SELECT.groupBy, dbTarget)
+
   const keys = _getKeyArray(dbTarget)
   console.log('cleanedUp', {
     query: clone,
