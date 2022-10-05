@@ -122,6 +122,7 @@
                   }
                 }
               },
+
               "initialLoad": true,
               "views": {
                 "paths": [
@@ -151,22 +152,15 @@
                   "layout": "CompactVisual",
                   "initialLayout": "Visual",
                   "filterFields": {
-                    "status": {
-                      "label": "Status",
+                    "prio": {
+                      "label": "Priority",
                       "availability": "Default",
                       "visualFilter": {
                         "valueList": "com.sap.vocabularies.Common.v1.ValueList#vlPrio"
                       }
                     },
-                    "airline": {
-                      "label": "Status",
-                      "availability": "Default",
-                      "visualFilter": {
-                        "valueList": "com.sap.vocabularies.Common.v1.ValueList#vlAirline"
-                      }
-                    },
-                    "FlightDate": {
-                      "label": "Flight Date",
+                    "createdAt": {
+                      "label": "creation Date",
                       "availability": "Default",
                       "visualFilter": {
                         "valueList": "com.sap.vocabularies.Common.v1.ValueList#vlcreatedAt"
@@ -174,13 +168,8 @@
                     }
                   }
                 }
-              },
-              "xxx-keyPerformanceIndicators": {
-                "KPI1": {
-                  "entitySet": "Bookings",
-                  "qualifier": "myKPI1"
-                }
               }
+
             }
           }
         },
