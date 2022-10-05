@@ -39,7 +39,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
         // Click on Create button
         When.onTheMainPage.onTable().iExecuteAction("Create");
         Then.onTheDetailPage.iSeeObjectPageInEditMode();
-        When.onTheDetailPage.iOpenSectionWithTitle("General Information");
+        When.onTheDetailPage.iGoToSection("General Information");
 
         // Value help Agency ID
         When.onTheDetailPage
