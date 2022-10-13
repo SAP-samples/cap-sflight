@@ -15,9 +15,12 @@ service AnalyticsService @(path:'/analytics') {
     BookingDate,
     ConnectionID,
     FlightDate,
-    @Measures.ISOCurrency: cuco
+    @Analytics.Measure : true
+    @Aggregation.default : #SUM
+    @Measures.ISOCurrency: null //cuco
     FlightPrice          as price,
-    CurrencyCode.code    as cuco,
+//    'EUR' as cuco : String(3),
+    //CurrencyCode.code    as cuco,
     @Common.Text: statusName @Common.TextArrangement: #TextOnly
     //@Common.Text: null @Common.TextArrangement: null
     BookingStatus.code   as status,

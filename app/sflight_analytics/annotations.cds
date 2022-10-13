@@ -1,3 +1,11 @@
+// smart filter with dates on x-axis: can this be displayed nicely?
+// display currency in Chart Axis?
+// right-align Price in table?
+// navigation from table ...
+// KPI?
+// doing sums/groups in the table?
+
+
 using AnalyticsService as service from '../../srv/analytics-service';
 
 annotate service.Bookings with {
@@ -11,6 +19,7 @@ annotate service.Bookings with {
 };
 
 annotate service.Bookings with @(
+  Aggregation.CustomAggregate #price : 'Edm.Decimal',
   Common.SemanticKey : [ID],
   UI.LineItem        : [ // all fields used here must be listed below in "GroupableProperties", otherwise no content is shown
     {
@@ -63,7 +72,7 @@ annotate service.Bookings with @(Aggregation.ApplySupported : {
     ConnectionID,
     FlightDate,
     price,
-    cuco,
+//    cuco,
     status,
     airline,
   ],
@@ -284,65 +293,70 @@ annotate service.Bookings with @(
 };
 
 
-// annotate service.Bookings with @(
-//   UI.KPI #myKPI1 : {
-//     DataPoint        : {
-//       $Type            : 'UI.DataPointType',
-//       Value            : price,
-//       Title            : 'Field With Unit',
-//       Description      : 'Field with a Unit',
-//       Criticality      : criticality_code,
-//       TrendCalculation : {
-//         $Type                : 'UI.TrendCalculationType',
-//         ReferenceValue       : targetValue,
-//         StrongUpDifference   : 1000000,
-//         UpDifference         : 100000,
-//         DownDifference       : 0,
-//         StrongDownDifference : -100000
-//       },
-//       TargetValue      : 45000000
-//     },
-//     Detail           : {
-//       $Type                      : 'UI.KPIDetailType',
-//       DefaultPresentationVariant : {
-//         $Type          : 'UI.PresentationVariantType',
-//         Visualizations : [
-//           '@UI.Chart#kpi1',
-//           ![@UI.LineItem]
-//         ],
-//       },
-//     },
-//     SelectionVariant : {
-//       $Type         : 'UI.SelectionVariantType',
-//       SelectOptions : [{
-//         $Type        : 'UI.SelectOptionType',
-//         PropertyName : countryCode,
-//         Ranges       : [{
-//           $Type  : 'UI.SelectionRangeType',
-//           Sign   : #E,
-//           Option : #EQ,
-//           Low    : 0,
-//         }, ],
-//       }
+annotate service.Bookings with @(
+  UI.KPI #myKPI1 : {
+    DataPoint : {
+      $Type            : 'UI.DataPointType',
+      Value            : price,
+      Title            : 'Preis',
+      Description      : 'Preis',
+      CriticalityCalculation : {
+        ImprovementDirection: #Maximize,
+        AcceptanceRangeLowValue: 26000000,
+        ToleranceRangeLowValue:  24000000,
+        DeviationRangeLowValue:  22000000
+      }
+      // Criticality      : #Critical,     //criticality_code,
+      // TrendCalculation : {
+      //   $Type                : 'UI.TrendCalculationType',
+      //   ReferenceValue       : 27000000, // targetValue,
+      //   StrongUpDifference   :  3000000,
+      //   UpDifference         :   500000,
+      //   DownDifference       : -3000000,
+      //   StrongDownDifference :  -500000
+      // },
+      // TargetValue      : 26000000
+    },
 
-//       ],
-//     }
-//   },
+    Detail : {
+      $Type                      : 'UI.KPIDetailType',
+      DefaultPresentationVariant : {
+        $Type          : 'UI.PresentationVariantType',
+        Visualizations : [
+          '@UI.Chart#kpi1'
+        ],
+      },
+    },
 
-//   UI.Chart #kpi1 : {
-//     $Type               : 'UI.ChartDefinitionType',
-//     ChartType           : #Line,
-//     Measures            : [fieldWithUnit],
-//     Dimensions          : [dimensions],
-//     MeasureAttributes   : [{
-//       $Type   : 'UI.ChartMeasureAttributeType',
-//       Measure : fieldWithUnit,
-//       Role    : #Axis1
-//     }],
-//     DimensionAttributes : [{
-//       $Type     : 'UI.ChartDimensionAttributeType',
-//       Dimension : dimensions,
-//       Role      : #Category
-//     }]
-//   },
-// );
+    SelectionVariant : {
+      $Type         : 'UI.SelectionVariantType',
+      SelectOptions : [{
+        $Type        : 'UI.SelectOptionType',
+        PropertyName : price,
+        Ranges       : [{
+          $Type  : 'UI.SelectionRangeType',
+          Sign   : #E,
+          Option : #EQ,
+          Low    : 0,
+        }, ],
+      }],
+    }
+  },
+
+  UI.Chart #kpi1 : {
+    $Type               : 'UI.ChartDefinitionType',
+    ChartType           : #Line,
+    Measures            : [price],
+    Dimensions          : [FlightDate],
+    MeasureAttributes   : [{
+      $Type   : 'UI.ChartMeasureAttributeType',
+      Measure : price,
+      Role    : #Axis1
+    }],
+    DimensionAttributes : [{
+      $Type     : 'UI.ChartDimensionAttributeType',
+      Dimension : FlightDate,
+      Role      : #Category
+    }]
+  },
+);

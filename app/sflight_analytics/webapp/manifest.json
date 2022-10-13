@@ -175,7 +175,7 @@
                   }
                 }
               },
-              "xxx-keyPerformanceIndicators": {
+              "keyPerformanceIndicators": {
                 "KPI1": {
                   "entitySet": "Bookings",
                   "qualifier": "myKPI1"

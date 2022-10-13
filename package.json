@@ -73,7 +73,8 @@
       "service": true
     },
     "features": {
-      "preserve_computed": true
+      "preserve_computed": true,
+      "odata_new_parser": true
     },
     "build": {
       "[node]": {
