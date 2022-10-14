@@ -128,12 +128,12 @@
                   {
                     "primary": [
                       {
-                        "annotationPath": "@com.sap.vocabularies.UI.v1.Chart"
+                        "annotationPath": "@com.sap.vocabularies.UI.v1.PresentationVariant"
                       }
                     ],
                     "secondary": [
                       {
-                        "annotationPath": "@com.sap.vocabularies.UI.v1.LineItem"
+                        "annotationPath": "@com.sap.vocabularies.UI.v1.PresentationVariant"
                       }
                     ],
                     "defaultPath": "both"

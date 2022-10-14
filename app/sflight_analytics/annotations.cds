@@ -1,9 +1,5 @@
-// smart filter with dates on x-axis: can this be displayed nicely?
-// display currency in Chart Axis?
 // right-align Price in table?
 // navigation from table ...
-// KPI?
-// doing sums/groups in the table?
 
 
 using AnalyticsService as service from '../../srv/analytics-service';
@@ -20,7 +16,13 @@ annotate service.Bookings with {
 
 annotate service.Bookings with @(
   Aggregation.CustomAggregate #price : 'Edm.Decimal',
+  Aggregation.CustomAggregate #cuco : 'Edm.String',
+
+  Aggregation.CustomAggregate #fieldWithUnit : 'Edm.Decimal',
+  Aggregation.CustomAggregate #QuantityUnit : 'Edm.String',
+
   Common.SemanticKey : [ID],
+
   UI.LineItem        : [ // all fields used here must be listed below in "GroupableProperties", otherwise no content is shown
     {
       Value          : rid,
@@ -32,6 +34,10 @@ annotate service.Bookings with @(
     },
     {
       Value          : FlightDate,
+      @UI.Importance : #High,
+    },
+    {
+      Value          : fieldWithUnit,
       @UI.Importance : #High,
     },
     {
@@ -49,8 +55,7 @@ annotate service.Bookings with @(
   ],
 );
 
-
-annotate service.Bookings with @(Aggregation.ApplySupported : {
+annotate service.Bookings with @Aggregation.ApplySupported : {
   Transformations        : [
     'aggregate',
     'topcount',
@@ -65,25 +70,29 @@ annotate service.Bookings with @(Aggregation.ApplySupported : {
     'orderby',
     'search'
   ],
-  Rollup                 : #None,
-  PropertyRestrictions   : true,
+//  Rollup                 : #None,
+//  PropertyRestrictions   : true,
   GroupableProperties    : [
     rid,
     ConnectionID,
     FlightDate,
     price,
-//    cuco,
+
+    cuco,
+    QuantityUnit,
+
     status,
     airline,
   ],
   AggregatableProperties : [
     {Property : status, },
     {Property : price, },
+    {Property : fieldWithUnit, },
     {Property : ID, },
   ],
-});
+};
 
-annotate service.Bookings with @(Analytics.AggregatedProperties : [
+annotate service.Bookings with @Analytics.AggregatedProperties : [
   {
     Name                 : 'minPrice',
     AggregationMethod    : 'min',
@@ -108,15 +117,23 @@ annotate service.Bookings with @(Analytics.AggregatedProperties : [
     AggregatableProperty : 'price',
     @Common.Label        : 'Total Price'
   },
+
+  {
+    Name                 : 'qsum',
+    AggregationMethod    : 'sum',
+    AggregatableProperty : 'fieldWithUnit',
+    @Common.Label        : 'QSum'
+  },
+
   {
     Name                 : 'countBookings',
     AggregationMethod    : 'countdistinct',
     AggregatableProperty : 'ID',
-    @Common.Label        : 'Number of Bookings'
+    @Common.Label        : 'Bookings'
   },
-], );
+];
 
-annotate service.Bookings with @(UI.Chart : {
+annotate service.Bookings with @UI.Chart : {
   Title               : 'Flight Bookings',
   ChartType           : #Column,
   Measures            : [sumPrice],
@@ -131,8 +148,27 @@ annotate service.Bookings with @(UI.Chart : {
     Dimension : status,
     Role      : #Category
   }, ],
-}, );
+};
 
+
+annotate service.Bookings with @UI.PresentationVariant : {
+  GroupBy : [
+    airline,
+    status
+  ],
+  Total : [
+    price
+  ],
+  Visualizations : [
+    '@UI.Chart',
+    '@UI.LineItem',
+  ]
+};
+
+
+//
+// Visual Filters
+//
 
 annotate service.Bookings with @(
   UI.PresentationVariant #pvAirline : {
@@ -292,6 +328,9 @@ annotate service.Bookings with @(
   });
 };
 
+//
+// KPI
+//
 
 annotate service.Bookings with @(
   UI.KPI #myKPI1 : {
