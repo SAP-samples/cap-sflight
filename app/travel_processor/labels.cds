@@ -6,7 +6,7 @@ using { sap.fe.cap.travel as schema } from '../../db/schema';
 
 annotate schema.Travel with @title: '{i18n>Travel}' {
   TravelUUID   @UI.Hidden;
-  TravelID     @title: '{i18n>TravelID}'      @Common.Text: Description;
+  TravelID     @title: '{i18n>TravelID}';
   BeginDate    @title: '{i18n>BeginDate}';
   EndDate      @title: '{i18n>EndDate}';
   Description  @title: '{i18n>Description}';

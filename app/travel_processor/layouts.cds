@@ -45,6 +45,10 @@ annotate TravelService.Travel with @UI : {
       Value : TravelID,
       ![@UI.Importance] : #High
     },
+    {
+      Value : Description,
+      ![@UI.Importance] : #High
+    },
     { Value : to_Agency_AgencyID     },
     {
       Value : to_Customer_CustomerID,
