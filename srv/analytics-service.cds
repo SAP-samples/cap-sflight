@@ -31,11 +31,27 @@ service AnalyticsService @(path:'/analytics') {
     4.4 as fieldWithUnit : Decimal(11,2),
 
 
+    @Common.Label: 'Currency2'
+    @Analytics.Measure: true
+    @Aggregation.default: #MAX
+    @Core.Computed: null
+    @Semantics.currencyCode
+    'EUR' as CurrCode : String,
+
+    @Common.Label: 'Field w/ curr'
+    @Analytics.Measure: true
+    @Aggregation.default: #SUM
+    @Measures.ISOCurrency : CurrCode
+    @Core.Computed: null
+    3.7 as fieldWithCurrency : Decimal(15,3),
+
+
+
     @Common.Label: 'Currency'
     @Analytics.Measure: true
     @Aggregation.default: #MAX
-    'EUR' as cuco : String,
-    //CurrencyCode.code    as cuco,
+    //'EUR' as cuco : String,
+    CurrencyCode.code as cuco : String,
 
     @Analytics.Measure: true
     @Aggregation.default: #SUM
@@ -53,7 +69,11 @@ service AnalyticsService @(path:'/analytics') {
 
     // to_Flight.to_Connection.DepartureAirport.AirportID as departure,
     // to_Flight.to_Connection.DestinationAirport.AirportID as destination,
-    // to_Flight.to_Connection.Distance
+    // to_Flight.to_Connection.Distance as dist,
+
+    // to_Travel.TravelID as travelId,
+    // to_Travel.Description as travelDescr,
+    // to_Travel.to_Customer.LastName as travelLastName
   };
 
 

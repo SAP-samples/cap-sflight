@@ -10,6 +10,7 @@ annotate service.Bookings with {
   ConnectionID @title : 'ConnectionID';
   FlightDate   @title : 'FlightDate';
   price        @title : 'Price';
+  fieldWithCurrency  @title : 'XXX';
   status       @title : 'Status';
   airline      @title : 'Airline';
 };
@@ -20,6 +21,9 @@ annotate service.Bookings with @(
 
   Aggregation.CustomAggregate #fieldWithUnit : 'Edm.Decimal',
   Aggregation.CustomAggregate #QuantityUnit : 'Edm.String',
+
+  Aggregation.CustomAggregate #fieldWithCurrency : 'Edm.Decimal',
+  Aggregation.CustomAggregate #CurrCode : 'Edm.String',
 
   Common.SemanticKey : [ID],
 
@@ -44,6 +48,10 @@ annotate service.Bookings with @(
       Value          : price,
       @UI.Importance : #High,
     },
+    // {
+    //   Value          : fieldWithCurrency,
+    //   @UI.Importance : #High,
+    // },
     {
       Value          : status,
       @UI.Importance : #High,
@@ -76,10 +84,11 @@ annotate service.Bookings with @Aggregation.ApplySupported : {
     rid,
     ConnectionID,
     FlightDate,
-    price,
+    //price,
 
     cuco,
     QuantityUnit,
+    CurrCode,
 
     status,
     airline,
@@ -88,6 +97,7 @@ annotate service.Bookings with @Aggregation.ApplySupported : {
     {Property : status, },
     {Property : price, },
     {Property : fieldWithUnit, },
+    {Property : fieldWithCurrency, },
     {Property : ID, },
   ],
 };
@@ -117,6 +127,13 @@ annotate service.Bookings with @Analytics.AggregatedProperties : [
     AggregatableProperty : 'price',
     @Common.Label        : 'Total Price'
   },
+
+  // {
+  //   Name                 : 'sumFWC',
+  //   AggregationMethod    : 'sum',
+  //   AggregatableProperty : 'fieldWithCurrency',
+  //   @Common.Label        : 'Total FWC'
+  // },
 
   {
     Name                 : 'qsum',
@@ -152,11 +169,11 @@ annotate service.Bookings with @UI.Chart : {
 
 
 annotate service.Bookings with @UI.PresentationVariant : {
-  GroupBy : [
+  GroupBy : [  // default grouping in table
     airline,
     status
   ],
-  Total : [
+  Total : [    // default aggregation in table
     price
   ],
   Visualizations : [
@@ -399,3 +416,83 @@ annotate service.Bookings with @(
     }]
   },
 );
+
+
+
+/*
+
+
+
+
+
+annotate service.Bookings with @UI : {
+  Identification : [
+    { Value : rid },
+  ],
+  HeaderInfo : {
+    TypeName       : '{i18n>Bookings}',
+    TypeNamePlural : '{i18n>Bookings}',
+    Title          : { Value : rid },
+    Description    : { Value : rid }
+  },
+  // PresentationVariant : {
+  //   Visualizations : ['@UI.LineItem'],
+  //   SortOrder      : [{
+  //     $Type      : 'Common.SortOrderType',
+  //     Property   : BookingID,
+  //     Descending : false
+  //   }]
+  // },
+  // SelectionFields : [],
+  // LineItem : [
+  //   { Value : to_Carrier.AirlinePicURL,  Label : '  '},
+  //   { Value : BookingID              },
+  //   { Value : BookingDate            },
+  //   { Value : to_Customer_CustomerID },
+  //   { Value : to_Carrier_AirlineID   },
+  //   { Value : ConnectionID,          Label : '{i18n>FlightNumber}' },
+  //   { Value : FlightDate             },
+  //   { Value : FlightPrice            },
+  //   { Value : BookingStatus_code     }
+  // ],
+  Facets : [{
+    $Type  : 'UI.CollectionFacet',
+    Label  : '{i18n>GeneralInformation}',
+    ID     : 'Booking',
+    Facets : [{  // booking details
+      $Type  : 'UI.ReferenceFacet',
+      ID     : 'BookingData',
+      Target : '@UI.FieldGroup#GeneralInformation',
+      Label  : '{i18n>Booking}'
+    },
+    {  // travel info
+      $Type  : 'UI.ReferenceFacet',
+      ID     : 'TravelData',
+      Target : '@UI.FieldGroup#Travel',
+      Label  : '{i18n>Flight}'
+    }
+    ]
+  },
+  // {  // supplements list
+  //   $Type  : 'UI.ReferenceFacet',
+  //   Target : 'to_BookSupplement/@UI.PresentationVariant',
+  //   Label  : '{i18n>BookingSupplements}'
+  // }
+  ],
+  FieldGroup #GeneralInformation : { Data : [
+    { Value : rid              },
+    { Value : FlightDate,           },
+    { Value : price },
+    { Value : airline,           },
+    { Value : departure,           },
+    { Value : destination,           },
+    { Value : dist,           },
+  ]},
+  FieldGroup #Travel : { Data : [
+    { Value : travelID    },
+    { Value : travelDescr },
+    { Value : travelLastName },
+  ]},
+};
+
+*/
