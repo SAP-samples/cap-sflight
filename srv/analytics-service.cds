@@ -5,13 +5,12 @@ service AnalyticsService @(path:'/analytics') {
   // @(restrict: [
   //   { grant: 'READ', to: 'authenticated-user'},
   // ])
-
+  @readonly
   entity Bookings as projection on my.Booking {
     @UI.Hidden: false
     BookingUUID as ID,
     @title : 'Travel/Booking ID'
-    to_Travel.TravelID || '/' || BookingID as rid : String,
-    BookingDate,
+    to_Travel.TravelID || '/' || BookingID as ReadableID : String,
     ConnectionID,
     FlightDate,
 
@@ -24,21 +23,33 @@ service AnalyticsService @(path:'/analytics') {
     BookingStatus.code   as status,
     BookingStatus.name   as statusName,
 
-    @Common.Text: airlineN
+    @Common.Text: airlineName
     to_Carrier.AirlineID as airline,
-    to_Carrier.Name      as airlineN,
+    to_Carrier.Name      as airlineName,
 
-    // to_Flight.to_Connection.DepartureAirport.AirportID as departure,
-    // to_Flight.to_Connection.DestinationAirport.AirportID as destination,
-    // to_Flight.to_Connection.Distance as dist,
+    BookingID,
+    BookingDate,
 
-    // to_Travel.TravelID as travelId,
-    // to_Travel.Description as travelDescr,
-    // to_Travel.to_Customer.LastName as travelLastName
+    to_Travel,
+    to_Flight,
+    to_Carrier
   };
 
 
+  // for detail page:
 
+  @readonly
+  entity Travels as projection on my.Travel {
+    *,
+    @Common.Label: 'Customer'
+    to_Customer.FirstName || ' ' || to_Customer.LastName as CustomerName : String,
+  };
 
+  annotate Travels:TravelID with @Common.Text: null;
+
+  annotate my.Airport:AirportID @Common.Text: City;
+  annotate my.FlightConnection:Distance @(
+    Common.Label: 'Distance',
+    Measures.Unit : DistanceUnit
+  );
 }
-

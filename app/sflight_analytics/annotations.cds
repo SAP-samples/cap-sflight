@@ -4,7 +4,11 @@
 
 using AnalyticsService as service from '../../srv/analytics-service';
 
-annotate service.Bookings with {
+annotate service.Bookings with @(
+  Aggregation.CustomAggregate #price : 'Edm.Decimal',
+  Aggregation.CustomAggregate #cuco : 'Edm.String',
+  Common.SemanticKey : [ID],
+) {
   ID           @ID    : 'ID';
   price        @Analytics.Measure: true
                @Aggregation.default: #SUM;
@@ -12,39 +16,6 @@ annotate service.Bookings with {
                @Aggregation.default: #MAX;
 };
 
-annotate service.Bookings with @(
-  Aggregation.CustomAggregate #price : 'Edm.Decimal',
-  Aggregation.CustomAggregate #cuco : 'Edm.String',
-
-  Common.SemanticKey : [ID],
-
-  UI.LineItem        : [ // all fields used here must be listed below in "GroupableProperties", otherwise no content is shown
-    {
-      Value          : rid,
-      @UI.Importance : #High,
-    },
-    {
-      Value          : airline,
-      @UI.Importance : #High,
-    },
-    {
-      Value          : ConnectionID,
-      @UI.Importance : #High,
-    },
-    {
-      Value          : FlightDate,
-      @UI.Importance : #High,
-    },
-    {
-      Value          : price,
-      @UI.Importance : #High,
-    },
-    {
-      Value          : status,
-      @UI.Importance : #High,
-    },
-  ],
-);
 
 annotate service.Bookings with @Aggregation.ApplySupported : {
   Transformations        : [
@@ -64,7 +35,7 @@ annotate service.Bookings with @Aggregation.ApplySupported : {
   Rollup                 : #None,
   PropertyRestrictions   : true,
   GroupableProperties    : [
-    rid,
+    ReadableID,
     ConnectionID,
     FlightDate,
     cuco,
@@ -82,51 +53,68 @@ annotate service.Bookings with @Analytics.AggregatedProperties : [
   {
     Name                 : 'minPrice',
     AggregationMethod    : 'min',
-    AggregatableProperty : 'price',
+    AggregatableProperty : price,
     @Common.Label        : 'Minimal Price'
-  },
-  {
+  }, {
     Name                 : 'maxPrice',
     AggregationMethod    : 'max',
-    AggregatableProperty : 'price',
+    AggregatableProperty : price,
     @Common.Label        : 'Maximal Price'
-  },
-  {
+  }, {
     Name                 : 'avgPrice',
     AggregationMethod    : 'average',
-    AggregatableProperty : 'price',
+    AggregatableProperty : price,
     @Common.Label        : 'Average Price'
-  },
-  {
+  }, {
     Name                 : 'sumPrice',
     AggregationMethod    : 'sum',
-    AggregatableProperty : 'price',
+    AggregatableProperty : price,
     @Common.Label        : 'Total Price'
-  },
-
-  {
+  }, {
     Name                 : 'countBookings',
     AggregationMethod    : 'countdistinct',
-    AggregatableProperty : 'ID',
+    AggregatableProperty : ID,
     @Common.Label        : 'Bookings'
-  },
+  }
+];
+
+annotate service.Bookings with @UI.LineItem : [
+  {
+    Value          : ReadableID,
+    @UI.Importance : #High,
+  }, {
+    Value          : airline,
+    @UI.Importance : #High,
+  }, {
+    Value          : ConnectionID,
+    @UI.Importance : #High,
+  }, {
+    Value          : FlightDate,
+    @UI.Importance : #High,
+  }, {
+    Value          : price,
+    @UI.Importance : #High,
+  }, {
+    Value          : status,
+    @UI.Importance : #High,
+  }
 ];
 
 annotate service.Bookings with @UI.Chart : {
   Title               : 'Flight Bookings',
   ChartType           : #Column,
-  Measures            : [sumPrice],
+  Measures            : [minPrice, avgPrice, maxPrice],
   Dimensions          : [airline],
   MeasureAttributes   : [{
     $Type   : 'UI.ChartMeasureAttributeType',
-    Measure : sumPrice,
+    Measure : minPrice,
     Role    : #Axis1
   }],
   DimensionAttributes : [{
     $Type     : 'UI.ChartDimensionAttributeType',
     Dimension : airline,
     Role      : #Category
-  }, ],
+  }],
 };
 
 annotate service.Bookings with @UI.PresentationVariant : {
@@ -381,80 +369,64 @@ annotate service.Bookings with @(
 
 
 
-/*
 
 
 
+//
 // Detail page
-
+//
 annotate service.Bookings with @UI : {
   Identification : [
-    { Value : rid },
+    { Value : ReadableID },
   ],
   HeaderInfo : {
     TypeName       : '{i18n>Bookings}',
     TypeNamePlural : '{i18n>Bookings}',
-    Title          : { Value : rid },
-    Description    : { Value : rid }
+    Title          : { Value : ReadableID },
+    Description    : { Value : ReadableID }
   },
-  // PresentationVariant : {
-  //   Visualizations : ['@UI.LineItem'],
-  //   SortOrder      : [{
-  //     $Type      : 'Common.SortOrderType',
-  //     Property   : BookingID,
-  //     Descending : false
-  //   }]
-  // },
-  // SelectionFields : [],
-  // LineItem : [
-  //   { Value : to_Carrier.AirlinePicURL,  Label : '  '},
-  //   { Value : BookingID              },
-  //   { Value : BookingDate            },
-  //   { Value : to_Customer_CustomerID },
-  //   { Value : to_Carrier_AirlineID   },
-  //   { Value : ConnectionID,          Label : '{i18n>FlightNumber}' },
-  //   { Value : FlightDate             },
-  //   { Value : FlightPrice            },
-  //   { Value : BookingStatus_code     }
-  // ],
   Facets : [{
     $Type  : 'UI.CollectionFacet',
-    Label  : '{i18n>GeneralInformation}',
+    Label  : 'Booking Information', //'{i18n>GeneralInformation}',
     ID     : 'Booking',
-    Facets : [{  // booking details
-      $Type  : 'UI.ReferenceFacet',
-      ID     : 'BookingData',
-      Target : '@UI.FieldGroup#GeneralInformation',
-      Label  : '{i18n>Booking}'
-    },
-    {  // travel info
+    Facets : [{
       $Type  : 'UI.ReferenceFacet',
       ID     : 'TravelData',
-      Target : '@UI.FieldGroup#Travel',
+      Target : '@UI.FieldGroup#TravelInformation',
+      Label  : '{i18n>Travel}'
+    }, {
+      $Type  : 'UI.ReferenceFacet',
+      ID     : 'BookingData',
+      Target : '@UI.FieldGroup#BookingInformation',
+      Label  : '{i18n>Booking}'
+    }, {
+      $Type  : 'UI.ReferenceFacet',
+      ID     : 'FlightData',
+      Target : '@UI.FieldGroup#FlightInformation',
       Label  : '{i18n>Flight}'
     }
     ]
-  },
-  // {  // supplements list
-  //   $Type  : 'UI.ReferenceFacet',
-  //   Target : 'to_BookSupplement/@UI.PresentationVariant',
-  //   Label  : '{i18n>BookingSupplements}'
-  // }
-  ],
-  FieldGroup #GeneralInformation : { Data : [
-    { Value : rid              },
-    { Value : FlightDate,           },
-    { Value : price },
-    { Value : airline,           },
-    { Value : departure,           },
-    { Value : destination,           },
-    { Value : dist,           },
+  }],
+  FieldGroup #TravelInformation : { Data : [
+    { Value : to_Travel.TravelID,   Label: 'ID'   },
+    { Value : to_Travel.Description                      },
+    { Value : to_Travel.to_Agency.Name,                      },
+    { Value : to_Travel.CustomerName,  },
   ]},
-  FieldGroup #Travel : { Data : [
-    { Value : travelID    },
-    { Value : travelDescr },
-    { Value : travelLastName },
+  FieldGroup #BookingInformation : { Data : [
+    { Value : BookingID,   Label: 'ID'             },
+    { Value : BookingDate           },
+    { Value : FlightDate,           },
+    { Value : price                 },
+  ]},
+  FieldGroup #FlightInformation : { Data : [
+    { Value : airline,                  },
+    { Value : to_Carrier.AirlinePicURL, },
+    { Value : ConnectionID              },
+    { Value : to_Flight.PlaneType       },
+    { Value : to_Flight.to_Connection.DepartureAirport.AirportID,   Label: 'Departure Airport' },
+    { Value : to_Flight.to_Connection.DestinationAirport.AirportID, Label: 'Arrival Airport'   },
+    { Value : to_Flight.to_Connection.Distance,             },
   ]},
 };
 
-*/
