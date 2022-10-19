@@ -6,30 +6,25 @@ using AnalyticsService as service from '../../srv/analytics-service';
 
 annotate service.Bookings with {
   ID           @ID    : 'ID';
-  rid          @title : 'Travel/BookingID';
-  ConnectionID @title : 'ConnectionID';
-  FlightDate   @title : 'FlightDate';
-  price        @title : 'Price';
-  fieldWithCurrency  @title : 'XXX';
-  status       @title : 'Status';
-  airline      @title : 'Airline';
+  price        @Analytics.Measure: true
+               @Aggregation.default: #SUM;
+  cuco         @Analytics.Measure: true
+               @Aggregation.default: #MAX;
 };
 
 annotate service.Bookings with @(
   Aggregation.CustomAggregate #price : 'Edm.Decimal',
   Aggregation.CustomAggregate #cuco : 'Edm.String',
 
-  Aggregation.CustomAggregate #fieldWithUnit : 'Edm.Decimal',
-  Aggregation.CustomAggregate #QuantityUnit : 'Edm.String',
-
-  Aggregation.CustomAggregate #fieldWithCurrency : 'Edm.Decimal',
-  Aggregation.CustomAggregate #CurrCode : 'Edm.String',
-
   Common.SemanticKey : [ID],
 
   UI.LineItem        : [ // all fields used here must be listed below in "GroupableProperties", otherwise no content is shown
     {
       Value          : rid,
+      @UI.Importance : #High,
+    },
+    {
+      Value          : airline,
       @UI.Importance : #High,
     },
     {
@@ -41,23 +36,11 @@ annotate service.Bookings with @(
       @UI.Importance : #High,
     },
     {
-      Value          : fieldWithUnit,
-      @UI.Importance : #High,
-    },
-    {
       Value          : price,
       @UI.Importance : #High,
     },
-    // {
-    //   Value          : fieldWithCurrency,
-    //   @UI.Importance : #High,
-    // },
     {
       Value          : status,
-      @UI.Importance : #High,
-    },
-    {
-      Value          : airline,
       @UI.Importance : #High,
     },
   ],
@@ -78,27 +61,20 @@ annotate service.Bookings with @Aggregation.ApplySupported : {
     'orderby',
     'search'
   ],
-//  Rollup                 : #None,
-//  PropertyRestrictions   : true,
+  Rollup                 : #None,
+  PropertyRestrictions   : true,
   GroupableProperties    : [
     rid,
     ConnectionID,
     FlightDate,
-    //price,
-
     cuco,
-    QuantityUnit,
-    CurrCode,
-
     status,
     airline,
   ],
   AggregatableProperties : [
-    {Property : status, },
-    {Property : price, },
-    {Property : fieldWithUnit, },
-    {Property : fieldWithCurrency, },
-    {Property : ID, },
+    {Property : status },
+    {Property : price },
+    {Property : ID },
   ],
 };
 
@@ -128,20 +104,6 @@ annotate service.Bookings with @Analytics.AggregatedProperties : [
     @Common.Label        : 'Total Price'
   },
 
-  // {
-  //   Name                 : 'sumFWC',
-  //   AggregationMethod    : 'sum',
-  //   AggregatableProperty : 'fieldWithCurrency',
-  //   @Common.Label        : 'Total FWC'
-  // },
-
-  {
-    Name                 : 'qsum',
-    AggregationMethod    : 'sum',
-    AggregatableProperty : 'fieldWithUnit',
-    @Common.Label        : 'QSum'
-  },
-
   {
     Name                 : 'countBookings',
     AggregationMethod    : 'countdistinct',
@@ -154,7 +116,7 @@ annotate service.Bookings with @UI.Chart : {
   Title               : 'Flight Bookings',
   ChartType           : #Column,
   Measures            : [sumPrice],
-  Dimensions          : [status],
+  Dimensions          : [airline],
   MeasureAttributes   : [{
     $Type   : 'UI.ChartMeasureAttributeType',
     Measure : sumPrice,
@@ -162,11 +124,10 @@ annotate service.Bookings with @UI.Chart : {
   }],
   DimensionAttributes : [{
     $Type     : 'UI.ChartDimensionAttributeType',
-    Dimension : status,
+    Dimension : airline,
     Role      : #Category
   }, ],
 };
-
 
 annotate service.Bookings with @UI.PresentationVariant : {
   GroupBy : [  // default grouping in table
@@ -181,6 +142,7 @@ annotate service.Bookings with @UI.PresentationVariant : {
     '@UI.LineItem',
   ]
 };
+
 
 
 //
@@ -423,7 +385,7 @@ annotate service.Bookings with @(
 
 
 
-
+// Detail page
 
 annotate service.Bookings with @UI : {
   Identification : [
