@@ -43,27 +43,26 @@ annotate TravelService.Travel with @UI : {
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.deductDiscount', Label  : '{i18n>DeductDiscount}' },
     {
       Value : TravelID,
-      ![@UI.Importance] : #High
+      @UI.Importance : #High
     },
     {
       Value : to_Agency_AgencyID,
-      ![@HTML5.CssDefaults]: {width:'16em'}
+      @HTML5.CssDefaults: {width:'16em'}
     },
     {
       Value : to_Customer_CustomerID,
-      ![@UI.Importance] : #High,
-      ![@HTML5.CssDefaults]: {width:'14em'}
+      @UI.Importance : #High,
+      @HTML5.CssDefaults: {width:'14em'}
     },
-    { Value : BeginDate,  ![@HTML5.CssDefaults]: {width:'9em'} },
-    { Value : EndDate,    ![@HTML5.CssDefaults]: {width:'9em'} },
-    { Value : BookingFee, ![@HTML5.CssDefaults]: {width:'10em'} },
-    { Value : TotalPrice, ![@HTML5.CssDefaults]: {width:'12em'} },
+    { Value : BeginDate,  @HTML5.CssDefaults: {width:'9em'} },
+    { Value : EndDate,    @HTML5.CssDefaults: {width:'9em'} },
+    { Value : BookingFee, @HTML5.CssDefaults: {width:'10em'} },
+    { Value : TotalPrice, @HTML5.CssDefaults: {width:'12em'} },
     {
-      $Type : 'UI.DataField',
       Value : TravelStatus_code,
       Criticality : TravelStatus.criticality,
-      ![@UI.Importance] : #High,
-      ![@HTML5.CssDefaults]: {width:'10em'}
+      @UI.Importance : #High,
+      @HTML5.CssDefaults: {width:'10em'}
     }
   ],
   Facets : [{
