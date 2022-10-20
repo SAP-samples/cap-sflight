@@ -30,14 +30,14 @@ annotate schema.Booking with @title: '{i18n>Booking}' {
   CurrencyCode  @title: '{i18n>CurrencyCode}';
   FlightDate    @title: '{i18n>FlightDate}';
   FlightPrice   @title: '{i18n>FlightPrice}'    @Measures.ISOCurrency: CurrencyCode_code;
-  BookingStatus @title: '{i18n>BookingStatus}'  /*@Common.Text: BookingStatus.name    @Common.TextArrangement: #TextOnly*/;
+  BookingStatus @title: '{i18n>BookingStatus}'  @Common.Text: BookingStatus.name    @Common.TextArrangement: #TextOnly;
   to_Carrier    @title: '{i18n>AirlineID}'      @Common.Text: to_Carrier.Name;
   to_Customer   @title: '{i18n>CustomerID}'     @Common.Text: to_Customer.LastName;
 }
 
-// annotate schema.BookingStatus with {
-//   code @Common.Text : name @Common.TextArrangement: #TextOnly
-// }
+annotate schema.BookingStatus with {
+  code @Common.Text : name @Common.TextArrangement: #TextOnly
+}
 
 annotate schema.BookingSupplement with @title: '{i18n>BookingSupplement}' {
   BookSupplUUID        @UI.Hidden;
