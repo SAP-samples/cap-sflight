@@ -28,10 +28,11 @@ npm ci
 cds watch
 ```
 
-### Accessing the SAP Fiori App
+### Accessing the SAP Fiori Apps
 
-Open this link in your browser:
-http://localhost:4004/travel_processor/webapp/index.html
+Open these link in your browser:
+* http://localhost:4004/travel_processor/webapp/index.html for processing the travel data
+* http://localhost:4004/travel_analytics/webapp/index.html for an Analytical List Page
 
 ### Integration Tests
 
@@ -56,6 +57,8 @@ To start the middleware, in another console execute
 cd app\travel_processor
 npm start
 ```
+To run the Analytical List page, use `cd app/travel_analytics` instead.
+
 
 ### Accessing the SAP Fiori App
 
