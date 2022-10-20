@@ -45,20 +45,25 @@ annotate TravelService.Travel with @UI : {
       Value : TravelID,
       ![@UI.Importance] : #High
     },
-    { Value : to_Agency_AgencyID     },
+    {
+      Value : to_Agency_AgencyID,
+      ![@HTML5.CssDefaults]: {width:'16em'}
+    },
     {
       Value : to_Customer_CustomerID,
-      ![@UI.Importance] : #High
+      ![@UI.Importance] : #High,
+      ![@HTML5.CssDefaults]: {width:'14em'}
     },
-    { Value : BeginDate              },
-    { Value : EndDate                },
-    { Value : BookingFee             },
-    { Value : TotalPrice             },
+    { Value : BeginDate,  ![@HTML5.CssDefaults]: {width:'9em'} },
+    { Value : EndDate,    ![@HTML5.CssDefaults]: {width:'9em'} },
+    { Value : BookingFee, ![@HTML5.CssDefaults]: {width:'10em'} },
+    { Value : TotalPrice, ![@HTML5.CssDefaults]: {width:'12em'} },
     {
       $Type : 'UI.DataField',
       Value : TravelStatus_code,
       Criticality : TravelStatus.criticality,
-      ![@UI.Importance] : #High
+      ![@UI.Importance] : #High,
+      ![@HTML5.CssDefaults]: {width:'10em'}
     }
   ],
   Facets : [{
