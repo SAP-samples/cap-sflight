@@ -367,11 +367,19 @@ annotate service.Bookings with @UI : {
     { Value : airline,                  },
     { Value : to_Carrier.AirlinePicURL, },
     { Value : ConnectionID              },
-    { Value : to_Flight.PlaneType       },
-    { Value : to_Flight.to_Connection.DepartureAirport.AirportID,
-      Label: '{i18n>DepartureAirport}'          },
-    { Value : to_Flight.to_Connection.DestinationAirport.AirportID,
-      Label: '{i18n>ArrivalAirport}'            },
-    { Value : to_Flight.to_Connection.Distance, },
+    // Java doesn't work with these association paths
+    // { Value : to_Flight.PlaneType       },
+    // { Value : to_Flight.to_Connection.DepartureAirport.AirportID,
+    //   Label: '{i18n>DepartureAirport}'          },
+    // { Value : to_Flight.to_Connection.DestinationAirport.AirportID,
+    //   Label: '{i18n>ArrivalAirport}'            },
+    // { Value : to_Flight.to_Connection.Distance, },
+
+    // Workaround:
+    { Value : PlaneType       },
+    { Value : DepAirport,     },
+    { Value : DestAirport     },
+    { Value : Distance,       },
+
   ]},
 };

@@ -31,8 +31,25 @@ service AnalyticsService @(path:'/analytics') {
     BookingDate,
 
     to_Travel,
+    to_Carrier,
+
+    // Java has a problem with this association
     to_Flight,
-    to_Carrier
+
+    // Workaround:
+    to_Flight.PlaneType,
+    to_Flight.to_Connection.Distance,
+    to_Flight.to_Connection.DistanceUnit,
+    @Common.Label: '{i18n>DepartureAirport}'
+    @Common.Text: DepCity
+    to_Flight.to_Connection.DepartureAirport.AirportID as DepAirport,
+    to_Flight.to_Connection.DepartureAirport.City      as DepCity,
+    @Common.Label: '{i18n>ArrivalAirport}'
+    @Common.Text: DestCity
+    to_Flight.to_Connection.DestinationAirport.AirportID as DestAirport,
+    to_Flight.to_Connection.DestinationAirport.City      as DestCity,
+
+
   };
 
 
