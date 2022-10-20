@@ -1,3 +1,4 @@
+/* global window, parent, location */
 window.suite = function() {
     'use strict';
 
