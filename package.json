@@ -13,7 +13,7 @@
     "start": "cds run",
     "test": "jest",
     "test:mocha": "npx mocha --timeout 20000",
-    "watch-sflight_analytics": "cds watch --open sflight_analytics/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-travel-analytics": "cds watch --open travel_analytics/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "dependencies": {
     "@sap/cds": ">=5.4.5",
@@ -112,6 +112,6 @@
   },
   "sapux": [
     "app/travel_processor",
-    "app/sflight_analytics"
+    "app/travel_analytics"
   ]
 }

@@ -5,4 +5,4 @@ using from './travel_processor/labels';
 using from './travel_processor/value-helps';
 using from './travel_processor/layouts';
 
-using from './sflight_analytics/annotations';
+using from './travel_analytics/annotations';
