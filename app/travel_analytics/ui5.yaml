@@ -1,4 +1,4 @@
 specVersion: "2.5"
 metadata:
-  name: sap.fe.cap.sflight.sflightanalytics
+  name: sap.fe.cap.travel-analytics
 type: application

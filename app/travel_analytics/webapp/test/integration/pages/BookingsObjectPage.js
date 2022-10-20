@@ -8,7 +8,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 
     return new ObjectPage(
         {
-            appId: 'sap.fe.cap.sflight.sflightanalytics',
+            appId: 'sap.fe.cap.travel-analytics',
             componentId: 'BookingsObjectPage',
             entitySet: 'Bookings'
         },

@@ -1,7 +1,7 @@
 {
   "_version": "1.42.0",
   "sap.app": {
-    "id": "sap.fe.cap.sflight.sflightanalytics",
+    "id": "sap.fe.cap.travel-analytics",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -71,7 +71,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "sap.fe.cap.sflight.sflightanalytics.i18n.i18n"
+          "bundleName": "sap.fe.cap.travel-analytics.i18n.i18n"
         }
       },
       "": {
