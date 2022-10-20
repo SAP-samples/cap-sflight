@@ -155,7 +155,7 @@
                       "label": "Status",
                       "availability": "Default",
                       "visualFilter": {
-                        "valueList": "com.sap.vocabularies.Common.v1.ValueList#vlPrio"
+                        "valueList": "com.sap.vocabularies.Common.v1.ValueList#vlStatus"
                       }
                     },
                     "airline": {
@@ -169,7 +169,7 @@
                       "label": "Flight Date",
                       "availability": "Default",
                       "visualFilter": {
-                        "valueList": "com.sap.vocabularies.Common.v1.ValueList#vlcreatedAt"
+                        "valueList": "com.sap.vocabularies.Common.v1.ValueList#vlFlightDate"
                       }
                     }
                   }

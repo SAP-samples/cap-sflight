@@ -41,7 +41,7 @@ service AnalyticsService @(path:'/analytics') {
   @readonly
   entity Travels as projection on my.Travel {
     *,
-    @Common.Label: 'Customer'
+    @Common.Label: '{i18n>CustomerName}'
     to_Customer.FirstName || ' ' || to_Customer.LastName as CustomerName : String,
   };
 
@@ -49,7 +49,7 @@ service AnalyticsService @(path:'/analytics') {
 
   annotate my.Airport:AirportID @Common.Text: City;
   annotate my.FlightConnection:Distance @(
-    Common.Label: 'Distance',
+    Common.Label: '{i18n>Distance}',
     Measures.Unit : DistanceUnit
   );
 }
