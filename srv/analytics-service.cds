@@ -14,7 +14,9 @@ service AnalyticsService @(path:'/analytics') {
     ConnectionID,
     FlightDate,
 
-    CurrencyCode.code as cuco,
+    // pretend all bookings have the same currency so the price can be aggregated
+    'USD' as cuco : String(3),
+    //CurrencyCode.code as cuco,
     @Measures.ISOCurrency: cuco
     FlightPrice as price,
 
