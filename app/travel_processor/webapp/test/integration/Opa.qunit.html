@@ -12,10 +12,9 @@
       data-sap-ui-animation="false"
       data-sap-ui-compatVersion="edge"
       data-sap-ui-resourceroots='{
-        "sap.fe.cap.travel": "../../",
-        "test.integration": "."
+        "sap.fe.cap.travel": "../../"
       }'
-      data-sap-ui-theme="sap_fiori_3"
+      data-sap-ui-theme="sap_horizon"
       data-sap-ui-async="true"
     ></script>
 
@@ -29,13 +28,10 @@
     <script src="https://ui5.sap.com/resources/sap/ui/qunit/qunit-junit.js"></script>
 
     <script>
-      /* global QUnit */
+      /* global QUnit, sap */
       QUnit.config.autostart = true;
 
-      sap.ui.getCore().attachInit(function () {
-        "use strict";
-        sap.ui.require(["test/integration/Opa.qunit"]);
-      });
+      sap.ui.require(["sap/fe/cap/travel/test/integration/Opa.qunit"]);
     </script>
   </head>
 

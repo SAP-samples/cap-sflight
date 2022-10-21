@@ -10,7 +10,8 @@ build-parameters:
   before-all:
     - builder: custom
       commands:
-        - npx -p @sap/cds-dk cds build --production
+        # set 'CDS_ENV=node' to pick the 'node' build profile settings, defined in package.json
+        - npx -p @sap/cds-dk cds build --profile production,node
 
 modules:
   # --------------------- SERVER MODULE ------------------------
@@ -26,6 +27,7 @@ modules:
         properties:
           srv-url: ${default-url}
     build-parameters:
+      builder: npm-ci
       ignore: ["node_modules/"]
 
   # -------------------- SIDECAR MODULE ------------------------
@@ -123,17 +125,23 @@ resources:
     parameters:
       service: xsuaa
       service-plan: application
+      path: ./app/travel_processor/xs-security.json
       config:
-        xsappname: sflight
+        xsappname: sflight-${space}
         tenant-mode: dedicated
-        scopes:
-          - name: uaa.user
-            description: UAA
-        role-templates:
-          - name: Token_Exchange
-            description: UAA
-            scope-references:
-              - uaa.user
+        role-collections:
+          - name: 'sflight-reviewer-${space}'
+            description: Review travels
+            role-template-references:
+              - $XSAPPNAME.reviewer
+          - name: 'sflight-processor-${space}'
+            description: Process travels
+            role-template-references:
+              - $XSAPPNAME.processor
+          - name: 'sflight-admin-${space}'
+            description: Manage travels
+            role-template-references:
+              - $XSAPPNAME.admin
 
   # ------------------------------------------------------------
   - name: sflight-html5-repo-runtime
@@ -174,3 +182,4 @@ resources:
                 ProxyType: Internet
                 HTML5.ForwardAuthToken: true
                 HTML5.DynamicDestination: true
+

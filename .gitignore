@@ -3,9 +3,11 @@ _out
 *.db
 connection.properties
 default-*.json
+schema.sql
 gen/
 node_modules/
 target/
+.reloadtrigger
 db/data/generator/output
 
 # Web IDE, App Studio
@@ -40,3 +42,11 @@ dist/
 .classpath
 # .vscode/*
 # IMPORTANT: Do not exclude .vscode please!
+
+# Local dev
+.env
+.values.yaml
+.cdsrc-private.json
+
+# Exclude Helm chart for this example
+/chart
