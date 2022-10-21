@@ -35,7 +35,7 @@ Add the CAP Helm chart with the required features to this project:
 
 ```bash
 cds add helm
-cds add helm:html5_apps_deployer
+cds add html5-repo
 ```
 
 ## Configuration
@@ -89,8 +89,9 @@ CDS_ENV=node cds build --production
 ```
 pack build $YOUR_CONTAINER_REGISTRY/sflight-hana-deployer \
      --path gen/db \
-     --buildpack gcr.io/paketo-buildpacks/nodejs:0.16.1 \
-     --builder paketobuildpacks/builder:base
+     --buildpack gcr.io/paketo-buildpacks/nodejs \
+     --builder paketobuildpacks/builder:base \
+     --env BP_NODE_RUN_SCRIPTS=""
 ```
 (Replace `$YOUR_CONTAINER_REGISTRY` with the full-qualified hostname of your container registry)
 
@@ -101,7 +102,8 @@ pack build \
      $YOUR_CONTAINER_REGISTRY/sflight-srv \
      --path "gen/srv" \
      --buildpack gcr.io/paketo-buildpacks/nodejs \
-     --builder paketobuildpacks/builder:base
+     --builder paketobuildpacks/builder:base \
+     --env BP_NODE_RUN_SCRIPTS=""
 ```
 
 ## Build - Java
@@ -117,8 +119,9 @@ cds build --production
 ```
 pack build $YOUR_CONTAINER_REGISTRY/sflight-hana-deployer \
      --path db \
-     --buildpack gcr.io/paketo-buildpacks/nodejs:0.16.1 \
-     --builder paketobuildpacks/builder:base
+     --buildpack gcr.io/paketo-buildpacks/nodejs \
+     --builder paketobuildpacks/builder:base \
+     --env BP_NODE_RUN_SCRIPTS=""
 ```
 
 (Replace `$YOUR_CONTAINER_REGISTRY` the full-qualified hostname of your container registry)
@@ -135,7 +138,8 @@ pack build $YOUR_CONTAINER_REGISTRY/sflight-srv \
      --buildpack gcr.io/paketo-buildpacks/sap-machine \
      --buildpack gcr.io/paketo-buildpacks/java \
      --builder paketobuildpacks/builder:base \
-     --env SPRING_PROFILES_ACTIVE=cloud
+     --env SPRING_PROFILES_ACTIVE=cloud \
+     --env BP_JVM_VERSION=11
 ```
 
 ## Build HTML5 application deployer image
@@ -157,7 +161,7 @@ docker push $YOUR_CONTAINER_REGISTRY/sflight-html5-deployer
 ## Deployment
 
 ```
-helm upgrade sflight ./chart --install -f deployment/kyma/values.yaml
+ helm install sflight ./chart -f deployment/kyma/values.yaml
 ```
 
 ## Access the UI
