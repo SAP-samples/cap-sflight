@@ -1,9 +1,6 @@
-// ABAP: /dmo/cl_flight_data_generator 
+// ABAP: /dmo/cl_flight_data_generator
 
 'use strict';
-
-const fs = require('fs');
-const {EOL} = require('os');
 
 const {v1 : uuidv4} = require('uuid');
 const makeRealUUID = () => uuidv4().replace(/-/g, '');
@@ -267,7 +264,7 @@ const plane_types = {
 // parameters to influence data generation:
 
 // number of days between flights of a connection, usually set to a multiple of 7
-// this is the main parameter to control size of traves/bookings/bookingSupplements
+// this is the main parameter to control size of travels/bookings/bookingSupplements
 // roughly:
 // interval | #travels | #bookings | #bookingSupplements
 // ---------+----------+-----------+--------------------
@@ -337,14 +334,14 @@ function getGenerator() {
     }
     return s;
   }
-  
+
   // ------------------------------------------------------------------------------------------------------------------
   // Flights
   // ------------------------------------------------------------------------------------------------------------------
 
   function makeFlights() {
     for (let conn of connections) {
-      let dates = getFlightDates(conn);
+      let dates = genFlightDates(conn.weekday);
       for (let d of dates) {
         let flight_info = flightInfo(conn);  // uses random
         let [carrier] = carriers.filter(x => x.carrier_id == conn.carrier_id);
@@ -368,22 +365,24 @@ function getGenerator() {
       if (a.flight_date < b.flight_date) { return -1; }
       if (a.flight_date > b.flight_date) { return 1; }
       return 0;
-    }  
+    }
   }
 
   // Returns an array of dates, at which the connection is operated.
   // In contrast to real flight plans, here each connection is only operated on a certain weekday.
-  // Generation logic: 
+  // Generation logic:
   //   if the connection operates on a Wednesday, then the first date is the Wednesday 31 weeks from now
   //   then subtract "flightInterval" days
-  function getFlightDates(connection) {
+  function genFlightDates(weekday) {
+    // wwekday   : integer 1=Monday ... 7=Sunday (from connection table)
     // getDate() : integer 1..31, day of month
     // getDay()  : integer 0..6 = Sunday..Saturday
     // "add days": make sure to call getDate() and setDate() on the same object!
 
-    const flightInterval = 43;         // ABAP: 1, 2, 4, 8, 43
-    const back = 21;
-    const forw = 31;
+    // weeks
+    const flightInterval = 1;  // 43;         // ABAP: 1, 2, 4, 8, 43
+    const back           = 0;  // 21;
+    const forw           = 0;  // 31;
 
     var nextMonday = new Date();
     nextMonday.setDate(nextMonday.getDate() + (1 + 7 - nextMonday.getDay()) % 7);
@@ -393,7 +392,7 @@ function getGenerator() {
     maxDate.setDate(maxDate.getDate() + forw*7);  // is a Monday                31
 
     var flightdate = new Date(maxDate);
-    flightdate.setDate(flightdate.getDate() + connection.weekday - 1) // -1 because Monday=1 in connection table
+    flightdate.setDate(flightdate.getDate() + weekday - 1) // -1 because Monday=1 in connection table
 
     var dates = [];
     while (flightdate>minDate) {
@@ -497,7 +496,7 @@ function getGenerator() {
         var pass = [...custSet].map(x => passengers.find(y => y.customer_id == x).first_name);
         return (c==1 ? 'Business Trip' : 'Vacation') + ' for ' + pass.join(', ');
       case 3:
-      case 4: 
+      case 4:
         var conn = connections.find(x => x.carrier_id == bookings[0].carrier_id && x.connection_id == bookings[0].connection_id);
         var airport = airports.find(x => x.airport_id == conn.airport_to_id);
         var country = countries.find(x => x.code == airport.country);
@@ -544,7 +543,7 @@ function getGenerator() {
 
     var groupSize = ran.groupSize();
     var tripLength = ran.tripLength();
-    
+
     var group = new Set();  // avoid duplicates
     while (group.size < groupSize) {
       group.add(ran.entryOf(passengers).customer_id);
@@ -558,7 +557,7 @@ function getGenerator() {
       var bookingDate = addDays(flight.flight_date, -ran.bookingDateOffset());
       var seatsOccPerc = (flight.seats_occupied - flight.seats_to_book) * 100 / flight.seats_max;
       var price = flightPrice(seatsOccPerc, flight.distance);
-    
+
       flight.seats_to_book -= groupSize;
       if (flight.seats_to_book < 0) flight.seats_to_book = 0;
 
@@ -615,182 +614,8 @@ function getGenerator() {
 
 //---------------------------------------------------------------------------------------------------------------------
 //
-// main
-//
 //---------------------------------------------------------------------------------------------------------------------
 
-
-
-// csv header lines for flight, travel, booking, bookingSupplement
-const hf = 'AirlineID;ConnectionID;FlightDate;Price;CurrencyCode_code;PlaneType;MaximumSeats;OccupiedSeats';
-const ht = 'TravelUUID;TravelID;to_Agency_AgencyID;to_Customer_CustomerID;BeginDate;EndDate;BookingFee;TotalPrice;CurrencyCode_code;Description;TravelStatus_code;createdBy;createdAt;LastChangedBy;LastChangedAt';
-const hb = 'BookingUUID;to_Travel_TravelUUID;BookingID;BookingDate;to_Customer_CustomerID;to_Carrier_AirlineID;ConnectionID;FlightDate;FlightPrice;CurrencyCode_code;BookingStatus_code;LastChangedAt';
-const hs = 'BookSupplUUID;to_Travel_TravelUUID;to_Booking_BookingUUID;BookingSupplementID;to_Supplement_SupplementID;Price;CurrencyCode_code;LastChangedAt';
-
-function flightToString(f) {
-  return [
-    f.carrier_id,
-    f.connection_id,
-    f.flight_date,
-    f.price,
-    f.currency_code,
-    f.plane_type_id,
-    f.seats_max,
-    f.seats_occupied
-  ].join(';')
-}
-function travelToString(t) {
-  return [
-    t.travelUuid,
-    t.travelId,
-    t.agency_id,
-    t.customer_id,
-    t.begin_date,
-    t.end_date,
-    t.booking_fee,
-    t.total_price,
-    t.currency_code,
-    t.description,
-    t.status,
-    t.createdBy,
-    t.createdAt,
-    t.lastchangedby,
-    t.lastchangedat
-  ].join(';');
-}
-function bookingToString(b) {
-  return [
-    b.bookingUuid,
-    b.travelUuid,
-    b.bookingId,
-    b.bookingDate,
-    b.customer_id,
-    b.carrier_id,
-    b.connection_id,
-    b.flight_date,
-    b.flight_price,
-    b.currency_code,
-    b.booking_status,
-    b.lastChangedAt
-  ].join(';');
-}
-function bookingSupplementToString(s) {
-  return [
-    s.booking_supplement_uuid,
-    s.travelUuid,
-    s.bookingUuid,
-    s.booking_supplement_id,
-    s.supplement_id,
-    s.price,
-    s.currency_code,
-    s.lastChangedAt
-  ].join(';');
-}
-
-
-
-function renderFlights(flights) {
-  var af = flights.map(x => flightToString(x)).sort();
-  af.unshift(hf);
-  var sf = af.join(EOL);
-  return sf;
-}
-
-function renderTravels(travels) {
-  var at = [ht];
-  var ab = [hb];
-  var as = [hs];
-  for (let t of travels) {
-    at.push(travelToString(t));
-    for (let b of t.bookings) {
-      ab.push(bookingToString(b));
-      for (let s of b.booking_supplements) {
-        as.push(bookingSupplementToString(s));
-      }
-    }
-  }
-  var st = at.join(EOL);
-  var sb = ab.join(EOL);
-  var ss = as.join(EOL);
-  return {st, sb, ss};
-}
-
-
-
-function clock() {
-  let dursum = 0;
-  function pass(index) {
-    let generator = getGenerator();
-    let flights = generator.getFlights();
-  
-    let start = Date.now();
-    let travels = generator.getTravels();
-    let millis = Date.now() - start;
-    dursum += millis/1000;
-    console.log("pass", index+1, ", duration:", millis/1000, "s");
-  
-    let countTravels = travels.length;
-    let countBookings = travels.reduce((a,c) => a + c.bookings.length, 0);
-    let countBookingSupplements = travels.reduce((a,c) => a + c.bookings.reduce((a,c) => a + c.booking_supplements.length, 0), 0);
-    let f_book = Math.round(countBookings/countTravels*100)/100;
-    let f_supp = Math.round(countBookingSupplements/countBookings*100)/100;
-    console.log(flights.length, countTravels, f_book, countBookings, f_supp, countBookingSupplements)
-
-    flights = null;
-    travels = null;
-    generator = null;
-  }
-
-  const repeats = 10;
-  for (let i=0; i<repeats; i++) {
-    pass(i);
-  }
-
-  console.log("\naverage duration:", dursum/repeats);
-}
-
-
-
-
-
-
-
-var generator = getGenerator();
-var flights = generator.getFlights();
-var travels = generator.getTravels();
-
-var countTravels = travels.length;
-var countBookings = travels.reduce((a,c) => a + c.bookings.length, 0);
-var countBookingSupplements = travels.reduce((a,c) => a + c.bookings.reduce((a,c) => a + c.booking_supplements.length, 0), 0);
-var f_book = Math.round(countBookings/countTravels*100)/100;
-var f_supp = Math.round(countBookingSupplements/countBookings*100)/100;
-
-console.log(flights.length, countTravels, f_book, countBookings, f_supp, countBookingSupplements)
-
-//console.log(JSON.stringify(travels,null,2));
-
-
-let sf = renderFlights(flights);
-// console.log(sf);
-// console.log();
-
-let {st, sb, ss} = renderTravels(travels);
-
-//console.log(st);
-// console.log();
-// console.log(sb);
-// console.log();
-// console.log(ss);
-
-fs.writeFileSync("./output/sap.fe.cap.travel-Flight.csv", sf);
-fs.writeFileSync("./output/sap.fe.cap.travel-Travel.csv", st);
-fs.writeFileSync("./output/sap.fe.cap.travel-Booking.csv", sb);
-fs.writeFileSync("./output/sap.fe.cap.travel-BookingSupplement.csv", ss);
-
-
-
-
-
-
-
-
+module.exports = {
+  getGenerator
+};

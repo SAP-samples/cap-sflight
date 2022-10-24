@@ -57,6 +57,7 @@ if (weeks > 0) {
   process.exit();
 }
 
+
 for (let f of flights) {
   f.flight_date = addDays(f.flight_date, weeks*7);
 }
