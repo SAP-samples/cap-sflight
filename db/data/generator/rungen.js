@@ -91,7 +91,7 @@ function clock() {
 
 var generator = g.getGenerator();
 var flights = generator.getFlights();
-var travels = generator.getTravels(3);
+var travels = generator.getTravels(5000);
 
 
 var countTravels = travels.length;
@@ -110,22 +110,22 @@ console.log('#F:', flights.length,
 //console.log(JSON.stringify(travels,null,2));
 
 
-// let sf = renderFlights(flights);
+let sf = renderFlights(flights);
 // console.log(sf);
 // console.log();
 
 let {st, sb, ss} = renderTravels(travels);
 
-//console.log(st);
+// console.log(st);
 // console.log();
-//console.log(sb);
+// console.log(sb);
 // console.log();
- console.log(ss);
+// console.log(ss);
 
-// fs.writeFileSync("./output/sap.fe.cap.travel-Flight.csv", sf);
-// fs.writeFileSync("./output/sap.fe.cap.travel-Travel.csv", st);
-// fs.writeFileSync("./output/sap.fe.cap.travel-Booking.csv", sb);
-// fs.writeFileSync("./output/sap.fe.cap.travel-BookingSupplement.csv", ss);
+fs.writeFileSync("./output/sap.fe.cap.travel-Flight.csv", sf);
+fs.writeFileSync("./output/sap.fe.cap.travel-Travel.csv", st);
+fs.writeFileSync("./output/sap.fe.cap.travel-Booking.csv", sb);
+fs.writeFileSync("./output/sap.fe.cap.travel-BookingSupplement.csv", ss);
 
 
 //let {tt, tb, ts} = separateTravels(travels);

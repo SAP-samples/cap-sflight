@@ -14,7 +14,7 @@ const config = {
     json_file: 'customer.json',
     mapper: (line) => {
       var o = {};
-      [ o.customer_id, o.first_name, 
+      [ o.CustomerID, o.first_name,
         //o.last_name, o.title, o.street,
         //o.postal_code, o.city, o.country_code, o.phone_number, o.email_address 
       ] = line.split(';');
@@ -27,7 +27,7 @@ const config = {
     mapper: (line) => {
       // SupplementID;Price;Type_code;Description;CurrencyCode_code
       var o = {};
-      [ o.supplement_id, o.price, o.supplement_category, o.description, o.currency_code ] = line.split(';');
+      [ o.SupplementID, o.Price, o.supplement_category, o.Description, o.CurrencyCode_code ] = line.split(';');
       return o;
     }
   },
@@ -47,7 +47,7 @@ const config = {
     mapper: (line) => {
       // AgencyID;Name;Street;PostalCode;City;CountryCode_code;PhoneNumber;EMailAddress;WebAddress
       var o = {};     
-      [ o.agency_id ] = line.split(';');
+      [ o.AgencyID ] = line.split(';');
       return o;
     }
   },

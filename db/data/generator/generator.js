@@ -213,48 +213,48 @@ const lastNames = [
 
 const connections = [
   // ! weekday here 1=Mon..7=Sun !
-  { carrier_id : 'SW', connection_id : '0001', airport_from_id : 'SFO', airport_to_id : 'SIN', departure_time : '011500', arrival_time : '115000', distance : 13523, distance_unit : 'KM', weekday : 3 },
-  { carrier_id : 'SW', connection_id : '0002', airport_from_id : 'SIN', airport_to_id : 'SFO', departure_time : '063000', arrival_time : '091500', distance : 13523, distance_unit : 'KM', weekday : 4 },
-  { carrier_id : 'SW', connection_id : '0011', airport_from_id : 'NRT', airport_to_id : 'SIN', departure_time : '145500', arrival_time : '205000', distance :  5363, distance_unit : 'KM', weekday : 4 },
-  { carrier_id : 'SW', connection_id : '0012', airport_from_id : 'SIN', airport_to_id : 'NRT', departure_time : '095300', arrival_time : '175400', distance :  5363, distance_unit : 'KM', weekday : 6 },
-  { carrier_id : 'SW', connection_id : '0058', airport_from_id : 'SFO', airport_to_id : 'FRA', departure_time : '134500', arrival_time : '095500', distance :  9608, distance_unit : 'KM', weekday : 1 },
-  { carrier_id : 'SW', connection_id : '0059', airport_from_id : 'FRA', airport_to_id : 'SFO', departure_time : '135500', arrival_time : '163000', distance :  9608, distance_unit : 'KM', weekday : 2 },
-  { carrier_id : 'SW', connection_id : '1537', airport_from_id : 'EWR', airport_to_id : 'MIA', departure_time : '215600', arrival_time : '004700', distance :  1752, distance_unit : 'KM', weekday : 5 },
-  { carrier_id : 'GA', connection_id : '0322', airport_from_id : 'MIA', airport_to_id : 'EWR', departure_time : '201700', arrival_time : '231900', distance :  1752, distance_unit : 'KM', weekday : 7 },
-  { carrier_id : 'GA', connection_id : '0017', airport_from_id : 'MIA', airport_to_id : 'HAV', departure_time : '071900', arrival_time : '080300', distance :   520, distance_unit : 'KM', weekday : 3 },
-  { carrier_id : 'GA', connection_id : '2678', airport_from_id : 'HAV', airport_to_id : 'MIA', departure_time : '061500', arrival_time : '103000', distance :   520, distance_unit : 'KM', weekday : 6 },
-  { carrier_id : 'GA', connection_id : '0015', airport_from_id : 'JFK', airport_to_id : 'SFO', departure_time : '071300', arrival_time : '100400', distance :  4156, distance_unit : 'KM', weekday : 5 },
-  { carrier_id : 'GA', connection_id : '0018', airport_from_id : 'SFO', airport_to_id : 'JFK', departure_time : '064000', arrival_time : '150600', distance :  4156, distance_unit : 'KM', weekday : 4 },
-  { carrier_id : 'EA', connection_id : '0400', airport_from_id : 'FRA', airport_to_id : 'JFK', departure_time : '101000', arrival_time : '113400', distance :  6162, distance_unit : 'KM', weekday : 6 },
-  { carrier_id : 'EA', connection_id : '0401', airport_from_id : 'JFK', airport_to_id : 'FRA', departure_time : '183000', arrival_time : '074500', distance :  6162, distance_unit : 'KM', weekday : 5 },
-  { carrier_id : 'EA', connection_id : '0402', airport_from_id : 'FRA', airport_to_id : 'EWR', departure_time : '133000', arrival_time : '153500', distance :  6217, distance_unit : 'KM', weekday : 1 },
-  { carrier_id : 'EA', connection_id : '0403', airport_from_id : 'EWR', airport_to_id : 'FRA', departure_time : '180900', arrival_time : '073000', distance :  6217, distance_unit : 'KM', weekday : 1 },
-  { carrier_id : 'OC', connection_id : '0407', airport_from_id : 'NRT', airport_to_id : 'FRA', departure_time : '132300', arrival_time : '155600', distance :  9379, distance_unit : 'KM', weekday : 5 },
-  { carrier_id : 'OC', connection_id : '0408', airport_from_id : 'FRA', airport_to_id : 'NRT', departure_time : '202500', arrival_time : '154000', distance :  9379, distance_unit : 'KM', weekday : 6 },
-  { carrier_id : 'FA', connection_id : '0788', airport_from_id : 'VCE', airport_to_id : 'NRT', departure_time : '132500', arrival_time : '101300', distance :  9595, distance_unit : 'KM', weekday : 6 },
-  { carrier_id : 'FA', connection_id : '0789', airport_from_id : 'NRT', airport_to_id : 'VCE', departure_time : '142600', arrival_time : '213100', distance :  9595, distance_unit : 'KM', weekday : 5 }
+  { AirlineID : 'SW', ConnectionID : '0001', airport_from_id : 'SFO', airport_to_id : 'SIN', departure_time : '011500', arrival_time : '115000', distance : 13523, distance_unit : 'KM', weekday : 3 },
+  { AirlineID : 'SW', ConnectionID : '0002', airport_from_id : 'SIN', airport_to_id : 'SFO', departure_time : '063000', arrival_time : '091500', distance : 13523, distance_unit : 'KM', weekday : 4 },
+  { AirlineID : 'SW', ConnectionID : '0011', airport_from_id : 'NRT', airport_to_id : 'SIN', departure_time : '145500', arrival_time : '205000', distance :  5363, distance_unit : 'KM', weekday : 4 },
+  { AirlineID : 'SW', ConnectionID : '0012', airport_from_id : 'SIN', airport_to_id : 'NRT', departure_time : '095300', arrival_time : '175400', distance :  5363, distance_unit : 'KM', weekday : 6 },
+  { AirlineID : 'SW', ConnectionID : '0058', airport_from_id : 'SFO', airport_to_id : 'FRA', departure_time : '134500', arrival_time : '095500', distance :  9608, distance_unit : 'KM', weekday : 1 },
+  { AirlineID : 'SW', ConnectionID : '0059', airport_from_id : 'FRA', airport_to_id : 'SFO', departure_time : '135500', arrival_time : '163000', distance :  9608, distance_unit : 'KM', weekday : 2 },
+  { AirlineID : 'SW', ConnectionID : '1537', airport_from_id : 'EWR', airport_to_id : 'MIA', departure_time : '215600', arrival_time : '004700', distance :  1752, distance_unit : 'KM', weekday : 5 },
+  { AirlineID : 'GA', ConnectionID : '0322', airport_from_id : 'MIA', airport_to_id : 'EWR', departure_time : '201700', arrival_time : '231900', distance :  1752, distance_unit : 'KM', weekday : 7 },
+  { AirlineID : 'GA', ConnectionID : '0017', airport_from_id : 'MIA', airport_to_id : 'HAV', departure_time : '071900', arrival_time : '080300', distance :   520, distance_unit : 'KM', weekday : 3 },
+  { AirlineID : 'GA', ConnectionID : '2678', airport_from_id : 'HAV', airport_to_id : 'MIA', departure_time : '061500', arrival_time : '103000', distance :   520, distance_unit : 'KM', weekday : 6 },
+  { AirlineID : 'GA', ConnectionID : '0015', airport_from_id : 'JFK', airport_to_id : 'SFO', departure_time : '071300', arrival_time : '100400', distance :  4156, distance_unit : 'KM', weekday : 5 },
+  { AirlineID : 'GA', ConnectionID : '0018', airport_from_id : 'SFO', airport_to_id : 'JFK', departure_time : '064000', arrival_time : '150600', distance :  4156, distance_unit : 'KM', weekday : 4 },
+  { AirlineID : 'EA', ConnectionID : '0400', airport_from_id : 'FRA', airport_to_id : 'JFK', departure_time : '101000', arrival_time : '113400', distance :  6162, distance_unit : 'KM', weekday : 6 },
+  { AirlineID : 'EA', ConnectionID : '0401', airport_from_id : 'JFK', airport_to_id : 'FRA', departure_time : '183000', arrival_time : '074500', distance :  6162, distance_unit : 'KM', weekday : 5 },
+  { AirlineID : 'EA', ConnectionID : '0402', airport_from_id : 'FRA', airport_to_id : 'EWR', departure_time : '133000', arrival_time : '153500', distance :  6217, distance_unit : 'KM', weekday : 1 },
+  { AirlineID : 'EA', ConnectionID : '0403', airport_from_id : 'EWR', airport_to_id : 'FRA', departure_time : '180900', arrival_time : '073000', distance :  6217, distance_unit : 'KM', weekday : 1 },
+  { AirlineID : 'OC', ConnectionID : '0407', airport_from_id : 'NRT', airport_to_id : 'FRA', departure_time : '132300', arrival_time : '155600', distance :  9379, distance_unit : 'KM', weekday : 5 },
+  { AirlineID : 'OC', ConnectionID : '0408', airport_from_id : 'FRA', airport_to_id : 'NRT', departure_time : '202500', arrival_time : '154000', distance :  9379, distance_unit : 'KM', weekday : 6 },
+  { AirlineID : 'FA', ConnectionID : '0788', airport_from_id : 'VCE', airport_to_id : 'NRT', departure_time : '132500', arrival_time : '101300', distance :  9595, distance_unit : 'KM', weekday : 6 },
+  { AirlineID : 'FA', ConnectionID : '0789', airport_from_id : 'NRT', airport_to_id : 'VCE', departure_time : '142600', arrival_time : '213100', distance :  9595, distance_unit : 'KM', weekday : 5 }
 ];
 
 const carriers = [
-  { carrier_id : 'GA', name : 'Green Albatros',    currency_code : 'CAD' },
-  { carrier_id : 'FA', name : 'Fly Africa',        currency_code : 'ZAR' },
-  { carrier_id : 'EA', name : 'European Airlines', currency_code : 'EUR' },
-  { carrier_id : 'OC', name : 'Oceania',           currency_code : 'USD' },
-  { carrier_id : 'SW', name : 'Sunset Wings',      currency_code : 'USD' }
+  { AirlineID : 'GA', name : 'Green Albatros',    CurrencyCode_code : 'CAD' },
+  { AirlineID : 'FA', name : 'Fly Africa',        CurrencyCode_code : 'ZAR' },
+  { AirlineID : 'EA', name : 'European Airlines', CurrencyCode_code : 'EUR' },
+  { AirlineID : 'OC', name : 'Oceania',           CurrencyCode_code : 'USD' },
+  { AirlineID : 'SW', name : 'Sunset Wings',      CurrencyCode_code : 'USD' }
 ];
 
 const plane_types = {
   short_distance: [
-    { id : 'A320-200', seats_max : 130},
-    { id : 'A321-200', seats_max : 150},
-    { id : '737-800' , seats_max : 140},
-    { id : 'A319-100', seats_max : 120}
+    { id : 'A320-200', MaximumSeats : 130},
+    { id : 'A321-200', MaximumSeats : 150},
+    { id : '737-800' , MaximumSeats : 140},
+    { id : 'A319-100', MaximumSeats : 120}
   ],
   long_distance: [
-    { id : '747-400' , seats_max : 385},
-    { id : '767-200' , seats_max : 260},
-    { id : 'A340-600', seats_max : 330},
-    { id : 'A380-800', seats_max : 475}
+    { id : '747-400' , MaximumSeats : 385},
+    { id : '767-200' , MaximumSeats : 260},
+    { id : 'A340-600', MaximumSeats : 330},
+    { id : 'A380-800', MaximumSeats : 475}
   ]
 };
 
@@ -290,11 +290,11 @@ function getGenerator() {
     entryOf          : function(a) {return a[random(0, a.length-1)];}
   }
 
-  let makeUUID = makeRealUUID;
-  //let makeUUID = pseudoUuid;
+  //let makeUUID = makeRealUUID;
+  let makeUUID = pseudoUuid;
 
   let flights  = [];
-  let travelId = 1;
+  let g_travelId = 1;
   makeFlights();
 
   return {
@@ -344,26 +344,26 @@ function getGenerator() {
       let dates = genFlightDates(conn.weekday);
       for (let d of dates) {
         let flight_info = flightInfo(conn);  // uses random
-        let [carrier] = carriers.filter(x => x.carrier_id == conn.carrier_id);
+        let [carrier] = carriers.filter(carr => carr.AirlineID == conn.AirlineID);
         flights.push({
-          carrier_id:    conn.carrier_id,
-          connection_id: conn.connection_id,
+          AirlineID:    conn.AirlineID,
+          ConnectionID: conn.ConnectionID,
           distance: conn.distance,
-          flight_date: d,
-          currency_code: carrier ? carrier.currency_code : 'EUR',
-          price:          flight_info.price,
-          plane_type_id:  flight_info.id,
-          seats_max:      flight_info.seats_max,
-          seats_occupied: flight_info.seats_occ,
+          FlightDate: d,
+          CurrencyCode_code: carrier ? carrier.CurrencyCode_code : 'EUR',
+          Price:          flight_info.Price,
+          PlaneType:      flight_info.id,
+          MaximumSeats:   flight_info.MaximumSeats,
+          OccupiedSeats: flight_info.seats_occ,
           seats_to_book:  flight_info.seats_occ  // will be changed during generation of bookings
         });
       }
     }
     flights.sort(byDate);
 
-    function byDate(a, b) {
-      if (a.flight_date < b.flight_date) { return -1; }
-      if (a.flight_date > b.flight_date) { return 1; }
+    function byDate(fa, fb) {
+      if (fa.FlightDate < fb.FlightDate) { return -1; }
+      if (fa.FlightDate > fb.FlightDate) { return 1; }
       return 0;
     }
   }
@@ -380,9 +380,9 @@ function getGenerator() {
     // "add days": make sure to call getDate() and setDate() on the same object!
 
     // weeks
-    const flightInterval = 1;  // 43;         // ABAP: 1, 2, 4, 8, 43
-    const back           = 0;  // 21;
-    const forw           = 0;  // 31;
+    const flightInterval = 43;         // ABAP: 1, 2, 4, 8, 43
+    const back           = 21;
+    const forw           = 31;
 
     var nextMonday = new Date();
     nextMonday.setDate(nextMonday.getDate() + (1 + 7 - nextMonday.getDay()) % 7);
@@ -409,16 +409,15 @@ function getGenerator() {
     let seatsOccPerc = random(70-25, 70+25);
     return {
       id: plane.id,
-      seats_max: plane.seats_max,
-      seats_occ: Math.floor(plane.seats_max * seatsOccPerc / 100),
-      price: flightPrice(seatsOccPerc, conn.distance)
+      MaximumSeats: plane.MaximumSeats,
+      seats_occ: Math.floor(plane.MaximumSeats * seatsOccPerc / 100),
+      Price: flightPrice(seatsOccPerc, conn.distance)
     }
   }
 
   function flightPrice(seatsOccPerc, distance) {
     var p = 25 + ( 3 * Math.pow(seatsOccPerc, 2) / 400 );
-    var price = Math.floor( p * distance / 100 );
-    return price;
+    return Math.floor( p * distance / 100 );
   }
 
 
@@ -429,17 +428,17 @@ function getGenerator() {
   function makeTravel() {
     var travel = null;
 
-    var travelUuid = makeUUID();
-    //var travelUuid = travelId;
+    var tUuid = makeUUID();
 
-    var bookings = makeBookings(travelId, travelUuid);
+    var bookings = makeBookings(g_travelId, tUuid);
     if (bookings.length > 0) {
       // travel create day is 15 days before today or first flight booking (whatever comes first)
       // createdAt:     travelCreateDay + random time
       // lastChangedAt: travelCreateDay + ran.travelChangeDate + random time
       // both have format 2020-11-10T03:54:50Z
-      var bookingDate = new Date(bookings[0].bookingDate);
+      var bookingDate = new Date(bookings[0].BookingDate);
       var today = new Date();
+      today.setUTCHours(0, 0, 0, 0);
       var travelCreateDay = (bookingDate < today) ? bookingDate : today;
       travelCreateDay.setDate(travelCreateDay.getDate() - 15);
       var createdAt = new Date(travelCreateDay);
@@ -457,32 +456,32 @@ function getGenerator() {
       var bookingStatus = (travelStatus == 'A') ? 'B' : (travelStatus == 'O') ? 'N' : 'X';
 
       for (let b of bookings) {
-        b.booking_status = bookingStatus;
-        b.lastChangedAt = lastChangedAt;
+        b.BookingStatus_code = bookingStatus;
+        b.LastChangedAt = lastChangedAt;
         for (let s of b.booking_supplements) {
-          s.lastChangedAt = lastChangedAt;
+          s.LastChangedAt = lastChangedAt;
         }
       }
 
       travel = {
-        travelUuid: travelUuid,
-        travelId: travelId,
-        agency_id: ran.entryOf(agencies).agency_id,
-        customer_id: (random(1, 4) == 1) ? ran.entryOf(passengers).customer_id : bookings[0].customer_id,
-        begin_date: bookings[0].flight_date,
-        end_date: bookings[bookings.length-1].flight_date,
-        booking_fee: 10 * bookings.length,
-        total_price: 10 * bookings.length + bookings.reduce((sum,book) => sum+book.flight_price+book.booking_supplements.reduce((sum,suppl) => sum+suppl.price, 0), 0),
-        currency_code: bookings[0].currency_code,
-        description: getDescription(bookings),
-        status: travelStatus,
+        TravelUUID: tUuid,
+        TravelID: g_travelId,
+        to_Agency_AgencyID: ran.entryOf(agencies).AgencyID,
+        to_Customer_CustomerID: (random(1, 4) == 1) ? ran.entryOf(passengers).CustomerID : bookings[0].to_Customer_CustomerID,
+        BeginDate: bookings[0].FlightDate,
+        EndDate: bookings[bookings.length-1].FlightDate,
+        BookingFee: 10 * bookings.length,
+        TotalPrice: 10 * bookings.length + bookings.reduce((sum,book) => sum+book.FlightPrice+book.booking_supplements.reduce((sum,suppl) => sum+suppl.Price, 0), 0),
+        CurrencyCode_code: bookings[0].CurrencyCode_code,
+        Description: getDescription(bookings),
+        TravelStatus_code: travelStatus,
         createdBy: ran.entryOf(lastNames).last_name,
         createdAt: createdAt,
-        lastchangedby: ran.entryOf(lastNames).last_name,
-        lastchangedat: lastChangedAt,
+        LastChangedBy: ran.entryOf(lastNames).last_name,
+        LastChangedAt: lastChangedAt,
         bookings: bookings
       };
-      travelId++;
+      g_travelId++;
     }
     return travel;
   }
@@ -492,17 +491,17 @@ function getGenerator() {
     switch (c) {
       case 1:
       case 2:
-        var custSet = new Set(bookings.map(x => x.customer_id));
-        var pass = [...custSet].map(x => passengers.find(y => y.customer_id == x).first_name);
+        var custSet = new Set(bookings.map(x => x.to_Customer_CustomerID));
+        var pass = [...custSet].map(x => passengers.find(y => y.CustomerID == x).first_name);
         return (c==1 ? 'Business Trip' : 'Vacation') + ' for ' + pass.join(', ');
       case 3:
       case 4:
-        var conn = connections.find(x => x.carrier_id == bookings[0].carrier_id && x.connection_id == bookings[0].connection_id);
+        var conn = connections.find(conn => conn.AirlineID == bookings[0].to_Carrier_AirlineID && conn.ConnectionID == bookings[0].ConnectionID);
         var airport = airports.find(x => x.airport_id == conn.airport_to_id);
         var country = countries.find(x => x.code == airport.country);
         return (c==3 ? 'Business Trip' : 'Vacation') + ' to ' + (country ? country.name : 'Mars');
       case 5:
-        conn = connections.find(x => x.carrier_id == bookings[0].carrier_id && x.connection_id == bookings[0].connection_id);
+        conn = connections.find(carr => carr.AirlineID == bookings[0].to_Carrier_AirlineID && carr.ConnectionID == bookings[0].ConnectionID);
         airport = airports.find(x => x.airport_id == conn.airport_to_id);
         return 'Vacation to ' + airport.city;
       default:
@@ -515,7 +514,7 @@ function getGenerator() {
   // Bookings + BookingSupplements
   // ------------------------------------------------------------------------------------------------------------------
 
-  function makeBookings(travelId, travelUuid) {
+  function makeBookings(tId, tUuid) {
     // helper to add number of days to a dateString like '2021-04-19'
     function addDays(dateString, days) {
       var date = new Date(dateString);
@@ -528,11 +527,11 @@ function getGenerator() {
       //           - if prevFlight is set: departure airport = destination airport of prevFlight
       var suitableFlights = flights.filter(x => x.seats_to_book >= seatsRequired);
       if (prevFlight) {
-        var prevConn = connections.find(x => x.carrier_id == prevFlight.carrier_id && x.connection_id == prevFlight.connection_id);
+        var prevConn = connections.find(conn => conn.AirlineID == prevFlight.AirlineID && conn.ConnectionID == prevFlight.ConnectionID);
         if (!prevConn) return null;
-        var conn = connections.find(x => x.airport_from_id == prevConn.airport_to_id);
+        var conn = connections.find(conn => conn.airport_from_id == prevConn.airport_to_id);
         if (!conn) return null;
-        suitableFlights = suitableFlights.filter(x => x.connection_id == conn.connection_id && x.flight_date >= prevFlight.flight_date);
+        suitableFlights = suitableFlights.filter(f => f.ConnectionID == conn.ConnectionID && f.FlightDate >= prevFlight.FlightDate);
       }
       return suitableFlights[0];
     }
@@ -546,40 +545,38 @@ function getGenerator() {
 
     var group = new Set();  // avoid duplicates
     while (group.size < groupSize) {
-      group.add(ran.entryOf(passengers).customer_id);
+      group.add(ran.entryOf(passengers).CustomerID);
     }
 
     let bookings = [];
-    var bookingId = 0;
+    var bId = 0;
 
     var flight = findSuitableFlight(groupSize);
     for (let c=0; c<tripLength && flight; c++) {
-      var bookingDate = addDays(flight.flight_date, -ran.bookingDateOffset());
-      var seatsOccPerc = (flight.seats_occupied - flight.seats_to_book) * 100 / flight.seats_max;
-      var price = flightPrice(seatsOccPerc, flight.distance);
+      var bookingDate = addDays(flight.FlightDate, -ran.bookingDateOffset());
+      var seatsOccPerc = (flight.OccupiedSeats - flight.seats_to_book) * 100 / flight.MaximumSeats;
 
       flight.seats_to_book -= groupSize;
       if (flight.seats_to_book < 0) flight.seats_to_book = 0;
 
       for (let custId of [...group]) {
-        bookingId++;
+        bId++;
 
-        var bookingUuid = makeUUID();
-        //var bookingUuid = bookingId;
+        var bUuid = makeUUID();
 
         bookings.push({
-          travelId: travelId,
-          travelUuid: travelUuid,
-          bookingId: bookingId,
-          bookingUuid: bookingUuid,
-          bookingDate: bookingDate,
-          customer_id: custId,
-          carrier_id: flight.carrier_id,
-          connection_id: flight.connection_id,
-          flight_date: flight.flight_date,
-          flight_price: price,
-          currency_code: flight.currency_code,
-          booking_supplements: bookingSupplements(travelId, bookingId, travelUuid, bookingUuid)
+          TravelID: tId,
+          to_Travel_TravelUUID: tUuid,
+          BookingID: bId,
+          BookingUUID: bUuid,
+          BookingDate: bookingDate,
+          to_Customer_CustomerID: custId,
+          to_Carrier_AirlineID: flight.AirlineID,
+          ConnectionID: flight.ConnectionID,
+          FlightDate: flight.FlightDate,
+          FlightPrice: flightPrice(seatsOccPerc, flight.distance),
+          CurrencyCode_code: flight.CurrencyCode_code,
+          booking_supplements: bookingSupplements(tId, bId, tUuid, bUuid)
         });
       }
       flight = findSuitableFlight(groupSize, flight);
@@ -588,24 +585,23 @@ function getGenerator() {
     return bookings;
   }
 
-  function bookingSupplements(travelId, bookingId, travelUuid, bookingUuid) {
+  function bookingSupplements(tId, bId, tUuid, bUuid) {
     var bookingSupplements = [];
     var sc = ran.supplementCount();
     for (let i=1; i<=sc; i++) {
       var suppl = ran.entryOf(supplements);
       bookingSupplements.push({
-        travelId: travelId,
-        travelUuid: travelUuid,
-        bookingId: bookingId,
-        bookingUuid: bookingUuid,
-        booking_supplement_id: i,
+        TravelID: tId,
+        to_Travel_TravelUUID: tUuid,
+        //bookingId: bId,
+        to_Booking_BookingUUID: bUuid,
+        BookingSupplementID: i,
 
-        booking_supplement_uuid: makeUUID(),
-        //booking_supplement_uuid: i,
+        BookSupplUUID: makeUUID(),
 
-        supplement_id: suppl.supplement_id,
-        price: parseFloat(suppl.price),
-        currency_code: suppl.currency_code
+        to_Supplement_SupplementID: suppl.SupplementID,
+        Price: parseFloat(suppl.Price),
+        CurrencyCode_code: suppl.CurrencyCode_code
       });
     }
     return bookingSupplements;

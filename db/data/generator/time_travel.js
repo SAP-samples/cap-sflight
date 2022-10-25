@@ -45,7 +45,7 @@ function addDaysTS(timestampString, days) {
 let flights = csv.readCSV('Flight');
 
 // find newest flight
-let f2 = flights.map(o => o.flight_date).sort();
+let f2 = flights.map(o => o.FlightDate).sort();
 let latest = new Date(f2[f2.length-1]);
 var today = new Date();
 // weeks between latest flight and today + 31
@@ -59,32 +59,32 @@ if (weeks > 0) {
 
 
 for (let f of flights) {
-  f.flight_date = addDays(f.flight_date, weeks*7);
+  f.FlightDate = addDays(f.FlightDate, weeks*7);
 }
 csv.writeCSV('Flight', flights);
 
 
 let travels = csv.readCSV('Travel');
 for (let t of travels) {
-  t.begin_date    = addDays(t.begin_date, weeks*7);
-  t.end_date      = addDays(t.end_date, weeks*7);
+  t.BeginDate     = addDays(t.BeginDate, weeks*7);
+  t.EndDate      = addDays(t.EndDate, weeks*7);
   t.createdAt     = addDaysTS(t.createdAt, weeks*7);
-  t.lastchangedat = addDaysTS(t.lastchangedat, weeks*7);
+  t.LastChangedAt = addDaysTS(t.LastChangedAt, weeks*7);
 }
 csv.writeCSV('Travel', travels);
 
 
 let bookings = csv.readCSV('Booking');
 for (let b of bookings) {
-  b.bookingDate   = addDays(b.bookingDate, weeks*7);
-  b.flight_date   = addDays(b.flight_date, weeks*7);
-  b.lastChangedAt = addDaysTS(b.lastChangedAt, weeks*7);
+  b.BookingDate   = addDays(b.BookingDate, weeks*7);
+  b.FlightDate   = addDays(b.FlightDate, weeks*7);
+  b.LastChangedAt = addDaysTS(b.LastChangedAt, weeks*7);
 }
 csv.writeCSV('Booking', bookings);
 
 
 let supps = csv.readCSV('BookingSupplement');
 for (let s of supps) {
-  s.lastChangedAt = addDaysTS(s.lastChangedAt, weeks*7);
+  s.LastChangedAt = addDaysTS(s.LastChangedAt, weeks*7);
 }
 csv.writeCSV('BookingSupplement', supps);
