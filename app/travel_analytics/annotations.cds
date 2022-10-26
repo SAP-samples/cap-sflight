@@ -110,13 +110,13 @@ annotate service.Bookings with @UI.Chart : {
 };
 
 annotate service.Bookings with @UI.PresentationVariant : {
-  GroupBy : [  // default grouping in table
-    airline,
-    status
-  ],
-  Total : [    // default aggregation in table
-    price
-  ],
+  // GroupBy : [  // default grouping in table
+  //   airline,
+  //   status
+  // ],
+  // Total : [    // default aggregation in table
+  //   price
+  // ],
   Visualizations : [
     '@UI.Chart',
     '@UI.LineItem',
@@ -131,21 +131,7 @@ annotate service.Bookings with @UI.PresentationVariant : {
 
 annotate service.Bookings with @(
   UI.PresentationVariant #pvAirline : {
-    SortOrder      : [{
-      Property   : price,
-      Descending : true
-    }],
     Visualizations : ['@UI.Chart#chartAirline']
-  },
-  UI.SelectionVariant #svAirline : {
-    SelectOptions : [{
-      PropertyName : price,
-      Ranges       : [{
-        Sign   : #I,
-        Option : #GE,
-        Low    : 0,
-      }]
-    }]
   },
   UI.Chart #chartAirline : {
     ChartType           : #Bar,
@@ -166,7 +152,6 @@ annotate service.Bookings with @(
     CollectionPath               : 'Bookings',
     SearchSupported              : true,
     PresentationVariantQualifier : 'pvAirline',
-    SelectionVariantQualifier    : 'svAirline',
     Parameters                   : [{
       $Type             : 'Common.ValueListParameterInOut',
       LocalDataProperty : airline,
@@ -178,22 +163,22 @@ annotate service.Bookings with @(
 
 annotate service.Bookings with @(
   UI.PresentationVariant #pvStatus : {
-    SortOrder      : [{
-      Property   : price,
-      Descending : true
-    }],
+    // SortOrder      : [{
+    //   Property   : price,
+    //   Descending : true
+    // }],
     Visualizations : ['@UI.Chart#chartStatus']
   },
-  UI.SelectionVariant #svStatus : {
-    SelectOptions : [{
-      PropertyName : price,
-      Ranges       : [{
-        Sign   : #I,
-        Option : #GE,
-        Low    : 0,
-      }]
-    }]
-  },
+  // UI.SelectionVariant #svStatus : {
+  //   SelectOptions : [{
+  //     PropertyName : status,
+  //     Ranges       : [{
+  //       Sign   : #I,
+  //       Option : #EQ,
+  //       Low    : 'N',
+  //     }]
+  //   }]
+  // },
   UI.Chart #chartStatus : {
     ChartType           : #Bar,
     Measures            : [countBookings],
@@ -213,7 +198,7 @@ annotate service.Bookings with @(
     CollectionPath               : 'Bookings',
     SearchSupported              : true,
     PresentationVariantQualifier : 'pvStatus',
-    SelectionVariantQualifier    : 'svStatus',
+//    SelectionVariantQualifier    : 'svStatus',
     Parameters                   : [{
       $Type             : 'Common.ValueListParameterInOut',
       LocalDataProperty : status,
@@ -351,10 +336,12 @@ annotate service.Bookings with @UI : {
   }],
   FieldGroup #TravelInformation : { Data : [
     { Value : to_Travel.TravelID,
-      Label: 'ID'                       },
-    { Value : to_Travel.Description     },
-    { Value : to_Travel.to_Agency.Name, },
-    { Value : to_Travel.CustomerName,   },
+      Label: 'ID'                          },
+    { Value : to_Travel.Description        },
+    { Value : to_Travel.to_Agency.Name,    },
+    { Value : to_Travel.CustomerName,      },
+    { Value : to_Travel.TravelStatus.code,
+      Label : '{i18n>Status}'              },    // why does the label not come from below?
   ]},
   FieldGroup #BookingInformation : { Data : [
     { Value : BookingID,
@@ -362,6 +349,8 @@ annotate service.Bookings with @UI : {
     { Value : BookingDate               },
     { Value : FlightDate,               },
     { Value : price                     },
+    { Value : status,
+      Label : '{i18n>Status}'           },
   ]},
   FieldGroup #FlightInformation : { Data : [
     { Value : airline,                  },
