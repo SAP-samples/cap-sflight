@@ -1,4 +1,4 @@
-// ABAP: /dmo/cl_flight_data_generator
+/*eslint no-unused-vars: "off"*/
 
 'use strict';
 
@@ -9,7 +9,7 @@ const {EOL} = require('os');
 
 
 function render(data, map, doSort) {
-  var strarr = arrObj2arrString(data, map)
+  var strarr = m.arrObj2arrString(data, map)
   if (doSort) strarr.sort();
   strarr.unshift(m.dbHeader(map));
   return strarr.join(EOL);
@@ -19,7 +19,7 @@ function render(data, map, doSort) {
 function clock() {
   let dursum = 0;
   function pass(index) {
-    let generator = getGenerator();
+    let generator = g.getGenerator();
     let flights = generator.getFlights();
 
     let start = Date.now();
@@ -53,7 +53,7 @@ function clock() {
 
 var generator = g.getGenerator();
 var tf = generator.getFlights();
-let {tt, tb, ts} = generator.getTravels(5000);
+var {tt, tb, ts} = generator.getTravels(5000);
 
 var countTravels = tt.length;
 var countBookings = tb.length;

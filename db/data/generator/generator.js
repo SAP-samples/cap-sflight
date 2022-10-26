@@ -1,5 +1,7 @@
 // ABAP: /dmo/cl_flight_data_generator
 
+/*eslint no-unused-vars: "off"*/
+
 'use strict';
 
 const {v1 : uuidv4} = require('uuid');
@@ -10,6 +12,7 @@ const passengers = require('./input/customer.json');
 const supplements = require('./input/supplement.json');
 const countries = require('./input/countries.json');
 const agencies = require('./input/agencies.json');
+const lastNames = require('./input/lastNames.json');
 
 const airports = [
   // Europe
@@ -66,150 +69,6 @@ const airports = [
   { airport_id : 'BKK', name : 'Suvarnabhumi Airport',                  city : 'Bangkok',                           country : 'TH' }
 ];
 // TODO AT, CH, NL, IT, UK, ES, RU, MX, BR, CU, ZW, SA, JP, SG, MY, TH missing in table of countries
-
-const firstNames = [
-  { first_name : 'Simon', gender : 'M'},
-  { first_name : 'Harish', gender : 'M'},
-  { first_name : 'Volker', gender : 'M'},
-  { first_name : 'Jasmin', gender : 'F'},
-  { first_name : 'Felix', gender : 'M'},
-  { first_name : 'Kristina', gender : 'F'},
-  { first_name : 'Thilo', gender : 'M'},
-  { first_name : 'Andrej', gender : 'M'},
-  { first_name : 'Anna', gender : 'F'},
-  { first_name : 'Johannes', gender : 'M'},
-  { first_name : 'Johann', gender : 'M'},
-  { first_name : 'Christoph', gender : 'M'},
-  { first_name : 'Andreas', gender : 'M'},
-  { first_name : 'Stephen', gender : 'M'},
-  { first_name : 'Mathilde', gender : 'F'},
-  { first_name : 'August', gender : 'M'},
-  { first_name : 'Illya', gender : 'M'},
-  { first_name : 'Georg', gender : 'M'},
-  { first_name : 'Gisela', gender : 'F'},
-  { first_name : 'Christa', gender : 'F'},
-  { first_name : 'Holm', gender : 'M'},
-  { first_name : 'Irmtraut', gender : 'F'},
-  { first_name : 'Ludwig', gender : 'M'},
-  { first_name : 'Laura', gender : 'F'},
-  { first_name : 'Kurt', gender : 'M'},
-  { first_name : 'Guenther', gender : 'M'},
-  { first_name : 'Horst', gender : 'M'},
-  { first_name : 'Matthias', gender : 'M'},
-  { first_name : 'Amelie', gender : 'F'},
-  { first_name : 'Walter', gender : 'M'},
-  { first_name : 'Sophie', gender : 'F'},
-  { first_name : 'Claire', gender : 'F'},
-  { first_name : 'Chantal', gender : 'F'},
-  { first_name : 'Jean', gender : 'M'},
-  { first_name : 'Cindy', gender : 'F'},
-  { first_name : 'Pierre', gender : 'M'},
-  { first_name : 'Irene', gender : 'F'},
-  { first_name : 'Adam', gender : 'M'},
-  { first_name : 'Fabio', gender : 'M'},
-  { first_name : 'Lothar', gender : 'M'},
-  { first_name : 'Annemarie', gender : 'F'},
-  { first_name : 'Ida', gender : 'F'},
-  { first_name : 'Roland', gender : 'M'},
-  { first_name : 'Achim', gender : 'M'},
-  { first_name : 'Allen', gender : 'M'},
-  { first_name : 'Lee', gender : 'M'},
-  { first_name : 'Guillermo', gender : 'M'},
-  { first_name : 'Florian', gender : 'M'},
-  { first_name : 'Ulla', gender : 'F'},
-  { first_name : 'Juan', gender : 'M'},
-  { first_name : 'Marta', gender : 'F'},
-  { first_name : 'Salvador', gender : 'M'},
-  { first_name : 'Christine', gender : 'F'},
-  { first_name : 'Dominik', gender : 'M'},
-  { first_name : 'Astrid', gender : 'F'},
-  { first_name : 'Ruth', gender : 'F'},
-  { first_name : 'Theresia', gender : 'F'},
-  { first_name : 'Thomas', gender : 'M'},
-  { first_name : 'Friedrich', gender : 'M'},
-  { first_name : 'Anneliese', gender : 'F'},
-  { first_name : 'Peter', gender : 'M'},
-  { first_name : 'Anne-Marie', gender : 'F'},
-  { first_name : 'James', gender : 'M'},
-  { first_name : 'Jean-Luc', gender : 'M'},
-  { first_name : 'Benjamin', gender : 'M'},
-  { first_name : 'Hendrik', gender : 'M'},
-  { first_name : 'Uli', gender : 'F'},
-  { first_name : 'Siegfried', gender : 'M'},
-  { first_name : 'Max', gender : 'M'}
-];
-
-const lastNames = [
-  { last_name : 'Buchholm'},
-  { last_name : 'Vrsic'},
-  { last_name : 'Jeremias'},
-  { last_name : 'Gutenberg'},
-  { last_name : 'Fischmann'},
-  { last_name : 'Columbo'},
-  { last_name : 'Neubasler'},
-  { last_name : 'Martin'},
-  { last_name : 'Detemple'},
-  { last_name : 'Barth'},
-  { last_name : 'Benz'},
-  { last_name : 'Hansmann'},
-  { last_name : 'Koslowski'},
-  { last_name : 'Wohl'},
-  { last_name : 'Koller'},
-  { last_name : 'Hoffen'},
-  { last_name : 'Dumbach'},
-  { last_name : 'Goelke'},
-  { last_name : 'Waldmann'},
-  { last_name : 'Mechler'},
-  { last_name : 'Buehler'},
-  { last_name : 'Heller'},
-  { last_name : 'Simonen'},
-  { last_name : 'Henry'},
-  { last_name : 'Marshall'},
-  { last_name : 'Legrand'},
-  { last_name : 'Jacqmain'},
-  { last_name : 'D´Oultrement'},
-  { last_name : 'Hunter'},
-  { last_name : 'Delon'},
-  { last_name : 'Kreiss'},
-  { last_name : 'Trensch'},
-  { last_name : 'Cesari'},
-  { last_name : 'Matthaeus'},
-  { last_name : 'Babilon'},
-  { last_name : 'Zimmermann'},
-  { last_name : 'Kramer'},
-  { last_name : 'Illner'},
-  { last_name : 'Pratt'},
-  { last_name : 'Gahl'},
-  { last_name : 'Benjamin'},
-  { last_name : 'Miguel'},
-  { last_name : 'Weiss'},
-  { last_name : 'Sessler'},
-  { last_name : 'Montero'},
-  { last_name : 'Domenech'},
-  { last_name : 'Moyano'},
-  { last_name : 'Sommer'},
-  { last_name : 'Schneider'},
-  { last_name : 'Eichbaum'},
-  { last_name : 'Gueldenpfennig'},
-  { last_name : 'Sudhoff'},
-  { last_name : 'Lautenbach'},
-  { last_name : 'Ryan'},
-  { last_name : 'Prinz'},
-  { last_name : 'Deichgraeber'},
-  { last_name : 'Pan'},
-  { last_name : 'Lindwurm'},
-  { last_name : 'Kirk'},
-  { last_name : 'Picard'},
-  { last_name : 'Sisko'},
-  { last_name : 'Madeira'},
-  { last_name : 'Meier'},
-  { last_name : 'Rahn'},
-  { last_name : 'Leisert'},
-  { last_name : 'Müller'},
-  { last_name : 'Mustermann'},
-  { last_name : 'Becker'},
-  { last_name : 'Fischer'}
-];
 
 const connections = [
   // ! weekday here 1=Mon..7=Sun !
@@ -304,8 +163,8 @@ function getGenerator() {
     return {tt, tb, ts};
   }
 
-  //let makeUUID = makeRealUUID;
-  let makeUUID = pseudoUuid;
+  let makeUUID = makeRealUUID;
+  //let makeUUID = pseudoUuid;
 
   let flights  = [];
   let g_travelId = 1;
@@ -520,7 +379,7 @@ function getGenerator() {
         return 'Vacation to ' + airport.city;
       default:
         return 'Vacation';
-    };
+    }
   }
 
 
