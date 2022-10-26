@@ -13,22 +13,18 @@ const path_csv = '../';
 const prefix_sflight = 'sap.fe.cap.travel-';
 
 const config = {
-  // ---------- Flight ----------
   Flight: {
     csv_file: prefix_sflight + 'Flight.csv',
     map: m.Maps.Flight,
   },
-  // ---------- Travel ----------
   Travel: {
     csv_file: prefix_sflight + 'Travel.csv',
     map: m.Maps.Travel,
   },
-  // ---------- Booking ----------
   Booking: {
     csv_file: prefix_sflight + 'Booking.csv',
     map: m.Maps.Booking,
   },
-  // ---------- BookingSupplement ----------
   BookingSupplement: {
     csv_file: prefix_sflight + 'BookingSupplement.csv',
     map: m.Maps.Supplement,
@@ -42,21 +38,22 @@ function readCSV(table) {
   if (!c) throw 'Invalid table name ' + table;
 
   let s = fs.readFileSync(path_csv + c.csv_file, 'utf8')
-  let fromString = (line) => m.string2rGen(line, c.map);
-  let a = s.split(/\r?\n/).filter(x => x.includes(';')).slice(1).map(fromString);  // slice: remove header line
-  //console.log(JSON.stringify(o, null, 2))
-  return a;
+  let lines = s.split(/\r?\n/).filter(x => x.includes(';')).slice(1);  // slice: remove header line
+  return m.arrString2arrObj(lines, c.map)
 }
 
 // table: one of Flight, Travel, Booking, BookingSupplement
-// data: array
-function writeCSV(table, data) {
+// data: array of objs
+function writeCSV(table, data, doSort) {
   let c = config[table];
   if (!c) throw 'Invalid table name ' + table;
 
-  var a = data.map(x => m.rGen2string(x, c.map));
-  a.unshift(m.dbHeader(c.map));
-  var s = a.join(EOL);
+  let lines = m.arrObj2arrString(data, c.map);
+  if (doSort) lines.sort();
+  lines.unshift(m.dbHeader(c.map));
+  let s = lines.join(EOL);
+
+  if (!fs.existsSync(path_out)) fs.mkdirSync(path_out);
   fs.writeFileSync(path_out + c.csv_file, s);
 }
 

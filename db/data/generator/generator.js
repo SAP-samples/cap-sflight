@@ -290,6 +290,20 @@ function getGenerator() {
     entryOf          : function(a) {return a[random(0, a.length-1)];}
   }
 
+  function separateTravels(tt) {
+    var tb = [];
+    var ts = [];
+    for (let t of tt) {
+      for (let b of t.bookings) {
+        ts = ts.concat(b.booking_supplements)
+        delete b.booking_supplements;
+      }
+      tb = tb.concat(t.bookings)
+      delete t.bookings;
+    }
+    return {tt, tb, ts};
+  }
+
   //let makeUUID = makeRealUUID;
   let makeUUID = pseudoUuid;
 
@@ -309,7 +323,7 @@ function getGenerator() {
         if (count && travels.length>=count) break;
         t = makeTravel();
       }
-      return travels;
+      return separateTravels(travels);
     })
   };
 

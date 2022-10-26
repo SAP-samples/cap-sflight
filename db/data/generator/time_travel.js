@@ -67,7 +67,7 @@ csv.writeCSV('Flight', flights);
 let travels = csv.readCSV('Travel');
 for (let t of travels) {
   t.BeginDate     = addDays(t.BeginDate, weeks*7);
-  t.EndDate      = addDays(t.EndDate, weeks*7);
+  t.EndDate       = addDays(t.EndDate, weeks*7);
   t.createdAt     = addDaysTS(t.createdAt, weeks*7);
   t.LastChangedAt = addDaysTS(t.LastChangedAt, weeks*7);
 }
@@ -77,7 +77,7 @@ csv.writeCSV('Travel', travels);
 let bookings = csv.readCSV('Booking');
 for (let b of bookings) {
   b.BookingDate   = addDays(b.BookingDate, weeks*7);
-  b.FlightDate   = addDays(b.FlightDate, weeks*7);
+  b.FlightDate    = addDays(b.FlightDate, weeks*7);
   b.LastChangedAt = addDaysTS(b.LastChangedAt, weeks*7);
 }
 csv.writeCSV('Booking', bookings);

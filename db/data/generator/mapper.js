@@ -2,107 +2,90 @@
 
 const Maps = {
   Flight: [
-    {gen: 'AirlineID',          db: 'AirlineID'        },
-    {gen: 'ConnectionID',       db: 'ConnectionID'     },
-    {gen: 'FlightDate',         db: 'FlightDate'       },
-    {gen: 'Price',              db: 'Price'            },
-    {gen: 'CurrencyCode_code',  db: 'CurrencyCode_code'},
-    {gen: 'PlaneType',          db: 'PlaneType'        },
-    {gen: 'MaximumSeats',       db: 'MaximumSeats'     },
-    {gen: 'OccupiedSeats',      db: 'OccupiedSeats'    }
+    'AirlineID',
+    'ConnectionID',
+    'FlightDate',
+    'Price',
+    'CurrencyCode_code',
+    'PlaneType',
+    'MaximumSeats',
+    'OccupiedSeats',
   ],
   Travel: [
-    {gen: 'TravelUUID',              db: 'TravelUUID'             },
-    {gen: 'TravelID',                db: 'TravelID'               },
-    {gen: 'to_Agency_AgencyID',      db: 'to_Agency_AgencyID'     },
-    {gen: 'to_Customer_CustomerID',  db: 'to_Customer_CustomerID' },
-    {gen: 'BeginDate',               db: 'BeginDate'              },
-    {gen: 'EndDate',                 db: 'EndDate'                },
-    {gen: 'BookingFee',              db: 'BookingFee'             },
-    {gen: 'TotalPrice',              db: 'TotalPrice'             },
-    {gen: 'CurrencyCode_code',       db: 'CurrencyCode_code'      },
-    {gen: 'Description',             db: 'Description'            },
-    {gen: 'TravelStatus_code',       db: 'TravelStatus_code'      },
-    {gen: 'createdBy',               db: 'createdBy'              },
-    {gen: 'createdAt',               db: 'createdAt'              },
-    {gen: 'LastChangedBy',           db: 'LastChangedBy'          },
-    {gen: 'LastChangedAt',           db: 'LastChangedAt'          }
+    'TravelUUID',
+    'TravelID',
+    'to_Agency_AgencyID',
+    'to_Customer_CustomerID',
+    'BeginDate',
+    'EndDate',
+    'BookingFee',
+    'TotalPrice',
+    'CurrencyCode_code',
+    'Description',
+    'TravelStatus_code',
+    'createdBy',
+    'createdAt',
+    'LastChangedBy',
+    'LastChangedAt',
   ],
   Booking: [
-    {gen: 'BookingUUID',             db: 'BookingUUID'            },
-    {gen: 'to_Travel_TravelUUID',    db: 'to_Travel_TravelUUID'   },
-    {gen: 'BookingID',               db: 'BookingID'              },
-    {gen: 'BookingDate',             db: 'BookingDate'            },
-    {gen: 'to_Customer_CustomerID',  db: 'to_Customer_CustomerID' },
-    {gen: 'to_Carrier_AirlineID',    db: 'to_Carrier_AirlineID'   },
-    {gen: 'ConnectionID',            db: 'ConnectionID'           },
-    {gen: 'FlightDate',              db: 'FlightDate'             },
-    {gen: 'FlightPrice',             db: 'FlightPrice'            },
-    {gen: 'CurrencyCode_code',       db: 'CurrencyCode_code'      },
-    {gen: 'BookingStatus_code',      db: 'BookingStatus_code'     },
-    {gen: 'LastChangedAt',           db: 'LastChangedAt'          }
+    'BookingUUID',
+    'to_Travel_TravelUUID',
+    'BookingID',
+    'BookingDate',
+    'to_Customer_CustomerID',
+    'to_Carrier_AirlineID',
+    'ConnectionID',
+    'FlightDate',
+    'FlightPrice',
+    'CurrencyCode_code',
+    'BookingStatus_code',
+    'LastChangedAt',
   ],
   Supplement: [
-    {gen: 'BookSupplUUID',               db: 'BookSupplUUID'              },
-    {gen: 'to_Travel_TravelUUID',        db: 'to_Travel_TravelUUID'       },
-    {gen: 'to_Booking_BookingUUID',      db: 'to_Booking_BookingUUID'     },
-    {gen: 'BookingSupplementID',         db: 'BookingSupplementID'        },
-    {gen: 'to_Supplement_SupplementID',  db: 'to_Supplement_SupplementID' },
-    {gen: 'Price',                       db: 'Price'                      },
-    {gen: 'CurrencyCode_code',           db: 'CurrencyCode_code'          },
-    {gen: 'LastChangedAt',               db: 'LastChangedAt'              }
+    'BookSupplUUID',
+    'to_Travel_TravelUUID',
+    'to_Booking_BookingUUID',
+    'BookingSupplementID',
+    'to_Supplement_SupplementID',
+    'Price',
+    'CurrencyCode_code',
+    'LastChangedAt',
   ]
 }
 
 function dbHeader(map) {
-  let t = map.map(m => m.db);
-  return t.join(';');
+  return map.join(';');
 }
 
-function rGen2string(rGen, map) {
-  let t = rGen2arr(rGen, map);
+function obj2string(o, map) {
+  let t = map.map(m => o[m]);
   return t.join(';');
 }
+function arrObj2arrString(a, map) {
+  return a.map(o => obj2string(o, map))
+}
 
-function string2rGen(s, map) {
+function string2obj(s, map) {
   var a = s.split(';');
-  return arr2rGen(a, map);
-}
-
-function rGen2arr(rGen, map) {
-  let t = map.map(m => rGen[m.gen]);
-  return t;
-}
-
-function arr2rGen(arr, map) {
   let rGen = {};
   for (let i = 0; i<map.length; i++) {
-    rGen[map[i].gen] = arr[i];
+    rGen[map[i]] = a[i];
   }
   return rGen;
 }
 
-function rGen2rDB(rGen, map) {
-  let rDB = {};
-  for (let m of map) {
-    rDB[m.db] = rGen[m.gen]
-  }
-  return rDB;
+function arrString2arrObj(a, map) {
+  return a.map(s => string2obj(s, map))
 }
+
 
 module.exports = {
   Maps,
   dbHeader,
-  rGen2string,
-  string2rGen,
-  rGen2arr,
-  arr2rGen,
-  rGen2rDB
+  arrObj2arrString,
+  arrString2arrObj
 };
-
-
-
-
 
 
 
