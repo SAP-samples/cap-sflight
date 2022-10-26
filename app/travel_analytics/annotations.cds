@@ -110,13 +110,13 @@ annotate service.Bookings with @UI.Chart : {
 };
 
 annotate service.Bookings with @UI.PresentationVariant : {
-  // GroupBy : [  // default grouping in table
-  //   airline,
-  //   status
-  // ],
-  // Total : [    // default aggregation in table
-  //   price
-  // ],
+  GroupBy : [  // default grouping in table
+    airline,
+    status
+  ],
+  Total : [    // default aggregation in table
+    price
+  ],
   Visualizations : [
     '@UI.Chart',
     '@UI.LineItem',
