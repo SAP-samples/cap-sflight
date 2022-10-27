@@ -14,6 +14,11 @@ In some cases, the model and the handlers can be improved or simplified once fur
 In other cases, the app itself could be improved. For example, calculation of the total price for a travel
 currently simply sums up the single prices ignoring the currencies.
 
+> For enabling all features of the Analytical List Page (ALP) in the Node.js runtime, we have switched on the new OData parser 
+(`odata_new_parser: true` in `package.json`), which is still in an **experimental state**.
+Early adopters may use this feature in own projects on their own risk.
+You can also use the ALP with the standard OData parser, but then some features like grouping in the table are not available.
+
 ![](https://github.com/SAP-samples/cap-sflight/workflows/CI/badge.svg)
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/cap-sflight)](https://api.reuse.software/info/github.com/SAP-samples/cap-sflight)
 
@@ -33,11 +38,6 @@ cds watch
 Open these link in your browser:
 * http://localhost:4004/travel_processor/webapp/index.html for processing the travel data
 * http://localhost:4004/travel_analytics/webapp/index.html for an Analytical List Page (ALP)
-
-<div markdown="1" class="warning">
-For enabling all features of the ALP with the Node.js runtime, we have switched on the new OData parser (`odata_new_parser: true` in `package.json`), which is still in an *experimental state*.
-You can also use the ALP with the standard OData parser, but then some features like grouping in the table are not available.
-</div>
 
 ### Integration Tests
 
