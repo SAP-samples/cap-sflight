@@ -32,7 +32,12 @@ cds watch
 
 Open these link in your browser:
 * http://localhost:4004/travel_processor/webapp/index.html for processing the travel data
-* http://localhost:4004/travel_analytics/webapp/index.html for an Analytical List Page
+* http://localhost:4004/travel_analytics/webapp/index.html for an Analytical List Page (ALP)
+
+<div markdown="1" class="warning">
+For enabling all features of the ALP with the Node.js runtime, we have switched on the new OData parser (`odata_new_parser: true` in `package.json`), which is still in an *experimental state*.
+You can also use the ALP with the standard OData parser, but then some features like grouping in the table are not available.
+</div>
 
 ### Integration Tests
 

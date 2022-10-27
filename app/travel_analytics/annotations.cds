@@ -76,21 +76,26 @@ annotate service.Bookings with @UI.LineItem : [
   {
     Value          : ReadableID,
     @UI.Importance : #High,
+    @HTML5.CssDefaults: {width:'10em'},
   }, {
     Value          : airline,
     @UI.Importance : #High,
+    @HTML5.CssDefaults: {width:'14em'},
   }, {
     Value          : ConnectionID,
     @UI.Importance : #High,
+    @HTML5.CssDefaults: {width:'8em'},
   }, {
     Value          : FlightDate,
     @UI.Importance : #High,
   }, {
     Value          : price,
     @UI.Importance : #High,
+    @HTML5.CssDefaults: {width:'12em'},
   }, {
     Value          : status,
     @UI.Importance : #High,
+    @HTML5.CssDefaults: {width:'8em'},
   }
 ];
 
