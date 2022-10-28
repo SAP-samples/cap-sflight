@@ -106,9 +106,9 @@ describe('Basic OData', () => {
   it('supports $top/$skip paging', async () => {
     const { data: p1 } = await GET `/processor/Travel?$select=TravelID,Description&$top=3&$orderby=TravelID`
     expect(p1.value).to.containSubset([
-      {"Description": "Business Trip for Christine, Pierre", "IsActiveEntity": true, "TravelID": 1},
-      {"Description": "Vacation", "IsActiveEntity": true, "TravelID": 2},
-      {"Description": "Vacation", "IsActiveEntity": true, "TravelID": 3},
+      {"Description": "Business Trip for Christine, Pierre", "TravelID": 1},
+      {"Description": "Vacation", "TravelID": 2},
+      {"Description": "Vacation", "TravelID": 3},
     ])
     const { data: p2 } = await GET `/processor/Travel?$select=Description&$skip=3&$orderby=TravelID`
     expect(p2.value).not.to.containSubset([
