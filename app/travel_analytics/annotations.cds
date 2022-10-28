@@ -29,7 +29,9 @@ annotate service.Bookings with @Aggregation.ApplySupported : {
   Rollup               : #None,
   PropertyRestrictions : true,
   GroupableProperties  : [
-    ReadableID,
+    TravelID,
+    BookingID,
+    CombinedID,
     ConnectionID,
     FlightDate,
     cuco,
@@ -74,9 +76,15 @@ annotate service.Bookings with @Analytics.AggregatedProperties : [
 
 annotate service.Bookings with @UI.LineItem : [
   {
-    Value          : ReadableID,
+    Value          : TravelID,
     @UI.Importance : #High,
-    @HTML5.CssDefaults: {width:'10em'},
+    @HTML5.CssDefaults: {width:'8em'},
+  },
+  {
+    Value          : BookingID,
+    Label          : '{i18n>Booking}',
+    @UI.Importance : #High,
+    @HTML5.CssDefaults: {width:'8em'},
   }, {
     Value          : airline,
     @UI.Importance : #High,
@@ -309,13 +317,13 @@ annotate service.Bookings with @(
 //
 annotate service.Bookings with @UI : {
   Identification : [
-    { Value : ReadableID },
+    { Value : CombinedID },
   ],
   HeaderInfo : {
     TypeName       : '{i18n>Bookings}',
     TypeNamePlural : '{i18n>Bookings}',
-    Title          : { Value : ReadableID },
-    Description    : { Value : ReadableID }
+    Title          : { Value : CombinedID },
+    Description    : { Value : CombinedID }
   },
   Facets : [{
     $Type  : 'UI.CollectionFacet',

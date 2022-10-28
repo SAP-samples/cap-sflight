@@ -9,8 +9,13 @@ service AnalyticsService @(path:'/analytics') {
   entity Bookings as projection on my.Booking {
     @UI.Hidden: false
     BookingUUID as ID,
+    to_Travel.TravelID,
+    BookingID,
+
     @title : 'Travel/Booking ID'
-    to_Travel.TravelID || '/' || BookingID as ReadableID : String,
+    to_Travel.TravelID || '/' || BookingID as CombinedID : String,
+
+
     ConnectionID,
     FlightDate,
 
@@ -30,7 +35,6 @@ service AnalyticsService @(path:'/analytics') {
     to_Carrier.AirlineID as airline,
     to_Carrier.Name      as airlineName,
 
-    BookingID,
     BookingDate,
 
     to_Travel,
