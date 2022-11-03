@@ -200,7 +200,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           Then.onTheDetailPage
           .onForm({ section: "Travel", fieldGroup: "DateData" })
           .iCheckField({ property: "BeginDate" },
-                        { value: "Sep 1, 2022" },
+                        { value: "May 25, 2023" },
                         { editable: false });
 
           // Booking fee
@@ -278,7 +278,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           Then.onTheDetailPage
           .onForm({ section: "Travel", fieldGroup: "DateData" })
           .iCheckField({ property: "BeginDate" },
-                        { value: "Sep 1, 2022" },
+                        { value: "May 25, 2023" },
                         { editable: true });
 
           // Booking fee

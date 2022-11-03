@@ -1,0 +1,24 @@
+{
+  "name": "travel-analytics",
+  "version": "0.0.1",
+  "description": "SFlight ALP",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "scripts": {
+    "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf",
+    "start": "ui5 serve"
+  },
+  "devDependencies": {
+    "ui5-middleware-simpleproxy": "^0.9.0"
+  },
+  "ui5": {
+    "dependencies": [
+      "ui5-middleware-simpleproxy"
+    ]
+  }
+
+}
