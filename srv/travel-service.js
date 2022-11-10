@@ -120,11 +120,11 @@ init() {
    * Helper to re-calculate a Travel's TotalPrice from BookingFees, FlightPrices and Supplement Prices.
    */
   this._update_totals4 = function (travel) {
-    return UPDATE (Travel.drafts, travel) .with ({ TotalPrice: CXL `coalesce (BookingFee, 0) + ${
-      SELECT `coalesce (sum (FlightPrice + ${
-        SELECT `coalesce (sum (Price),0)` .from (BookingSupplement.drafts) .where `to_Booking_BookingUUID = BookingUUID`
-      }),0)` .from (Booking.drafts) .where `to_Travel_TravelUUID = TravelUUID`
-    }` })
+    // return UPDATE (Travel.drafts, travel) .with ({ TotalPrice: CXL `coalesce (BookingFee, 0) + ${
+    //   SELECT `coalesce (sum (FlightPrice + ${
+    //     SELECT `coalesce (sum (Price),0)` .from (BookingSupplement.drafts) .where `to_Booking_BookingUUID = BookingUUID`
+    //   }),0)` .from (Booking.drafts) .where `to_Travel_TravelUUID = TravelUUID`
+    // }` })
   }
 
 
