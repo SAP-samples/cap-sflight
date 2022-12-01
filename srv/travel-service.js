@@ -107,7 +107,7 @@ init() {
     const { DraftAdministrativeData_DraftUUID, BookingUUID } = req.data
     const { to_Travel_TravelUUID } = await SELECT.one
       .from(Booking.drafts, ['to_Travel_TravelUUID'])
-      .where({ DraftAdministrativeData_DraftUUID, BookingUUID })
+      .where({ BookingUUID })
     // Delete handled by generic handlers
     const res = await next()
     // After the delete, update the totals
