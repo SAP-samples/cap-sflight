@@ -23,21 +23,29 @@ You can also use the ALP with the standard OData parser, but then some features 
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/cap-sflight)](https://api.reuse.software/info/github.com/SAP-samples/cap-sflight)
 
 
-## SAP Fiori UI with Node.js Backend
+## Run locally
 
-### Build and Run
+### Build and Run - Node.js Backend
 
-In the root folder of your project run
+In the root folder of your project, run
 ```
 npm ci
 cds watch
 ```
 
+### Build and Run - Java Backend
+
+In the root folder of your project, run
+```
+npm ci
+mvn spring-boot:run
+```
+
 ### Accessing the SAP Fiori Apps
 
-Open these link in your browser:
+Open these links in your browser:
 * http://localhost:4004/travel_processor/webapp/index.html for processing the travel data
-* http://localhost:4004/travel_analytics/webapp/index.html for an [Analytical List Page](https://ui5.sap.com/#/topic/3d33684b08ca4490b26a844b6ce19b83) (ALP)
+* http://localhost:4004/travel_analytics/webapp/index.html for the [Analytical List Page](https://ui5.sap.com/#/topic/3d33684b08ca4490b26a844b6ce19b83) (ALP)
 
 Log in with user `amy` and empty password.
 
@@ -45,40 +53,6 @@ Log in with user `amy` and empty password.
 
 To start OPA tests, open this link in your browser:
 http://localhost:4004/travel_processor/webapp/test/integration/Opa.qunit.html
-
-Test documentation is available at:
-https://ui5.sap.com/#/api/sap.fe.test
-
-## SAP Fiori UI with Java Backend
-
-### Build and Run
-
-In the root folder of your project run
-```
-npm ci
-mvn spring-boot:run
-```
-
-To start the middleware, in another console execute
-```
-cd app\travel_processor
-npm start
-```
-To run the Analytical List page, use `cd app/travel_analytics` instead.
-
-
-### Accessing the SAP Fiori App
-
-Open this link in your browser:
-http://localhost:8080/index.html
-
-Note: If you access the CAP Java server directly without middleware, you will have to enter mock user credentials admin / admin which are maintained in file application.yml.
-
-
-### Integration Tests
-
-To start OPA tests, open this link in your browser:
-http://localhost:8080/test/integration/Opa.qunit.html
 
 Test documentation is available at:
 https://ui5.sap.com/#/api/sap.fe.test
