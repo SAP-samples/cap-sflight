@@ -39,6 +39,8 @@ Open these link in your browser:
 * http://localhost:4004/travel_processor/webapp/index.html for processing the travel data
 * http://localhost:4004/travel_analytics/webapp/index.html for an [Analytical List Page](https://ui5.sap.com/#/topic/3d33684b08ca4490b26a844b6ce19b83) (ALP)
 
+Log in with user `amy` and empty password.
+
 ### Integration Tests
 
 To start OPA tests, open this link in your browser:

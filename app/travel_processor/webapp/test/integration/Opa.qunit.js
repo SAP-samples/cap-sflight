@@ -12,7 +12,7 @@ sap.ui.define(
     var journeyRunner = new JourneyRunner({
       // start index.html in web folder
       launchUrl: sap.ui.require.toUrl("sap/fe/cap/travel") + "/index.html",
-      opaConfig: { timeout: 20 },
+      opaConfig: { timeout: 30 },
     });
 
     journeyRunner.run(
