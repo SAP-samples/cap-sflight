@@ -62,9 +62,10 @@
                 "processor"
               ]
             },
-            "me": {
+            "admin": {
+              "password": "admin",
               "roles": [
-                "processor"
+                "admin"
               ]
             }
           }
