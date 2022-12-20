@@ -67,6 +67,10 @@ modules:
           artifacts:
             - travel-processor.zip
           target-path: resources/
+        - name: sflight-app-travel-analytics
+          artifacts:
+            - travel-analytics.zip
+          target-path: resources/
 
   # ------------- APPLICATION: TRAVEL PROCESSOR ----------------
   - name: sflight-app-travel-processor
@@ -77,7 +81,20 @@ modules:
       build-result: dist
       builder: custom
       commands:
-        - npm install
+        - npm ci
+        - npm run build
+      supported-platforms: []
+
+  # ------------- APPLICATION: TRAVEL ANALYTICS ----------------
+  - name: sflight-app-travel-analytics
+  # ------------------------------------------------------------
+    type: html5
+    path: app/travel_analytics
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
         - npm run build
       supported-platforms: []
 

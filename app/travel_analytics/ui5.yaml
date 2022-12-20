@@ -1,6 +1,6 @@
 specVersion: "2.5"
 metadata:
-  name: sap.fe.cap.travel-analytics
+  name: sap.fe.cap.travel_analytics
 type: application
 
 server:

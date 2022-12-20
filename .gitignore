@@ -49,3 +49,7 @@ dist/
 
 # Exclude Helm chart for this example
 /chart
+
+# Experimental
+xxx_*
+xxx/*

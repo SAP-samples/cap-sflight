@@ -1,194 +1,213 @@
 {
-  "_version": "1.42.0",
-  "sap.app": {
-    "id": "sap.fe.cap.travel-analytics",
-    "type": "application",
-    "i18n": "i18n/i18n.properties",
-    "applicationVersion": {
-      "version": "0.0.1"
-    },
-    "title": "{{appTitle}}",
-    "description": "{{appDescription}}",
-    "resources": "resources.json",
-    "sourceTemplate": {
-      "id": "@sap/generator-fiori:lrop",
-      "version": "1.7.5",
-      "toolsId": "14e5ba92-7ef6-40ce-9b6b-9eff19d0c9a2"
-    },
-    "dataSources": {
-      "mainService": {
-        "uri": "/analytics/",
-        "type": "OData",
-        "settings": {
-          "odataVersion": "4.0"
-        }
-      }
-    }
-  },
-  "sap.ui": {
-    "technology": "UI5",
-    "icons": {
-      "icon": "",
-      "favIcon": "",
-      "phone": "",
-      "phone@2": "",
-      "tablet": "",
-      "tablet@2": ""
-    },
-    "deviceTypes": {
-      "desktop": true,
-      "tablet": true,
-      "phone": true
-    }
-  },
-  "sap.ui5": {
-    "flexEnabled": true,
-    "dependencies": {
-      "minUI5Version": "1.102.1",
-      "libs": {
-        "sap.m": {},
-        "sap.ui.core": {},
-        "sap.ushell": {},
-        "sap.fe.templates": {}
-      }
-    },
-    "contentDensities": {
-      "compact": true,
-      "cozy": true
-    },
-    "models": {
-      "i18n": {
-        "type": "sap.ui.model.resource.ResourceModel",
-        "settings": {
-          "bundleName": "sap.fe.cap.travel-analytics.i18n.i18n"
-        }
-      },
-      "": {
-        "dataSource": "mainService",
-        "preload": true,
-        "settings": {
-          "synchronizationMode": "None",
-          "operationMode": "Server",
-          "autoExpandSelect": true,
-          "earlyRequests": true
-        }
-      },
-      "@i18n": {
-        "type": "sap.ui.model.resource.ResourceModel",
-        "uri": "i18n/i18n.properties"
-      }
-    },
-    "resources": {
-      "css": []
-    },
-    "routing": {
-      "config": {},
-      "routes": [
-        {
-          "pattern": ":?query:",
-          "name": "BookingsList",
-          "target": "BookingsList"
+    "_version": "1.42.0",
+    "sap.app": {
+        "id": "sap.fe.cap.travel_analytics",
+        "type": "application",
+        "title": "{{title}}",
+        "description": "{{description}}",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "1.0.0"
         },
-        {
-          "pattern": "Bookings({key}):?query:",
-          "name": "BookingsObjectPage",
-          "target": "BookingsObjectPage"
-        }
-      ],
-      "targets": {
-        "BookingsList": {
-          "type": "Component",
-          "id": "BookingsList",
-          "name": "sap.fe.templates.ListReport",
-          "options": {
-            "settings": {
-              "entitySet": "Bookings",
-              "variantManagement": "Page",
-              "navigation": {
-                "Bookings": {
-                  "detail": {
-                    "route": "BookingsObjectPage"
-                  }
+        "dataSources": {
+            "mainService": {
+                "uri": "analytics/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "4.0"
                 }
-              },
-              "initialLoad": true,
-              "views": {
-                "paths": [
-                  {
-                    "primary": [
-                      {
-                        "annotationPath": "@com.sap.vocabularies.UI.v1.PresentationVariant"
-                      }
-                    ],
-                    "secondary": [
-                      {
-                        "annotationPath": "@com.sap.vocabularies.UI.v1.PresentationVariant"
-                      }
-                    ],
-                    "defaultPath": "both"
-                  }
-                ]
-              },
-              "controlConfiguration": {
-                "@com.sap.vocabularies.UI.v1.LineItem": {
-                  "tableSettings": {
-                    "type": "AnalyticalTable",
-                    "enableExport": true
-                  }
+            }
+        },
+        "resources": "resources.json",
+        "sourceTemplate": {
+            "id": "@sap/generator-fiori:lrop",
+            "version": "1.7.5",
+            "toolsId": "14e5ba92-7ef6-40ce-9b6b-9eff19d0c9a2"
+        },
+        "crossNavigation": {
+            "inbounds": {
+                "travel-alp-inbound": {
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    },
+                    "semanticObject": "booking",
+                    "action": "process",
+                    "title": "Analyze Travels",
+                    "subTitle": "Analyze travels",
+                    "icon": "sap-icon://flight"
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "sap-icon://flight",
+            "favIcon": "sap-icon://flight",
+            "phone": "sap-icon://flight",
+            "phone@2": "sap-icon://flight",
+            "tablet": "sap-icon://flight",
+            "tablet@2": "sap-icon://flight"
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.102.1",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.ushell": {},
+                "sap.fe.templates": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "sap.fe.cap.travel_analytics.i18n.i18n"
+                }
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            }
+        },
+        "resources": {
+            "css": []
+        },
+        "routing": {
+            "config": {},
+            "routes": [
+                {
+                    "pattern": ":?query:",
+                    "name": "BookingsList",
+                    "target": "BookingsList"
                 },
-                "@com.sap.vocabularies.UI.v1.SelectionFields": {
-                  "layout": "CompactVisual",
-                  "initialLayout": "Visual",
-                  "filterFields": {
-                    "status": {
-                      "label": "Status",
-                      "availability": "Default",
-                      "visualFilter": {
-                        "valueList": "com.sap.vocabularies.Common.v1.ValueList#vlStatus"
-                      }
-                    },
-                    "airline": {
-                      "label": "Status",
-                      "availability": "Default",
-                      "visualFilter": {
-                        "valueList": "com.sap.vocabularies.Common.v1.ValueList#vlAirline"
-                      }
-                    },
-                    "FlightDate": {
-                      "label": "Flight Date",
-                      "availability": "Default",
-                      "visualFilter": {
-                        "valueList": "com.sap.vocabularies.Common.v1.ValueList#vlFlightDate"
-                      }
+                {
+                    "pattern": "Bookings({key}):?query:",
+                    "name": "BookingsObjectPage",
+                    "target": "BookingsObjectPage"
+                }
+            ],
+            "targets": {
+                "BookingsList": {
+                    "type": "Component",
+                    "id": "BookingsList",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "entitySet": "Bookings",
+                            "variantManagement": "Page",
+                            "initialLoad": true,
+                            "navigation": {
+                                "Bookings": {
+                                    "detail": {
+                                        "route": "BookingsObjectPage"
+                                    }
+                                }
+                            },
+                            "views": {
+                                "paths": [
+                                    {
+                                        "primary": [
+                                            {
+                                                "annotationPath": "@com.sap.vocabularies.UI.v1.PresentationVariant"
+                                            }
+                                        ],
+                                        "secondary": [
+                                            {
+                                                "annotationPath": "@com.sap.vocabularies.UI.v1.PresentationVariant"
+                                            }
+                                        ],
+                                        "defaultPath": "both"
+                                    }
+                                ]
+                            },
+                            "controlConfiguration": {
+                                "@com.sap.vocabularies.UI.v1.LineItem": {
+                                    "tableSettings": {
+                                        "type": "AnalyticalTable",
+                                        "enableExport": true
+                                    }
+                                },
+                                "@com.sap.vocabularies.UI.v1.SelectionFields": {
+                                    "layout": "CompactVisual",
+                                    "initialLayout": "Visual",
+                                    "filterFields": {
+                                        "status": {
+                                            "label": "Status",
+                                            "availability": "Default",
+                                            "visualFilter": {
+                                                "valueList": "com.sap.vocabularies.Common.v1.ValueList#vlStatus"
+                                            }
+                                        },
+                                        "airline": {
+                                            "label": "Status",
+                                            "availability": "Default",
+                                            "visualFilter": {
+                                                "valueList": "com.sap.vocabularies.Common.v1.ValueList#vlAirline"
+                                            }
+                                        },
+                                        "FlightDate": {
+                                            "label": "Flight Date",
+                                            "availability": "Default",
+                                            "visualFilter": {
+                                                "valueList": "com.sap.vocabularies.Common.v1.ValueList#vlFlightDate"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "keyPerformanceIndicators": {
+                                "KPI1": {
+                                    "entitySet": "Bookings",
+                                    "qualifier": "myKPI1"
+                                }
+                            }
+                        }
                     }
-                  }
+                },
+                "BookingsObjectPage": {
+                    "type": "Component",
+                    "id": "BookingsObjectPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "entitySet": "Bookings",
+                            "editableHeaderContent": false
+                        }
+                    }
                 }
-              },
-              "keyPerformanceIndicators": {
-                "KPI1": {
-                  "entitySet": "Bookings",
-                  "qualifier": "myKPI1"
-                }
-              }
             }
-          }
-        },
-        "BookingsObjectPage": {
-          "type": "Component",
-          "id": "BookingsObjectPage",
-          "name": "sap.fe.templates.ObjectPage",
-          "options": {
-            "settings": {
-              "editableHeaderContent": false,
-              "entitySet": "Bookings"
-            }
-          }
         }
-      }
+    },
+    "sap.fiori": {
+        "registrationIds": [],
+        "archeType": "transactional"
+    },
+    "sap.cloud": {
+        "public": true,
+        "service": "sap.fe.cap.sflight"
     }
-  },
-  "sap.fiori": {
-    "registrationIds": [],
-    "archeType": "transactional"
-  }
 }

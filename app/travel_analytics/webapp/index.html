@@ -1,36 +1,38 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>SFlight Analytics</title>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
     <style>
-        html, body, body > div, #container, #container-uiarea {
-            height: 100%;
-        }
+      html,
+      body,
+      body > div,
+      #container,
+      #container-uiarea {
+        height: 100%;
+      }
     </style>
     <script
-        id="sap-ui-bootstrap"
-        src="https://ui5.sap.com/resources/sap-ui-core.js"
-        data-sap-ui-theme="sap_horizon"
-        data-sap-ui-resourceroots='{
-            "sap.fe.cap.travel-analytics": "./"
-        }'
-        data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
-        data-sap-ui-compatVersion="edge"
-        data-sap-ui-async="true"
-        data-sap-ui-frameOptions="trusted"
-        data-sap-ui-libs="sap.m, sap.fe.core"
+      id="sap-ui-bootstrap"
+      src="https://ui5.sap.com/resources/sap-ui-core.js"
+      data-sap-ui-theme="sap_horizon"
+      data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+      data-sap-ui-resourceroots='{ "sap.fe.cap.travel_analytics": "./" }'
+      data-sap-ui-compatVersion="edge"
+      data-sap-ui-async="true"
+      data-sap-ui-frameOptions="trusted"
+      data-sap-ui-libs="sap.m, sap.fe.core"
     ></script>
-</head>
-<body class="sapUiBody sapUiSizeCompact" id="content">
+  </head>
+  <body class="sapUiBody sapUiSizeCompact" id="content">
     <div
-        data-sap-ui-component
-        data-name="sap.fe.cap.travel-analytics"
-        data-id="container"
-        data-settings='{"id" : "sap.fe.cap.travel-analytics"}'
-        data-handle-validation="true"
+      data-sap-ui-component
+      data-name="sap.fe.cap.travel_analytics"
+      data-id="container"
+      data-settings='{"id" : "sap.fe.cap.travel_analytics"}'
+      data-handle-validation="true"
     ></div>
-</body>
+  </body>
 </html>
