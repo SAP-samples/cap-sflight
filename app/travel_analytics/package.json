@@ -21,7 +21,7 @@
   "devDependencies": {
     "@ui5/cli": "^2.14.14",
     "ui5-middleware-simpleproxy": "^0.9.1",
-    "ui5-task-zipper": "^0.6.1"
+    "ui5-task-zipper": "^0.7.0"
   },
   "ui5": {
     "dependencies": [
