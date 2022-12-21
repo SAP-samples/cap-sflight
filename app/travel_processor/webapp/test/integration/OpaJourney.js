@@ -39,7 +39,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
         // Click on Create button
         When.onTheMainPage.onTable().iExecuteAction("Create");
         Then.onTheDetailPage.iSeeObjectPageInEditMode();
-        When.onTheDetailPage.iOpenSectionWithTitle("General Information");
+        When.onTheDetailPage.iGoToSection("General Information");
 
         // Value help Agency ID
         When.onTheDetailPage
@@ -47,8 +47,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           .iOpenValueHelp({ property: "to_Agency_AgencyID" });
         When.onTheDetailPage
           .onValueHelpDialog()
-          .iSelectRows({ 0: "070006" })
-          .and.iConfirm();
+          .iSelectRows({ 0: "070006" });
 
         // Value help Customer ID
         When.onTheDetailPage
@@ -56,8 +55,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           .iOpenValueHelp({ property: "to_Customer_CustomerID" });
         When.onTheDetailPage
           .onValueHelpDialog()
-          .iSelectRows({ 0: "000001" })
-          .and.iConfirm();
+          .iSelectRows({ 0: "000001" });
 
         // Starting date
         When.onTheDetailPage
@@ -103,9 +101,8 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           .iCheckDelete({ visible: true, enabled: true });
         When.onTheMainPage
           .onTable()
-          .iExecuteDelete()
-          .and.when.onDialog()
-          .iConfirm();
+          .iExecuteDelete();
+        When.onTheMainPage.onDialog().iConfirm();
         Then.onTheMainPage
           .onTable()
           .iCheckDelete({ visible: true, enabled: false });
@@ -203,7 +200,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           Then.onTheDetailPage
           .onForm({ section: "Travel", fieldGroup: "DateData" })
           .iCheckField({ property: "BeginDate" },
-                        { value: "Sep 1, 2022" },
+                        { value: "May 25, 2023" },
                         { editable: false });
 
           // Booking fee
@@ -281,7 +278,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           Then.onTheDetailPage
           .onForm({ section: "Travel", fieldGroup: "DateData" })
           .iCheckField({ property: "BeginDate" },
-                        { value: "Sep 1, 2022" },
+                        { value: "May 25, 2023" },
                         { editable: true });
 
           // Booking fee
