@@ -27,6 +27,7 @@ modules:
         properties:
           srv-url: ${default-url}
     build-parameters:
+      builder: npm-ci
       ignore: ["node_modules/"]
 
   # -------------------- SIDECAR MODULE ------------------------
@@ -59,6 +60,10 @@ modules:
           artifacts:
             - travel-processor.zip
           target-path: resources/
+        - name: sflight-app-travel-analytics
+          artifacts:
+            - travel-analytics.zip
+          target-path: resources/
 
   # ------------- APPLICATION: TRAVEL PROCESSOR ----------------
   - name: sflight-app-travel-processor
@@ -69,7 +74,20 @@ modules:
       build-result: dist
       builder: custom
       commands:
-        - npm install
+        - npm ci
+        - npm run build
+      supported-platforms: []
+
+  # ------------- APPLICATION: TRAVEL ANALYTICS ----------------
+  - name: sflight-app-travel-analytics
+  # ------------------------------------------------------------
+    type: html5
+    path: app/travel_analytics
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
         - npm run build
       supported-platforms: []
 
@@ -126,11 +144,19 @@ resources:
       service-plan: application
       path: ./app/travel_processor/xs-security.json
       config:
-        xsappname: sflight
+        xsappname: sflight-${space}
         tenant-mode: dedicated
         role-collections:
-          - name: 'admin-${space}'
-            description: Manage Travels
+          - name: 'sflight-reviewer-${space}'
+            description: Review travels
+            role-template-references:
+              - $XSAPPNAME.reviewer
+          - name: 'sflight-processor-${space}'
+            description: Process travels
+            role-template-references:
+              - $XSAPPNAME.processor
+          - name: 'sflight-admin-${space}'
+            description: Manage travels
             role-template-references:
               - $XSAPPNAME.admin
 
@@ -173,3 +199,4 @@ resources:
                 ProxyType: Internet
                 HTML5.ForwardAuthToken: true
                 HTML5.DynamicDestination: true
+

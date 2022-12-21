@@ -7,6 +7,7 @@ schema.sql
 gen/
 node_modules/
 target/
+.reloadtrigger
 
 # Web IDE, App Studio
 .che/
@@ -40,3 +41,15 @@ dist/
 .classpath
 # .vscode/*
 # IMPORTANT: Do not exclude .vscode please!
+
+# Local dev
+.env
+.values.yaml
+.cdsrc-private.json
+
+# Exclude Helm chart for this example
+/chart
+
+# Experimental
+xxx_*
+xxx/*
