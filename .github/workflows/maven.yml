@@ -34,3 +34,80 @@ jobs:
       run: |
         npm ci
         npm run test:java -- --ci
+
+  e2ekymatest:
+    name: End to End Kyma Test
+    if: ${{ github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'deploy-kyma') }}  # run only if label is set
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setting up environments
+        run: |
+          npm i -g @sap/cds-dk
+          sudo add-apt-repository ppa:cncf-buildpacks/pack-cli
+          sudo apt-get update
+          sudo apt-get install pack-cli
+          mkdir ${HOME}/kyma-binaries
+          export PATH=${HOME}/kyma-binaries/:$PATH
+          mkdir ${HOME}/.kube
+          echo "${{secrets.KUBE_CONFIG}}" | base64 --decode > ${HOME}/.kube/config
+          (curl -sSL "https://github.com/buildpacks/pack/releases/download/v0.23.0/pack-v0.23.0-linux.tgz" | tar -C ${HOME}/kyma-binaries/ --no-same-owner -xzv pack)
+          wget "https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz"
+          tar -xvzf helm-v3.8.0-linux-amd64.tar.gz
+          mv linux-amd64/helm ${HOME}/kyma-binaries/helm
+          curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+          chmod +x ./kubectl
+          mv ./kubectl ${HOME}/kyma-binaries/kubectl
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ${{secrets.IMAGEREGISTRY}}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: End to End testing
+        run: |
+          releaseName=sflightjava
+          deploymentName=srv
+          releaseNamespace=e2e-kyma-test
+          endpoint=processor/Travel
+          appPrefix=${releaseName}-${deploymentName}-${releaseNamespace}
+          cds add helm --force
+          cds add helm:hana_deployer
+          cds add helm:xsuaa
+          hana_image=${{secrets.IMAGEREGISTRY}}/e2e/github/sflight-hana-deployer
+          srv_image=${{secrets.IMAGEREGISTRY}}/e2e/github/sflight-srv
+          pack build ${hana_image} --path db --buildpack gcr.io/paketo-buildpacks/nodejs --builder paketobuildpacks/builder:base
+          mvn -B package
+          pack build ${srv_image} --path srv/target/*-exec.jar --buildpack gcr.io/paketo-buildpacks/sap-machine --buildpack gcr.io/paketo-buildpacks/java --builder paketobuildpacks/builder:base --env SPRING_PROFILES_ACTIVE=cloud
+          cp ./chart/xs-security.json xs-security.json.tmp && jq '. |= . + {"authorities":["$XSAPPNAME.admin"]}' xs-security.json.tmp >./chart/xs-security.json && rm xs-security.json.tmp
+          docker push ${hana_image}
+          docker push ${srv_image}
+          helm install ${releaseName} ./chart --namespace ${releaseNamespace} --set global.imagePullSecret.name=${{secrets.IMAGEPULLSECRET}} --set global.domain=${{secrets.DOMAIN}}  --set srv.bindings.db.fromSecret=sflight-java-github-db --set srv.image.repository=${srv_image} --set hana_deployer.image.repository=${hana_image} --set hana_deployer.bindings.hana.fromSecret=sflight-java-github-db --set xsuaa.parameters.xsappname=sflightjava-e2eKyma-test
+          kubectl rollout status deployment ${releaseName}-${deploymentName} --timeout=3m
+          curl --max-time 10 --retry 5 --retry-delay 3 -f -LI -k https://${appPrefix}.${{secrets.DOMAIN}}
+          xsuaaSecret=$(echo $(kubectl get secret ${releaseName}-${deploymentName}-auth -o json))
+          clientID=$(jq -r '.data.clientid | @base64d' <<< "$xsuaaSecret")
+          clientSecret=$(jq -r '.data.clientsecret | @base64d' <<< "$xsuaaSecret")
+          url=$(jq -r '.data.url | @base64d' <<< "$xsuaaSecret")
+          appPrefix=${releaseName}-${deploymentName}-${releaseNamespace}
+          appUrl=https://${appPrefix}.${{secrets.DOMAIN}}
+          auth=$(printf "%s:%s" "$clientID" "$clientSecret" | base64 -w0)
+          finalUrl="${url}/oauth/token?grant_type=client_credentials&response_type=token"
+          response=$(curl --location --request GET "${finalUrl}" --header "Authorization: Basic ${auth}")
+          accessToken=$(jq -r '.access_token' <<< "$response")
+          status=$(curl -I --location --request GET "${appUrl}/${endpoint}" --header "Authorization: Bearer ${accessToken}" -o /dev/null -w '%{http_code}\n' -s)
+          if [ $status -eq "200" ]; 
+          then
+                  exit 0
+          else
+                  exit 1
+          fi
+      - name: Helm Uninstall test
+        if: always()
+        run: |
+          releaseNamespace=e2e-kyma-test
+          helm uninstall sflightjava --namespace ${releaseNamespace}
+          
+        
