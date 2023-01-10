@@ -1,12 +1,11 @@
 /* global QUnit */
-/*eslint no-unused-vars: 0*/
 sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
   "use strict";
 
-  var Journey = {
+  const Journey = {
     start: function () {
       QUnit.module("Sample journey");
-      opaTest("#000: Start", function (Given, When, Then) {
+      opaTest("#000: Start", function (Given) {
         Given.iResetTestData().and.iStartMyApp("", { "sap-language": "EN" });
       });
       return Journey;
@@ -58,14 +57,19 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           .iSelectRows({ 0: "000001" });
 
         // Starting date
+        const dateFormat = new Intl.DateTimeFormat("en", {month: "short", day: "numeric", year: "numeric"})
+        const startDate = new Date()
+        startDate.setUTCDate(startDate.getUTCDate() + 1)
         When.onTheDetailPage
           .onForm({ section: "Travel", fieldGroup: "DateData" })
-          .iChangeField({ property: "BeginDate" }, "Jan 1, 2023");
+          .iChangeField({ property: "BeginDate" }, dateFormat.format(startDate));
 
         // End date
+        const endDate = new Date()
+        endDate.setUTCDate(startDate.getUTCDate() + 7)
         When.onTheDetailPage
           .onForm({ section: "Travel", fieldGroup: "DateData" })
-          .iChangeField({ property: "EndDate" }, "Dec 31, 2024");
+          .iChangeField({ property: "EndDate" }, dateFormat.format(endDate));
 
         // Booking fee
         When.onTheDetailPage
@@ -333,7 +337,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
       return Journey;
     },
     end: function () {
-      opaTest("#999: Tear down", function (Given, When, Then) {
+      opaTest("#999: Tear down", function (Given) {
         Given.iTearDownMyApp();
       });
       return Journey;
