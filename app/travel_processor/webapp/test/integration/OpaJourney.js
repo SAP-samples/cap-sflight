@@ -65,8 +65,8 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           .iChangeField({ property: "BeginDate" }, dateFormat.format(startDate));
 
         // End date
-        const endDate = new Date()
-        endDate.setUTCDate(startDate.getUTCDate() + 7)
+        const endDate = new Date(startDate)
+        endDate.setUTCDate(endDate.getUTCDate() + 7)
         When.onTheDetailPage
           .onForm({ section: "Travel", fieldGroup: "DateData" })
           .iChangeField({ property: "EndDate" }, dateFormat.format(endDate));
