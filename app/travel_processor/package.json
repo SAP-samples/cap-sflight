@@ -19,7 +19,7 @@
     "sapui5"
   ],
   "devDependencies": {
-    "@ui5/cli": "^2.14.17",
+    "@ui5/cli": "^3.0.0",
     "cross-spawn": "^7.0.3",
     "http-proxy": "^1.18.1",
     "karma": "^6.4.1",
