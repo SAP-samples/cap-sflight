@@ -19,7 +19,7 @@
     "sapui5"
   ],
   "devDependencies": {
-    "@ui5/cli": "^2.14.17",
+    "@ui5/cli": "^3.0.0",
     "ui5-middleware-simpleproxy": "^0.9.2",
     "ui5-task-zipper": "^0.7.1"
   },
