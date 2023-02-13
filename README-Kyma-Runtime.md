@@ -215,7 +215,7 @@ docker push $YOUR_CONTAINER_REGISTRY/sflight-html5-deployer
 ## Deployment
 
 ```bash
-helm install sflight ./chart -f deployment/kyma/values.yaml
+helm install sflight ./chart
 ```
 
 ## Access the UI
