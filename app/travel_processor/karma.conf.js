@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer"),
-  cap = require("../karma-server-middleware");
+  cap = require("../../karma-cap-middleware");
 
 process.env.CHROME_BIN = puppeteer.executablePath();
 
