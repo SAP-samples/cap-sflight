@@ -2,7 +2,7 @@ sap.ui.define(["sap/fe/test/ListReport"], function (ListReport) {
   "use strict";
 
   // OPTIONAL
-  var AdditionalCustomListReportDefinition = {
+  const AdditionalCustomListReportDefinition = {
     actions: {},
     assertions: {},
   };
