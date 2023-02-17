@@ -15,7 +15,7 @@
 
     <!-- DEPENDENCIES VERSION -->
     <jdk.version>8</jdk.version>
-    <cds.services.version>1.28.0</cds.services.version>
+    <cds.services.version>1.31.1</cds.services.version>
     <spring.boot.version>2.7.5</spring.boot.version>
 
     <cdsdk.version>^6</cdsdk.version>
@@ -100,7 +100,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.1</version>
         <executions>
           <execution>
             <id>Project Structure Checks</id>

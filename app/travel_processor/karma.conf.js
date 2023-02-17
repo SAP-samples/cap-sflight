@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer"),
-  cap = require("./karma/cap-server");
+  cap = require("../../karma-cap-middleware");
 
 process.env.CHROME_BIN = puppeteer.executablePath();
 
@@ -21,13 +21,13 @@ module.exports = async (config) => {
       "/base/webapp/processor": "/processor",
     },
     ui5: {
-      url: "https://ui5.sap.com"
+      failOnEmptyTestPage: true,
     },
     plugins: [...config.plugins, await capMiddleware],
     middleware: ["cap-proxy"],
     browsers: config.ci ? ["ChromeHeadless"] : ["Chrome"],
     singleRun: config.ci || config.singleRun || false,
     browserNoActivityTimeout: 180000,
-	browserDisconnectTimeout: 120000  
+    browserDisconnectTimeout: 120000,
   });
 };

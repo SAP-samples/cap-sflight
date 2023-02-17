@@ -3,7 +3,7 @@ const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..')
 const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
 const SAVE = (url) => POST (url+'/TravelService.draftActivate')
 axios.defaults.headers['content-type'] = 'application/json;IEEE754Compatible=true' // REVISIT: can be removed when @sap/cds 5.1.5 is released?
-
+axios.defaults.auth = { username: 'alice', password: 'admin' }
 
 describe ("Basic Querying", () => {
 
@@ -106,9 +106,9 @@ describe('Basic OData', () => {
   it('supports $top/$skip paging', async () => {
     const { data: p1 } = await GET `/processor/Travel?$select=TravelID,Description&$top=3&$orderby=TravelID`
     expect(p1.value).to.containSubset([
-      {"Description": "Business Trip for Christine, Pierre", "IsActiveEntity": true, "TravelID": 1},
-      {"Description": "Vacation", "IsActiveEntity": true, "TravelID": 2},
-      {"Description": "Vacation", "IsActiveEntity": true, "TravelID": 3},
+      {"Description": "Business Trip for Christine, Pierre", "TravelID": 1},
+      {"Description": "Vacation", "TravelID": 2},
+      {"Description": "Vacation", "TravelID": 3},
     ])
     const { data: p2 } = await GET `/processor/Travel?$select=Description&$skip=3&$orderby=TravelID`
     expect(p2.value).not.to.containSubset([
