@@ -18,7 +18,7 @@ module.exports = async (config) => {
     frameworks: ["ui5"],
     logLevel: "INFO", // log errors only. Change to "DEBUG" for more verbosity
     proxies: {
-      "/base/webapp/processor": "/processor",
+      "/base/webapp/analytics": "/analytics",
     },
     ui5: {
       failOnEmptyTestPage: true,
