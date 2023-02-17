@@ -1,13 +1,14 @@
 {
   "name": "travel-processor",
+  "version": "1.0.0",
   "private": true,
   "main": "webapp/index.html",
   "engines": {
-    "node": ">=14",
-    "npm": ">=7"
+    "node": ">=16",
+    "npm": ">=8"
   },
   "scripts": {
-    "build": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateManifestBundle generateCachebusterInfo",
+    "build": "ui5 build preload --clean-dest --include-task=generateCachebusterInfo",
     "start": "ui5 serve",
     "test": "npm run test:node && npm run test:java",
     "test:java": "karma start --server=java",
@@ -19,15 +20,13 @@
     "sapui5"
   ],
   "devDependencies": {
-    "@ui5/cli": "^2.14.17",
-    "cross-spawn": "^7.0.3",
-    "http-proxy": "^1.18.1",
+    "@ui5/cli": "^3.0.1",
     "karma": "^6.4.1",
     "karma-chrome-launcher": "^3.1.1",
-    "karma-ui5": "^2.4.0",
-    "puppeteer": "^19.5.0",
-    "ui5-middleware-simpleproxy": "^0.9.2",
-    "ui5-task-zipper": "^0.7.1"
+    "karma-ui5": "^3.0.1",
+    "puppeteer": "^19.7.1",
+    "ui5-middleware-simpleproxy": "^0.9.3",
+    "ui5-task-zipper": "^0.7.3"
   },
   "ui5": {
     "dependencies": [

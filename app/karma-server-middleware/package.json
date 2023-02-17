@@ -1,0 +1,16 @@
+{
+  "name": "karma-server-middleware",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A karma middleware that allows to run integration tests on the different CAP stacks",
+  "main": "index.js",
+  "engines": {
+    "node": ">=16",
+    "npm": ">=8"
+  },
+  "scripts": {},
+  "dependencies": {
+    "cross-spawn": "^7.0.3",
+    "http-proxy": "^1.18.1"
+  }
+}

@@ -18,11 +18,10 @@ module.exports = async (config) => {
     frameworks: ["ui5"],
     logLevel: "INFO", // log errors only. Change to "DEBUG" for more verbosity
     proxies: {
-      "/base/webapp/processor": "/processor",
+      "/base/webapp/analytics": "/analytics",
     },
     ui5: {
       url: "https://ui5.sap.com",
-      failOnEmptyTestPage: true,
     },
     plugins: [...config.plugins, await capMiddleware],
     middleware: ["cap-proxy"],

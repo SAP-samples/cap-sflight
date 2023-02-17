@@ -36,6 +36,12 @@ jobs:
         npm ci
         npm run test:node -- --ci
 
+    - name: Run integration tests - Analyze Bookings
+      working-directory: ./app/travel_analytics
+      run: |
+        npm ci
+        npm run test:node -- --ci
+
   deployment:
     name: Deploy
     if: ${{ github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'deploy') }}  # run only if label is set
