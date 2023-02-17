@@ -21,7 +21,6 @@ module.exports = async (config) => {
       "/base/webapp/analytics": "/analytics",
     },
     ui5: {
-      url: "https://ui5.sap.com",
       failOnEmptyTestPage: true,
     },
     plugins: [...config.plugins, await capMiddleware],
