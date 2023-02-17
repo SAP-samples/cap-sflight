@@ -30,6 +30,10 @@ jobs:
     - run: npm run test
     - run: npm run test:mocha
 
+    - name: Prepare for integration tests
+      working-directory: ./app/karma-server-middleware
+      run: npm ci
+
     - name: Run integration tests - Manage Travels
       working-directory: ./app/travel_processor
       run: |

@@ -29,6 +29,10 @@ jobs:
     - name: Build with Maven
       run: mvn -B clean verify
 
+    - name: Prepare for integration tests
+      working-directory: ./app/karma-server-middleware
+      run: npm ci
+
     - name: Run integration tests - Manage Travels
       working-directory: ./app/travel_processor
       run: |
