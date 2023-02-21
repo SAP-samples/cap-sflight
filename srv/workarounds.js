@@ -44,26 +44,34 @@ cds.extend (cds.Request) .with (class {
   }
 
   /**
-   * This experimentally adds a req._target property which can be used as
+   * This experimentally adds a req.subject property which can be used as
    * arguments to SELECT.from or UPDATE to read the single instance of
    * req.target referred to by the incomming request. It also transparently
    * points to .drafts persistence, if in a draft scenario.
+   *
+   * req.data // inbound data to be written to req.target / req.subject
+   * req.target       //> CSN def
+   * req.entity      //> CSN def.name
+   * req.subject    //> {ref} to 'instance' of req.target, which can be used as follows:
+   *   SELECT.one.from(req.subject)   //> returns single
+   *   SELECT.from(req.subject)      //> returns array
+   *   UPDATE(req.subject)          //> updates one or many
+   *   DELETE(req.subject)         //> deletes one or many
+   *   NOT: INSERT(req.subject)
    */
-   get _target() {
-    let {target} = this, [key] = this.params
-    if (key && this.path.indexOf('/') < 0) { //> .../draftActivate
+   get subject() {
+    let {target} = this, key = {...this.params[0]} // REVISIT: support n>1 paths
+    if (key && this.path.indexOf('/') < 0) { //> .../<action>, e.g. draftActivate
       // deviate to draft?
-      const {IsActiveEntity} = key
-      if (IsActiveEntity !== undefined) Object.defineProperty (key,'IsActiveEntity',{value:IsActiveEntity, enumerable:false}) //> skip as key in cqn
-      if (IsActiveEntity === 'false') target = target.drafts // REVISIT: Why is IsActiveEntity a string, and not a boolean?
-      // prepare target query
-      const q = SELECT.one.from(target,key)
-      const {from:{ref},where} = q.SELECT
-      if (cds.version < '5.6.0')
-        ref[ref.length-1] = { id: ref[ref.length-1], where, cardinality:{max:1} }
-      target = {ref}
+      if (key.IsActiveEntity !== undefined) {
+        if (key.IsActiveEntity === false) target = target.drafts
+        delete key.IsActiveEntity // skip IsActiveEntity from key
+      }
+      // Resolve subject from target query
+      const {SELECT:{from:{ref}}} = SELECT.from(target,key)
+      return super.subject = {ref}
     }
-    return super._target = target
+    else return super.subject = target // REVISIT: rather have subject be undefined in that case?
   }
 
 })

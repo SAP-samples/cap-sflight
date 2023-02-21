@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>OPA5</title>
+    <title>Integration tests</title>
     <meta charset="UTF-8" content="IE=edge" http-equiv="X-UA-Compatible" />
     <meta content="text/html;charset=UTF-8" http-equiv="Content-Type" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -12,11 +12,10 @@
       data-sap-ui-animation="false"
       data-sap-ui-compatVersion="edge"
       data-sap-ui-resourceroots='{
-        "sap.fe.cap.travel": "../../",
-        "test.integration": "."
-      }'
-      data-sap-ui-theme="sap_fiori_3"
-      data-sap-ui-async="true"
+                "sap.fe.cap.travel_analytics": "../../"
+            }'
+      data-sap-ui-theme="sap_horizon"
+      data-sap-ui-libs="sap.m, sap.fe.core"
     ></script>
 
     <link
@@ -28,17 +27,8 @@
     <script src="https://ui5.sap.com/resources/sap/ui/thirdparty/qunit-2.js"></script>
     <script src="https://ui5.sap.com/resources/sap/ui/qunit/qunit-junit.js"></script>
 
-    <script>
-      /* global QUnit */
-      QUnit.config.autostart = true;
-
-      sap.ui.getCore().attachInit(function () {
-        "use strict";
-        sap.ui.require(["test/integration/Opa.qunit"]);
-      });
-    </script>
+    <script src="Opa.qunit.js"></script>
   </head>
-
   <body>
     <div id="qunit"></div>
     <div id="qunit-fixture"></div>

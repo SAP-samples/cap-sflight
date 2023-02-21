@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        java-version: [11]
+        java-version: [8,11,17]
 
     steps:
     - uses: actions/checkout@v2
@@ -33,4 +33,10 @@ jobs:
       working-directory: ./app/travel_processor
       run: |
         npm ci
-        npm test -- --ci --server=java
+        npm run test:java -- --ci
+
+    - name: Run integration tests - Analyze Bookings
+      working-directory: ./app/travel_analytics
+      run: |
+        npm ci
+        npm run test:java -- --ci

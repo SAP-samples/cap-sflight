@@ -6,10 +6,16 @@ management:
 ---
 spring:
     profiles: default
-    resources:
-        static-locations: "file:./app"
+    web.resources.static-locations: "file:./app"
 cds:
     security.mock.users:
+    - name: rose
+    - name: martha
+      roles:
+        - reviewer
+    - name: amy
+      roles:
+        - processor
     - name: admin
       password: admin
       roles:
@@ -25,3 +31,8 @@ server:
 ---
 spring:
     profiles: cloud
+
+cds:
+    odata-v4:
+        endpoint:
+            path: "/"
