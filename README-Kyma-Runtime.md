@@ -25,7 +25,7 @@
 - Container Registry
 - Command Line Tools: `kubectl`, `kubectl-oidc_login`, `pack`, `docker`, `helm`, `cf`
 - Logged into Kyma Runtime (with `kubectl` CLI), Cloud Foundry space (with `cf` CLI) and Container Registry (with `docker login`)
-- `@sap/cds-dk` >= 6.0.1
+- `@sap/cds-dk` >= 6.6.0
 
 ## Add Deployment Files
 
@@ -215,7 +215,7 @@ docker push $YOUR_CONTAINER_REGISTRY/sflight-html5-deployer
 ## Deployment
 
 ```bash
-helm install sflight ./chart
+helm install sflight ./chart --set-file xsuaa.jsonParameters=xs-security.json
 ```
 
 ## Access the UI
