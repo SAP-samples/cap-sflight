@@ -60,11 +60,6 @@
               "roles": [
                 "processor"
               ]
-            },
-            "me": {
-              "roles": [
-                "processor"
-              ]
             }
           }
         }
