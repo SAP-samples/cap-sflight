@@ -57,6 +57,7 @@
               ]
             },
             "amy": {
+              "password": "amy",
               "roles": [
                 "processor"
               ]
