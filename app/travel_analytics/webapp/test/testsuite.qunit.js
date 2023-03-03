@@ -1,12 +1,14 @@
 /* global window, parent, location */
-window.suite = function() {
-    'use strict';
+window.suite = function () {
+  "use strict";
 
-    // eslint-disable-next-line
-    var oSuite = new parent.jsUnitTestSuite(),
-    
-    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
+  // eslint-disable-next-line
+  const oSuite = new parent.jsUnitTestSuite(),
+    sContextPath = location.pathname.substring(
+      0,
+      location.pathname.lastIndexOf("/") + 1
+    );
+  oSuite.addTestPage(sContextPath + "integration/Opa.qunit.html");
 
-    return oSuite;
+  return oSuite;
 };
