@@ -6,27 +6,11 @@ annotate service.Bookings with @(
   Common.SemanticKey : [ID],
 ) {
   ID    @ID : 'ID';
-  price /*@Analytics.Measure: true*/ @Aggregation.default: #SUM;
-  cuco  /*@Analytics.Measure: true*/ @Aggregation.default: #MAX;
+  price @Aggregation.default: #SUM;
+  cuco  @Aggregation.default: #MAX;
 };
 
 annotate service.Bookings with @Aggregation.ApplySupported : {
-  // Transformations : [
-  //   'aggregate',
-  //   'topcount',
-  //   'bottomcount',
-  //   'identity',
-  //   'concat',
-  //   'groupby',
-  //   'filter',
-  //   'expand',
-  //   'top',
-  //   'skip',
-  //   'orderby',
-  //   'search'
-  // ],
-  //Rollup               : #None,
-  //PropertyRestrictions : true,
   GroupableProperties  : [
     TravelID,
     BookingID,
@@ -44,29 +28,30 @@ annotate service.Bookings with @Aggregation.ApplySupported : {
   ],
 };
 
-annotate service.Bookings with @(Analytics.AggregatedProperty #countBookings :
- {
+annotate service.Bookings with @(
+  Analytics.AggregatedProperty #countBookings :
+  {
     Name                 : 'countBookings',
     AggregationMethod    : 'countdistinct',
     AggregatableProperty : ID,
     @Common.Label        : '{i18n>Bookings}'
   },
   Analytics.AggregatedProperty #minPrice :
-    {
+  {
     Name                 : 'minPrice',
     AggregationMethod    : 'min',
     AggregatableProperty : price,
     @Common.Label        : '{i18n>MinPrice}'
   },
   Analytics.AggregatedProperty #maxPrice :
-    {
+  {
     Name                 : 'maxPrice',
     AggregationMethod    : 'max',
     AggregatableProperty : price,
     @Common.Label        : '{i18n>MaxPrice}'
   },
-   Analytics.AggregatedProperty #avgPrice :
-   {
+  Analytics.AggregatedProperty #avgPrice :
+  {
     Name                 : 'avgPrice',
     AggregationMethod    : 'average',
     AggregatableProperty : price,
@@ -81,37 +66,6 @@ annotate service.Bookings with @(Analytics.AggregatedProperty #countBookings :
   //   @Common.Label        : '{i18n>TotalPrice}'
   // }
 );
-
-// annotate service.Bookings with @Analytics.AggregatedProperties : [
-//   {
-//     Name                 : 'minPrice',
-//     AggregationMethod    : 'min',
-//     AggregatableProperty : price,
-//     @Common.Label        : '{i18n>MinPrice}'
-//   }, {
-//     Name                 : 'maxPrice',
-//     AggregationMethod    : 'max',
-//     AggregatableProperty : price,
-//     @Common.Label        : '{i18n>MaxPrice}'
-//   }, {
-//     Name                 : 'avgPrice',
-//     AggregationMethod    : 'average',
-//     AggregatableProperty : price,
-//     @Common.Label        : '{i18n>AvgPrice}'
-//   },
-//    {
-//     Name                 : 'sumPrice',
-//     AggregationMethod    : 'sum',
-//     AggregatableProperty : price,
-//     @Common.Label        : '{i18n>TotalPrice}'
-//   },
-//   {
-//     Name                 : 'countBookings',
-//     AggregationMethod    : 'countdistinct',
-//     AggregatableProperty : ID,
-//     @Common.Label        : '{i18n>Bookings}'
-//   }
-// ];
 
 annotate service.Bookings with @UI.LineItem : [
   {
@@ -150,7 +104,6 @@ annotate service.Bookings with @UI.LineItem : [
 annotate service.Bookings with @UI.Chart : {
   Title               : '{i18n>Bookings}',
   ChartType           : #Column,
-  //Measures            : [minPrice, avgPrice, maxPrice],   // replaced by DynamicMeasures
   DynamicMeasures : [
     '@Analytics.AggregatedProperty#minPrice',
     '@Analytics.AggregatedProperty#maxPrice',
@@ -158,7 +111,6 @@ annotate service.Bookings with @UI.Chart : {
   ],
   Dimensions          : [airline],
   MeasureAttributes   : [{
-    //Measure : minPrice,   // replaced by DynamicMeasure
     DynamicMeasure : '@Analytics.AggregatedProperty#minPrice',
     Role    : #Axis1
   }],
@@ -187,19 +139,16 @@ annotate service.Bookings with @UI.PresentationVariant : {
 //
 
 annotate service.Bookings with @(
-
   UI.PresentationVariant #pvAirline : {
     Visualizations : ['@UI.Chart#chartAirline']
   },
-    UI.Chart #chartAirline : {
+  UI.Chart #chartAirline : {
     ChartType           : #Bar,
-    //Measures            : [countBookings],   // replaced by DynamicMeasures
     DynamicMeasures : [
       '@Analytics.AggregatedProperty#countBookings',
     ],
     Dimensions          : [airline],
     MeasureAttributes   : [{
-      //Measure   : countBookings,   // replaced by DynamicMeasure
       DynamicMeasure : '@Analytics.AggregatedProperty#countBookings',
       Role      : #Axis1,
     }],
@@ -210,9 +159,7 @@ annotate service.Bookings with @(
   }
 ) {
   airline @Common.ValueList #vlAirline : {
-    //Label                        : 'Airline',
     CollectionPath               : 'Bookings',
-    //SearchSupported              : true,
     PresentationVariantQualifier : 'pvAirline',
     Parameters                   : [{
       $Type             : 'Common.ValueListParameterInOut',
@@ -243,13 +190,11 @@ annotate service.Bookings with @(
   // },
   UI.Chart #chartStatus : {
     ChartType           : #Bar,
-   //Measures            : [countBookings],   // replaced by DynamicMeasures
     DynamicMeasures : [
       '@Analytics.AggregatedProperty#countBookings',
     ],
     Dimensions          : [status],
     MeasureAttributes   : [{
-      //Measure   : countBookings,   // replaced by DynamicMeasure
       DynamicMeasure : '@Analytics.AggregatedProperty#countBookings',
       Role      : #Axis1,
     }],
@@ -260,9 +205,7 @@ annotate service.Bookings with @(
   }
 ) {
   status @Common.ValueList #vlStatus : {
-    //Label                        : 'Status',
     CollectionPath               : 'Bookings',
-    //SearchSupported              : true,
     PresentationVariantQualifier : 'pvStatus',
     //SelectionVariantQualifier    : 'svStatus',
     Parameters                   : [{
@@ -282,7 +225,7 @@ annotate service.Bookings with @(
     }],
     Visualizations : ['@UI.Chart#chartFlightDate']
   },
-UI.Chart #chartFlightDate            : {
+  UI.Chart #chartFlightDate            : {
     Title               : 'Bookings over FlightDate',
     ChartType           : #Line,
     //Measures            : [countBookings],   // replaced by DynamicMeasures
@@ -302,9 +245,7 @@ UI.Chart #chartFlightDate            : {
   }
 ) {
   FlightDate @Common.ValueList #vlFlightDate : {
-    //Label                        : '{i18n>FlightDate}',
     CollectionPath               : 'Bookings',
-    //SearchSupported              : true,
     PresentationVariantQualifier : 'pvFlightDate',
     Parameters                   : [{
       $Type             : 'Common.ValueListParameterInOut',
