@@ -385,3 +385,4 @@ annotate service.Bookings with @UI : {
 
   ]},
 };
+
