@@ -228,13 +228,11 @@ annotate service.Bookings with @(
   UI.Chart #chartFlightDate            : {
     Title               : 'Bookings over FlightDate',
     ChartType           : #Line,
-    //Measures            : [countBookings],   // replaced by DynamicMeasures
     DynamicMeasures : [
       '@Analytics.AggregatedProperty#countBookings',
     ],
     Dimensions          : [FlightDate],
     MeasureAttributes   : [{
-      //Measure   : countBookings,   // replaced by DynamicMeasure
       DynamicMeasure : '@Analytics.AggregatedProperty#countBookings',
       Role      : #Axis1,
     }],
@@ -260,7 +258,6 @@ annotate service.Bookings with @(
 //
 // KPI
 //
-
 annotate service.Bookings with @(
   UI.KPI #myKPI1 : {
     DataPoint : {
@@ -381,3 +378,10 @@ annotate service.Bookings with @UI : {
     { Value : Distance,       },
   ]},
 };
+
+// determines the order of visual filters
+annotate service.Bookings with @UI.SelectionFields : [
+  FlightDate,
+  status,
+  airline
+];
