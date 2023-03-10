@@ -67,6 +67,7 @@ annotate service.Bookings with @(
   // }
 );
 
+
 annotate service.Bookings with @UI.LineItem : [
   {
     Value          : TravelID,
@@ -98,7 +99,6 @@ annotate service.Bookings with @UI.LineItem : [
     @HTML5.CssDefaults: {width:'8em'},
   }
 ];
-
 
 
 annotate service.Bookings with @UI.Chart : {
@@ -137,7 +137,6 @@ annotate service.Bookings with @UI.PresentationVariant : {
 //
 // Visual Filters
 //
-
 annotate service.Bookings with @(
   UI.PresentationVariant #pvAirline : {
     Visualizations : ['@UI.Chart#chartAirline']
@@ -172,22 +171,8 @@ annotate service.Bookings with @(
 
 annotate service.Bookings with @(
   UI.PresentationVariant #pvStatus : {
-    // SortOrder      : [{
-    //   Property   : price,
-    //   Descending : true
-    // }],
     Visualizations : ['@UI.Chart#chartStatus']
   },
-  // UI.SelectionVariant #svStatus : {
-  //   SelectOptions : [{
-  //     PropertyName : status,
-  //     Ranges       : [{
-  //       Sign   : #I,
-  //       Option : #EQ,
-  //       Low    : 'N',
-  //     }]
-  //   }]
-  // },
   UI.Chart #chartStatus : {
     ChartType           : #Bar,
     DynamicMeasures : [
@@ -207,7 +192,6 @@ annotate service.Bookings with @(
   status @Common.ValueList #vlStatus : {
     CollectionPath               : 'Bookings',
     PresentationVariantQualifier : 'pvStatus',
-    //SelectionVariantQualifier    : 'svStatus',
     Parameters                   : [{
       $Type             : 'Common.ValueListParameterInOut',
       LocalDataProperty : status,
@@ -289,7 +273,6 @@ annotate service.Bookings with @(
       }],
     }
   },
-
   UI.Chart #kpi1 : {
     ChartType         : #Line,
     Measures          : [price],
