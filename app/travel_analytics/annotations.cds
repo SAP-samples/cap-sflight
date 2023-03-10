@@ -379,9 +379,9 @@ annotate service.Bookings with @UI : {
   ]},
 };
 
-// determines the order of visual filters
-annotate service.Bookings with @UI.SelectionFields : [
-  FlightDate,
-  status,
-  airline
-];
+// // determines the order of visual filters
+// annotate service.Bookings with @UI.SelectionFields : [
+//   FlightDate,
+//   status,
+//   airline
+// ];
