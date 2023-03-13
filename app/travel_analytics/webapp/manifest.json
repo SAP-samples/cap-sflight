@@ -125,7 +125,7 @@
             "settings": {
               "entitySet": "Bookings",
               "variantManagement": "Page",
-              "initialLoad": true,
+              "initialLoad": "Enabled",
               "navigation": {
                 "Bookings": {
                   "detail": {
