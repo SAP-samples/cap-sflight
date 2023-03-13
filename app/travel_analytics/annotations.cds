@@ -157,15 +157,28 @@ annotate service.Bookings with @(
     }],
   }
 ) {
-  airline @Common.ValueList #vlAirline : {
-    CollectionPath               : 'Bookings',
-    PresentationVariantQualifier : 'pvAirline',
-    Parameters                   : [{
-      $Type             : 'Common.ValueListParameterInOut',
-      LocalDataProperty : airline,
-      ValueListProperty : 'airline'
-    }]
-  };
+  airline @(
+    Common.ValueList #vlAirline : {
+      CollectionPath               : 'Bookings',
+      PresentationVariantQualifier : 'pvAirline',
+      Parameters                   : [{
+        $Type             : 'Common.ValueListParameterInOut',
+        LocalDataProperty : airline,
+        ValueListProperty : 'airline'
+      }]
+    },
+    Common.ValueList : {
+      CollectionPath : 'Airline',
+      Parameters : [{
+        $Type             : 'Common.ValueListParameterInOut',
+        LocalDataProperty : airline,
+        ValueListProperty : 'AirlineID',
+      }, {
+          $Type : 'Common.ValueListParameterDisplayOnly',
+          ValueListProperty : 'Name',
+      }]
+    }
+  )
 };
 
 
@@ -189,15 +202,26 @@ annotate service.Bookings with @(
     }]
   }
 ) {
-  status @Common.ValueList #vlStatus : {
-    CollectionPath               : 'Bookings',
-    PresentationVariantQualifier : 'pvStatus',
-    Parameters                   : [{
-      $Type             : 'Common.ValueListParameterInOut',
-      LocalDataProperty : status,
-      ValueListProperty : 'status'
-    }]
-  };
+  status @(
+    Common.ValueList #vlStatus : {
+      CollectionPath               : 'Bookings',
+      PresentationVariantQualifier : 'pvStatus',
+      Parameters                   : [{
+        $Type             : 'Common.ValueListParameterInOut',
+        LocalDataProperty : status,
+        ValueListProperty : 'status'
+      }]
+    },
+    Common.ValueList : {
+      CollectionPath : 'BookingStatus',
+      Parameters : [{
+        $Type : 'Common.ValueListParameterInOut',
+        LocalDataProperty : status,
+        ValueListProperty : 'code',
+      }]
+    },
+    //Common.ValueListWithFixedValues : true
+  )
 };
 
 
