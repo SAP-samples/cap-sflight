@@ -59,6 +59,8 @@ service AnalyticsService @(path:'/analytics') {
 
   };
 
+  // for value help
+  entity BookingStatus as projection on my.BookingStatus
 
   // for detail page:
 
