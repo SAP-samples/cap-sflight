@@ -58,7 +58,7 @@ describe('Basic OData', () => {
     expect(data.value).to.containSubset([{
       BeginDate: '2022-07-27',
       BookingFee: 60,
-      createdAt: '2022-07-10T18:42:07.000Z',
+      createdAt: '2022-07-10T18:42:07.0000000Z',
       createdBy: 'Hansmann',
       CurrencyCode_code: 'SGD',
       Description: 'Sightseeing in Singapore',
@@ -66,7 +66,7 @@ describe('Basic OData', () => {
       HasActiveEntity: false,
       HasDraftEntity: false,
       IsActiveEntity: true,
-      LastChangedAt: '2022-07-21T03:18:18.000Z',
+      LastChangedAt: '2022-07-21T03:18:18.0000000Z',
       LastChangedBy: 'Deichgraeber',
       to_Agency_AgencyID: '070029',
       to_Customer_CustomerID: '000318',
