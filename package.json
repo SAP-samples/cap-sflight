@@ -13,6 +13,7 @@
     "start": "cds run",
     "test": "jest",
     "test:mocha": "npx mocha --timeout 20000",
+    "travel-processor": "cds watch --open travel_processor/webapp/index.html?sap-ui-xx-viewCache=false",
     "travel-analytics": "cds watch --open travel_analytics/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "dependencies": {
