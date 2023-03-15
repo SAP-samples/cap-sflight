@@ -15,8 +15,6 @@ service TravelService @(path:'/processor') {
     action deductDiscount( percent: Percentage not null ) returns Travel;
   };
 
-  // Ensure all masterdata entities are available to clients
-  annotate my.MasterData with @cds.autoexpose @readonly;
 }
 
 type Percentage : Integer @assert.range: [1,100];
