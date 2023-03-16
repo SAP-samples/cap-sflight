@@ -17,7 +17,7 @@ builder:
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
-        archiveName: travel-processor
+        archiveName: travel-analytics
         additionalFiles:
           - xs-app.json
 
