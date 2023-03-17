@@ -23,10 +23,10 @@ function image() {
 rm -rf gen/ui
 mkdir -p gen/ui/resources
 
-CLOUD_SERVICE="$(value html5_apps_deployer.cloudService)"
-DESTINATIONS="$(value html5_apps_deployer.backendDestinations)"
+CLOUD_SERVICE="$(value html5-apps-deployer.env.SAP_CLOUD_SERVICE)"
+DESTINATIONS="$(value backendDestinations)"
 
-IMAGE="$(image html5_apps_deployer)"
+IMAGE="$(image html5-apps-deployer)"
 
 for APP in app/*; do
     if [ -f "$APP/webapp/manifest.json" ]; then
