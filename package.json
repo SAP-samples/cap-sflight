@@ -79,9 +79,7 @@
       "service": true
     },
     "features": {
-      "odata_new_parser": true,
-      "lean_draft": true,
-      "lean_draft_compatibility": true
+      "odata_new_parser": true
     },
     "fiori": {
       "lean_draft": true
