@@ -187,8 +187,8 @@ init() {
     } else {
       // Note: it is important to read from this, not db to include draft handling
       // REVISIT: through req.subject workaround, IsActiveEntity is non-enumerable, which breaks this.read(Travel, req.params[0])
-      const [{ TravelUUID, IsActiveEntity }] = req.params
-      return this.read(Travel, { TravelUUID, IsActiveEntity })
+      const [{ TravelUUID }] = req.params
+      return this.read(Travel, { TravelUUID, IsActiveEntity: !req.subject.ref[0].id.endsWith('drafts') })
     }
   })
 
