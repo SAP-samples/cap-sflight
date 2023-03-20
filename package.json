@@ -78,6 +78,9 @@
     "log": {
       "service": true
     },
+    "features": {
+      "odata_new_parser": true
+    },
     "fiori": {
       "lean_draft": true
     },
