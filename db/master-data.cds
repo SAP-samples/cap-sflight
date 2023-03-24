@@ -1,6 +1,8 @@
 using { Currency, Country, custom.managed, sap } from './common';
 namespace sap.fe.cap.travel;
 
+// ensure all masterdata entities are available to clients
+@cds.autoexpose @readonly
 aspect MasterData {}
 
 

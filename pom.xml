@@ -15,7 +15,7 @@
 
     <!-- DEPENDENCIES VERSION -->
     <jdk.version>17</jdk.version>
-    <cds.services.version>1.32.0</cds.services.version>
+    <cds.services.version>1.32.1</cds.services.version>
     <spring.boot.version>2.7.5</spring.boot.version>
 
     <cdsdk.version>^6</cdsdk.version>
@@ -73,7 +73,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-        <version>1.3.0</version>
+        <version>1.4.0</version>
         <configuration>
           <updatePomFile>true</updatePomFile>
           <flattenMode>resolveCiFriendliesOnly</flattenMode>
