@@ -15,6 +15,12 @@ service TravelService @(path:'/processor') {
     action deductDiscount( percent: Percentage not null ) returns Travel;
   };
 
+  event Reviewed : {
+    subject : Integer;
+    count   : Integer;
+    rating  : Decimal;
+  }
+
   // Ensure all masterdata entities are available to clients
   annotate my.MasterData with @cds.autoexpose @readonly;
 }
