@@ -24,6 +24,11 @@ cds:
     odata-v4:
         endpoint:
             path: "/"
+    messaging:
+      services:
+      - name: "messaging"
+        kind: "file-based-messaging"
+        binding: "local-messaging.txt"
 
 server:
     port: 4004
