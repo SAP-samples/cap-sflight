@@ -120,11 +120,12 @@ init() {
    * Helper to re-calculate a Travel's TotalPrice from BookingFees, FlightPrices and Supplement Prices.
    */
   this._update_totals4 = function (travel) {
-    return UPDATE (Travel.drafts, travel) .with ({ TotalPrice: CXL `coalesce (BookingFee, 0) + ${
-      SELECT `coalesce (sum (FlightPrice + ${
-        SELECT `coalesce (sum (Price),0)` .from (BookingSupplement.drafts) .where `to_Booking_BookingUUID = BookingUUID`
-      }),0)` .from (Booking.drafts) .where `to_Travel_TravelUUID = TravelUUID`
-    }` })
+    // Using plain native SQL for such complex queries
+    return cds.run(`UPDATE ${Travel.drafts} SET
+      TotalPrice = coalesce(BookingFee,0)
+      + ( SELECT coalesce (sum(FlightPrice),0) from ${Booking.drafts} where to_Travel_TravelUUID = TravelUUID )
+      + ( SELECT coalesce (sum(Price),0) from ${BookingSupplement.drafts} where to_Travel_TravelUUID = TravelUUID )
+    WHERE TravelUUID = ?`, travel)
   }
 
 
