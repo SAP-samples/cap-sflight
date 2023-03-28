@@ -1,0 +1,11 @@
+POST http://localhost:8081/reviewer/TravelReview HTTP/1.1
+Authorization: Basic YXV0aGVudGljYXRlZDo=
+content-type: application/json
+
+{
+    "RatingUUID": "D5055A5D-8EED-47E3-AB38-6D646120F9DD",
+    "Rating" : 4,
+	"Email" : "john@doe.com",
+	"Comment" : "awesome",
+	"TravelID" : 4132
+}
