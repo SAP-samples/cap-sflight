@@ -1,13 +1,13 @@
 using AnalyticsService as service from '../../srv/analytics-service';
 
 annotate service.Bookings with @(
-  Aggregation.CustomAggregate #price : 'Edm.Decimal',
-  Aggregation.CustomAggregate #cuco : 'Edm.String',
+  Aggregation.CustomAggregate #FlightPrice : 'Edm.Decimal',
+  Aggregation.CustomAggregate #CurrencyCode_code : 'Edm.String',
   Common.SemanticKey : [ID],
 ) {
-  ID    @ID : 'ID';
-  price @Aggregation.default: #SUM;
-  cuco  @Aggregation.default: #MAX;
+  ID                @ID : 'ID';
+  FlightPrice       @Aggregation.default: #SUM;
+  CurrencyCode_code @Aggregation.default: #MAX;
 };
 
 annotate service.Bookings with @Aggregation.ApplySupported : {
@@ -17,14 +17,14 @@ annotate service.Bookings with @Aggregation.ApplySupported : {
     CombinedID,
     ConnectionID,
     FlightDate,
-    cuco,
+    CurrencyCode_code,
     status,
     airline,
   ],
   AggregatableProperties : [
-    {Property : status },
-    {Property : price },
-    {Property : ID },
+    {Property : status      },
+    {Property : FlightPrice },
+    {Property : ID          },
   ],
 };
 
@@ -40,21 +40,21 @@ annotate service.Bookings with @(
   {
     Name                 : 'minPrice',
     AggregationMethod    : 'min',
-    AggregatableProperty : price,
+    AggregatableProperty : FlightPrice,
     @Common.Label        : '{i18n>MinPrice}'
   },
   Analytics.AggregatedProperty #maxPrice :
   {
     Name                 : 'maxPrice',
     AggregationMethod    : 'max',
-    AggregatableProperty : price,
+    AggregatableProperty : FlightPrice,
     @Common.Label        : '{i18n>MaxPrice}'
   },
   Analytics.AggregatedProperty #avgPrice :
   {
     Name                 : 'avgPrice',
     AggregationMethod    : 'average',
-    AggregatableProperty : price,
+    AggregatableProperty : FlightPrice,
     @Common.Label        : '{i18n>AvgPrice}'
   },
   // measure "sum of prices" is available by default (but name/label doesn't indicate summing -> ?)
@@ -62,7 +62,7 @@ annotate service.Bookings with @(
   //  {
   //   Name                 : 'sumPrice',
   //   AggregationMethod    : 'sum',
-  //   AggregatableProperty : price,
+  //   AggregatableProperty : FlightPrice,
   //   @Common.Label        : '{i18n>TotalPrice}'
   // }
 );
@@ -90,7 +90,7 @@ annotate service.Bookings with @UI.LineItem : [
     Value          : FlightDate,
     @UI.Importance : #High,
   }, {
-    Value          : price,
+    Value          : FlightPrice,
     @UI.Importance : #High,
     @HTML5.CssDefaults: {width:'12em'},
   }, {
@@ -125,7 +125,7 @@ annotate service.Bookings with @UI.PresentationVariant : {
     status
   ],
   Total : [    // default aggregation in table
-    price
+    FlightPrice
   ],
   Visualizations : [
     '@UI.Chart',
@@ -269,7 +269,7 @@ annotate service.Bookings with @(
 annotate service.Bookings with @(
   UI.KPI #myKPI1 : {
     DataPoint : {
-      Value            : price,
+      Value            : FlightPrice,
       Title            : 'TOT',
       Description      : '{i18n>Total Price}',
       CriticalityCalculation : {
@@ -288,7 +288,7 @@ annotate service.Bookings with @(
     },
     SelectionVariant : {
       SelectOptions : [{
-        PropertyName : price,
+        PropertyName : FlightPrice,
         Ranges       : [{
           Sign   : #E,
           Option : #EQ,
@@ -299,10 +299,10 @@ annotate service.Bookings with @(
   },
   UI.Chart #kpi1 : {
     ChartType         : #Line,
-    Measures          : [price],
+    Measures          : [FlightPrice],
     Dimensions        : [FlightDate],
     MeasureAttributes : [{
-      Measure : price,
+      Measure : FlightPrice,
       Role    : #Axis1
     }],
     DimensionAttributes : [{
@@ -362,7 +362,7 @@ annotate service.Bookings with @UI : {
       Label : '{i18n>BookingID}'        },
     { Value : BookingDate               },
     { Value : FlightDate,               },
-    { Value : price                     },
+    { Value : FlightPrice               },
     { Value : status,
       Label : '{i18n>Status}'           },
   ]},
