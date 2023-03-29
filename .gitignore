@@ -28,6 +28,7 @@ mta_archives/
 *.flattened-pom.xml
 
 srv/src/main/resources/edmx/**
+srv-review/src/main/resources/edmx/**
 dist/
 /app/resources/
 /app/router/package-lock.json

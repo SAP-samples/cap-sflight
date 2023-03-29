@@ -7,7 +7,10 @@ management:
 spring:
     profiles: default
     web.resources.static-locations: "file:./app"
-logging.level.com.sap.cds.messaging: DEBUG
+logging.level.com.sap.cds: DEBUG
+logging.level.com.sap.cds.services.impl.cds.ApplicationServiceConfiguration: DEBUG
+
+cds.dataSource.csvInitializationMode: never
 cds:
     security.mock.users:
     - name: rose
@@ -25,16 +28,14 @@ cds:
     odata-v4:
         endpoint:
             path: "/"
-    remote.services:
-    - name: RemoteReviewService
     messaging:
       services:
-      - name: "messaging"
-        kind: "file-based-messaging"
-        binding: "local-messaging.txt"
+        - name: "messaging"
+          kind: "file-based-messaging"
+          binding: "local-messaging.txt"
 
 server:
-    port: 8080
+    port: 8081
 
 ---
 spring:

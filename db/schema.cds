@@ -16,7 +16,7 @@ entity Travel : managed {
   EndDate        : Date;
   BookingFee     : Decimal(16, 3);
   TotalPrice     : Decimal(16, 3) @readonly;
-  AvgReview      : Decimal;
+  AvgReviewRating: Decimal;
   CurrencyCode   : Currency;
   Description    : String(1024);
   TravelStatus   : Association to TravelStatus @readonly;
@@ -37,12 +37,7 @@ annotate Travel with @(
         }]}
     });
 
-entity TravelReview : managed {
-  key RatingUUID : UUID;
-  Rating : Integer @assert.range: [ 0, 5 ];
-  Email : String;
-  Comment : String;
-}
+
 
 entity Booking : managed {
   key BookingUUID   : UUID;

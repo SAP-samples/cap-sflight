@@ -1,10 +1,13 @@
 
-using { sap.fe.cap.travel as my } from '../db/schema';
+
+using { sap.fe.cap.travel.review as my } from './schema';
+
 
 service ReviewService @(path:'/reviewer') {
 
   entity TravelReview as projection on my.TravelReview;
 
+  @topic: 'sap.cap.reviews.review.changed'
   event Reviewed : {
 	subject : Integer;
 	count : Integer;

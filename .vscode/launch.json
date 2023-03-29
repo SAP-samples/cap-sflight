@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ReviewApplication",
+      "request": "launch",
+      "mainClass": "com.sap.cap.sflight.ReviewApplication",
+      "projectName": "srv-review"
+    },
+    {
+      "type": "java",
       "name": "Launch SFlightApplication",
       "request": "launch",
       "mainClass": "com.sap.cap.sflight.SFlightApplication",

@@ -1,0 +1,14 @@
+{
+	"sql": {
+		"dialect": "plain"
+	},
+	"folders": {
+		"srv": "srv-review/"
+	},
+	"build": {
+		"target": ".",
+		"tasks": [
+		  {"for":"java", "src":".", "options":{"model":["review-service"]}}
+		]
+	  }
+}
