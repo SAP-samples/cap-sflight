@@ -2,6 +2,23 @@
 
 const cds = require ('@sap/cds/lib')
 
+// Adding toString to cds.entity incorporated in upcoming releases of @sap/cds
+Object.defineProperty (cds.entity.prototype, 'toString', {
+  value: function() { return this.name.replace(/\./g,'_') },
+  configurable: true
+})
+
+// Adding toString to cds.entity.drafts incorporated in upcoming releases of @sap/cds
+Object.defineProperty (cds.entity.prototype, 'drafts', {
+  get: function() { return this.own('_drafts') || this.set('_drafts', this.elements?.HasDraftEntity && {
+    name: this.name + '_drafts', keys: this.keys,
+    toString(){ return this.name.replace(/\./g,'_') }
+  })},
+  configurable: true
+})
+
+
+
 const { init } = cds.ApplicationService.prototype
 cds.extend (cds.ApplicationService) .with (class {
 
