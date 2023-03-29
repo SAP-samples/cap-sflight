@@ -19,7 +19,6 @@ import com.sap.cds.ql.Update;
 import com.sap.cds.ql.cqn.CqnUpdate;
 import com.sap.cds.services.ErrorStatuses;
 import com.sap.cds.services.ServiceException;
-import com.sap.cds.services.cds.CdsService;
 import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.draft.DraftService;
 import com.sap.cds.services.handler.EventHandler;
@@ -94,7 +93,7 @@ public class RecalculatePriceHandler implements EventHandler {
 		return bookingFee.add(flightPriceSum).add(supplementPriceSum);
 	}
 
-	@After(event = {CdsService.EVENT_UPDATE, CdsService.EVENT_CREATE}, entity = Travel_.CDS_NAME)
+	@After(event = {CqnService.EVENT_UPDATE, CqnService.EVENT_CREATE}, entity = Travel_.CDS_NAME)
 	public void calculateNewTotalPriceForActiveTravel(Travel travel) {
 
 		/*
@@ -149,7 +148,7 @@ public class RecalculatePriceHandler implements EventHandler {
 	private BigDecimal calculateAndPatchNewTotalPriceForDraft(final String travelUUID) {
 
 		BigDecimal totalPrice = calculateTotalPriceForTravel(draftService, travelUUID, false);
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put(Travel.TRAVEL_UUID, travelUUID);
 		map.put(Travel.TOTAL_PRICE, totalPrice);
 		CqnUpdate update = Update.entity(TRAVEL).data(map);

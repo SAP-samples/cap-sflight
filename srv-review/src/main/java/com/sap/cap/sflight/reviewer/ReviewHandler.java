@@ -2,12 +2,9 @@ package com.sap.cap.sflight.reviewer;
 
 import java.math.BigDecimal;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.sap.cds.services.messaging.MessagingService;
-import com.sap.cds.services.Service;
 import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.After;
@@ -44,7 +41,5 @@ public class ReviewHandler implements EventHandler {
 		reviewedContext.setData(reviewed);
 	
 		reviewService.emit(reviewedContext);
-		//messagingService.emit("sap.cap.reviews.review.changed", reviewed.toJson());
 	}
-
 }
