@@ -35,7 +35,7 @@ public class ReviewHandler implements EventHandler {
 		Reviewed reviewed = Reviewed.create();
 		reviewed.setCount(1);
 		reviewed.setRating(BigDecimal.valueOf(5L));
-		reviewed.setSubject(42);
+		reviewed.setSubject(4132);
 
 		ReviewedContext reviewedContext = ReviewedContext.create();
 		reviewedContext.setData(reviewed);
