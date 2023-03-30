@@ -1,4 +1,4 @@
-POST http://localhost:8081/reviewer/TravelReview HTTP/1.1
+POST http://localhost:8080/reviewer/TravelReview HTTP/1.1
 Authorization: Basic YXV0aGVudGljYXRlZDo=
 content-type: application/json
 

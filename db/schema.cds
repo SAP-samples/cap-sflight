@@ -91,3 +91,11 @@ entity TravelStatus : CodeList {
   createDeleteHidden: Boolean;
   insertDeleteRestriction: Boolean; // = NOT createDeleteHidden
 }
+
+entity TravelReview : managed {
+  key RatingUUID : UUID;
+  TravelID : Integer;
+  Rating : Integer @assert.range: [ 0, 5 ];
+  Email : String;
+  Comment : String;
+}

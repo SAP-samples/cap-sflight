@@ -15,6 +15,14 @@ service TravelService @(path:'/processor') {
     action deductDiscount( percent: Percentage not null ) returns Travel;
   }  // Ensure all masterdata entities are available to clients
   annotate my.MasterData with @cds.autoexpose @readonly;
+
+  @topic: 'sap.cap.reviews.review.changed'
+  event TravelReviewed : {
+    subject : Integer;
+    count   : Integer;
+    rating  : Decimal;
+  }
+
 }
 
 type Percentage : Integer @assert.range: [1,100];

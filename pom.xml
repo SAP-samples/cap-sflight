@@ -23,7 +23,6 @@
 
   <modules>
     <module>srv</module>
-    <module>srv-review</module>
   </modules>
 
   <dependencyManagement>

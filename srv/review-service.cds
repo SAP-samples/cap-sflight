@@ -1,7 +1,4 @@
-
-
-using { sap.fe.cap.travel.review as my } from './schema';
-
+using { sap.fe.cap.travel as my } from '../db/schema';
 
 service ReviewService @(path:'/reviewer') {
 
@@ -9,8 +6,8 @@ service ReviewService @(path:'/reviewer') {
 
   @topic: 'sap.cap.reviews.review.changed'
   event Reviewed : {
-	subject : Integer;
-	count : Integer;
-	rating : Decimal;
+    subject : Integer;
+    count   : Integer;
+    rating  : Decimal;
   }
 }

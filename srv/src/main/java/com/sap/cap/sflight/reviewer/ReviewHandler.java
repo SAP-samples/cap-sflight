@@ -19,10 +19,10 @@ import cds.gen.reviewservice.TravelReview_;
 @ServiceName(ReviewService_.CDS_NAME)
 public class ReviewHandler implements EventHandler {
 
-	@Qualifier(ReviewService_.CDS_NAME)
+	
 	private final CqnService reviewService;
 
-	public ReviewHandler( CqnService reviewService) {
+	public ReviewHandler(@Qualifier(ReviewService_.CDS_NAME) CqnService reviewService) {
 		this.reviewService = reviewService;
 	}
 

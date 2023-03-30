@@ -8,8 +8,9 @@ import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 
-import cds.gen.remotereviewservice.RemoteReviewService_;
-import cds.gen.remotereviewservice.ReviewedContext;
+import cds.gen.reviewservice.ReviewService_;
+import cds.gen.reviewservice.ReviewedContext;
+import cds.gen.travelservice.TravelReviewedContext;
 import cds.gen.travelservice.TravelService_;
 
 @Component
@@ -18,7 +19,7 @@ public class TravelReviewChangedHandler implements EventHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(TravelReviewChangedHandler.class);
 
-	@On(service = RemoteReviewService_.CDS_NAME)
+	@On(service = ReviewService_.CDS_NAME)
 	public void onReviewChanged(ReviewedContext context) {
 		
 		logger.info("received " + context.getData().toJson());

@@ -1,0 +1,1 @@
+sap.cap.reviews.review.changed {"data":{"subject":42,"count":1,"rating":5}}
