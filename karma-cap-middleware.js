@@ -5,7 +5,7 @@ function spawnServer(cmd, args, cwd, fnIsReady) {
   return new Promise((resolve, reject) => {
     const proc = spawn(cmd, args, {
       cwd,
-      env: Object.assign({PORT:0}, process.env),
+      env: Object.assign({ PORT: 0 }, process.env),
       stdio: ["ignore", "pipe", "inherit"],
     });
 
@@ -17,12 +17,13 @@ function spawnServer(cmd, args, cwd, fnIsReady) {
       }
     };
 
-
     proc.on("close", reject);
     proc.stdout.on("data", checkServerReady);
 
     // clean up sub process
-    process.on('exit', ()=> { if (proc)  proc.kill(); } )
+    process.on("exit", () => {
+      if (proc) proc.kill();
+    });
   });
 }
 
@@ -38,12 +39,7 @@ function createKarmaMiddleware(serverUrl, auth) {
     const proxy = new HttpProxy(proxyOptions);
     proxy.on("error", (data) => log.error(data.toString()));
 
-    return (req, res, next) => {
-      if (req.url.startsWith("/processor")) {
-        return proxy.web(req, res);
-      }
-      return next();
-    };
+    return (req, res) => proxy.web(req, res);
   };
 
   middleware.$inject = ["logger"];
@@ -68,8 +64,11 @@ async function java() {
 async function node() {
   const isReady = (data) => {
     const started = data.match(/server listening on {.*url:.*'(?<url>.+)'.*}/);
-    if (started) return new URL(started.groups.url);
+    if (started) {
+      return new URL(started.groups.url);
+    }
   };
+
   const serverUrl = await spawnServer("npm", ["start"], "../..", isReady);
 
   return createKarmaMiddleware(serverUrl, { user: "admin", password: "admin" });

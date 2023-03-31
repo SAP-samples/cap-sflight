@@ -34,3 +34,9 @@ jobs:
       run: |
         npm ci
         npm run test:java -- --ci
+
+    - name: Run integration tests - Analyze Bookings
+      working-directory: ./app/travel_analytics
+      run: |
+        npm ci
+        npm run test:java -- --ci

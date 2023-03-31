@@ -13,6 +13,7 @@
     "start": "cds run",
     "test": "jest",
     "test:mocha": "npx mocha --timeout 20000",
+    "travel-processor": "cds watch --open travel_processor/webapp/index.html?sap-ui-xx-viewCache=false",
     "travel-analytics": "cds watch --open travel_analytics/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "dependencies": {
@@ -23,11 +24,13 @@
     "passport": "^0.6.0"
   },
   "devDependencies": {
-    "@sap/ux-specification": "^1.102.9",
+    "@sap/ux-specification": "UI5-1.108",
     "axios": "^1",
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",
+    "cross-spawn": "^7.0.3",
+    "http-proxy": "^1.18.1",
     "jest": "^29.0.2",
     "qunit": "^2.9.3",
     "sqlite3": "^5"
