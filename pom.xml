@@ -14,7 +14,7 @@
     <revision>1.0.0-SNAPSHOT</revision>
 
     <!-- DEPENDENCIES VERSION -->
-    <jdk.version>8</jdk.version>
+    <jdk.version>17</jdk.version>
     <cds.services.version>1.33.0</cds.services.version>
     <spring.boot.version>2.7.5</spring.boot.version>
 
