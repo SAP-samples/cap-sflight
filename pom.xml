@@ -112,9 +112,6 @@
                 <requireMavenVersion>
                   <version>3.5.0</version>
                 </requireMavenVersion>
-                <!-- <requireJavaVersion>
-                  <version>${jdk.version}</version>
-                </requireJavaVersion> -->
                 <requireProperty>
                   <property>project.artifactId</property>
                   <regex>[^_]+</regex>
