@@ -91,6 +91,7 @@ annotate TravelService.Travel with @UI : {
       ]
   }, {  // booking list
     $Type  : 'UI.ReferenceFacet',
+    ID     : 'BookingList',
     Target : 'to_Booking/@UI.PresentationVariant',
     Label  : '{i18n>Bookings}'
   }],
@@ -163,6 +164,7 @@ annotate TravelService.Booking with @UI : {
     }]
   }, {  // supplements list
     $Type  : 'UI.ReferenceFacet',
+    ID     : 'SupplementsList',
     Target : 'to_BookSupplement/@UI.PresentationVariant',
     Label  : '{i18n>BookingSupplements}'
   }],
