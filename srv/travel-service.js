@@ -125,7 +125,7 @@ init() {
       TotalPrice = coalesce(BookingFee,0)
       + ( SELECT coalesce (sum(FlightPrice),0) from ${Booking.drafts} where to_Travel_TravelUUID = TravelUUID )
       + ( SELECT coalesce (sum(Price),0) from ${BookingSupplement.drafts} where to_Travel_TravelUUID = TravelUUID )
-    WHERE TravelUUID = ?`, travel)
+    WHERE TravelUUID = ?`, [travel])
   }
 
 
