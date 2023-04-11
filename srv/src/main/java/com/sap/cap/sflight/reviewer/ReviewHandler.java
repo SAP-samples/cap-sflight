@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import com.sap.cds.Result;
 import com.sap.cds.Row;
 import com.sap.cds.ql.Select;
 import com.sap.cds.services.cds.CqnService;
@@ -18,7 +17,6 @@ import cds.gen.reviewservice.Reviewed;
 import cds.gen.reviewservice.ReviewedContext;
 import cds.gen.reviewservice.TravelReview;
 import cds.gen.reviewservice.TravelReview_;
-import cds.gen.travelservice.TravelService_;
 
 @Component
 @ServiceName(ReviewService_.CDS_NAME)
