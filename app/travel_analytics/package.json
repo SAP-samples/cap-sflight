@@ -27,7 +27,7 @@
     "karma-ui5": "^3.0.2",
     "puppeteer": "^19.7.1",
     "ui5-middleware-simpleproxy": "^0.9.3",
-    "ui5-task-zipper": "^0.7.3"
+    "ui5-task-zipper": "^0.8.0"
   },
   "ui5": {
     "dependencies": [
