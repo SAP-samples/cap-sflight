@@ -24,7 +24,7 @@
     "passport": "^0.6.0"
   },
   "devDependencies": {
-    "@sap/ux-specification": "UI5-1.108",
+    "@sap/ux-specification": "UI5-1.112",
     "axios": "^1",
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
