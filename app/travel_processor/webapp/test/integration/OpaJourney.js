@@ -78,6 +78,11 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           .onForm({ section: "Travel", fieldGroup: "PriceData" })
           .iChangeField({ property: "BookingFee" }, "50.00");
 
+        // Currency
+        When.onTheDetailPage
+          .onForm({ section: "Travel", fieldGroup: "PriceData" })
+          .iChangeField({ property: "CurrencyCode_code" }, "EUR");
+
         // Description
         When.onTheDetailPage
           .onForm({ section: "Travel", fieldGroup: "TravelData" })
