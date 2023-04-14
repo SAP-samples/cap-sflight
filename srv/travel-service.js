@@ -48,7 +48,7 @@ init() {
    * Changing Booking Fees is only allowed for not yet accapted Travels.
    */
   this.before ('PATCH', 'Travel', async (req) => { if ('BookingFee' in req.data) {
-    const { status } = await SELECT `TravelStatus_code as status` .from (req.subject)
+    const { status } = await SELECT.one `TravelStatus_code as status` .from (req.subject)
     if (status === 'A') req.reject(400, 'Booking fee can not be updated for accepted travels.', 'BookingFee')
   }})
 
@@ -125,7 +125,7 @@ init() {
       TotalPrice = coalesce(BookingFee,0)
       + ( SELECT coalesce (sum(FlightPrice),0) from ${Booking.drafts} where to_Travel_TravelUUID = TravelUUID )
       + ( SELECT coalesce (sum(Price),0) from ${BookingSupplement.drafts} where to_Travel_TravelUUID = TravelUUID )
-    WHERE TravelUUID = ?`, travel)
+    WHERE TravelUUID = ?`, [travel])
   }
 
 
@@ -186,10 +186,7 @@ init() {
       if (travel.status === 'A') req.reject (400, `Travel "${travel.ID}" has been approved already.`)
       if (travel.BookingFee == null) throw req.reject (404, `No discount possible, as travel "${travel.ID}" does not yet have a booking fee added.`)
     } else {
-      // Note: it is important to read from this, not db to include draft handling
-      // REVISIT: through req.subject workaround, IsActiveEntity is non-enumerable, which breaks this.read(Travel, req.params[0])
-      const [{ TravelUUID, IsActiveEntity }] = req.params
-      return this.read(Travel, { TravelUUID, IsActiveEntity })
+      return this.read(req.subject)
     }
   })
 
