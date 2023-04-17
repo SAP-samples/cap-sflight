@@ -1,10 +1,10 @@
-using { sap.fe.cap.travel as my } from '../../db/schema';
+using { sap.fe.cap.travel as schema } from '../db/schema';
 
 //
 // annotations for value helps
 //
 
-annotate my.Travel {
+annotate schema.Travel {
 
   TravelStatus @Common.ValueListWithFixedValues;
 
@@ -56,7 +56,7 @@ annotate my.Travel {
 }
 
 
-annotate my.Booking {
+annotate schema.Booking {
 
   BookingStatus @Common.ValueListWithFixedValues;
 
@@ -135,7 +135,7 @@ annotate my.Booking {
 }
 
 
-annotate my.BookingSupplement {
+annotate schema.BookingSupplement {
 
   to_Supplement @Common.ValueList: {
     CollectionPath : 'Supplement',
@@ -162,7 +162,7 @@ annotate my.BookingSupplement {
 }
 
 
-annotate my.Flight {
+annotate schema.Flight {
 
   AirlineID @Common.ValueList: {
     CollectionPath : 'Airline',
@@ -193,7 +193,7 @@ annotate my.Flight {
 }
 
 
-annotate my.FlightConnection {
+annotate schema.FlightConnection {
 
   AirlineID @Common.ValueList: {
     CollectionPath : 'Airline',
@@ -233,7 +233,7 @@ annotate my.FlightConnection {
 }
 
 
-annotate my.Passenger {
+annotate schema.Passenger {
 
   CountryCode @Common.ValueList : {
     CollectionPath  : 'Countries',
@@ -248,7 +248,7 @@ annotate my.Passenger {
 }
 
 
-annotate my.TravelAgency {
+annotate schema.TravelAgency {
 
   CountryCode @Common.ValueList: {
     CollectionPath : 'Countries',

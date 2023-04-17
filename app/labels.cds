@@ -1,4 +1,4 @@
-using { sap.fe.cap.travel as schema } from '../../db/schema';
+using { sap.fe.cap.travel as schema } from '../db/schema';
 
 //
 // annotations that control rendering of fields and labels
