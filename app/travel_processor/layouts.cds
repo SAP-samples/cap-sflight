@@ -146,7 +146,10 @@ annotate TravelService.Booking with @UI : {
     { Value : ConnectionID,          Label : '{i18n>FlightNumber}' },
     { Value : FlightDate             },
     { Value : FlightPrice            },
-    { Value : BookingStatus_code     }
+    { Value : BookingStatus_code,
+      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'N']}, 2,
+                                { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'B']}, 3, 0] }] } }
+    }
   ],
   Facets : [{
     $Type  : 'UI.CollectionFacet',
@@ -174,7 +177,10 @@ annotate TravelService.Booking with @UI : {
     { Value : BookingDate,           },
     { Value : to_Customer_CustomerID },
     { Value : BookingDate,           },
-    { Value : BookingStatus_code     }
+    { Value : BookingStatus_code,
+      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'N']}, 2,
+                                { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'B']}, 3, 0] }] } }
+     }
   ]},
   FieldGroup #Flight : { Data : [
     { Value : to_Carrier_AirlineID   },
