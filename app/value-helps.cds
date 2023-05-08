@@ -162,8 +162,13 @@ annotate schema.BookingSupplement {
 }
 
 
-annotate schema.Flight {
-
+annotate schema.Flight with @UI.PresentationVariant#SortOrderPV : {    // used in ValueList for Bookings:ConnectionId above
+    SortOrder      : [{
+      Property   : FlightDate,
+      Descending : true
+    }]
+  }
+{
   AirlineID @Common.ValueList: {
     CollectionPath : 'Airline',
     Label : '',
@@ -189,8 +194,8 @@ annotate schema.Flight {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'DistanceUnit'}
     ]
   };
+};
 
-}
 
 
 annotate schema.FlightConnection {
