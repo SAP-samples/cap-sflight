@@ -60,7 +60,8 @@ annotate TravelService.Travel with @UI : {
     { Value : TotalPrice, @HTML5.CssDefaults: {width:'12em'} },
     {
       Value : TravelStatus_code,
-      Criticality : TravelStatus.criticality,
+      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'TravelStatus_code'}, 'O']}, 2,
+                                { $If: [{$Eq: [{ $Path: 'TravelStatus_code'}, 'A']}, 3, 0] }] } },
       @UI.Importance : #High,
       @HTML5.CssDefaults: {width:'10em'}
     }
@@ -103,7 +104,8 @@ annotate TravelService.Travel with @UI : {
     {
       $Type       : 'UI.DataField',
       Value       : TravelStatus_code,
-      Criticality : TravelStatus.criticality,
+      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'TravelStatus_code'}, 'O']}, 2,
+                                { $If: [{$Eq: [{ $Path: 'TravelStatus_code'}, 'A']}, 3, 0] }] } },
       Label : '{i18n>Status}' // label only necessary if differs from title of element
     }
   ]},
