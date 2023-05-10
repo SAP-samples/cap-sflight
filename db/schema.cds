@@ -84,7 +84,6 @@ entity TravelStatus : CodeList {
     Accepted = 'A';
     Canceled = 'X';
   } default 'O'; //> will be used for foreign keys as well
-  criticality : Integer; //  2: yellow colour,  3: green colour, 0: unknown
   fieldControl: Integer @odata.Type:'Edm.Byte'; // 1: #ReadOnly, 7: #Mandatory
   createDeleteHidden: Boolean;
   insertDeleteRestriction: Boolean; // = NOT createDeleteHidden
