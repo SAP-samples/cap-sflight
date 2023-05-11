@@ -1,0 +1,4 @@
+{
+    "hana": [ { "name": "sflight-db" } ],
+    "xsuaa": [ { "name": "sflight-uaa" } ]
+}
