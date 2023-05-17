@@ -25,7 +25,7 @@
 - Container Registry
 - Command Line Tools: `kubectl`, `kubectl-oidc_login`, `pack`, `docker`, `helm`, `cf`
 - Logged into Kyma Runtime (with `kubectl` CLI), Cloud Foundry space (with `cf` CLI) and Container Registry (with `docker login`)
-- `@sap/cds-dk` >= 6.0.1
+- `@sap/cds-dk` >= 6.6.0
 
 ## Add Deployment Files
 
@@ -35,15 +35,8 @@ Add the CAP Helm chart with the required features to this project:
 
 ```bash
 cds add helm
-cds add helm:html5_apps_deployer
+cds add html5-repo
 ```
-
-## Configuration
-
-This project contains a pre-configured configuration file `deployment/kyma/values.yaml`, you just need to do the following changes in this file:
-
-- `<your-container-registry>` - full-qualified hostname of your container registry
-- `domain`- full-qualified domain name used to access applications in your Kyma cluster
 
 ## Prepare Kubernetes Namespace
 
@@ -71,8 +64,70 @@ The *Docker Server* is the full-qualified hostname of your container registry.
 
 ### Create a secret for your HDI container
 
+This step is only required if you're using a BTP Trial account. If you're using a production or a free tier account then you can create HDI Container from Kyma directly by adding a [mapping to your Kyma namespace in your HANA Cloud Instance](https://blogs.sap.com/2022/12/15/consuming-sap-hana-cloud-from-the-kyma-environment/) and skip this step.
+
 ```
 bash deployment/kyma/scripts/create-db-secret.sh sflight-db
+```
+
+It will create a HDI container `sflight-db` instance on your currently targeted Cloud Foundry space and creates a secret `sflight-db` with the credentials in your current Kubernetes namespace.
+
+Make the following changes to your _`chart/values.yaml`_.
+
+```diff
+srv:
+  bindings:
+    db:
+-     serviceInstanceName: hana
++     fromSecret: sflight-db
+...
+
+hana-deployer:
+  bindings:
+    hana:
+-     serviceInstanceName: hana
++     fromSecret: sflight-db
+
+...
+- hana:
+-   serviceOfferingName: hana
+-   servicePlanName: hdi-shared
+```
+
+## Configuration
+
+Make the following changes to your _`chart/values.yaml`_ file:
+
+1. Change value of `global.domain` key to your cluster domain.
+
+2. Replace `<your-container-registry>` with your container registry.
+
+3. Set the value of `SAP_CLOUD_SERVICE` key.
+
+```diff
+html5-apps-deployer:
+  env:
+-    SAP_CLOUD_SERVICE: null
++    SAP_CLOUD_SERVICE: sap.fe.cap.sflight
+```
+
+4. Add backend destinations required by HTML5 Apps Deployer.
+   
+```diff
+-  backendDestinations: {}
++  backendDestinations:
++     sflight-srv:
++       service: srv
+```
+
+5. Add your image registry secret created in [Create container registry secret](#create-container-registry-secret) step.
+
+```diff
+global:
+  domain: null
+-  imagePullSecret: {}
++  imagePullSecret:
++    name: container-registry
 ```
 
 ## Build - Node.js
@@ -86,22 +141,23 @@ CDS_ENV=node cds build --production
 ```
 **Build data base deployer image:**
 
-```
+```bash
 pack build $YOUR_CONTAINER_REGISTRY/sflight-hana-deployer \
      --path gen/db \
-     --buildpack gcr.io/paketo-buildpacks/nodejs:0.16.1 \
-     --builder paketobuildpacks/builder:base
+     --buildpack gcr.io/paketo-buildpacks/nodejs \
+     --builder paketobuildpacks/builder:base \
+     --env BP_NODE_RUN_SCRIPTS=""
 ```
 (Replace `$YOUR_CONTAINER_REGISTRY` with the full-qualified hostname of your container registry)
 
 **Build image for CAP service:**
 
-```
-pack build \
-     $YOUR_CONTAINER_REGISTRY/sflight-srv \
+```bash
+pack build $YOUR_CONTAINER_REGISTRY/sflight-srv \
      --path "gen/srv" \
      --buildpack gcr.io/paketo-buildpacks/nodejs \
-     --builder paketobuildpacks/builder:base
+     --builder paketobuildpacks/builder:base \
+     --env BP_NODE_RUN_SCRIPTS=""
 ```
 
 ## Build - Java
@@ -110,32 +166,34 @@ Do the following steps if you want to deploy the **Java** application.
 
 **Build data base deployer image:**
 
-```
+```bash
 cds build --production
 ```
 
-```
+```bash
 pack build $YOUR_CONTAINER_REGISTRY/sflight-hana-deployer \
      --path db \
-     --buildpack gcr.io/paketo-buildpacks/nodejs:0.16.1 \
-     --builder paketobuildpacks/builder:base
+     --buildpack gcr.io/paketo-buildpacks/nodejs \
+     --builder paketobuildpacks/builder:base \
+     --env BP_NODE_RUN_SCRIPTS=""
 ```
 
 (Replace `$YOUR_CONTAINER_REGISTRY` the full-qualified hostname of your container registry)
 
 **Build image for CAP service:**
 
-```
+```bash
 mvn package
 ```
 
-```
+```bash
 pack build $YOUR_CONTAINER_REGISTRY/sflight-srv \
      --path srv/target/*-exec.jar \
      --buildpack gcr.io/paketo-buildpacks/sap-machine \
      --buildpack gcr.io/paketo-buildpacks/java \
      --builder paketobuildpacks/builder:base \
-     --env SPRING_PROFILES_ACTIVE=cloud
+     --env SPRING_PROFILES_ACTIVE=cloud \
+     --env BP_JVM_VERSION=17
 ```
 
 ## Build HTML5 application deployer image
@@ -148,7 +206,7 @@ bash deployment/kyma/scripts/build-ui-image.sh
 
 You can push all the docker images to your docker registry, using:
 
-```
+```bash
 docker push $YOUR_CONTAINER_REGISTRY/sflight-hana-deployer
 docker push $YOUR_CONTAINER_REGISTRY/sflight-srv
 docker push $YOUR_CONTAINER_REGISTRY/sflight-html5-deployer
@@ -156,8 +214,8 @@ docker push $YOUR_CONTAINER_REGISTRY/sflight-html5-deployer
 
 ## Deployment
 
-```
-helm upgrade sflight ./chart --install -f deployment/kyma/values.yaml
+```bash
+helm install sflight ./chart --set-file xsuaa.jsonParameters=xs-security.json
 ```
 
 ## Access the UI
