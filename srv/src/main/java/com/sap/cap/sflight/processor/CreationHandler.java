@@ -9,16 +9,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
 import com.sap.cds.ql.Select;
 import com.sap.cds.ql.Update;
-import com.sap.cds.services.cds.CdsService;
+import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.draft.DraftService;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
-
-import org.springframework.stereotype.Component;
 
 import cds.gen.travelservice.Booking;
 import cds.gen.travelservice.BookingSupplement;
@@ -42,7 +42,7 @@ public class CreationHandler implements EventHandler {
 		this.draftService = draftService;
 	}
 
-	@Before(event = { CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE, DraftService.EVENT_DRAFT_CREATE}, entity = Travel_.CDS_NAME)
+	@Before(event = { CqnService.EVENT_CREATE, CqnService.EVENT_UPDATE, DraftService.EVENT_DRAFT_CREATE}, entity = Travel_.CDS_NAME)
 	public void setBookingDateIfNotProvided(final Travel travel) {
 		if (travel.getBeginDate() == null) {
 			travel.setBeginDate(LocalDate.now());
@@ -81,7 +81,7 @@ public class CreationHandler implements EventHandler {
 		});
 	}
 
-	@Before(event = { CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE }, entity = Travel_.CDS_NAME)
+	@Before(event = { CqnService.EVENT_CREATE, CqnService.EVENT_UPDATE }, entity = Travel_.CDS_NAME)
 	public void checkTravelEndDateIsAfterBeginDate(Travel travel) {
 
 		if (travel.getBeginDate() != null && travel.getEndDate() != null) {
@@ -97,7 +97,7 @@ public class CreationHandler implements EventHandler {
 		}
 	}
 
-	@Before(event = CdsService.EVENT_CREATE, entity = Travel_.CDS_NAME)
+	@Before(event = CqnService.EVENT_CREATE, entity = Travel_.CDS_NAME)
 	public void calculateTravelIdBeforeCreation(final Travel travel) {
 		if (travel.getTravelID() == null || travel.getTravelID() == 0) {
 			Select<Travel_> maxIdSelect = Select.from(TravelService_.TRAVEL).columns(e -> e.TravelID().max().as(MAX_ID));
@@ -107,7 +107,7 @@ public class CreationHandler implements EventHandler {
 		}
 	}
 
-	@Before(event = { CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE, }, entity = Travel_.CDS_NAME)
+	@Before(event = { CqnService.EVENT_CREATE, CqnService.EVENT_UPDATE, }, entity = Travel_.CDS_NAME)
 	public void fillBookingIdsBeforeCreationAndUpdate(final Travel travel) {
 		if (travel.getToBooking() != null) {
 			addBookingIds(travel);
@@ -152,7 +152,7 @@ public class CreationHandler implements EventHandler {
 		}
 	}
 
-	@Before(event = CdsService.EVENT_CREATE, entity = Travel_.CDS_NAME)
+	@Before(event = CqnService.EVENT_CREATE, entity = Travel_.CDS_NAME)
 	public void initialTravelStatus(final Travel travel) {
 		TravelStatus travelStatus = TravelStatus.create();
 		travelStatus.setCode("O");
