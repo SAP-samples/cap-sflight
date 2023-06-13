@@ -9,6 +9,7 @@ import static java.lang.Boolean.FALSE;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -75,8 +76,8 @@ public class RecalculatePriceHandler implements EventHandler {
 						.where(b -> b.to_Travel_TravelUUID().eq(travelUUID).and(b.IsActiveEntity().eq(isActiveEntity))))
 				.first();
 
-		if (flightPriceRow.isPresent() && flightPriceRow.get().size() > 0) {
-			flightPriceSum = new BigDecimal(flightPriceRow.get().get("FlightPriceSum").toString());
+		if (flightPriceRow.isPresent()) {
+			flightPriceSum = (BigDecimal) Objects.requireNonNullElse(flightPriceRow.get().get("FlightPriceSum"), new BigDecimal(0));
 		}
 
 		// get sum of the prices of all booking supplements for the travel
@@ -85,8 +86,8 @@ public class RecalculatePriceHandler implements EventHandler {
 				.run(Select.from(BOOKING_SUPPLEMENT).columns(c -> sum(c.Price()).as("PriceSum"))
 						.where(b -> b.to_Travel_TravelUUID().eq(travelUUID).and(b.IsActiveEntity().eq(isActiveEntity))))
 				.first();
-		if (supplementPriceSumRow.isPresent() && supplementPriceSumRow.get().size() > 0) {
-			supplementPriceSum = new BigDecimal(supplementPriceSumRow.get().get("PriceSum").toString());
+		if (supplementPriceSumRow.isPresent()) {
+			supplementPriceSum = (BigDecimal) Objects.requireNonNullElse(flightPriceRow.get().get("PriceSum"), new BigDecimal(0));
 		}
 
 		// update travel's total price
