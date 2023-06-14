@@ -59,10 +59,10 @@ public class RecalculatePriceHandler implements EventHandler {
 
 	@After(event = { EVENT_CREATE, EVENT_UPDATE }, entity = Travel_.CDS_NAME)
 	public void calculateTotalPriceOfTravel(Travel travel) {
-		String travelUUID = travel.getTravelUUID();
+		String travelUUID = travel.travelUUID();
 		if (!Strings.isNullOrEmpty(travelUUID)) {
 			BigDecimal totalPrice = calculateTravelPrice(travelUUID);
-			travel.setTotalPrice(totalPrice);
+			travel.totalPrice(totalPrice);
 
 			persistenceService.run(Update.entity(TRAVEL).data(Map.of(
 				Travel.TRAVEL_UUID, travelUUID, 
@@ -100,38 +100,38 @@ public class RecalculatePriceHandler implements EventHandler {
 	public void updateTravelPriceOnBookingFeeUpdate(DraftPatchEventContext context) {
 		CqnUpdate update = context.getCqn();
 		Travel travel = Struct.access(update.data()).as(Travel.class);
-		BigDecimal newFee = travel.getBookingFee();
+		BigDecimal newFee = travel.bookingFee();
 		if (newFee != null) {
 			Map<String, Object> travelKeys = CqnAnalyzer.create(context.getModel()).analyze(update).targetKeys();
 			BigDecimal oldFee = selectTravelFee(travelKeys);
 			BigDecimal travelPrice = selectTravelPrice(travelKeys.get(Travel.TRAVEL_UUID)).add(newFee).subtract(oldFee);
 
-			travel.setTotalPrice(travelPrice);
+			travel.totalPrice(travelPrice);
 		}
 	}
 
 	@On(event = { EVENT_DRAFT_PATCH }, entity = Booking_.CDS_NAME)
 	public void updateTravelPriceOnBookingUpdate(Booking bookingPatch) {
-		BigDecimal newPrice = bookingPatch.getFlightPrice();
+		BigDecimal newPrice = bookingPatch.flightPrice();
 		if (newPrice != null) {
 			Booking booking = selectBooking(Map.of(
-					Booking.BOOKING_UUID, bookingPatch.getBookingUUID(),
+					Booking.BOOKING_UUID, bookingPatch.bookingUUID(),
 					Booking.IS_ACTIVE_ENTITY, false));
 
-			String travelUUID = booking.getToTravelTravelUUID();
-			updateTravelPrice(travelUUID, newPrice, booking.getFlightPrice());
+			String travelUUID = booking.toTravelTravelUUID();
+			updateTravelPrice(travelUUID, newPrice, booking.flightPrice());
 		}
 	}
 
 	@On(event = { EVENT_DRAFT_PATCH }, entity = BookingSupplement_.CDS_NAME)
 	public void updateTravelPriceOnSupplementUpdate(BookingSupplement supplementPatch) {
-		BigDecimal newPrice = supplementPatch.getPrice();
+		BigDecimal newPrice = supplementPatch.price();
 		if (newPrice != null) {
 			BookingSupplement supplement = selectSupplement(Map.of(BookingSupplement.BOOK_SUPPL_UUID,
-					supplementPatch.getBookSupplUUID(), BookingSupplement.IS_ACTIVE_ENTITY, false));
+					supplementPatch.bookSupplUUID(), BookingSupplement.IS_ACTIVE_ENTITY, false));
 
-			String travelUUID = supplement.getToTravelTravelUUID();
-			updateTravelPrice(travelUUID, newPrice, supplement.getPrice());
+			String travelUUID = supplement.toTravelTravelUUID();
+			updateTravelPrice(travelUUID, newPrice, supplement.price());
 		}
 	}
 
@@ -147,10 +147,10 @@ public class RecalculatePriceHandler implements EventHandler {
 	@On(event = { EVENT_DRAFT_CANCEL }, entity = Booking_.CDS_NAME)
 	public void updateTravelPriceOnCancelBooking(DraftCancelEventContext context) {
 		Booking booking = selectBooking(entityKeys(context));
-		String travelUUID = booking.getToTravelTravelUUID();
-		BigDecimal supplementPrice = calculateSupplementPrice(booking.getBookingUUID());
+		String travelUUID = booking.toTravelTravelUUID();
+		BigDecimal supplementPrice = calculateSupplementPrice(booking.bookingUUID());
 		BigDecimal totalPrice = selectTravelPrice(travelUUID).subtract(supplementPrice)
-				.subtract(nullToZero(booking.getFlightPrice()));
+				.subtract(nullToZero(booking.flightPrice()));
 
 		updateTravelPrice(travelUUID, totalPrice);
 	}
@@ -166,9 +166,9 @@ public class RecalculatePriceHandler implements EventHandler {
 	public void updateTravelPriceAfterDeleteBookingSupplement(DraftCancelEventContext context) {
 		BookingSupplement supplement = selectSupplement(entityKeys(context));
 
-		if (supplement.getPrice() != null) {
-			String travelUUID = supplement.getToTravelTravelUUID();
-			updateTravelPrice(travelUUID, ZERO, supplement.getPrice());
+		if (supplement.price() != null) {
+			String travelUUID = supplement.toTravelTravelUUID();
+			updateTravelPrice(travelUUID, ZERO, supplement.price());
 		}
 	}
 
@@ -189,7 +189,7 @@ public class RecalculatePriceHandler implements EventHandler {
 		CqnSelect query = Select.from(TRAVEL).matching(travelKeys).columns(b -> b.BookingFee());
 		Travel travel = draftService.run(query).single(Travel.class);
 
-		return nullToZero(travel.getBookingFee());
+		return nullToZero(travel.bookingFee());
 	}
 
 	private Booking selectBooking(Map<String, Object> bookingKeys) {
