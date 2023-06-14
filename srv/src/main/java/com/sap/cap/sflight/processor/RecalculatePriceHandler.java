@@ -106,30 +106,30 @@ public class RecalculatePriceHandler implements EventHandler {
 		* store them to the active version *before* the DRAFT_SAVE event.
 		*/
 
-		String travelUUID = travel.getTravelUUID();
+		String travelUUID = travel.travelUUID();
 		if (StringUtils.isEmpty(travelUUID)) {
 			return;
 		}
-		travel.setTotalPrice(calculateTotalPriceForTravel(persistenceService, travelUUID, true));
+		travel.totalPrice(calculateTotalPriceForTravel(persistenceService, travelUUID, true));
 
 		Map<String, Object> data = new HashMap<>();
-		data.put(Travel.TOTAL_PRICE, travel.getTotalPrice());
+		data.put(Travel.TOTAL_PRICE, travel.totalPrice());
 		data.put(Travel.TRAVEL_UUID, travelUUID);
 		persistenceService.run(Update.entity(TRAVEL).data(data));
 	}
 
 	@After(event = { DraftService.EVENT_DRAFT_PATCH }, entity = Travel_.CDS_NAME)
 	public void recalculateTravelPriceIfTravelWasUpdated(final Travel travel) {
-		if (travel.getTravelUUID() != null && travel.getBookingFee() != null) { // only for patched booking fee
-			String travelUUID = travel.getTravelUUID();
-			travel.setTotalPrice(calculateAndPatchNewTotalPriceForDraft(travelUUID));
+		if (travel.travelUUID() != null && travel.bookingFee() != null) { // only for patched booking fee
+			String travelUUID = travel.travelUUID();
+			travel.totalPrice(calculateAndPatchNewTotalPriceForDraft(travelUUID));
 		}
 	}
 
 	@After(event = { DraftService.EVENT_DRAFT_PATCH, DraftService.EVENT_DRAFT_NEW }, entity = Booking_.CDS_NAME)
 	public void recalculateTravelPriceIfFlightPriceWasUpdated(final Booking booking) {
 		draftService.run(Select.from(BOOKING).columns(bs -> bs.to_Travel().TravelUUID().as(Travel.TRAVEL_UUID))
-				.where(bs -> bs.BookingUUID().eq(booking.getBookingUUID())
+				.where(bs -> bs.BookingUUID().eq(booking.bookingUUID())
 						.and(bs.IsActiveEntity().eq(FALSE))))
 				.first()
 				.ifPresent(row -> calculateAndPatchNewTotalPriceForDraft((String) row.get(Travel.TRAVEL_UUID)));
@@ -140,7 +140,7 @@ public class RecalculatePriceHandler implements EventHandler {
 	public void recalculateTravelPriceIfPriceWasUpdated(final BookingSupplement bookingSupplement) {
 		draftService.run(Select.from(BOOKING_SUPPLEMENT)
 				.columns(bs -> bs.to_Booking().to_Travel().TravelUUID().as(Travel.TRAVEL_UUID))
-				.where(bs -> bs.BookSupplUUID().eq(bookingSupplement.getBookSupplUUID())
+				.where(bs -> bs.BookSupplUUID().eq(bookingSupplement.bookSupplUUID())
 						.and(bs.IsActiveEntity().eq(FALSE))))
 				.first()
 				.ifPresent(row -> calculateAndPatchNewTotalPriceForDraft((String) row.get(Travel.TRAVEL_UUID)));
