@@ -12,10 +12,10 @@ import static java.util.Objects.requireNonNullElse;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 import org.springframework.stereotype.Component;
 
-import com.google.common.base.Strings;
 import com.sap.cds.Result;
 import com.sap.cds.Struct;
 import com.sap.cds.ql.Select;
@@ -35,6 +35,7 @@ import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
 
+import cds.gen.sap.fe.cap.travel.TravelModel_;
 import cds.gen.travelservice.Booking;
 import cds.gen.travelservice.BookingSupplement;
 import cds.gen.travelservice.BookingSupplement_;
@@ -60,20 +61,20 @@ public class RecalculatePriceHandler implements EventHandler {
 	@After(event = { EVENT_CREATE, EVENT_UPDATE }, entity = Travel_.CDS_NAME)
 	public void calculateTotalPriceOfTravel(Travel travel) {
 		String travelUUID = travel.travelUUID();
-		if (!Strings.isNullOrEmpty(travelUUID)) {
+		if (travelUUID != null) {
 			BigDecimal totalPrice = calculateTravelPrice(travelUUID);
-			travel.totalPrice(totalPrice);
+			persistenceService.run(Update.entity(TRAVEL).data(Travel.create()
+					.travelUUID(travelUUID)
+					.totalPrice(totalPrice)));
 
-			persistenceService.run(Update.entity(TRAVEL).data(Map.of(
-				Travel.TRAVEL_UUID, travelUUID, 
-				Travel.TOTAL_PRICE, totalPrice)));
+			travel.totalPrice(totalPrice);
 		}
 	}
 
 	private BigDecimal calculateTravelPrice(String travelUUID) {
-		BigDecimal bookingFee = run(Select.from(TRAVEL)
+		BigDecimal bookingFee = run(Select.from(TravelModel_.TRAVEL)
 				.columns(t -> t.BookingFee().as("sum"))
-				.where(t -> t.TravelUUID().eq(travelUUID)));
+				.byId(travelUUID));
 
 		BigDecimal flights = run(Select.from(BOOKING)
 				.columns(b -> b.FlightPrice().sum().as("sum"))
@@ -87,12 +88,13 @@ public class RecalculatePriceHandler implements EventHandler {
 	}
 
 	private BigDecimal run(CqnSelect query) {
-		BigDecimal sum = persistenceService.run(query).first(Price.class).map(Price::sum).orElse(ZERO);
+		Result result = persistenceService.run(query);
+		BigDecimal sum = result.first(Price.class).map(Price::sum).orElse(ZERO);
 
 		return nullToZero(sum);
 	}
 
-	private static interface Price {
+	private interface Price {
 		BigDecimal sum();
 	}
 
@@ -102,7 +104,7 @@ public class RecalculatePriceHandler implements EventHandler {
 		Travel travel = Struct.access(update.data()).as(Travel.class);
 		BigDecimal newFee = travel.bookingFee();
 		if (newFee != null) {
-			Map<String, Object> travelKeys = CqnAnalyzer.create(context.getModel()).analyze(update).targetKeys();
+			var travelKeys = CqnAnalyzer.create(context.getModel()).analyze(update).targetKeys();
 			BigDecimal oldFee = selectTravelFee(travelKeys);
 			BigDecimal travelPrice = selectTravelPrice(travelKeys.get(Travel.TRAVEL_UUID)).add(newFee).subtract(oldFee);
 
@@ -114,9 +116,9 @@ public class RecalculatePriceHandler implements EventHandler {
 	public void updateTravelPriceOnBookingUpdate(Booking bookingPatch) {
 		BigDecimal newPrice = bookingPatch.flightPrice();
 		if (newPrice != null) {
-			Booking booking = selectBooking(Map.of(
-					Booking.BOOKING_UUID, bookingPatch.bookingUUID(),
-					Booking.IS_ACTIVE_ENTITY, false));
+			Booking booking = selectBookingPrice(Booking.create()
+					.bookingUUID(bookingPatch.bookingUUID())
+					.isActiveEntity(false));
 
 			String travelUUID = booking.toTravelTravelUUID();
 			updateTravelPrice(travelUUID, newPrice, booking.flightPrice());
@@ -127,8 +129,9 @@ public class RecalculatePriceHandler implements EventHandler {
 	public void updateTravelPriceOnSupplementUpdate(BookingSupplement supplementPatch) {
 		BigDecimal newPrice = supplementPatch.price();
 		if (newPrice != null) {
-			BookingSupplement supplement = selectSupplement(Map.of(BookingSupplement.BOOK_SUPPL_UUID,
-					supplementPatch.bookSupplUUID(), BookingSupplement.IS_ACTIVE_ENTITY, false));
+			BookingSupplement supplement = selectSupplementPrice(s -> s
+					.bookSupplUUID(supplementPatch.bookSupplUUID())
+					.isActiveEntity(false));
 
 			String travelUUID = supplement.toTravelTravelUUID();
 			updateTravelPrice(travelUUID, newPrice, supplement.price());
@@ -141,12 +144,13 @@ public class RecalculatePriceHandler implements EventHandler {
 	}
 
 	private void updateTravelPrice(String travelUUID, BigDecimal totalPrice) {
-		draftService.patchDraft(Update.entity(TRAVEL).byId(travelUUID).data(Travel.TOTAL_PRICE, totalPrice));
+		CqnUpdate update = Update.entity(TRAVEL).byId(travelUUID).data(Travel.TOTAL_PRICE, totalPrice);
+		draftService.patchDraft(update);
 	}
 
 	@On(event = { EVENT_DRAFT_CANCEL }, entity = Booking_.CDS_NAME)
 	public void updateTravelPriceOnCancelBooking(DraftCancelEventContext context) {
-		Booking booking = selectBooking(entityKeys(context));
+		Booking booking = selectBookingPrice(entityKeys(context));
 		String travelUUID = booking.toTravelTravelUUID();
 		BigDecimal supplementPrice = calculateSupplementPrice(booking.bookingUUID());
 		BigDecimal totalPrice = selectTravelPrice(travelUUID).subtract(supplementPrice)
@@ -158,13 +162,14 @@ public class RecalculatePriceHandler implements EventHandler {
 	private BigDecimal calculateSupplementPrice(String bookingUUID) {
 		Result result = draftService.run(Select.from(BOOKING_SUPPLEMENT).columns(s -> s.Price().sum().as("sum"))
 				.where(s -> s.to_Booking_BookingUUID().eq(bookingUUID).and(s.IsActiveEntity().eq(FALSE))));
+		Price price = result.single(Price.class);
 
-		return nullToZero(result.single(Price.class).sum());
+		return nullToZero(price.sum());
 	}
 
 	@On(event = { EVENT_DRAFT_CANCEL }, entity = BookingSupplement_.CDS_NAME)
 	public void updateTravelPriceAfterDeleteBookingSupplement(DraftCancelEventContext context) {
-		BookingSupplement supplement = selectSupplement(entityKeys(context));
+		BookingSupplement supplement = selectSupplementPrice(entityKeys(context));
 
 		if (supplement.price() != null) {
 			String travelUUID = supplement.toTravelTravelUUID();
@@ -177,9 +182,9 @@ public class RecalculatePriceHandler implements EventHandler {
 	}
 
 	private BigDecimal selectTravelPrice(Object travelUUID) {
-		CqnSelect query = Select.from(TRAVEL)
-				.matching(Map.of(Travel.TRAVEL_UUID, travelUUID, Travel.IS_ACTIVE_ENTITY, false))
-				.columns(t -> t.TotalPrice().as("sum"));
+		CqnSelect query = Select.from(TRAVEL).columns(t -> t.TotalPrice().as("sum")).matching(Map.of(
+						Travel.TRAVEL_UUID, travelUUID,
+						Travel.IS_ACTIVE_ENTITY, false));
 		BigDecimal price = draftService.run(query).single(Price.class).sum();
 
 		return nullToZero(price);
@@ -192,15 +197,20 @@ public class RecalculatePriceHandler implements EventHandler {
 		return nullToZero(travel.bookingFee());
 	}
 
-	private Booking selectBooking(Map<String, Object> bookingKeys) {
-		CqnSelect query = Select.from(BOOKING).matching(bookingKeys).columns(b -> b.BookingUUID(),
-				b -> b.to_Travel_TravelUUID(), b -> b.FlightPrice());
+	private Booking selectBookingPrice(Map<String, Object> bookingKeys) {
+		CqnSelect query = Select.from(BOOKING).matching(bookingKeys).columns(
+			b -> b.BookingUUID(), b -> b.to_Travel_TravelUUID(), b -> b.FlightPrice());
 		return draftService.run(query).single(Booking.class);
 	}
 
-	private BookingSupplement selectSupplement(Map<String, Object> supplementKeys) {
-		return draftService.run(Select.from(BOOKING_SUPPLEMENT).matching(supplementKeys)
-				.columns(s -> s.to_Booking().to_Travel_TravelUUID(), s -> s.Price())).single(BookingSupplement.class);
+	private BookingSupplement selectSupplementPrice(UnaryOperator<BookingSupplement> supplement) {
+		return selectSupplementPrice(supplement.apply(BookingSupplement.create()));
+	}
+
+	private BookingSupplement selectSupplementPrice(Map<String, Object> supplementKeys) {
+		CqnSelect query = Select.from(BOOKING_SUPPLEMENT).matching(supplementKeys)
+				.columns(s -> s.to_Booking().to_Travel_TravelUUID(), s -> s.Price());
+		return draftService.run(query).single(BookingSupplement.class);
 	}
 
 	private static BigDecimal nullToZero(BigDecimal d) {
