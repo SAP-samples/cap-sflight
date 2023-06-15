@@ -30,7 +30,7 @@ describe ("Basic Querying", () => {
       where: [ {ref:['TravelUUID']},'=',{val:'7A757221A8E4645C17002DF03754AB66'} ]
     }]}
     const travel = await SELECT.one.from ('TravelService.Travel') .where ({
-      TravelUUID: SELECT.one `to_Travel_TravelUUID` .from (BookingRef)
+      TravelUUID: SELECT.one `Travel_TravelUUID` .from (BookingRef)
     })
     expect (travel) .to.exist
     expect (travel.TravelID) .to.eql (1)
@@ -68,8 +68,8 @@ describe('Basic OData', () => {
       IsActiveEntity: true,
       LastChangedAt: expectedValue => /2022-07-21T03:18:18\.000(0000)?Z/.test(expectedValue), // timestamp precision increase with cds^7
       LastChangedBy: 'Deichgraeber',
-      to_Agency_AgencyID: '070029',
-      to_Customer_CustomerID: '000318',
+      Agency_AgencyID: '070029',
+      Customer_CustomerID: '000318',
       TotalPrice: 23439,
       TravelID: 175,
       TravelStatus_code: 'A',
@@ -90,16 +90,16 @@ describe('Basic OData', () => {
     const { data } = await GET(`/processor/Travel`, {
       params: {
         $select: `TravelID`,
-        $expand: `to_Agency($select=Name,City)`
+        $expand: `Agency($select=Name,City)`
       }
     })
     expect(data.value).to.containSubset([
-      { TravelID: 175, to_Agency: {Name: "Up 'n' Away", City:'Hannover'} },
+      { TravelID: 175, Agency: {Name: "Up 'n' Away", City:'Hannover'} },
     ])
   })
 
   it('supports $value requests', async () => {
-    const { data } = await GET `/processor/Travel(TravelUUID='52657221A8E4645C17002DF03754AB66',IsActiveEntity=true)/to_Customer/LastName/$value`
+    const { data } = await GET `/processor/Travel(TravelUUID='52657221A8E4645C17002DF03754AB66',IsActiveEntity=true)/Customer/LastName/$value`
     expect(data).to.equal('Prinz')
   })
 
@@ -127,8 +127,8 @@ describe('Basic OData', () => {
       BeginDate: '2028-04-01',
       EndDate: '2028-04-02',
       BookingFee: '11',
-      to_Customer_CustomerID: '000001',
-      to_Agency_AgencyID: '070001',
+      Customer_CustomerID: '000001',
+      Agency_AgencyID: '070001',
       CurrencyCode_code: 'USD'
     })
 

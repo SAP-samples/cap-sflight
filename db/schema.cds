@@ -19,9 +19,9 @@ entity Travel : managed {
   CurrencyCode   : Currency;
   Description    : String(1024);
   TravelStatus   : Association to TravelStatus @readonly;
-  to_Agency      : Association to TravelAgency;
-  to_Customer    : Association to Passenger;
-  to_Booking     : Composition of many Booking on to_Booking.to_Travel = $self;
+  Agency         : Association to TravelAgency;
+  Customer       : Association to Passenger;
+  Bookings       : Composition of many Booking on Bookings.Travel = $self;
 };
 
 annotate Travel with @(
@@ -46,13 +46,13 @@ entity Booking : managed {
   FlightPrice       : Decimal(16, 3);
   CurrencyCode      : Currency;
   BookingStatus     : Association to BookingStatus;
-  to_BookSupplement : Composition of many BookingSupplement on to_BookSupplement.to_Booking = $self;
-  to_Carrier        : Association to Airline;
-  to_Customer       : Association to Passenger;
-  to_Travel         : Association to Travel;
-  to_Flight         : Association to Flight on  to_Flight.AirlineID = to_Carrier.AirlineID
-                                            and to_Flight.FlightDate = FlightDate
-                                            and to_Flight.ConnectionID = ConnectionID;
+  BookSupplements   : Composition of many BookingSupplement on BookSupplements.Booking = $self;
+  Carrier           : Association to Airline;
+  Customer          : Association to Passenger;
+  Travel            : Association to Travel;
+  Flight            : Association to Flight on  Flight.AirlineID = Carrier.AirlineID
+                                            and Flight.FlightDate = FlightDate
+                                            and Flight.ConnectionID = ConnectionID;
 };
 
 entity BookingSupplement : managed {
@@ -60,9 +60,9 @@ entity BookingSupplement : managed {
   BookingSupplementID : Integer @Core.Computed;
   Price               : Decimal(16, 3);
   CurrencyCode        : Currency;
-  to_Booking          : Association to Booking;
-  to_Travel           : Association to Travel;
-  to_Supplement       : Association to Supplement;
+  Booking             : Association to Booking;
+  Travel              : Association to Travel;
+  Supplement          : Association to Supplement;
 };
 
 

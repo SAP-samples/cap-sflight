@@ -73,7 +73,7 @@ public class RecalculatePriceHandler implements EventHandler {
 		BigDecimal flightPriceSum = new BigDecimal(0);
 		Optional<Row> flightPriceRow = db
 				.run(Select.from(BOOKING).columns(b -> sum(b.FlightPrice()).as("FlightPriceSum"))
-						.where(b -> b.to_Travel_TravelUUID().eq(travelUUID).and(b.IsActiveEntity().eq(isActiveEntity))))
+						.where(b -> b.Travel_TravelUUID().eq(travelUUID).and(b.IsActiveEntity().eq(isActiveEntity))))
 				.first();
 
 		if (flightPriceRow.isPresent()) {
@@ -84,7 +84,7 @@ public class RecalculatePriceHandler implements EventHandler {
 		BigDecimal supplementPriceSum = new BigDecimal(0);
 		Optional<Row> supplementPriceSumRow = db
 				.run(Select.from(BOOKING_SUPPLEMENT).columns(c -> sum(c.Price()).as("PriceSum"))
-						.where(b -> b.to_Travel_TravelUUID().eq(travelUUID).and(b.IsActiveEntity().eq(isActiveEntity))))
+						.where(b -> b.Travel_TravelUUID().eq(travelUUID).and(b.IsActiveEntity().eq(isActiveEntity))))
 				.first();
 		if (supplementPriceSumRow.isPresent()) {
 			supplementPriceSum = (BigDecimal) Objects.requireNonNullElse(flightPriceRow.get().get("PriceSum"), new BigDecimal(0));
@@ -128,7 +128,7 @@ public class RecalculatePriceHandler implements EventHandler {
 
 	@After(event = { DraftService.EVENT_DRAFT_PATCH, DraftService.EVENT_DRAFT_NEW }, entity = Booking_.CDS_NAME)
 	public void recalculateTravelPriceIfFlightPriceWasUpdated(final Booking booking) {
-		draftService.run(Select.from(BOOKING).columns(bs -> bs.to_Travel().TravelUUID().as(Travel.TRAVEL_UUID))
+		draftService.run(Select.from(BOOKING).columns(bs -> bs.Travel().TravelUUID().as(Travel.TRAVEL_UUID))
 				.where(bs -> bs.BookingUUID().eq(booking.bookingUUID())
 						.and(bs.IsActiveEntity().eq(FALSE))))
 				.first()
@@ -139,7 +139,7 @@ public class RecalculatePriceHandler implements EventHandler {
 			DraftService.EVENT_DRAFT_SAVE }, entity = BookingSupplement_.CDS_NAME)
 	public void recalculateTravelPriceIfPriceWasUpdated(final BookingSupplement bookingSupplement) {
 		draftService.run(Select.from(BOOKING_SUPPLEMENT)
-				.columns(bs -> bs.to_Booking().to_Travel().TravelUUID().as(Travel.TRAVEL_UUID))
+				.columns(bs -> bs.Booking().Travel().TravelUUID().as(Travel.TRAVEL_UUID))
 				.where(bs -> bs.BookSupplUUID().eq(bookingSupplement.bookSupplUUID())
 						.and(bs.IsActiveEntity().eq(FALSE))))
 				.first()

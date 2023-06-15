@@ -42,13 +42,13 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
         // Value help Agency ID
         When.onTheDetailPage
           .onForm({ section: "Travel", fieldGroup: "TravelData" })
-          .iOpenValueHelp({ property: "to_Agency_AgencyID" });
+          .iOpenValueHelp({ property: "Agency_AgencyID" });
         When.onTheDetailPage.onValueHelpDialog().iSelectRows({ 0: "070006" });
 
         // Value help Customer ID
         When.onTheDetailPage
           .onForm({ section: "Travel", fieldGroup: "TravelData" })
-          .iOpenValueHelp({ property: "to_Customer_CustomerID" });
+          .iOpenValueHelp({ property: "Customer_CustomerID" });
         When.onTheDetailPage.onValueHelpDialog().iSelectRows({ 0: "000001" });
 
         // Starting date
@@ -199,7 +199,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           When.onTheDetailPage.iGoToSection("Booking");
           // Check buttons for bookings
           Then.onTheDetailPage
-            .onTable({ property: "to_Booking" })
+            .onTable({ property: "Bookings" })
             .iCheckDelete({ visible: false, enabled: false })
             .and.iCheckCreate({ visible: false, enabled: false });
 
@@ -221,7 +221,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
 
           When.onTheDetailPage.iGoToSection("General Information");
           When.onTheDetailPage
-            .onTable({ property: "to_Booking" })
+            .onTable({ property: "Bookings" })
             .iPressRow({ BookingID: "1" });
 
           Then.onTheDetailItemPage.iSeeThisPage();
@@ -245,10 +245,10 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           // Check buttons for booking supplements
           When.onTheDetailItemPage.iGoToSection("Booking Supplement");
           When.onTheDetailItemPage
-            .onTable({ property: "to_BookSupplement" })
+            .onTable({ property: "BookSupplements" })
             .iSelectRows({ BookingSupplementID: "1" });
           Then.onTheDetailItemPage
-            .onTable({ property: "to_BookSupplement" })
+            .onTable({ property: "BookSupplements" })
             .iCheckDelete({ visible: true, enabled: false })
             .and.iCheckCreate({ visible: true, enabled: false });
 
@@ -276,10 +276,10 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           When.onTheDetailPage.iGoToSection("Booking");
           // Check buttons
           When.onTheDetailPage
-            .onTable({ property: "to_Booking" })
+            .onTable({ property: "Bookings" })
             .iSelectRows({ BookingID: "2" });
           Then.onTheDetailPage
-            .onTable({ property: "to_Booking" })
+            .onTable({ property: "Bookings" })
             .iCheckDelete({ visible: true, enabled: true })
             .and.iCheckCreate({ visible: true, enabled: true });
 
@@ -301,7 +301,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
 
           When.onTheDetailPage.iGoToSection("General Information");
           When.onTheDetailPage
-            .onTable({ property: "to_Booking" })
+            .onTable({ property: "Bookings" })
             .iPressRow({ BookingID: "2" });
 
           Then.onTheDetailItemPage.iSeeThisPage();
@@ -324,10 +324,10 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           // Check buttons for booking supplements
           When.onTheDetailItemPage.iGoToSection("Booking Supplements");
           When.onTheDetailItemPage
-            .onTable({ property: "to_BookSupplement" })
+            .onTable({ property: "BookSupplements" })
             .iSelectRows({ BookingSupplementID: "1" });
           Then.onTheDetailItemPage
-            .onTable({ property: "to_BookSupplement" })
+            .onTable({ property: "BookSupplements" })
             .iCheckDelete({ visible: true, enabled: true })
             .and.iCheckCreate({ visible: true, enabled: true });
 

@@ -9,11 +9,11 @@ service AnalyticsService @(path:'/analytics') {
   entity Bookings as projection on my.Booking {
     @UI.Hidden: false
     BookingUUID as ID,
-    to_Travel.TravelID,
+    Travel.TravelID,
     BookingID,
 
     @title : 'Travel/Booking ID'
-    to_Travel.TravelID || '/' || BookingID as CombinedID : String,
+    Travel.TravelID || '/' || BookingID as CombinedID : String,
 
 
     ConnectionID,
@@ -32,29 +32,29 @@ service AnalyticsService @(path:'/analytics') {
     BookingStatus.name   as statusName,
 
     @Common.Text: airlineName
-    to_Carrier.AirlineID as airline,
-    to_Carrier.Name      as airlineName,
+    Carrier.AirlineID as airline,
+    Carrier.Name      as airlineName,
 
     BookingDate,
 
-    to_Travel,
-    to_Carrier,
+    Travel,
+    Carrier,
 
     // Java has a problem with this association
-    to_Flight,
+    Flight,
 
     // Workaround:
-    to_Flight.PlaneType,
-    to_Flight.to_Connection.Distance,
-    to_Flight.to_Connection.DistanceUnit,
+    Flight.PlaneType,
+    Flight.to_Connection.Distance,
+    Flight.to_Connection.DistanceUnit,
     @Common.Label: '{i18n>DepartureAirport}'
     @Common.Text: DepCity
-    to_Flight.to_Connection.DepartureAirport.AirportID as DepAirport,
-    to_Flight.to_Connection.DepartureAirport.City      as DepCity,
+    Flight.to_Connection.DepartureAirport.AirportID as DepAirport,
+    Flight.to_Connection.DepartureAirport.City      as DepCity,
     @Common.Label: '{i18n>ArrivalAirport}'
     @Common.Text: DestCity
-    to_Flight.to_Connection.DestinationAirport.AirportID as DestAirport,
-    to_Flight.to_Connection.DestinationAirport.City      as DestCity,
+    Flight.to_Connection.DestinationAirport.AirportID as DestAirport,
+    Flight.to_Connection.DestinationAirport.City      as DestCity,
 
 
   };
@@ -68,7 +68,7 @@ service AnalyticsService @(path:'/analytics') {
   entity Travels as projection on my.Travel {
     *,
     @Common.Label: '{i18n>CustomerName}'
-    to_Customer.FirstName || ' ' || to_Customer.LastName as CustomerName : String,
+    Customer.FirstName || ' ' || Customer.LastName as CustomerName : String,
   };
 
   annotate Travels:TravelID with @Common.Text: null;

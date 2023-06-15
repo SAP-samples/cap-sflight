@@ -33,8 +33,8 @@ annotate TravelService.Travel with @UI : {
     }]
   },
   SelectionFields : [
-    to_Agency_AgencyID,
-    to_Customer_CustomerID,
+    Agency_AgencyID,
+    Customer_CustomerID,
     TravelStatus_code
   ],
   LineItem : [
@@ -46,11 +46,11 @@ annotate TravelService.Travel with @UI : {
       @UI.Importance : #High
     },
     {
-      Value : to_Agency_AgencyID,
+      Value : Agency_AgencyID,
       @HTML5.CssDefaults: {width:'16em'}
     },
     {
-      Value : to_Customer_CustomerID,
+      Value : Customer_CustomerID,
       @UI.Importance : #High,
       @HTML5.CssDefaults: {width:'14em'}
     },
@@ -93,13 +93,13 @@ annotate TravelService.Travel with @UI : {
   }, {  // booking list
     $Type  : 'UI.ReferenceFacet',
     ID     : 'BookingList',
-    Target : 'to_Booking/@UI.PresentationVariant',
+    Target : 'Bookings/@UI.PresentationVariant',
     Label  : '{i18n>Bookings}'
   }],
   FieldGroup#TravelData : { Data : [
     { Value : TravelID               },
-    { Value : to_Agency_AgencyID     },
-    { Value : to_Customer_CustomerID },
+    { Value : Agency_AgencyID     },
+    { Value : Customer_CustomerID },
     { Value : Description            },
     {
       $Type       : 'UI.DataField',
@@ -127,7 +127,7 @@ annotate TravelService.Booking with @UI : {
   HeaderInfo : {
     TypeName       : '{i18n>Bookings}',
     TypeNamePlural : '{i18n>Bookings}',
-    Title          : { Value : to_Customer.LastName },
+    Title          : { Value : Customer.LastName },
     Description    : { Value : BookingID }
   },
   PresentationVariant : {
@@ -140,11 +140,11 @@ annotate TravelService.Booking with @UI : {
   },
   SelectionFields : [],
   LineItem : [
-    { Value : to_Carrier.AirlinePicURL,  Label : '  '},
+    { Value : Carrier.AirlinePicURL,  Label : '  '},
     { Value : BookingID              },
     { Value : BookingDate            },
-    { Value : to_Customer_CustomerID },
-    { Value : to_Carrier_AirlineID   },
+    { Value : Customer_CustomerID },
+    { Value : Carrier_AirlineID   },
     { Value : ConnectionID,          Label : '{i18n>FlightNumber}' },
     { Value : FlightDate             },
     { Value : FlightPrice            },
@@ -171,13 +171,13 @@ annotate TravelService.Booking with @UI : {
   }, {  // supplements list
     $Type  : 'UI.ReferenceFacet',
     ID     : 'SupplementsList',
-    Target : 'to_BookSupplement/@UI.PresentationVariant',
+    Target : 'BookSupplements/@UI.PresentationVariant',
     Label  : '{i18n>BookingSupplements}'
   }],
   FieldGroup #GeneralInformation : { Data : [
     { Value : BookingID              },
     { Value : BookingDate,           },
-    { Value : to_Customer_CustomerID },
+    { Value : Customer_CustomerID },
     { Value : BookingDate,           },
     { Value : BookingStatus_code,
       Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'N']}, 2,
@@ -185,7 +185,7 @@ annotate TravelService.Booking with @UI : {
      }
   ]},
   FieldGroup #Flight : { Data : [
-    { Value : to_Carrier_AirlineID   },
+    { Value : Carrier_AirlineID   },
     { Value : ConnectionID           },
     { Value : FlightDate             },
     { Value : FlightPrice            }
@@ -213,7 +213,7 @@ annotate TravelService.BookingSupplement with @UI : {
   },
   LineItem : [
     { Value : BookingSupplementID                                       },
-    { Value : to_Supplement_SupplementID, Label : '{i18n>ProductID}'    },
+    { Value : Supplement_SupplementID, Label : '{i18n>ProductID}'    },
     { Value : Price,                      Label : '{i18n>ProductPrice}' }
   ],
 };

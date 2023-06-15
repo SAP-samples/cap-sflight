@@ -8,11 +8,11 @@ annotate schema.Travel {
 
   TravelStatus @Common.ValueListWithFixedValues;
 
-  to_Agency @Common.ValueList: {
+  Agency @Common.ValueList: {
     CollectionPath : 'TravelAgency',
     Label : '',
     Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: to_Agency_AgencyID, ValueListProperty: 'AgencyID'},  // local data property is the foreign key
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Agency_AgencyID, ValueListProperty: 'AgencyID'},  // local data property is the foreign key
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Street'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PostalCode'},
@@ -24,11 +24,11 @@ annotate schema.Travel {
     ]
   };
 
-  to_Customer @Common.ValueList: {
+  Customer @Common.ValueList: {
     CollectionPath : 'Passenger',
     Label : 'Customer ID',
     Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: to_Customer_CustomerID, ValueListProperty: 'CustomerID'},
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Customer_CustomerID, ValueListProperty: 'CustomerID'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'FirstName'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'LastName'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Title'},
@@ -60,11 +60,11 @@ annotate schema.Booking {
 
   BookingStatus @Common.ValueListWithFixedValues;
 
-  to_Customer @Common.ValueList: {
+  Customer @Common.ValueList: {
     CollectionPath : 'Passenger',
     Label : '',
     Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: to_Customer_CustomerID, ValueListProperty: 'CustomerID'},
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Customer_CustomerID, ValueListProperty: 'CustomerID'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'FirstName'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'LastName'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Title'},
@@ -77,11 +77,11 @@ annotate schema.Booking {
     ]
   };
 
-  to_Carrier @Common.ValueList: {
+  Carrier @Common.ValueList: {
     CollectionPath : 'Airline',
     Label : '',
     Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: to_Carrier_AirlineID, ValueListProperty: 'AirlineID'},
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Carrier_AirlineID, ValueListProperty: 'AirlineID'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CurrencyCode_code'}
     ]
@@ -91,7 +91,7 @@ annotate schema.Booking {
     CollectionPath : 'Flight',
     Label : '',
     Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: to_Carrier_AirlineID,    ValueListProperty: 'AirlineID'},
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Carrier_AirlineID,    ValueListProperty: 'AirlineID'},
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: ConnectionID, ValueListProperty: 'ConnectionID'},
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: FlightDate,   ValueListProperty: 'FlightDate'},
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: FlightPrice,  ValueListProperty: 'Price'},
@@ -108,7 +108,7 @@ annotate schema.Booking {
     CollectionPath : 'Flight',
     Label : '',
     Parameters : [
-      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: to_Carrier_AirlineID,    ValueListProperty: 'AirlineID'},
+      {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Carrier_AirlineID,    ValueListProperty: 'AirlineID'},
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: ConnectionID, ValueListProperty: 'ConnectionID'},
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: FlightDate,   ValueListProperty: 'FlightDate'},
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: FlightPrice,  ValueListProperty: 'Price'},
@@ -137,11 +137,11 @@ annotate schema.Booking {
 
 annotate schema.BookingSupplement {
 
-  to_Supplement @Common.ValueList: {
+  Supplement @Common.ValueList: {
     CollectionPath : 'Supplement',
     Label : '',
     Parameters : [
-    {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: to_Supplement_SupplementID, ValueListProperty: 'SupplementID'},
+    {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Supplement_SupplementID, ValueListProperty: 'SupplementID'},
     {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Price,        ValueListProperty: 'Price'},
     {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: CurrencyCode_code, ValueListProperty: 'CurrencyCode_code'},
     {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Description'}
