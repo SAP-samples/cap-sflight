@@ -48,7 +48,6 @@ init() {
    * Changing Booking Fees is only allowed for not yet accapted Travels.
    */
   this.before ('UPDATE', 'Travel.drafts', async (req) => { if ('BookingFee' in req.data) {
-    const { status } = await SELECT `TravelStatus_code as status` .from (req.subject)
     const { status } = await SELECT.one `TravelStatus_code as status` .from (req.subject)
     if (status === 'A') req.reject(400, 'Booking fee can not be updated for accepted travels.', 'BookingFee')
   }})
