@@ -49,6 +49,7 @@ init() {
    */
   this.before ('UPDATE', 'Travel.drafts', async (req) => { if ('BookingFee' in req.data) {
     const { status } = await SELECT `TravelStatus_code as status` .from (req.subject)
+    const { status } = await SELECT.one `TravelStatus_code as status` .from (req.subject)
     if (status === 'A') req.reject(400, 'Booking fee can not be updated for accepted travels.', 'BookingFee')
   }})
 
@@ -120,11 +121,12 @@ init() {
    * Helper to re-calculate a Travel's TotalPrice from BookingFees, FlightPrices and Supplement Prices.
    */
   this._update_totals4 = function (travel) {
-    return UPDATE (Travel.drafts, travel) .with ({ TotalPrice: CXL `coalesce (BookingFee, 0) + ${
-      SELECT `coalesce (sum (FlightPrice + ${
-        SELECT `coalesce (sum (Price),0)` .from (BookingSupplement.drafts) .where `to_Booking_BookingUUID = BookingUUID`
-      }),0)` .from (Booking.drafts) .where `to_Travel_TravelUUID = TravelUUID`
-    }` })
+    // Using plain native SQL for such complex queries
+    return cds.run(`UPDATE ${Travel.drafts} SET
+      TotalPrice = coalesce(BookingFee,0)
+      + ( SELECT coalesce (sum(FlightPrice),0) from ${Booking.drafts} where to_Travel_TravelUUID = TravelUUID )
+      + ( SELECT coalesce (sum(Price),0) from ${BookingSupplement.drafts} where to_Travel_TravelUUID = TravelUUID )
+    WHERE TravelUUID = ?`, [travel])
   }
 
 
@@ -184,7 +186,9 @@ init() {
       if (!travel) throw req.reject (404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
       if (travel.status === 'A') req.reject (400, `Travel "${travel.ID}" has been approved already.`)
       if (travel.BookingFee == null) throw req.reject (404, `No discount possible, as travel "${travel.ID}" does not yet have a booking fee added.`)
-    } else return this.read(req.subject)
+    } else {
+      return this.read(req.subject)
+    }
   })
 
 

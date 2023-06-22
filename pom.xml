@@ -14,9 +14,9 @@
     <revision>1.0.0-SNAPSHOT</revision>
 
     <!-- DEPENDENCIES VERSION -->
-    <jdk.version>8</jdk.version>
-    <cds.services.version>1.32.1</cds.services.version>
-    <spring.boot.version>2.7.5</spring.boot.version>
+    <jdk.version>17</jdk.version>
+    <cds.services.version>2.0.1</cds.services.version>
+    <spring.boot.version>3.0.7</spring.boot.version>
 
     <cdsdk.version>^6</cdsdk.version>
   </properties>
@@ -73,7 +73,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-        <version>1.3.0</version>
+        <version>1.5.0</version>
         <configuration>
           <updatePomFile>true</updatePomFile>
           <flattenMode>resolveCiFriendliesOnly</flattenMode>
@@ -100,7 +100,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.2.1</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>Project Structure Checks</id>

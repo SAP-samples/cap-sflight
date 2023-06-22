@@ -5,7 +5,7 @@ management:
                 include: "*"
 ---
 spring:
-    profiles: default
+    config.activate.on-profile: default
     web.resources.static-locations: "file:./app"
 cds:
     security.mock.users:
@@ -30,9 +30,12 @@ server:
 
 ---
 spring:
-    profiles: cloud
+    config.activate.on-profile: cloud
+    sql.init.mode: never
 
 cds:
+    datasource:
+        csv.initialization-mode: never
     odata-v4:
         endpoint:
             path: "/"
