@@ -7,6 +7,7 @@ management:
 spring:
     config.activate.on-profile: default
     web.resources.static-locations: "file:./app"
+logging.level.com.sap.cds.messaging: DEBUG
 cds:
     security.mock.users:
     - name: rose
@@ -24,9 +25,14 @@ cds:
     odata-v4:
         endpoint:
             path: "/"
+    messaging:
+      services:
+      - name: "messaging"
+        kind: "file-based-messaging"
+        binding: "local-messaging.txt"
 
 server:
-    port: 4004
+    port: 8080
 
 ---
 spring:

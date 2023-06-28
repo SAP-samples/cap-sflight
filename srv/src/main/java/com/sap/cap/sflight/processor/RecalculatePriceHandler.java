@@ -149,7 +149,7 @@ public class RecalculatePriceHandler implements EventHandler {
 	private BigDecimal calculateAndPatchNewTotalPriceForDraft(final String travelUUID) {
 
 		BigDecimal totalPrice = calculateTotalPriceForTravel(draftService, travelUUID, false);
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> map = new HashMap<>();
 		map.put(Travel.TRAVEL_UUID, travelUUID);
 		map.put(Travel.TOTAL_PRICE, totalPrice);
 		CqnUpdate update = Update.entity(TRAVEL).data(map);

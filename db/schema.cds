@@ -16,6 +16,7 @@ entity Travel : managed {
   EndDate        : Date;
   BookingFee     : Decimal(16, 3);
   TotalPrice     : Decimal(16, 3) @readonly;
+  AvgReviewRating: Decimal;
   CurrencyCode   : Currency;
   Description    : String(1024);
   TravelStatus   : Association to TravelStatus @readonly;
@@ -35,6 +36,7 @@ annotate Travel with @(
             AllowedExpressions : 'SingleRange'
         }]}
     });
+
 
 
 entity Booking : managed {
@@ -87,4 +89,12 @@ entity TravelStatus : CodeList {
   fieldControl: Integer @odata.Type:'Edm.Byte'; // 1: #ReadOnly, 7: #Mandatory
   createDeleteHidden: Boolean;
   insertDeleteRestriction: Boolean; // = NOT createDeleteHidden
+}
+
+entity TravelReview : managed {
+  key RatingUUID : UUID;
+  TravelID : Integer;
+  Rating : Integer @assert.range: [ 0, 5 ];
+  Email : String;
+  Comment : String;
 }
