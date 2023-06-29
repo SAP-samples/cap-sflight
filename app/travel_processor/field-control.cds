@@ -11,8 +11,8 @@ annotate TravelService.Travel with @(Common.SideEffects: {
   BookingFee  @Common.FieldControl  : TravelStatus.fieldControl;
   BeginDate   @Common.FieldControl  : TravelStatus.fieldControl;
   EndDate     @Common.FieldControl  : TravelStatus.fieldControl;
-  to_Agency   @Common.FieldControl  : TravelStatus.fieldControl;
-  to_Customer @Common.FieldControl  : TravelStatus.fieldControl;
+  Agency      @Common.FieldControl  : TravelStatus.fieldControl;
+  Customer    @Common.FieldControl  : TravelStatus.fieldControl;
 
 } actions {
   rejectTravel @(
@@ -31,7 +31,7 @@ annotate TravelService.Travel with @(Common.SideEffects: {
 annotate TravelService.Travel @(
     Common.SideEffects#ReactonItemCreationOrDeletion : {
         SourceEntities : [
-            to_Booking
+            Bookings
         ],
        TargetProperties : [
            'TotalPrice'
@@ -39,29 +39,29 @@ annotate TravelService.Travel @(
     }
 );
 
-annotate TravelService.Booking with @UI.CreateHidden : to_Travel.TravelStatus.createDeleteHidden;
-annotate TravelService.Booking with @UI.DeleteHidden : to_Travel.TravelStatus.createDeleteHidden;
+annotate TravelService.Booking with @UI.CreateHidden : Travel.TravelStatus.createDeleteHidden;
+annotate TravelService.Booking with @UI.DeleteHidden : Travel.TravelStatus.createDeleteHidden;
 
 annotate TravelService.Booking {
   BookingDate   @Core.Computed;
-  ConnectionID  @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  FlightDate    @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  FlightPrice   @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  BookingStatus @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Carrier    @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Customer   @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
+  ConnectionID  @Common.FieldControl  : Travel.TravelStatus.fieldControl;
+  FlightDate    @Common.FieldControl  : Travel.TravelStatus.fieldControl;
+  FlightPrice   @Common.FieldControl  : Travel.TravelStatus.fieldControl;
+  BookingStatus @Common.FieldControl  : Travel.TravelStatus.fieldControl;
+  Carrier       @Common.FieldControl  : Travel.TravelStatus.fieldControl;
+  Customer      @Common.FieldControl  : Travel.TravelStatus.fieldControl;
 };
 
 annotate TravelService.Booking with @(
   Capabilities.NavigationRestrictions : {
     RestrictedProperties : [
       {
-        NavigationProperty : to_BookSupplement,
+        NavigationProperty : BookSupplements,
         InsertRestrictions : {
-          Insertable : to_Travel.TravelStatus.insertDeleteRestriction
+          Insertable : Travel.TravelStatus.insertDeleteRestriction
         },
         DeleteRestrictions : {
-          Deletable : to_Travel.TravelStatus.insertDeleteRestriction
+          Deletable : Travel.TravelStatus.insertDeleteRestriction
         }
       }
     ]
@@ -70,9 +70,9 @@ annotate TravelService.Booking with @(
 
 
 annotate TravelService.BookingSupplement {
-  Price         @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Supplement @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Booking    @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Travel     @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
+  Price         @Common.FieldControl  : Travel.TravelStatus.fieldControl;
+  Supplement    @Common.FieldControl  : Travel.TravelStatus.fieldControl;
+  Booking       @Common.FieldControl  : Travel.TravelStatus.fieldControl;
+  Travel        @Common.FieldControl  : Travel.TravelStatus.fieldControl;
 
 };

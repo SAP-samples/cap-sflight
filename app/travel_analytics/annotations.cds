@@ -349,12 +349,12 @@ annotate service.Bookings with @UI : {
     }]
   }],
   FieldGroup #TravelInformation : { Data : [
-    { Value : to_Travel.TravelID,
+    { Value : Travel.TravelID,
       Label : '{i18n>TravelID}'            },
-    { Value : to_Travel.Description        },
-    { Value : to_Travel.to_Agency.Name,    },
-    { Value : to_Travel.CustomerName,      },
-    { Value : to_Travel.TravelStatus.code,
+    { Value : Travel.Description        },
+    { Value : Travel.Agency.Name,    },
+    { Value : Travel.CustomerName,      },
+    { Value : Travel.TravelStatus.code,
       Label : '{i18n>Status}'              },    // why does the label not come from below?
   ]},
   FieldGroup #BookingInformation : { Data : [
@@ -368,15 +368,15 @@ annotate service.Bookings with @UI : {
   ]},
   FieldGroup #FlightInformation : { Data : [
     { Value : airline,                  },
-    { Value : to_Carrier.AirlinePicURL, },
+    { Value : Carrier.AirlinePicURL, },
     { Value : ConnectionID              },
     // Java doesn't work with these association paths
-    // { Value : to_Flight.PlaneType       },
-    // { Value : to_Flight.to_Connection.DepartureAirport.AirportID,
+    // { Value : Flight.PlaneType       },
+    // { Value : Flight.to_Connection.DepartureAirport.AirportID,
     //   Label: '{i18n>DepartureAirport}'          },
-    // { Value : to_Flight.to_Connection.DestinationAirport.AirportID,
+    // { Value : Flight.to_Connection.DestinationAirport.AirportID,
     //   Label: '{i18n>ArrivalAirport}'            },
-    // { Value : to_Flight.to_Connection.Distance, },
+    // { Value : Flight.to_Connection.Distance, },
 
     // Workaround:
     { Value : PlaneType       },

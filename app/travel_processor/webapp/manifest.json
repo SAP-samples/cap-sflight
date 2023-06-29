@@ -110,7 +110,7 @@
           "target": "TravelObjectPage"
         },
         {
-          "pattern": "Travel({key})/to_Booking({key2}):?query:",
+          "pattern": "Travel({key})/Bookings({key2}):?query:",
           "name": "BookingObjectPage",
           "target": "BookingObjectPage"
         }
@@ -148,14 +148,14 @@
             "settings": {
               "entitySet": "Travel",
               "navigation": {
-                "to_Booking": {
+                "Bookings": {
                   "detail": {
                     "route": "BookingObjectPage"
                   }
                 }
               },
               "controlConfiguration": {
-                "to_Booking/@com.sap.vocabularies.UI.v1.LineItem": {
+                "Bookings/@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
                     "type": "ResponsiveTable",
                     "personalization": {

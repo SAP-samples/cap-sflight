@@ -13,8 +13,8 @@ annotate schema.Travel with @title: '{i18n>Travel}' {
   BookingFee   @title: '{i18n>BookingFee}'    @Measures.ISOCurrency: CurrencyCode_code;
   TotalPrice   @title: '{i18n>TotalPrice}'    @Measures.ISOCurrency: CurrencyCode_code;
   TravelStatus @title: '{i18n>TravelStatus}'  @Common.Text: TravelStatus.name     @Common.TextArrangement: #TextOnly;
-  to_Customer  @title: '{i18n>CustomerID}'    @Common.Text: to_Customer.LastName;
-  to_Agency    @title: '{i18n>AgencyID}'      @Common.Text: to_Agency.Name;
+  Customer     @title: '{i18n>CustomerID}'    @Common.Text: Customer.LastName;
+  Agency       @title: '{i18n>AgencyID}'      @Common.Text: Agency.Name;
 }
 
 annotate schema.TravelStatus with {
@@ -23,7 +23,7 @@ annotate schema.TravelStatus with {
 
 annotate schema.Booking with @title: '{i18n>Booking}' {
   BookingUUID   @UI.Hidden;
-  to_Travel     @UI.Hidden;
+  Travel        @UI.Hidden;
   BookingID     @title: '{i18n>BookingID}';
   BookingDate   @title: '{i18n>BookingDate}';
   ConnectionID  @title: '{i18n>ConnectionID}';
@@ -31,8 +31,8 @@ annotate schema.Booking with @title: '{i18n>Booking}' {
   FlightDate    @title: '{i18n>FlightDate}';
   FlightPrice   @title: '{i18n>FlightPrice}'    @Measures.ISOCurrency: CurrencyCode_code;
   BookingStatus @title: '{i18n>BookingStatus}'  @Common.Text: BookingStatus.name    @Common.TextArrangement: #TextOnly;
-  to_Carrier    @title: '{i18n>AirlineID}'      @Common.Text: to_Carrier.Name;
-  to_Customer   @title: '{i18n>CustomerID}'     @Common.Text: to_Customer.LastName;
+  Carrier       @title: '{i18n>AirlineID}'      @Common.Text: Carrier.Name;
+  Customer      @title: '{i18n>CustomerID}'     @Common.Text: Customer.LastName;
 }
 
 annotate schema.BookingStatus with {
@@ -41,9 +41,9 @@ annotate schema.BookingStatus with {
 
 annotate schema.BookingSupplement with @title: '{i18n>BookingSupplement}' {
   BookSupplUUID        @UI.Hidden;
-  to_Booking           @UI.Hidden;
-  to_Travel            @UI.Hidden;
-  to_Supplement        @title: '{i18n>SupplementID}'  @Common.Text: to_Supplement.Description;
+  Booking              @UI.Hidden;
+  Travel               @UI.Hidden;
+  Supplement           @title: '{i18n>SupplementID}'  @Common.Text: Supplement.Description;
   Price                @title: '{i18n>Price}'         @Measures.ISOCurrency: CurrencyCode_code;
   BookingSupplementID  @title: '{i18n>BookingSupplementID}';
   CurrencyCode         @title: '{i18n>CurrencyCode}';

@@ -52,8 +52,8 @@ public class CreationHandler implements EventHandler {
 			travel.endDate(LocalDate.now().plusDays(1));
 		}
 
-		if (travel.toBooking() != null) {
-			for (Booking booking : travel.toBooking()) {
+		if (travel.bookings() != null) {
+			for (Booking booking : travel.bookings()) {
 				if (booking.bookingDate() == null) {
 					booking.bookingDate(LocalDate.now());
 				}
@@ -109,7 +109,7 @@ public class CreationHandler implements EventHandler {
 
 	@Before(event = { CqnService.EVENT_CREATE, CqnService.EVENT_UPDATE, }, entity = Travel_.CDS_NAME)
 	public void fillBookingIdsBeforeCreationAndUpdate(final Travel travel) {
-		if (travel.toBooking() != null) {
+		if (travel.bookings() != null) {
 			addBookingIds(travel);
 			addBookingSupplementIds(travel);
 		}
@@ -117,10 +117,10 @@ public class CreationHandler implements EventHandler {
 
 	private void addBookingSupplementIds(Travel travel) {
 
-		travel.toBooking().stream()
-				.filter(booking -> booking.toBookSupplement() != null && !booking.toBookSupplement().isEmpty())
+		travel.bookings().stream()
+				.filter(booking -> booking.bookSupplements() != null && !booking.bookSupplements().isEmpty())
 				.forEach(booking -> {
-					List<BookingSupplement> bookingSupplements = booking.toBookSupplement();
+					List<BookingSupplement> bookingSupplements = booking.bookSupplements();
 
 					List<BookingSupplement> bookingSupplementsWithoutIds = bookingSupplements.stream()
 							.filter(bookingSupplement -> bookingSupplement.bookingSupplementID() == null
@@ -139,11 +139,11 @@ public class CreationHandler implements EventHandler {
 	}
 
 	private void addBookingIds(Travel travel) {
-		List<Booking> bookingsWithoutId = travel.toBooking().stream()
+		List<Booking> bookingsWithoutId = travel.bookings().stream()
 				.filter(booking -> booking.bookingID() == null || booking.bookingID() == 0)
 				.collect(Collectors.toList());
 
-		Integer currentMaxBookingId = travel.toBooking().stream()
+		Integer currentMaxBookingId = travel.bookings().stream()
 				.filter(booking -> Objects.nonNull(booking.bookingID()))
 				.max(Comparator.comparing(Booking::bookingID)).map(Booking::bookingID).orElse(0);
 
