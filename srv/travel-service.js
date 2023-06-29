@@ -6,7 +6,7 @@ init() {
   /**
    * Reflect definitions from the service's CDS model
    */
-  const { Travel, Booking, BookingSupplement } = this.entities
+  const { Travel, Booking, BookingSupplement } = this.entities  // require('#cds-models/sap/fe/cap/travel')
 
 
   /**
