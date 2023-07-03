@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18.x, 16.x, 14.x]
+        node-version: [18.x, 16.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -31,14 +31,12 @@ jobs:
     - run: npm run test:mocha
 
     - name: Run integration tests - Manage Travels
-      if: ${{ matrix.node-version != '14.x' }}
       working-directory: ./app/travel_processor
       run: |
         npm ci
         npm run test:node -- --ci
 
     - name: Run integration tests - Analyze Bookings
-      if: ${{ matrix.node-version != '14.x' }}
       working-directory: ./app/travel_analytics
       run: |
         npm ci
