@@ -6,18 +6,18 @@
   "license": "SAP SAMPLE CODE LICENSE",
   "repository": "https://github.com/SAP-samples/cap-sflight",
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "scripts": {
     "lint": "npx eslint .",
-    "start": "cds run",
+    "start": "cds-serve",
     "test": "jest",
     "test:mocha": "npx mocha --timeout 20000",
     "travel-processor": "cds watch --open travel_processor/webapp/index.html?sap-ui-xx-viewCache=false",
     "travel-analytics": "cds watch --open travel_analytics/webapp/index.html?sap-ui-xx-viewCache=false"
   },
   "dependencies": {
-    "@sap/cds": ">=6.7.0",
+    "@sap/cds": ">=7.0.0",
     "@sap/xssec": "^3.2.7",
     "express": "^4",
     "hdb": "^0.19.1",
