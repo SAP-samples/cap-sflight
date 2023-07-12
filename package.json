@@ -24,6 +24,7 @@
     "passport": "^0.6.0"
   },
   "devDependencies": {
+    "@cap-js/sqlite": "^1.0.1",
     "@sap/ux-specification": "UI5-1.108",
     "axios": "^1",
     "chai": "^4.3.0",
@@ -32,8 +33,7 @@
     "cross-spawn": "^7.0.3",
     "http-proxy": "^1.18.1",
     "jest": "^29.0.2",
-    "qunit": "^2.9.3",
-    "sqlite3": "^5"
+    "qunit": "^2.9.3"
   },
   "cds": {
     "requires": {
