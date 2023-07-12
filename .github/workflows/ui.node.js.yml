@@ -1,10 +1,12 @@
-name: Node.js UI Tests
+name: Cucumber UI Tests (Node.js)
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+
 jobs:
   docker-job:
-    name: Node.js UI Tests
+    name: test
     runs-on: ubuntu-latest
     strategy:
       matrix:
