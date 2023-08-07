@@ -8,7 +8,6 @@ service TravelService @(path:'/processor') {
     excluding { to_Flight, to_BookSupplement } // exposing unmanaged assocs not supported
   }
 
-
   @(restrict: [
     { grant: 'READ', to: 'authenticated-user'},
     { grant: ['rejectTravel','acceptTravel','deductDiscount'], to: 'reviewer'},
