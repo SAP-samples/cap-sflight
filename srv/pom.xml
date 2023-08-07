@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>sflight</artifactId>
+    <groupId>com.sap.cap</groupId>
+    <version>${revision}</version>
+  </parent>
+
+  <artifactId>srv</artifactId>
+  <packaging>jar</packaging>
+
+  <name>srv</name>
+
+  <!-- ACTUAL DEPENDENCIES -->
+  <dependencies>
+    <dependency>
+      <groupId>com.sap.cds</groupId>
+      <artifactId>cds-starter-spring-boot-odata</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sap.cds</groupId>
+      <artifactId>cds-starter-cloudfoundry</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.vaadin.external.google</groupId>
+          <artifactId>android-json</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <dependency>
+      <!-- for kyma deployment -->
+      <groupId>com.sap.cds</groupId>
+      <artifactId>cds-feature-k8s</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+    <plugins>
+      <!-- SPRING BOOT PLUGIN -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <skip>false</skip>
+          <workingDirectory>..</workingDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>repackage</id>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+            <configuration>
+              <classifier>exec</classifier>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.graalvm.buildtools</groupId>
+        <artifactId>native-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.4.0</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/gen/java</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- STEPS TO BUILD CDS MODEL AND GENERATE POJOs -->
+      <plugin>
+        <groupId>com.sap.cds</groupId>
+        <artifactId>cds-maven-plugin</artifactId>
+        <version>${cds.services.version}</version>
+        <executions>
+          <execution>
+            <id>cds.clean</id>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+
+          <execution>
+            <id>cds.install-node</id>
+            <goals>
+              <goal>install-node</goal>
+            </goals>
+          </execution>
+
+          <execution>
+            <id>install-cdsdk</id>
+            <goals>
+              <goal>install-cdsdk</goal>
+            </goals>
+            <configuration>
+              <version>${cdsdk.version}</version>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>cds.build</id>
+            <goals>
+              <goal>cds</goal>
+            </goals>
+            <configuration>
+              <commands>
+                <command>build</command>
+
+                <command>deploy --to sql --dry &gt;
+									"${project.basedir}/src/main/resources/schema.sql"</command>
+              </commands>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>cds.generate</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <methodStyle>FLUENT</methodStyle>
+              <basePackage>cds.gen</basePackage>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- SUREFIRE PLUGIN -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.1.2</version>
+        <configuration>
+          <failIfNoTests>true</failIfNoTests>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <!-- A profile that uses global installation of @sap/cds-dk -->
+    <profile>
+      <id>cdsdk-global</id>
+      <properties>
+        <cdsdk-global>true</cdsdk-global>
+      </properties>
+    </profile>
+    <profile>
+      <id>no-cds</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.sap.cds</groupId>
+            <artifactId>cds-maven-plugin</artifactId>
+            <version>${cds.services.version}</version>
+            <executions>
+              <execution>
+                <id>cds.clean</id>
+                <phase>none</phase>
+              </execution>
+
+              <execution>
+                <id>cds.install-node</id>
+                <phase>none</phase>
+              </execution>
+
+              <execution>
+                <id>install-cdsdk</id>
+                <phase>none</phase>
+              </execution>
+
+              <execution>
+                <id>cds.build</id>
+                <phase>none</phase>
+              </execution>
+
+              <execution>
+                <id>cds.generate</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>native</id>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-maven-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>process-aot</id>
+                  <configuration>
+                    <profiles>cloud</profiles>
+                    <jvmArguments>-Dcds.environment.local.defaultEnvPath=../native-build-env.json</jvmArguments>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
+</project>

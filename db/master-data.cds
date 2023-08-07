@@ -1,6 +1,8 @@
 using { Currency, Country, custom.managed, sap } from './common';
 namespace sap.fe.cap.travel;
 
+// ensure all masterdata entities are available to clients
+@cds.autoexpose @readonly
 aspect MasterData {}
 
 
@@ -8,7 +10,7 @@ entity Airline : MasterData {
   key AirlineID : String(3);
   Name          : String(40);
   CurrencyCode  : Currency;
-  AirlinePicURL : String      @UI         : {IsImageURL : true};
+  AirlinePicURL : String      @UI : {IsImageURL : true};
 
 };
 

@@ -1,0 +1,40 @@
+management:
+    endpoints:
+        web:
+            exposure:
+                include: "*"
+
+cds:
+    security.mock.users:
+    - name: rose
+    - name: martha
+      roles:
+        - reviewer
+    - name: amy
+      roles:
+        - processor
+    - name: admin
+      password: admin
+      roles:
+      - admin
+
+    odata-v4:
+        endpoint:
+            path: "/"
+
+---
+spring:
+    config.activate.on-profile: default
+    web.resources.static-locations: "file:./app"
+    
+server:
+    port: 4004
+
+---
+spring:
+    config.activate.on-profile: cloud
+    sql.init.mode: never
+
+cds:
+    datasource:
+        csv.initialization-mode: never

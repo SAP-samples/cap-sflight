@@ -4,57 +4,37 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{title}}</title>
-
-    <script>
-      window["sap-ushell-config"] = {
-        defaultRenderer: "fiori2",
-        applications: {
-          "travel-process": {
-            title: "CAP Travel App Node.js",
-            description: "sap.fe.cap.travel",
-            additionalInformation: "SAPUI5.Component=sap.fe.cap.travel",
-            applicationType: "URL",
-            url: "./",
-            navigationMode: "embedded",
-          },
-        },
-        bootstrapPlugins: {
-          RuntimeAuthoringPlugin: {
-            component: "sap.ushell.plugins.rta",
-            config: {
-              validateAppVersion: false,
-            },
-          },
-          PersonalizePlugin: {
-            component: "sap.ushell.plugins.rta-personalize",
-            config: {
-              validateAppVersion: false,
-            },
-          },
-        },
-      };
-    </script>
-
-    <script src="https://ui5.sap.com/test-resources/sap/ushell/bootstrap/sandbox.js"></script>
+    <title></title>
+    <style>
+      html,
+      body,
+      body > div,
+      #container,
+      #container-uiarea {
+        height: 100%;
+      }
+    </style>
     <script
+      id="sap-ui-bootstrap"
       src="https://ui5.sap.com/resources/sap-ui-core.js"
-      data-sap-ui-libs="sap.m, sap.ushell, sap.fe.templates"
+      data-sap-ui-theme="sap_horizon"
+      data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+      data-sap-ui-resourceroots='{ "sap.fe.cap.travel": "." }'
       data-sap-ui-compatVersion="edge"
-      data-sap-ui-theme="sap_fiori_3"
-      data-sap-ui-frameOptions="allow"
-      data-sap-ui-bindingSyntax="complex"
+      data-sap-ui-async="true"
+      data-sap-ui-preload="async"
+      data-sap-ui-flexibilityServices=""
+      data-sap-ui-xx-componentPreload="off"
+      data-sap-ui-libs="sap.m, sap.fe.core"
     ></script>
-    <script>
-      sap.ui.getCore().attachInit(function () {
-        sap.ushell.Container.createRenderer().placeAt("content");
-      });
-
-      sap.ui
-        .getCore()
-        .getConfiguration()
-        .setFlexibilityServices([{ connector: "SessionStorageConnector" }]);
-    </script>
   </head>
-  <body class="sapUiBody" id="content"></body>
+  <body class="sapUiBody sapUiSizeCompact" id="content">
+    <div
+      data-sap-ui-component
+      data-name="sap.fe.cap.travel"
+      data-id="container"
+      data-settings='{"id" : "sap.fe.cap.travel"}'
+      data-handle-validation="true"
+    ></div>
+  </body>
 </html>

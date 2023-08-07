@@ -7,8 +7,8 @@
     "description": "{{description}}",
     "i18n": {
       "bundleName": "sap.fe.cap.travel.i18n.i18n",
-      "supportedLocales": [""],
-      "fallbackLocale": ""
+      "supportedLocales": ["en", "de", "fr"],
+      "fallbackLocale": "en"
     },
     "applicationVersion": {
       "version": "1.0.0"
@@ -46,6 +46,14 @@
   },
   "sap.ui": {
     "technology": "UI5",
+    "icons": {
+      "icon": "sap-icon://flight",
+      "favIcon": "sap-icon://flight",
+      "phone": "sap-icon://flight",
+      "phone@2": "sap-icon://flight",
+      "tablet": "sap-icon://flight",
+      "tablet@2": "sap-icon://flight"
+    },
     "deviceTypes": {
       "desktop": true,
       "tablet": true,
@@ -59,7 +67,7 @@
       "css": []
     },
     "dependencies": {
-      "minUI5Version": "1.89.0",
+      "minUI5Version": "1.108.10",
       "libs": {
         "sap.ui.core": {},
         "sap.fe.templates": {}
@@ -70,8 +78,8 @@
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
           "bundleName": "sap.fe.cap.travel.i18n.i18n",
-          "supportedLocales": [""],
-          "fallbackLocale": ""
+          "supportedLocales": ["en", "de", "fr"],
+          "fallbackLocale": "en"
         }
       },
       "": {
@@ -83,6 +91,10 @@
           "autoExpandSelect": true,
           "earlyRequests": true
         }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
       }
     },
     "routing": {
@@ -111,6 +123,11 @@
           "options": {
             "settings": {
               "entitySet": "Travel",
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.SelectionFields": {
+                  "useSemanticDateRange": true
+                }
+              },
               "variantManagement": "Page",
               "initialLoad": true,
               "navigation": {
@@ -141,17 +158,18 @@
                 "to_Booking/@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
                     "type": "ResponsiveTable",
-                     "personalization": {
-                       "column": true,
-                       "sort": false
-                     },
+                    "personalization": {
+                      "column": true,
+                      "sort": false
+                    },
                     "creationMode": {
                       "name": "Inline",
                       "createAtEnd": true
                     }
                   }
                 }
-              }
+              },
+              "editableHeaderContent": false
             }
           }
         },
@@ -161,7 +179,8 @@
           "name": "sap.fe.templates.ObjectPage",
           "options": {
             "settings": {
-              "entitySet": "Booking"
+              "entitySet": "Booking",
+              "editableHeaderContent": false
             }
           }
         }
@@ -184,5 +203,9 @@
     "_version": "1.1.0",
     "registrationIds": [],
     "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "sap.fe.cap.sflight"
   }
 }

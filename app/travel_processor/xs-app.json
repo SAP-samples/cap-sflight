@@ -5,21 +5,9 @@
     {
       "source": "^/processor/(.*)$",
       "target": "/processor/$1",
-      "destination": "odata-services",
+      "destination": "sflight-srv",
       "authenticationType": "xsuaa",
       "csrfProtection": false
-    },
-    {
-      "source": "^/resources/(.*)$",
-      "target": "/resources/$1",
-      "authenticationType": "none",
-      "destination": "ui5"
-    },
-    {
-      "source": "^/test-resources/(.*)$",
-      "target": "/test-resources/$1",
-      "authenticationType": "none",
-      "destination": "ui5"
     },
     {
       "source": "^(.*)$",

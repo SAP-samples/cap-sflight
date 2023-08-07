@@ -8,6 +8,13 @@ service TravelService @(path:'/processor') {
     excluding { to_Flight, to_BookSupplement } // exposing unmanaged assocs not supported
   }
 
+
+  @(restrict: [
+    { grant: 'READ', to: 'authenticated-user'},
+    { grant: ['rejectTravel','acceptTravel','deductDiscount'], to: 'reviewer'},
+    { grant: ['*'], to: 'processor'},
+    { grant: ['*'], to: 'admin'}
+  ])
   entity Travel as projection on my.Travel actions {
     action createTravelByTemplate() returns Travel;
     action rejectTravel();
@@ -15,8 +22,6 @@ service TravelService @(path:'/processor') {
     action deductDiscount( percent: Percentage not null ) returns Travel;
   };
 
-  // Ensure all masterdata entities are available to clients
-  annotate my.MasterData with @cds.autoexpose @readonly;
 }
 
 type Percentage : Integer @assert.range: [1,100];

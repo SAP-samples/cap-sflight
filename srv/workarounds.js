@@ -2,6 +2,23 @@
 
 const cds = require ('@sap/cds/lib')
 
+// Adding toString to cds.entity incorporated in upcoming releases of @sap/cds
+Object.defineProperty (cds.entity.prototype, 'toString', {
+  value: function() { return this.name.replace(/\./g,'_') },
+  configurable: true
+})
+
+// Adding toString to cds.entity.drafts incorporated in upcoming releases of @sap/cds
+Object.defineProperty (cds.entity.prototype, 'drafts', {
+  get: function() { return this.own('_drafts') || this.set('_drafts', this.elements?.HasDraftEntity && {
+    name: this.name + '_drafts', keys: this.keys,
+    toString(){ return this.name.replace(/\./g,'_') }
+  })},
+  configurable: true
+})
+
+
+
 const { init } = cds.ApplicationService.prototype
 cds.extend (cds.ApplicationService) .with (class {
 
@@ -41,28 +58,6 @@ cds.extend (cds.Request) .with (class {
   error (e) {
     if (e.target) e.target = e.target.replace (/\((\w+)UUID=([^,)]+)/g, `($1UUID='$2'`)
     return error.call (this, ...arguments)
-  }
-
-  /**
-   * This experimentally adds a req._target property which can be used as
-   * arguments to SELECT.from or UPDATE to read the single instance of
-   * req.target referred to by the incomming request. It also transparently
-   * points to .drafts persistence, if in a draft scenario.
-   */
-   get _target() {
-    let {target} = this, [key] = this.params
-    if (key && this.path.indexOf('/') < 0) { //> .../draftActivate
-      // deviate to draft?
-      const {IsActiveEntity} = key
-      if (IsActiveEntity !== undefined) Object.defineProperty (key,'IsActiveEntity',{value:IsActiveEntity, enumerable:false}) //> skip as key in cqn
-      if (IsActiveEntity === 'false') target = target.drafts // REVISIT: Why is IsActiveEntity a string, and not a boolean?
-      // prepare target query
-      const q = SELECT.one.from(target,key)
-      const {from:{ref},where} = q.SELECT
-      ref[ref.length-1] = { id: ref[ref.length-1], where, cardinality:{max:1} }
-      target = {ref}
-    }
-    return super._target = target
   }
 
 })

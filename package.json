@@ -1,25 +1,39 @@
 {
   "name": "@capire/sflight",
   "version": "1.0.0",
+  "private": true,
   "description": "CAP flight demo scenario",
+  "license": "SAP SAMPLE CODE LICENSE",
   "repository": "https://github.com/SAP-samples/cap-sflight",
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "lint": "npx eslint .",
+    "start": "cds-serve",
+    "test": "jest",
+    "test:mocha": "npx mocha --timeout 20000",
+    "travel-processor": "cds watch --open travel_processor/webapp/index.html?sap-ui-xx-viewCache=false",
+    "travel-analytics": "cds watch --open travel_analytics/webapp/index.html?sap-ui-xx-viewCache=false"
+  },
   "dependencies": {
-    "@sap/cds": "^5.1",
-    "express": "^4"
+    "@sap/cds": ">=7.0.0",
+    "@sap/xssec": "^3.2.7",
+    "express": "^4",
+    "hdb": "^0.19.1",
+    "passport": "^0.6.0"
   },
   "devDependencies": {
-    "@sap/ux-specification": "^1.84",
+    "@cap-js/sqlite": "^1.0.1",
+    "@sap/ux-specification": "UI5-1.108",
+    "axios": "^1",
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",
-    "jest": "^27.1.0",
-    "qunit": "^2.9.3",
-    "sqlite3": "^5.0.2"
-  },
-  "scripts": {
-    "start": "cds run",
-    "test": "jest",
-    "test:mocha": "npx mocha --timeout 20000"
+    "cross-spawn": "^7.0.3",
+    "http-proxy": "^1.18.1",
+    "jest": "^29.0.2",
+    "qunit": "^2.9.3"
   },
   "cds": {
     "cdsc": {
@@ -30,22 +44,84 @@
     "requires": {
       "db": {
         "kind": "sql"
+      },
+      "[production]": {
+        "db": {
+          "kind": "hana-cloud"
+        },
+        "auth": {
+          "kind": "xsuaa"
+        }
+      },
+      "[development]": {
+        "auth": {
+          "kind": "mocked-auth",
+          "users": {
+            "rose": {
+              "roles": []
+            },
+            "martha": {
+              "roles": [
+                "reviewer"
+              ]
+            },
+            "amy": {
+              "roles": [
+                "processor"
+              ]
+            },
+            "admin": {
+              "password": "admin",
+              "roles": [
+                "admin"
+              ]
+            }
+          }
+        }
       }
     },
     "log": {
       "service": true
     },
     "features": {
-      "preserve_computed": true
+      "odata_new_parser": true
+    },
+    "build": {
+      "[node]": {
+        "target": "gen",
+        "tasks": [
+          {
+            "for": "node-cf"
+          },
+          {
+            "for": "hana"
+          }
+        ]
+      },
+      "[java]": {
+        "target": ".",
+        "tasks": [
+          {
+            "for": "java-cf"
+          }
+        ]
+      },
+      "[hana]": {
+        "target": "gen",
+        "tasks": [
+          {
+            "for": "hana"
+          }
+        ]
+      }
     }
   },
-  "sapux": [
-    "app/travel_processor"
-  ],
   "jest": {
     "testEnvironment": "node",
     "testTimeout": 20000
   },
-  "license": "SAP SAMPLE CODE LICENSE",
-  "private": true
+  "sapux": [
+    "app/travel_processor",
+    "app/travel_analytics"
+  ]
 }

@@ -3,9 +3,11 @@ _out
 *.db
 connection.properties
 default-*.json
+schema.sql
 gen/
 node_modules/
 target/
+.reloadtrigger
 
 # Web IDE, App Studio
 .che/
@@ -15,6 +17,7 @@ target/
 *_mta_build_tmp
 *.mtar
 mta_archives/
+/Makefile_*.mta
 
 # Other
 .DS_Store
@@ -26,6 +29,8 @@ mta_archives/
 
 srv/src/main/resources/edmx/**
 dist/
+/app/resources/
+/app/router/package-lock.json
 
 
 # IDEs
@@ -36,3 +41,15 @@ dist/
 .classpath
 # .vscode/*
 # IMPORTANT: Do not exclude .vscode please!
+
+# Local dev
+.env
+.values.yaml
+.cdsrc-private.json
+
+# Exclude Helm chart for this example
+/chart
+
+# Experimental
+xxx_*
+xxx/*

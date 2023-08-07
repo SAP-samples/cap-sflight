@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+specVersion: "3.0"
+metadata:
+  name: sap.fe.cap.travel_analytics
+type: application
+
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+
+builder:
+  resources:
+    excludes:
+      - "/test/**"
+      - "/localService/**"
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: travel-analytics
+        additionalFiles:
+          - xs-app.json
+
+server:
+  customMiddleware:
+    - name: ui5-middleware-simpleproxy
+      mountPath: /analytics
+      afterMiddleware: compression
+      configuration:
+        baseUri: http://localhost:4004/analytics
+        username: admin # dummy credentials for local testing
+        password: admin # dummy credentials for local testing

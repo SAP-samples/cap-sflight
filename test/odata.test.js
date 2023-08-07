@@ -3,7 +3,7 @@ const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..')
 const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
 const SAVE = (url) => POST (url+'/TravelService.draftActivate')
 axios.defaults.headers['content-type'] = 'application/json;IEEE754Compatible=true' // REVISIT: can be removed when @sap/cds 5.1.5 is released?
-
+axios.defaults.auth = { username: 'alice', password: 'admin' }
 
 describe ("Basic Querying", () => {
 
@@ -56,17 +56,17 @@ describe('Basic OData', () => {
   it('GET /processor/Travel', async () => {
     const { data } = await GET(`/processor/Travel?$filter=TravelUUID eq '00667221A8E4645C17002DF03754AB66'`)
     expect(data.value).to.containSubset([{
-      BeginDate: '2020-12-10',
+      BeginDate: '2022-07-27',
       BookingFee: 60,
-      createdAt: '2020-11-22T19:42:07.000Z',
+      createdAt: expectedValue => /2022-07-10T18:42:07\.000(0000)?Z/.test(expectedValue), // timestamp precision increase with cds^7
       createdBy: 'Hansmann',
       CurrencyCode_code: 'SGD',
       Description: 'Sightseeing in Singapore',
-      EndDate: '2021-10-06',
+      EndDate: '2023-05-24',
       HasActiveEntity: false,
       HasDraftEntity: false,
       IsActiveEntity: true,
-      LastChangedAt: '2020-12-03T04:18:18.000Z',
+      LastChangedAt: expectedValue => /2022-07-21T03:18:18\.000(0000)?Z/.test(expectedValue), // timestamp precision increase with cds^7
       LastChangedBy: 'Deichgraeber',
       to_Agency_AgencyID: '070029',
       to_Customer_CustomerID: '000318',
@@ -106,9 +106,9 @@ describe('Basic OData', () => {
   it('supports $top/$skip paging', async () => {
     const { data: p1 } = await GET `/processor/Travel?$select=TravelID,Description&$top=3&$orderby=TravelID`
     expect(p1.value).to.containSubset([
-      {"Description": "Business Trip for Christine, Pierre", "IsActiveEntity": true, "TravelID": 1},
-      {"Description": "Vacation", "IsActiveEntity": true, "TravelID": 2},
-      {"Description": "Vacation", "IsActiveEntity": true, "TravelID": 3},
+      {"Description": "Business Trip for Christine, Pierre", "TravelID": 1},
+      {"Description": "Vacation", "TravelID": 2},
+      {"Description": "Vacation", "TravelID": 3},
     ])
     const { data: p2 } = await GET `/processor/Travel?$select=Description&$skip=3&$orderby=TravelID`
     expect(p2.value).not.to.containSubset([
@@ -150,6 +150,7 @@ describe('Basic OData', () => {
 
     // Ensure it is not in accepted state as that would disallow changing
     await POST (Draft +`/TravelService.rejectTravel`)
+    await PATCH (Draft, { BeginDate: '2222-01-01', EndDate: '2222-01-02' })
 
     // Change the Travel's Booking Fee
     await PATCH (Draft, { BookingFee: '120' })

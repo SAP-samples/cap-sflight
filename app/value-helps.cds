@@ -1,10 +1,10 @@
-using { sap.fe.cap.travel as my } from '../../db/schema';
+using { sap.fe.cap.travel as schema } from '../db/schema';
 
 //
 // annotations for value helps
 //
 
-annotate my.Travel {
+annotate schema.Travel {
 
   TravelStatus @Common.ValueListWithFixedValues;
 
@@ -21,8 +21,7 @@ annotate my.Travel {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PhoneNumber'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'EMailAddress'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'WebAddress'}
-    ],
-    SearchSupported : true
+    ]
   };
 
   to_Customer @Common.ValueList: {
@@ -39,8 +38,7 @@ annotate my.Travel {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CountryCode_code'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PhoneNumber'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'EMailAddress'}
-    ],
-    SearchSupported : true
+    ]
   };
 
   CurrencyCode @Common.ValueList: {
@@ -52,14 +50,13 @@ annotate my.Travel {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'descr'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'symbol'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'minor'}
-    ],
-    SearchSupported : true
+    ]
   };
 
 }
 
 
-annotate my.Booking {
+annotate schema.Booking {
 
   BookingStatus @Common.ValueListWithFixedValues;
 
@@ -77,8 +74,7 @@ annotate my.Booking {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CountryCode_code'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PhoneNumber'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'EMailAddress'}
-    ],
-    SearchSupported : true
+    ]
   };
 
   to_Carrier @Common.ValueList: {
@@ -88,8 +84,7 @@ annotate my.Booking {
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: to_Carrier_AirlineID, ValueListProperty: 'AirlineID'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CurrencyCode_code'}
-    ],
-    SearchSupported : true
+    ]
   };
 
   ConnectionID @Common.ValueList: {
@@ -106,7 +101,7 @@ annotate my.Booking {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'MaximumSeats'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'OccupiedSeats'}
     ],
-    SearchSupported : true
+    PresentationVariantQualifier: 'SortOrderPV'  // use presentation variant to sort by FlightDate desc
   };
 
   FlightDate @Common.ValueList: {
@@ -122,8 +117,7 @@ annotate my.Booking {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'PlaneType'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'MaximumSeats'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'OccupiedSeats'}
-    ],
-    SearchSupported : true
+    ]
   };
 
   CurrencyCode @Common.ValueList: {
@@ -135,14 +129,13 @@ annotate my.Booking {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'descr'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'symbol'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'minor'}
-    ],
-    SearchSupported : true
+    ]
   };
 
 }
 
 
-annotate my.BookingSupplement {
+annotate schema.BookingSupplement {
 
   to_Supplement @Common.ValueList: {
     CollectionPath : 'Supplement',
@@ -152,8 +145,7 @@ annotate my.BookingSupplement {
     {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: Price,        ValueListProperty: 'Price'},
     {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: CurrencyCode_code, ValueListProperty: 'CurrencyCode_code'},
     {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Description'}
-    ],
-    SearchSupported : true
+    ]
   };
 
   CurrencyCode @Common.ValueList: {
@@ -165,14 +157,18 @@ annotate my.BookingSupplement {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'descr'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'symbol'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'minor'}
-    ],
-    SearchSupported : true
+    ]
   };
 }
 
 
-annotate my.Flight {
-
+annotate schema.Flight with @UI.PresentationVariant#SortOrderPV : {    // used in ValueList for Bookings:ConnectionId above
+    SortOrder      : [{
+      Property   : FlightDate,
+      Descending : true
+    }]
+  }
+{
   AirlineID @Common.ValueList: {
     CollectionPath : 'Airline',
     Label : '',
@@ -180,8 +176,7 @@ annotate my.Flight {
       {$Type: 'Common.ValueListParameterInOut', LocalDataProperty: AirlineID, ValueListProperty: 'AirlineID'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CurrencyCode'}
-    ],
-    SearchSupported : true
+    ]
   };
 
   ConnectionID @Common.ValueList: {
@@ -197,14 +192,13 @@ annotate my.Flight {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'ArrivalTime'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Distance'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'DistanceUnit'}
-    ],
-    SearchSupported : true
+    ]
   };
+};
 
-}
 
 
-annotate my.FlightConnection {
+annotate schema.FlightConnection {
 
   AirlineID @Common.ValueList: {
     CollectionPath : 'Airline',
@@ -214,8 +208,7 @@ annotate my.FlightConnection {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'AirlineID'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CurrencyCode'}
-    ],
-    SearchSupported : true
+    ]
   };
 
   DepartureAirport @Common.ValueList: {
@@ -227,8 +220,7 @@ annotate my.FlightConnection {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'City'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CountryCode'}
-    ],
-    SearchSupported : true
+    ]
   };
 
   DestinationAirport @Common.ValueList: {
@@ -240,14 +232,13 @@ annotate my.FlightConnection {
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'Name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'City'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'CountryCode'}
-    ],
-    SearchSupported : true
+    ]
   };
 
 }
 
 
-annotate my.Passenger {
+annotate schema.Passenger {
 
   CountryCode @Common.ValueList : {
     CollectionPath  : 'Countries',
@@ -256,14 +247,13 @@ annotate my.Passenger {
       {$Type: 'Common.ValueListParameterInOut',       LocalDataProperty : CountryCode_code, ValueListProperty : 'code'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty : 'name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty : 'descr'}
-    ],
-    SearchSupported : true
+    ]
   };
 
 }
 
 
-annotate my.TravelAgency {
+annotate schema.TravelAgency {
 
   CountryCode @Common.ValueList: {
     CollectionPath : 'Countries',
@@ -272,8 +262,7 @@ annotate my.TravelAgency {
       {$Type: 'Common.ValueListParameterInOut',       LocalDataProperty: CountryCode_code, ValueListProperty: 'code'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty : 'name'},
       {$Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty : 'descr'}
-    ],
-    SearchSupported : true
+    ]
   };
 
 }
