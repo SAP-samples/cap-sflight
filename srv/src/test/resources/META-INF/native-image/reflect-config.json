@@ -1,0 +1,6 @@
+[
+{
+    "name": "org.hamcrest.TypeSafeMatcher",
+    "queryAllDeclaredMethods": true
+}
+]

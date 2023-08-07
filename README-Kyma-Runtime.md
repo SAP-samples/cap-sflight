@@ -193,7 +193,7 @@ pack build $YOUR_CONTAINER_REGISTRY/sflight-srv \
      --buildpack gcr.io/paketo-buildpacks/java \
      --builder paketobuildpacks/builder:base \
      --env SPRING_PROFILES_ACTIVE=cloud \
-     --env BP_JVM_VERSION=11
+     --env BP_JVM_VERSION=17
 ```
 
 ## Build HTML5 application deployer image
