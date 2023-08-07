@@ -36,11 +36,6 @@
     "qunit": "^2.9.3"
   },
   "cds": {
-    "cdsc": {
-      "beta": {
-        "nestedProjections": true
-      }
-    },
     "requires": {
       "db": {
         "kind": "sql"
