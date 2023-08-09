@@ -1,0 +1,28 @@
+name: Cucumber UI Tests (Node.js)
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  docker-job:
+    name: test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 18 ]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Run docker image - selenium/standalone-chrome
+        run: |
+          docker run -d -p 4444:4444 --network host selenium/standalone-chrome
+      - name: prepare
+        run: |
+          npm ci
+      - name: test
+        run: |
+          SELENIUM_REMOTE_URL="http://127.0.0.1:4444/wd/hub" npx cucumber-js test

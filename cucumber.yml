@@ -1,0 +1,4 @@
+default:
+  publishQuiet: true
+  requireModule:
+    - "@cap-js-community/cds-cucumber"

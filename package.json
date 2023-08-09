@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@cap-js/sqlite": "^1.0.1",
+    "@cap-js-community/cds-cucumber": "^0.1.0",
     "@sap/ux-specification": "UI5-1.108",
     "axios": "^1",
     "chai": "^4.3.0",
