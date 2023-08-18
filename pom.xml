@@ -22,7 +22,7 @@
 
     <!-- DEPENDENCIES VERSION -->
     <jdk.version>17</jdk.version>
-    <cds.services.version>2.1.0</cds.services.version>
+    <cds.services.version>2.1.1</cds.services.version>
 
     <cdsdk.version>^7</cdsdk.version>
   </properties>
