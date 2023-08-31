@@ -9,16 +9,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
 import com.sap.cds.ql.Select;
 import com.sap.cds.ql.Update;
-import com.sap.cds.services.cds.CdsService;
+import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.draft.DraftService;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
-
-import org.springframework.stereotype.Component;
 
 import cds.gen.travelservice.Booking;
 import cds.gen.travelservice.BookingSupplement;
@@ -42,20 +42,20 @@ public class CreationHandler implements EventHandler {
 		this.draftService = draftService;
 	}
 
-	@Before(event = { CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE, DraftService.EVENT_DRAFT_CREATE}, entity = Travel_.CDS_NAME)
+	@Before(event = { CqnService.EVENT_CREATE, CqnService.EVENT_UPDATE, DraftService.EVENT_DRAFT_CREATE}, entity = Travel_.CDS_NAME)
 	public void setBookingDateIfNotProvided(final Travel travel) {
-		if (travel.getBeginDate() == null) {
-			travel.setBeginDate(LocalDate.now());
+		if (travel.beginDate() == null) {
+			travel.beginDate(LocalDate.now());
 		}
 
-		if (travel.getEndDate() == null) {
-			travel.setEndDate(LocalDate.now().plusDays(1));
+		if (travel.endDate() == null) {
+			travel.endDate(LocalDate.now().plusDays(1));
 		}
 
-		if (travel.getToBooking() != null) {
-			for (Booking booking : travel.getToBooking()) {
-				if (booking.getBookingDate() == null) {
-					booking.setBookingDate(LocalDate.now());
+		if (travel.toBooking() != null) {
+			for (Booking booking : travel.toBooking()) {
+				if (booking.bookingDate() == null) {
+					booking.bookingDate(LocalDate.now());
 				}
 			}
 		}
@@ -72,44 +72,44 @@ public class CreationHandler implements EventHandler {
 		* and thus cannot be re-computed. We have to take them from the draft version and
 		* store them to the active version *before* the DRAFT_SAVE event.
 		*/
-		draftService.run(ctx.getCqn()).first(Travel.class).ifPresent(travelDraft -> {
+		draftService.run(ctx.cqn()).first(Travel.class).ifPresent(travelDraft -> {
 			Map<String, Object> data = new HashMap<>();
-			data.put(Travel.TRAVEL_UUID, travelDraft.getTravelUUID());
+			data.put(Travel.TRAVEL_UUID, travelDraft.travelUUID());
 			data.put(Travel.IS_ACTIVE_ENTITY, true);
-			data.put(Travel.TRAVEL_STATUS_CODE , travelDraft.getTravelStatusCode());
+			data.put(Travel.TRAVEL_STATUS_CODE , travelDraft.travelStatusCode());
 			persistenceService.run(Update.entity(Travel_.class).data(data));
 		});
 	}
 
-	@Before(event = { CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE }, entity = Travel_.CDS_NAME)
+	@Before(event = { CqnService.EVENT_CREATE, CqnService.EVENT_UPDATE }, entity = Travel_.CDS_NAME)
 	public void checkTravelEndDateIsAfterBeginDate(Travel travel) {
 
-		if (travel.getBeginDate() != null && travel.getEndDate() != null) {
-			if (travel.getBeginDate().isAfter(travel.getEndDate())) {
-				throw new IllegalTravelDateException("error.travel.date.illegal", travel.getTravelID(),
-						travel.getBeginDate(), travel.getEndDate());
+		if (travel.beginDate() != null && travel.endDate() != null) {
+			if (travel.beginDate().isAfter(travel.endDate())) {
+				throw new IllegalTravelDateException("error.travel.date.illegal", travel.travelID(),
+						travel.beginDate(), travel.endDate());
 			}
 
-			if (travel.getBeginDate().isBefore(LocalDate.now().atStartOfDay().toLocalDate())) {
-				throw new IllegalTravelDateException("error.travel.date.past", travel.getTravelID(),
-						travel.getBeginDate());
+			if (travel.beginDate().isBefore(LocalDate.now().atStartOfDay().toLocalDate())) {
+				throw new IllegalTravelDateException("error.travel.date.past", travel.travelID(),
+						travel.beginDate());
 			}
 		}
 	}
 
-	@Before(event = CdsService.EVENT_CREATE, entity = Travel_.CDS_NAME)
+	@Before(event = CqnService.EVENT_CREATE, entity = Travel_.CDS_NAME)
 	public void calculateTravelIdBeforeCreation(final Travel travel) {
-		if (travel.getTravelID() == null || travel.getTravelID() == 0) {
+		if (travel.travelID() == null || travel.travelID() == 0) {
 			Select<Travel_> maxIdSelect = Select.from(TravelService_.TRAVEL).columns(e -> e.TravelID().max().as(MAX_ID));
 			Integer currentMaxId = (Integer) persistenceService.run(maxIdSelect).first().map(maxId -> maxId.get(MAX_ID))
 					.orElse(0);
-			travel.setTravelID(++currentMaxId);
+			travel.travelID(++currentMaxId);
 		}
 	}
 
-	@Before(event = { CdsService.EVENT_CREATE, CdsService.EVENT_UPDATE, }, entity = Travel_.CDS_NAME)
+	@Before(event = { CqnService.EVENT_CREATE, CqnService.EVENT_UPDATE, }, entity = Travel_.CDS_NAME)
 	public void fillBookingIdsBeforeCreationAndUpdate(final Travel travel) {
-		if (travel.getToBooking() != null) {
+		if (travel.toBooking() != null) {
 			addBookingIds(travel);
 			addBookingSupplementIds(travel);
 		}
@@ -117,57 +117,57 @@ public class CreationHandler implements EventHandler {
 
 	private void addBookingSupplementIds(Travel travel) {
 
-		travel.getToBooking().stream()
-				.filter(booking -> booking.getToBookSupplement() != null && !booking.getToBookSupplement().isEmpty())
+		travel.toBooking().stream()
+				.filter(booking -> booking.toBookSupplement() != null && !booking.toBookSupplement().isEmpty())
 				.forEach(booking -> {
-					List<BookingSupplement> bookingSupplements = booking.getToBookSupplement();
+					List<BookingSupplement> bookingSupplements = booking.toBookSupplement();
 
 					List<BookingSupplement> bookingSupplementsWithoutIds = bookingSupplements.stream()
-							.filter(bookingSupplement -> bookingSupplement.getBookingSupplementID() == null
-									|| bookingSupplement.getBookingSupplementID() == 0)
+							.filter(bookingSupplement -> bookingSupplement.bookingSupplementID() == null
+									|| bookingSupplement.bookingSupplementID() == 0)
 							.collect(Collectors.toList());
 
 					Integer currentMaxBookingSupplementId = bookingSupplements.stream()
-							.filter(bs -> Objects.nonNull(bs.getBookingSupplementID()))
-							.max(Comparator.comparing(BookingSupplement::getBookingSupplementID))
-							.map(BookingSupplement::getBookingSupplementID).orElse(0);
+							.filter(bs -> Objects.nonNull(bs.bookingSupplementID()))
+							.max(Comparator.comparing(BookingSupplement::bookingSupplementID))
+							.map(BookingSupplement::bookingSupplementID).orElse(0);
 
 					for (BookingSupplement bookingSupplement : bookingSupplementsWithoutIds) {
-						bookingSupplement.setBookingSupplementID(++currentMaxBookingSupplementId);
+						bookingSupplement.bookingSupplementID(++currentMaxBookingSupplementId);
 					}
 				});
 	}
 
 	private void addBookingIds(Travel travel) {
-		List<Booking> bookingsWithoutId = travel.getToBooking().stream()
-				.filter(booking -> booking.getBookingID() == null || booking.getBookingID() == 0)
+		List<Booking> bookingsWithoutId = travel.toBooking().stream()
+				.filter(booking -> booking.bookingID() == null || booking.bookingID() == 0)
 				.collect(Collectors.toList());
 
-		Integer currentMaxBookingId = travel.getToBooking().stream()
-				.filter(booking -> Objects.nonNull(booking.getBookingID()))
-				.max(Comparator.comparing(Booking::getBookingID)).map(Booking::getBookingID).orElse(0);
+		Integer currentMaxBookingId = travel.toBooking().stream()
+				.filter(booking -> Objects.nonNull(booking.bookingID()))
+				.max(Comparator.comparing(Booking::bookingID)).map(Booking::bookingID).orElse(0);
 
 		for (Booking booking : bookingsWithoutId) {
-			booking.setBookingID(++currentMaxBookingId);
+			booking.bookingID(++currentMaxBookingId);
 		}
 	}
 
-	@Before(event = CdsService.EVENT_CREATE, entity = Travel_.CDS_NAME)
+	@Before(event = CqnService.EVENT_CREATE, entity = Travel_.CDS_NAME)
 	public void initialTravelStatus(final Travel travel) {
 		TravelStatus travelStatus = TravelStatus.create();
-		travelStatus.setCode("O");
-		travel.setTravelStatus(travelStatus);
+		travelStatus.code("O");
+		travel.travelStatus(travelStatus);
 	}
 
 	@Before(event = DraftService.EVENT_DRAFT_NEW, entity = Travel_.CDS_NAME)
 	public void initialTravelId(final Travel travel) {
-		travel.setTravelID(0);
+		travel.travelID(0);
 	}
 
 	@Before(event = DraftService.EVENT_DRAFT_NEW, entity = BookingSupplement_.CDS_NAME)
 	public void initialBookingSupplementId(final BookingSupplement bookingSupplement) {
-		if (bookingSupplement.getBookingSupplementID() == null) {
-			bookingSupplement.setBookingSupplementID(0);
+		if (bookingSupplement.bookingSupplementID() == null) {
+			bookingSupplement.bookingSupplementID(0);
 		}
 	}
 }

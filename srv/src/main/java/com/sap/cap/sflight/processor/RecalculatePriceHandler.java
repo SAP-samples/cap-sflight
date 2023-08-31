@@ -9,6 +9,7 @@ import static java.lang.Boolean.FALSE;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -19,7 +20,6 @@ import com.sap.cds.ql.Update;
 import com.sap.cds.ql.cqn.CqnUpdate;
 import com.sap.cds.services.ErrorStatuses;
 import com.sap.cds.services.ServiceException;
-import com.sap.cds.services.cds.CdsService;
 import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.draft.DraftService;
 import com.sap.cds.services.handler.EventHandler;
@@ -76,8 +76,8 @@ public class RecalculatePriceHandler implements EventHandler {
 						.where(b -> b.to_Travel_TravelUUID().eq(travelUUID).and(b.IsActiveEntity().eq(isActiveEntity))))
 				.first();
 
-		if (flightPriceRow.isPresent() && flightPriceRow.get().size() > 0) {
-			flightPriceSum = new BigDecimal(flightPriceRow.get().get("FlightPriceSum").toString());
+		if (flightPriceRow.isPresent()) {
+			flightPriceSum = (BigDecimal) Objects.requireNonNullElse(flightPriceRow.get().get("FlightPriceSum"), new BigDecimal(0));
 		}
 
 		// get sum of the prices of all booking supplements for the travel
@@ -86,15 +86,15 @@ public class RecalculatePriceHandler implements EventHandler {
 				.run(Select.from(BOOKING_SUPPLEMENT).columns(c -> sum(c.Price()).as("PriceSum"))
 						.where(b -> b.to_Travel_TravelUUID().eq(travelUUID).and(b.IsActiveEntity().eq(isActiveEntity))))
 				.first();
-		if (supplementPriceSumRow.isPresent() && supplementPriceSumRow.get().size() > 0) {
-			supplementPriceSum = new BigDecimal(supplementPriceSumRow.get().get("PriceSum").toString());
+		if (supplementPriceSumRow.isPresent()) {
+			supplementPriceSum = (BigDecimal) Objects.requireNonNullElse(flightPriceRow.get().get("PriceSum"), new BigDecimal(0));
 		}
 
 		// update travel's total price
 		return bookingFee.add(flightPriceSum).add(supplementPriceSum);
 	}
 
-	@After(event = {CdsService.EVENT_UPDATE, CdsService.EVENT_CREATE}, entity = Travel_.CDS_NAME)
+	@After(event = {CqnService.EVENT_UPDATE, CqnService.EVENT_CREATE}, entity = Travel_.CDS_NAME)
 	public void calculateNewTotalPriceForActiveTravel(Travel travel) {
 
 		/*
@@ -106,30 +106,30 @@ public class RecalculatePriceHandler implements EventHandler {
 		* store them to the active version *before* the DRAFT_SAVE event.
 		*/
 
-		String travelUUID = travel.getTravelUUID();
+		String travelUUID = travel.travelUUID();
 		if (StringUtils.isEmpty(travelUUID)) {
 			return;
 		}
-		travel.setTotalPrice(calculateTotalPriceForTravel(persistenceService, travelUUID, true));
+		travel.totalPrice(calculateTotalPriceForTravel(persistenceService, travelUUID, true));
 
 		Map<String, Object> data = new HashMap<>();
-		data.put(Travel.TOTAL_PRICE, travel.getTotalPrice());
+		data.put(Travel.TOTAL_PRICE, travel.totalPrice());
 		data.put(Travel.TRAVEL_UUID, travelUUID);
 		persistenceService.run(Update.entity(TRAVEL).data(data));
 	}
 
 	@After(event = { DraftService.EVENT_DRAFT_PATCH }, entity = Travel_.CDS_NAME)
 	public void recalculateTravelPriceIfTravelWasUpdated(final Travel travel) {
-		if (travel.getTravelUUID() != null && travel.getBookingFee() != null) { // only for patched booking fee
-			String travelUUID = travel.getTravelUUID();
-			travel.setTotalPrice(calculateAndPatchNewTotalPriceForDraft(travelUUID));
+		if (travel.travelUUID() != null && travel.bookingFee() != null) { // only for patched booking fee
+			String travelUUID = travel.travelUUID();
+			travel.totalPrice(calculateAndPatchNewTotalPriceForDraft(travelUUID));
 		}
 	}
 
 	@After(event = { DraftService.EVENT_DRAFT_PATCH, DraftService.EVENT_DRAFT_NEW }, entity = Booking_.CDS_NAME)
 	public void recalculateTravelPriceIfFlightPriceWasUpdated(final Booking booking) {
 		draftService.run(Select.from(BOOKING).columns(bs -> bs.to_Travel().TravelUUID().as(Travel.TRAVEL_UUID))
-				.where(bs -> bs.BookingUUID().eq(booking.getBookingUUID())
+				.where(bs -> bs.BookingUUID().eq(booking.bookingUUID())
 						.and(bs.IsActiveEntity().eq(FALSE))))
 				.first()
 				.ifPresent(row -> calculateAndPatchNewTotalPriceForDraft((String) row.get(Travel.TRAVEL_UUID)));
@@ -140,7 +140,7 @@ public class RecalculatePriceHandler implements EventHandler {
 	public void recalculateTravelPriceIfPriceWasUpdated(final BookingSupplement bookingSupplement) {
 		draftService.run(Select.from(BOOKING_SUPPLEMENT)
 				.columns(bs -> bs.to_Booking().to_Travel().TravelUUID().as(Travel.TRAVEL_UUID))
-				.where(bs -> bs.BookSupplUUID().eq(bookingSupplement.getBookSupplUUID())
+				.where(bs -> bs.BookSupplUUID().eq(bookingSupplement.bookSupplUUID())
 						.and(bs.IsActiveEntity().eq(FALSE))))
 				.first()
 				.ifPresent(row -> calculateAndPatchNewTotalPriceForDraft((String) row.get(Travel.TRAVEL_UUID)));

@@ -60,7 +60,8 @@ annotate TravelService.Travel with @UI : {
     { Value : TotalPrice, @HTML5.CssDefaults: {width:'12em'} },
     {
       Value : TravelStatus_code,
-      Criticality : TravelStatus.criticality,
+      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'TravelStatus_code'}, 'O']}, 2,
+                                { $If: [{$Eq: [{ $Path: 'TravelStatus_code'}, 'A']}, 3, 0] }] } },
       @UI.Importance : #High,
       @HTML5.CssDefaults: {width:'10em'}
     }
@@ -103,7 +104,8 @@ annotate TravelService.Travel with @UI : {
     {
       $Type       : 'UI.DataField',
       Value       : TravelStatus_code,
-      Criticality : TravelStatus.criticality,
+      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'TravelStatus_code'}, 'O']}, 2,
+                                { $If: [{$Eq: [{ $Path: 'TravelStatus_code'}, 'A']}, 3, 0] }] } },
       Label : '{i18n>Status}' // label only necessary if differs from title of element
     }
   ]},
@@ -146,7 +148,10 @@ annotate TravelService.Booking with @UI : {
     { Value : ConnectionID,          Label : '{i18n>FlightNumber}' },
     { Value : FlightDate             },
     { Value : FlightPrice            },
-    { Value : BookingStatus_code     }
+    { Value : BookingStatus_code,
+      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'N']}, 2,
+                                { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'B']}, 3, 0] }] } }
+    }
   ],
   Facets : [{
     $Type  : 'UI.CollectionFacet',
@@ -174,7 +179,10 @@ annotate TravelService.Booking with @UI : {
     { Value : BookingDate,           },
     { Value : to_Customer_CustomerID },
     { Value : BookingDate,           },
-    { Value : BookingStatus_code     }
+    { Value : BookingStatus_code,
+      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'N']}, 2,
+                                { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'B']}, 3, 0] }] } }
+     }
   ]},
   FieldGroup #Flight : { Data : [
     { Value : to_Carrier_AirlineID   },
@@ -208,13 +216,4 @@ annotate TravelService.BookingSupplement with @UI : {
     { Value : to_Supplement_SupplementID, Label : '{i18n>ProductID}'    },
     { Value : Price,                      Label : '{i18n>ProductPrice}' }
   ],
-};
-
-annotate TravelService.Flight with @UI : {
-  PresentationVariant#SortOrderPV : {    // used in the value help for ConnectionId in Bookings
-    SortOrder      : [{
-      Property   : FlightDate,
-      Descending : true
-    }]
-  }
 };
