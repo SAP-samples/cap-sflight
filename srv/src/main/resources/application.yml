@@ -3,10 +3,7 @@ management:
         web:
             exposure:
                 include: "*"
----
-spring:
-    profiles: default
-    web.resources.static-locations: "file:./app"
+
 cds:
     security.mock.users:
     - name: rose
@@ -25,14 +22,19 @@ cds:
         endpoint:
             path: "/"
 
+---
+spring:
+    config.activate.on-profile: default
+    web.resources.static-locations: "file:./app"
+    
 server:
     port: 4004
 
 ---
 spring:
-    profiles: cloud
+    config.activate.on-profile: cloud
+    sql.init.mode: never
 
 cds:
-    odata-v4:
-        endpoint:
-            path: "/"
+    datasource:
+        csv.initialization-mode: never
