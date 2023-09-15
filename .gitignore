@@ -53,3 +53,5 @@ dist/
 # Experimental
 xxx_*
 xxx/*
+
+@cds-models
