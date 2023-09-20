@@ -53,7 +53,7 @@ async init() {
    * Changing Booking Fees is only allowed for not yet accapted Travels.
    */
   this.before ('UPDATE', Travel.drafts, async (req) => { if ('BookingFee' in req.data) {
-    const { status } = await SELECT.one `TravelStatus_code as status` .from (req.subject)
+    const { status } = await SELECT.one `TravelStatus_code as status` .from (req.subject as unknown as typeof Travel)
     if (status === 'A') req.reject(400, 'Booking fee can not be updated for accepted travels.', 'BookingFee')
   }})
 
@@ -71,7 +71,7 @@ async init() {
    */
   this.after ('UPDATE', Booking.drafts, async (_,req) => { if ('FlightPrice' in req.data) {
     // We need to fetch the Travel's UUID for the given Booking target
-    const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (req.subject)
+    const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (req.subject as unknown as typeof Booking)
     return this._update_totals4 (travel)
   }})
 
@@ -126,6 +126,7 @@ async init() {
    */
   this._update_totals4 = function (travel: Travel) {
     // Using plain native SQL for such complex queries
+    // @ts-ignore
     return cds.run(`UPDATE ${Travel.drafts} SET
       TotalPrice = coalesce(BookingFee,0)
       + ( SELECT coalesce (sum(FlightPrice),0) from ${Booking.drafts} where to_Travel_TravelUUID = TravelUUID )
@@ -170,14 +171,15 @@ async init() {
     if (BeginDate! > EndDate!) req.error (400, `Begin Date ${BeginDate} must be before End Date ${EndDate}.`, 'in/BeginDate')
   })
 
-
   //
   // Action Implementations...
   //
+  const { acceptTravel, deductDiscount, rejectTravel } = Travel.actions
 
-  this.on ('acceptTravel', req => UPDATE (req.subject) .with ({TravelStatus_code:'A'}))
-  this.on ('rejectTravel', req => UPDATE (req.subject) .with ({TravelStatus_code:'X'}))
-  this.on ('deductDiscount', async req => {
+  this.on (acceptTravel, req => UPDATE (req.subject) .with ({TravelStatus_code:'A'}))
+  this.on (rejectTravel, req => UPDATE (req.subject) .with ({TravelStatus_code:'X'}))
+  this.on (deductDiscount, 'TravelService', async req => {
+    const subject = req.subject as unknown as string
     let discount = req.data.percent / 100
     let succeeded = await UPDATE (req.subject)
       .where `TravelStatus_code != 'A'`
@@ -185,14 +187,14 @@ async init() {
       .with (`
         TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3),
         BookingFee = round (BookingFee - BookingFee * ${discount}, 3)
-      `)
+      ` as {})
     if (!succeeded) { //> let's find out why...
-      let travel = await SELECT.one `TravelID as ID, TravelStatus_code as status, BookingFee` .from (req.subject)
+      let travel = await SELECT.one `TravelID as ID, TravelStatus_code as status, BookingFee` .from (subject)
       if (!travel) throw req.reject (404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
       if (travel.status === 'A') req.reject (400, `Travel "${travel.ID}" has been approved already.`)
       if (travel.BookingFee == null) throw req.reject (404, `No discount possible, as travel "${travel.ID}" does not yet have a booking fee added.`)
     } else {
-      return this.read(req.subject)
+      return  this.read<Travel>(subject)
     }
   })
 
