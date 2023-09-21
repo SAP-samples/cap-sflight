@@ -182,6 +182,7 @@ async init() {
   this.on (deductDiscount, 'TravelService', async req => {
     // FIXME: TS v
     const subject = req.subject as unknown as string
+    //@ts-ignore FIXME action param invalid
     let discount = req.data.percent / 100
     let succeeded = await UPDATE (req.subject)
       .where `TravelStatus_code != 'A'`
