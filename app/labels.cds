@@ -91,6 +91,11 @@ annotate schema.Flight with @title: '{i18n>Flight}' {
   OccupiedSeats @title: '{i18n>OccupiedSeats}';
 }
 
+annotate schema.FlightConnection with  {
+  DepartureTime @title: '{i18n>DepartureTime}';
+  ArrivalTime   @title: '{i18n>ArrivalTime}';
+}
+
 annotate schema.Supplement with @title: '{i18n>Supplement}' {
   SupplementID @title: '{i18n>SupplementID}'  @Common.Text: Description;
   Price        @title: '{i18n>Price}'         @Measures.ISOCurrency: CurrencyCode_code;
