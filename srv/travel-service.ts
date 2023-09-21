@@ -1,7 +1,6 @@
 import * as cds from '@sap/cds';
 require('./workarounds')
-    
-class TravelService extends cds.ApplicationService {
+export class TravelService extends cds.ApplicationService {
 private _update_totals4: Function = () => undefined; // forward declaration
 
 
@@ -125,7 +124,7 @@ async init() {
   /**
    * Helper to re-calculate a Travel's TotalPrice from BookingFees, FlightPrices and Supplement Prices.
    */
-  this._update_totals4 = function (travel: Travel) {
+  this._update_totals4 = function (travel: typeof Travel) {
     // Using plain native SQL for such complex queries
     // FIXME: TS v
     // @ts-ignore
@@ -208,4 +207,3 @@ async init() {
   return super.init()
 
 }}
-module.exports = {TravelService}
