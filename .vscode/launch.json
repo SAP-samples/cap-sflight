@@ -13,7 +13,7 @@
     },
     {
       "name": "cds watch",
-      "command": "npx cds watch",
+      "command": "npx cds-ts watch",
       "env": {
         "DEBUG": "sqlite"
       },
