@@ -26,9 +26,10 @@ async init() {
   /**
    * Fill in defaults for new Bookings when editing Travels.
    */
-  this.before ('NEW', Booking.drafts, async (req) => {
+  // FIXME: TS v
+  this.before ('NEW', 'Booking.drafts' as unknown as typeof Booking, async (req) => {
     const { to_Travel_TravelUUID } = req.data
-    const { status } = await SELECT `TravelStatus_code as status` .from (Travel.drafts, to_Travel_TravelUUID)
+    const { status } = await SELECT `TravelStatus_code as status` .from ('Travel.drafts', to_Travel_TravelUUID)
     if (status === 'X') throw req.reject (400, 'Cannot add new bookings to rejected travels.')
     const { maxID } = await SELECT.one `max(BookingID) as maxID` .from (Booking.drafts) .where ({to_Travel_TravelUUID})
     req.data.BookingID = maxID + 1
@@ -40,7 +41,8 @@ async init() {
   /**
    * Fill in defaults for new BookingSupplements when editing Travels.
    */
-  this.before ('NEW', BookingSupplement.drafts, async (req) => {
+  // FIXME: TS v
+  this.before ('NEW', 'BookingSupplement.drafts' as unknown as typeof BookingSupplement, async (req) => {
     const { to_Booking_BookingUUID } = req.data
     const { maxID } = await SELECT.one `max(BookingSupplementID) as maxID` .from (BookingSupplement.drafts) .where ({to_Booking_BookingUUID})
     req.data.BookingSupplementID = maxID + 1
@@ -50,7 +52,8 @@ async init() {
   /**
    * Changing Booking Fees is only allowed for not yet accapted Travels.
    */
-  this.before ('UPDATE', Travel.drafts, async (req) => { if ('BookingFee' in req.data) {
+  // FIXME: TS v
+  this.before ('UPDATE', 'Travel.drafts' as unknown as typeof Travel, async (req) => { if ('BookingFee' in req.data) {
     // FIXME: TS v
     const { status } = await SELECT.one `TravelStatus_code as status` .from (req.subject as unknown as typeof Travel)
     if (status === 'A') req.reject(400, 'Booking fee can not be updated for accepted travels.', 'BookingFee')
@@ -60,7 +63,8 @@ async init() {
   /**
    * Update the Travel's TotalPrice when its BookingFee is modified.
    */
-  this.after ('UPDATE', Travel.drafts, (_,req) => { if ('BookingFee' in req.data) {
+  // FIXME: TS v
+  this.after ('UPDATE', 'Travel.drafts' as unknown as typeof Travel, (_,req) => { if ('BookingFee' in req.data) {
     return this._update_totals4 (req.data.TravelUUID)
   }})
 
@@ -68,7 +72,8 @@ async init() {
   /**
    * Update the Travel's TotalPrice when a Booking's FlightPrice is modified.
    */
-  this.after ('UPDATE', Booking.drafts, async (_,req) => { if ('FlightPrice' in req.data) {
+  // FIXME: TS v
+  this.after ('UPDATE', 'Booking.drafts' as unknown as typeof Booking, async (_,req) => { if ('FlightPrice' in req.data) {
     // We need to fetch the Travel's UUID for the given Booking target
     // FIXME: TS v
     const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (req.subject as unknown as typeof Booking)
@@ -79,7 +84,8 @@ async init() {
   /**
    * Update the Travel's TotalPrice when a Supplement's Price is modified.
    */
-  this.after ('UPDATE', BookingSupplement.drafts, async (_,req) => { if ('Price' in req.data) {
+  // FIXME: TS v
+  this.after ('UPDATE', 'BookingSupplement.drafts' as unknown as typeof BookingSupplement, async (_,req) => { if ('Price' in req.data) {
     // We need to fetch the Travel's UUID for the given Supplement target
     const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (Booking.drafts)
       .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (BookingSupplement.drafts).where({BookSupplUUID:req.data.BookSupplUUID}) }`
@@ -91,11 +97,12 @@ async init() {
   /**
    * Update the Travel's TotalPrice when a Booking Supplement is deleted.
    */
-  this.on('CANCEL', BookingSupplement.drafts, async (req, next) => {
+  // FIXME: TS v
+  this.on('CANCEL', 'BookingSupplement.drafts' as unknown as typeof BookingSupplement, async (req, next) => {
     // Find out which travel is affected before the delete
     const { BookSupplUUID } = req.data
     const { to_Travel_TravelUUID } = await SELECT.one
-      .from(BookingSupplement.drafts, ['to_Travel_TravelUUID'])
+      .from('BookingSupplement.drafts', ['to_Travel_TravelUUID'])
       .where({ BookSupplUUID })
     // Delete handled by generic handlers
     const res = await next()
@@ -107,11 +114,12 @@ async init() {
   /**
    * Update the Travel's TotalPrice when a Booking is deleted.
    */
-  this.on('CANCEL', Booking.drafts, async (req, next) => {
+  // FIXME: TS v
+  this.on('CANCEL', 'Bookings.drafts' as unknown as typeof Booking, async (req, next) => {
     // Find out which travel is affected before the delete
     const { BookingUUID } = req.data
     const { to_Travel_TravelUUID } = await SELECT.one
-      .from(Booking.drafts, ['to_Travel_TravelUUID'])
+      .from('Booking.drafts', ['to_Travel_TravelUUID'])
       .where({ BookingUUID })
     // Delete handled by generic handlers
     const res = await next()
