@@ -126,6 +126,16 @@
               "controlConfiguration": {
                 "@com.sap.vocabularies.UI.v1.SelectionFields": {
                   "useSemanticDateRange": true
+                },
+                "@com.sap.vocabularies.UI.v1.LineItem": {
+                  "columns": {
+                    "myTotalPriceRounded": {
+                      "id": "myTotalPriceRounded",
+                      "header": "Total Price (Rounded Off)",
+                      "template": "sap.fe.cap.travel.ext.MyTotalPriceRounded",
+                      "properties": ["TotalPrice"]
+                    }
+                  }
                 }
               },
               "variantManagement": "Page",
