@@ -41,7 +41,7 @@ entity Booking : managed {
   key BookingUUID   : UUID;
   BookingID         : Integer @Core.Computed;
   BookingDate       : Date;
-  ConnectionID      : String(4);
+  ConnectionID      : String(4) @cds.collate : false;
   FlightDate        : Date;
   FlightPrice       : Decimal(16, 3);
   CurrencyCode      : Currency;
@@ -79,6 +79,7 @@ entity BookingStatus : CodeList {
 };
 
 entity TravelStatus : CodeList {
+  @cds.collate: false
   key code : String enum {
     Open     = 'O';
     Accepted = 'A';
