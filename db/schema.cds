@@ -71,7 +71,7 @@ entity BookingSupplement : managed {
 //
 
 entity BookingStatus : CodeList {
-  key code : String enum {
+  key code : String(1) enum {
     New      = 'N';
     Booked   = 'B';
     Canceled = 'X';
@@ -79,8 +79,7 @@ entity BookingStatus : CodeList {
 };
 
 entity TravelStatus : CodeList {
-  @cds.collate: false
-  key code : String enum {
+  key code : String(1) enum {
     Open     = 'O';
     Accepted = 'A';
     Canceled = 'X';

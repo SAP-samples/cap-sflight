@@ -101,7 +101,7 @@ entity TravelAgency : MasterData {
 
 entity SupplementType : sap.common.CodeList {
   @cds.collate: false
-  key code : String enum {
+  key code : String(2) enum {
     Beverage = 'BV';
     Meal     = 'ML';
     Luggage  = 'LU';
