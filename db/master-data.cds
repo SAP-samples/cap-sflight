@@ -9,7 +9,7 @@ entity Airline : MasterData {
   key AirlineID : String(3) @cds.collate : false;
   Name          : String(40);
   CurrencyCode  : Currency;
-  AirlinePicURL : String      @UI : {IsImageURL : true} @cds.collate: false;
+  AirlinePicURL : String      @UI : {IsImageURL : true};
 
 };
 
@@ -78,8 +78,8 @@ entity Passenger : managed, MasterData {
   PostalCode     : String(10);
   City           : String(40);
   CountryCode    : Country     @cds.collate : false;
-  PhoneNumber    : String(30)  @cds.collate : false;
-  EMailAddress   : String(256) @cds.collate : false;
+  PhoneNumber    : String(30);
+  EMailAddress   : String(256);
 };
 
 entity TravelAgency : MasterData {
@@ -89,9 +89,9 @@ entity TravelAgency : MasterData {
   PostalCode   : String(10);
   City         : String(40);
   CountryCode  : Country     @cds.collate : false;
-  PhoneNumber  : String(30)  @cds.collate : false;
-  EMailAddress : String(256) @cds.collate : false;
-  WebAddress   : String(256) @cds.collate : false;
+  PhoneNumber  : String(30);
+  EMailAddress : String(256);
+  WebAddress   : String(256);
 };
 
 
