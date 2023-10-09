@@ -92,7 +92,7 @@ entity TravelAgency : MasterData {
   Street       : String(60);
   PostalCode   : String(10);
   City         : String(40);
-  CountryCode  : Country     @cds.collate : false;
+  CountryCode  : Country;
   PhoneNumber  : String(30);
   EMailAddress : String(256);
   WebAddress   : String(256);
