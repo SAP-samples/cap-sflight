@@ -70,6 +70,8 @@ entity BookingSupplement : managed {
 //  Code Lists
 //
 
+@singular: 'BookingStatus'
+@plural: 'BookingStatuses'
 entity BookingStatus : CodeList {
   key code : String enum {
     New      = 'N';
@@ -78,6 +80,8 @@ entity BookingStatus : CodeList {
   };
 };
 
+@singular: 'TravelStatus'
+@plural: 'TravelStatuses'
 entity TravelStatus : CodeList {
   key code : String enum {
     Open     = 'O';
