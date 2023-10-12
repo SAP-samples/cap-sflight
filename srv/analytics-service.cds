@@ -5,6 +5,8 @@ service AnalyticsService @(path:'/analytics') {
   // @(restrict: [
   //   { grant: 'READ', to: 'authenticated-user'},
   // ])
+  @singular: 'Booking'
+  @plural: 'Bookings'
   @readonly
   entity Bookings as projection on my.Booking {
     @UI.Hidden: false
@@ -60,6 +62,8 @@ service AnalyticsService @(path:'/analytics') {
   };
 
   // for value help
+  @singular: 'BookingsStatus'
+  @plural: 'BookingsStatuses'
   entity BookingStatus as projection on my.BookingStatus;
 
   // for detail page:
