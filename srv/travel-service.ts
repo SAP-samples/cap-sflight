@@ -3,7 +3,7 @@ import { Bookings } from '#cds-models/AnalyticsService';
 import * as cds from '@sap/cds';
 require('./workarounds')
 
-export class TravelService extends cds.ApplicationService {
+export class TravelServiceImpl extends cds.ApplicationService {
 private _update_totals4: Function = () => undefined; // forward declaration
 
 async init() {
@@ -12,7 +12,7 @@ async init() {
    * Reflect definitions from the service's CDS model
    */
   const { Travel, Booking, BookingSupplement, TravelStatus, BookingStatus } = await import('#cds-models/TravelService')
-
+  const TravelService = (await import('#cds-models/TravelService')).default
   /**
    * Fill in primary keys for new Travels.
    * Note: In contrast to Bookings and BookingSupplements that has to happen
@@ -50,7 +50,7 @@ async init() {
   /**
    * Changing Booking Fees is only allowed for not yet accapted Travels.
    */
-  this.before ('UPDATE', Travel.drafts, async (req) => { if (req.data.BookingFee) {
+  this.before ('UPDATE', Travel.drafts, async (req) => { if ('BookingFee' in req.data) {
     // FIXME: TS v
     const { status } = await SELECT.one `TravelStatus_code as status` .from (req.subject as unknown as typeof Travel)
     if (status === TravelStatus.code.Accepted) req.reject(400, 'Booking fee can not be updated for accepted travels.', 'BookingFee')
@@ -68,7 +68,7 @@ async init() {
   /**
    * Update the Travel's TotalPrice when a Booking's FlightPrice is modified.
    */
-  this.after ('UPDATE', Booking.drafts, async (_,req) => { if ('FlightPrice' in req.data) {
+  this.after ('UPDATE', Bookings.drafts, async (_,req) => { if ('FlightPrice' in req.data) {
     // We need to fetch the Travel's UUID for the given Booking target
     // FIXME: TS v
     const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (req.subject as unknown as typeof Booking)
@@ -179,7 +179,7 @@ async init() {
 
   this.on (acceptTravel, req => UPDATE (req.subject) .with ({TravelStatus_code: TravelStatus.code.Accepted}))
   this.on (rejectTravel, req => UPDATE (req.subject) .with ({TravelStatus_code: TravelStatus.code.Canceled}))
-  this.on (deductDiscount, 'TravelService', async req => {
+  this.on (deductDiscount, TravelService.name, async req => {
     // FIXME: TS v
     const subject = req.subject as unknown as string
     //@ts-ignore FIXME action param invalid
