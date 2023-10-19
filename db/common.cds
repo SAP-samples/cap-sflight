@@ -1,4 +1,7 @@
-using { sap, managed } from '@sap/cds/common';
+using {
+  sap,
+  managed
+} from '@sap/cds/common';
 
 extend sap.common.Currencies with {
   // Currencies.code = ISO 4217 alphabetic three-letter code
