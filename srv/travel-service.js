@@ -23,7 +23,7 @@ init() {
   /**
    * Fill in defaults for new Bookings when editing Travels.
    */
-  this.before ('NEW', 'Booking', async (req) => {
+  this.before ('NEW', 'Booking.drafts', async (req) => {
     const { to_Travel_TravelUUID } = req.data
     const { status } = await SELECT `TravelStatus_code as status` .from (Travel.drafts, to_Travel_TravelUUID)
     if (status === 'X') throw req.reject (400, 'Cannot add new bookings to rejected travels.')
@@ -37,7 +37,7 @@ init() {
   /**
    * Fill in defaults for new BookingSupplements when editing Travels.
    */
-  this.before ('NEW', 'BookingSupplement', async (req) => {
+  this.before ('NEW', 'BookingSupplement.drafts', async (req) => {
     const { to_Booking_BookingUUID } = req.data
     const { maxID } = await SELECT.one `max(BookingSupplementID) as maxID` .from (BookingSupplement.drafts) .where ({to_Booking_BookingUUID})
     req.data.BookingSupplementID = maxID + 1
@@ -47,8 +47,8 @@ init() {
   /**
    * Changing Booking Fees is only allowed for not yet accapted Travels.
    */
-  this.before ('PATCH', 'Travel', async (req) => { if ('BookingFee' in req.data) {
-    const { status } = await SELECT `TravelStatus_code as status` .from (req.subject)
+  this.before ('UPDATE', 'Travel.drafts', async (req) => { if ('BookingFee' in req.data) {
+    const { status } = await SELECT.one `TravelStatus_code as status` .from (req.subject)
     if (status === 'A') req.reject(400, 'Booking fee can not be updated for accepted travels.', 'BookingFee')
   }})
 
@@ -56,7 +56,7 @@ init() {
   /**
    * Update the Travel's TotalPrice when its BookingFee is modified.
    */
-  this.after ('PATCH', 'Travel', (_,req) => { if ('BookingFee' in req.data) {
+  this.after ('UPDATE', 'Travel.drafts', (_,req) => { if ('BookingFee' in req.data) {
     return this._update_totals4 (req.data.TravelUUID)
   }})
 
@@ -64,7 +64,7 @@ init() {
   /**
    * Update the Travel's TotalPrice when a Booking's FlightPrice is modified.
    */
-  this.after ('PATCH', 'Booking', async (_,req) => { if ('FlightPrice' in req.data) {
+  this.after ('UPDATE', 'Booking.drafts', async (_,req) => { if ('FlightPrice' in req.data) {
     // We need to fetch the Travel's UUID for the given Booking target
     const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (req.subject)
     return this._update_totals4 (travel)
@@ -74,7 +74,7 @@ init() {
   /**
    * Update the Travel's TotalPrice when a Supplement's Price is modified.
    */
-  this.after ('PATCH', 'BookingSupplement', async (_,req) => { if ('Price' in req.data) {
+  this.after ('UPDATE', 'BookingSupplement.drafts', async (_,req) => { if ('Price' in req.data) {
     // We need to fetch the Travel's UUID for the given Supplement target
     const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from (Booking.drafts)
       .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (BookingSupplement.drafts).where({BookSupplUUID:req.data.BookSupplUUID}) }`
@@ -86,7 +86,7 @@ init() {
   /**
    * Update the Travel's TotalPrice when a Booking Supplement is deleted.
    */
-  this.on('CANCEL', BookingSupplement, async (req, next) => {
+  this.on('CANCEL', BookingSupplement.drafts, async (req, next) => {
     // Find out which travel is affected before the delete
     const { BookSupplUUID } = req.data
     const { to_Travel_TravelUUID } = await SELECT.one
@@ -102,7 +102,7 @@ init() {
   /**
    * Update the Travel's TotalPrice when a Booking is deleted.
    */
-  this.on('CANCEL', Booking, async (req, next) => {
+  this.on('CANCEL', Booking.drafts, async (req, next) => {
     // Find out which travel is affected before the delete
     const { BookingUUID } = req.data
     const { to_Travel_TravelUUID } = await SELECT.one
@@ -120,11 +120,12 @@ init() {
    * Helper to re-calculate a Travel's TotalPrice from BookingFees, FlightPrices and Supplement Prices.
    */
   this._update_totals4 = function (travel) {
-    return UPDATE (Travel.drafts, travel) .with ({ TotalPrice: CXL `coalesce (BookingFee, 0) + ${
-      SELECT `coalesce (sum (FlightPrice + ${
-        SELECT `coalesce (sum (Price),0)` .from (BookingSupplement.drafts) .where `to_Booking_BookingUUID = BookingUUID`
-      }),0)` .from (Booking.drafts) .where `to_Travel_TravelUUID = TravelUUID`
-    }` })
+    // Using plain native SQL for such complex queries
+    return cds.run(`UPDATE ${Travel.drafts} SET
+      TotalPrice = coalesce(BookingFee,0)
+      + ( SELECT coalesce (sum(FlightPrice),0) from ${Booking.drafts} where to_Travel_TravelUUID = TravelUUID )
+      + ( SELECT coalesce (sum(Price),0) from ${BookingSupplement.drafts} where to_Travel_TravelUUID = TravelUUID )
+    WHERE TravelUUID = ?`, [travel])
   }
 
 
@@ -185,10 +186,7 @@ init() {
       if (travel.status === 'A') req.reject (400, `Travel "${travel.ID}" has been approved already.`)
       if (travel.BookingFee == null) throw req.reject (404, `No discount possible, as travel "${travel.ID}" does not yet have a booking fee added.`)
     } else {
-      // Note: it is important to read from this, not db to include draft handling
-      // REVISIT: through req.subject workaround, IsActiveEntity is non-enumerable, which breaks this.read(Travel, req.params[0])
-      const [{ TravelUUID, IsActiveEntity }] = req.params
-      return this.read(Travel, { TravelUUID, IsActiveEntity })
+      return this.read(req.subject)
     }
   })
 

@@ -1,6 +1,8 @@
 using { Currency, Country, custom.managed, sap } from './common';
 namespace sap.fe.cap.travel;
 
+// ensure all masterdata entities are available to clients
+@cds.autoexpose @readonly
 aspect MasterData {}
 
 
@@ -99,7 +101,7 @@ entity TravelAgency : MasterData {
 //
 
 entity SupplementType : sap.common.CodeList {
-  key code : String enum {
+  key code : String(2) enum {
     Beverage = 'BV';
     Meal     = 'ML';
     Luggage  = 'LU';

@@ -19,12 +19,12 @@ service AnalyticsService @(path:'/analytics') {
     ConnectionID,
     FlightDate,
 
-    // pretend all bookings have the same currency so the price can be aggregated
+    // pretend all bookings have the same currency so the FlightPrice can be aggregated
     @title: '{i18n>CurrencyCode}'
-    'USD' as cuco : String(3),
-    //CurrencyCode.code as cuco,
-    @Measures.ISOCurrency: cuco
-    FlightPrice as price,
+    'USD' as CurrencyCode_code : String(3),
+    //CurrencyCode.code as CurrencyCode_code,
+    @Measures.ISOCurrency: CurrencyCode_code
+    FlightPrice,
 
     @title: '{i18n>BookingStatus}'
     @Common.Text: statusName @Common.TextArrangement: #TextOnly
@@ -59,6 +59,8 @@ service AnalyticsService @(path:'/analytics') {
 
   };
 
+  // for value help
+  entity BookingStatus as projection on my.BookingStatus;
 
   // for detail page:
 

@@ -4,9 +4,6 @@ using TravelService from '../../srv/travel-service';
 // annotations that control the behavior of fields and actions
 //
 
-// Workarounds for overly strict OData libs and clients
-annotate cds.UUID with @Core.Computed  @odata.Type : 'Edm.String';
-
 annotate TravelService.Travel with @(Common.SideEffects: {
   SourceProperties: [BookingFee],
   TargetProperties: ['TotalPrice']
@@ -79,5 +76,3 @@ annotate TravelService.BookingSupplement {
   to_Travel     @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
 
 };
-
-annotate Currency with @Common.UnitSpecificScale : 'Decimals';

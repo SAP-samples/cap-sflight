@@ -63,7 +63,7 @@
   "sap.ui5": {
     "flexEnabled": true,
     "dependencies": {
-      "minUI5Version": "1.102.1",
+      "minUI5Version": "1.117.1",
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
@@ -125,7 +125,7 @@
             "settings": {
               "entitySet": "Bookings",
               "variantManagement": "Page",
-              "initialLoad": true,
+              "initialLoad": "Enabled",
               "navigation": {
                 "Bookings": {
                   "detail": {
