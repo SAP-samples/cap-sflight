@@ -27,6 +27,10 @@
 //   ** for each date/timestamp, add n weeks
 //   ** write back modified json -> csv
 
+// Usage:
+// > cd db/data/generator
+// > node time_travel.js
+// writes new data to output/...
 
 const csv = require('./csv_helper');
 
