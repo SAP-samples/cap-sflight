@@ -210,7 +210,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
             .onForm({ section: "Travel", fieldGroup: "DateData" })
             .iCheckField(
               { property: "BeginDate" },
-              { value: "May 25, 2023" },
+              { value: "May 30, 2024" },
               { editable: false }
             );
 
