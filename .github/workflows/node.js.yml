@@ -10,7 +10,8 @@ on:
   pull_request:
     branches: [ main ]
     types: [ labeled, opened, synchronize, reopened ]
-
+  schedule:
+    - cron: 20 4 * * *
 jobs:
   build:
     runs-on: ubuntu-latest
