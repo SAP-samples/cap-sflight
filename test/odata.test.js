@@ -56,17 +56,17 @@ describe('Basic OData', () => {
   it('GET /processor/Travel', async () => {
     const { data } = await GET(`/processor/Travel?$filter=TravelUUID eq '00667221A8E4645C17002DF03754AB66'`)
     expect(data.value).to.containSubset([{
-      BeginDate: '2022-07-27',
+      BeginDate: '2023-08-02',
       BookingFee: 60,
-      createdAt: expectedValue => /2022-07-10T18:42:07\.000(0000)?Z/.test(expectedValue), // timestamp precision increase with cds^7
+      createdAt: expectedValue => /2023-07-16T18:42:07\.000(0000)?Z/.test(expectedValue), // timestamp precision increase with cds^7
       createdBy: 'Hansmann',
       CurrencyCode_code: 'SGD',
       Description: 'Sightseeing in Singapore',
-      EndDate: '2023-05-24',
+      EndDate: '2024-05-29',
       HasActiveEntity: false,
       HasDraftEntity: false,
       IsActiveEntity: true,
-      LastChangedAt: expectedValue => /2022-07-21T03:18:18\.000(0000)?Z/.test(expectedValue), // timestamp precision increase with cds^7
+      LastChangedAt: expectedValue => /2023-07-27T03:18:18\.000(0000)?Z/.test(expectedValue), // timestamp precision increase with cds^7
       LastChangedBy: 'Deichgraeber',
       to_Agency_AgencyID: '070029',
       to_Customer_CustomerID: '000318',
