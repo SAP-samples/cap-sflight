@@ -82,7 +82,7 @@
       "odata_new_parser": true
     },
     "build": {
-      "[node]": {
+      "[node!]": {
         "target": "gen",
         "tasks": [
           {
