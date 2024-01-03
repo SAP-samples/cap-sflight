@@ -5,8 +5,7 @@
   "description": "SFlight ALP",
   "main": "webapp/index.html",
   "engines": {
-    "node": ">=18",
-    "npm": ">=8"
+    "node": ">=18"
   },
   "scripts": {
     "build": "ui5 build preload --clean-dest --include-task=generateCachebusterInfo",
