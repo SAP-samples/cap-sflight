@@ -6,7 +6,7 @@
   "license": "SAP SAMPLE CODE LICENSE",
   "repository": "https://github.com/SAP-samples/cap-sflight",
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "scripts": {
     "lint": "npx eslint .",
@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@cap-js/sqlite": "^1.0.1",
-    "@sap/ux-specification": "UI5-1.117",
+    "@sap/ux-specification": "UI5-1.120",
     "axios": "^1",
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
