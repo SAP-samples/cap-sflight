@@ -26,6 +26,7 @@ cds:
 spring:
     config.activate.on-profile: default
     web.resources.static-locations: "file:./app"
+    devtools.restart.trigger-file: .reloadtrigger
     
 server:
     port: 4004
