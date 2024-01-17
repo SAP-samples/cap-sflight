@@ -5,6 +5,7 @@ management:
                 include: "*"
 
 cds:
+    sql.hana.optimizationMode: hex
     security.mock.users:
     - name: rose
     - name: martha
