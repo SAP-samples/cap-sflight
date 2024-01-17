@@ -20,8 +20,7 @@
     "@sap/cds": ">=7.0.0",
     "@sap/xssec": "^3.2.7",
     "express": "^4",
-    "hdb": "^0.19.1",
-    "passport": ">=0.6.0"
+    "hdb": "^0.19.1"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^1.0.1",
