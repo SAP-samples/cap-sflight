@@ -14,7 +14,10 @@
     "test": "jest",
     "test:mocha": "npx mocha --timeout 20000",
     "travel-processor": "cds watch --open travel_processor/webapp/index.html?sap-ui-xx-viewCache=false",
-    "travel-analytics": "cds watch --open travel_analytics/webapp/index.html?sap-ui-xx-viewCache=false"
+    "travel-analytics": "cds watch --open travel_analytics/webapp/index.html?sap-ui-xx-viewCache=false",
+    "tsc": "tsc --project tsconfig.strip.json",
+    "format": "npx prettier -w srv/travel-service.js --print-width 300 --no-semi --single-quote",
+    "tojs": "npm run tsc && npm run format"
   },
   "dependencies": {
     "@sap/cds": ">=7.0.0",

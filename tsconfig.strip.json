@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "#cds-models/*": [
+        "./@cds-models/*"
+      ]
+    },
+    "target": "ESNext",
+    "module": "CommonJS",
+    "strict": true,
+    "esModuleInterop": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmitHelpers": true
+  },
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Recommended"
+}
