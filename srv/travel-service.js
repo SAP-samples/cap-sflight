@@ -14,6 +14,14 @@ init() {
    * Note: In contrast to Bookings and BookingSupplements that has to happen
    * upon SAVE, as multiple users could create new Travels concurrently.
    */
+  this.before ('NEW', 'Travel.drafts', async req => {
+    let begin = new Date; begin.setDate (begin.getDate() + 1)
+    let end = new Date; end.setDate (begin.getDate() + 2)
+    req.data.BeginDate = begin.toISOString().slice(0,10) // today
+    req.data.EndDate = end.toISOString().slice(0,10) // today
+    req.data.BookingFee = 0
+  })
+
   this.before ('CREATE', 'Travel', async req => {
     const { maxID } = await SELECT.one `max(TravelID) as maxID` .from (Travel)
     req.data.TravelID = maxID + 1
