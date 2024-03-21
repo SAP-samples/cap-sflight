@@ -63,12 +63,18 @@ cds.on('bootstrap', async app => {
   })
 
   cds.requires.db.pool ??= {}
-  cds.requires.db.pool.max = 1
+
+  const isSqlite = cds.requires.db.kind.toLowerCase().indexOf('sqlite') > -1
+  if (isSqlite)
+    cds.requires.db.pool.max = 1
 
   await cds.tx(async () => cds.deploy(cds.options?.from?.[0] || '*')).catch(e => {
     console.log(e)
   })
-  await cds.run('CREATE UNIQUE INDEX IF NOT EXISTS FAST_LANDING_PAGE_INDEX ON sap_fe_cap_travel_Travel(TravelID DESC, TravelUUID ASC)')
+
+  if (isSqlite) {
+    await cds.run('CREATE UNIQUE INDEX IF NOT EXISTS FAST_LANDING_PAGE_INDEX ON sap_fe_cap_travel_Travel(TravelID DESC, TravelUUID ASC)')
+  }
 })
 
 process.on('exit', () => cds.disconnect())

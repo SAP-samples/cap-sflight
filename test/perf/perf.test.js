@@ -70,7 +70,7 @@ const dbs = [{
       }
     }
   }
-}, /*{
+}, {
   name: 'hana hdb (old)',
   requires: {
     db: {
@@ -81,7 +81,7 @@ const dbs = [{
       }
     }
   }
-}, */{
+}, {
   name: 'postgres',
   requires: {
     db: {
@@ -102,7 +102,7 @@ const dbs = [{
 
 const protocols = [
   { name: 'okra', to: ['odata'] },
-  { name: 'odata', to: ['odata'] },
+  { name: 'odata', to: ['odata'], features: { odata_new_adapter: true } },
   { name: 'rest', to: ['rest'] },
   { name: 'graphql', to: ['graphql'] },
   { name: 'hcql', to: ['hcql'] },
