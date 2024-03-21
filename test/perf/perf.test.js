@@ -2,7 +2,7 @@ const { User } = require('./user')
 const actions = require('./actions')
 
 const dbs = [{
-  name: 'sqlite',
+  name: 'sqlite (new)',
   requires: {
     db: {
       kind: 'sqlite',
@@ -10,13 +10,33 @@ const dbs = [{
     }
   }
 }, {
-  name: 'sqlite (disk)',
+  name: 'sqlite disk (new)',
   requires: {
     db: {
       kind: 'sqlite',
       impl: '@cap-js/sqlite',
       credentials: {
         database: 'perf-test'
+      }
+    }
+  }
+}, {
+  name: 'sqlite (old)',
+  requires: {
+    db: {
+      kind: 'legacy-sqlite',
+      credentials: {
+        url: ":memory:"
+      }
+    }
+  }
+}, {
+  name: 'sqlite disk (old)',
+  requires: {
+    db: {
+      kind: 'legacy-sqlite',
+      credentials: {
+        url: "perf-test"
       }
     }
   }
@@ -50,7 +70,7 @@ const dbs = [{
       }
     }
   }
-}, {
+}, /*{
   name: 'hana hdb (old)',
   requires: {
     db: {
@@ -61,7 +81,7 @@ const dbs = [{
       }
     }
   }
-}, {
+}, */{
   name: 'postgres',
   requires: {
     db: {
@@ -81,18 +101,19 @@ const dbs = [{
 }]
 
 const protocols = [
-  // { name: 'okra', to: ['odata'] },
-  // { name: 'odata', to: ['odata'] },
-  // { name: 'rest', to: ['rest'] },
-  { name: 'graphql', to: ['graphql'] }
+  { name: 'okra', to: ['odata'] },
+  { name: 'odata', to: ['odata'] },
+  { name: 'rest', to: ['rest'] },
+  { name: 'graphql', to: ['graphql'] },
+  { name: 'hcql', to: ['hcql'] },
 ]
 
 const loads = [
   { name: 'baseline', users: 1 << 0 },
   // { name: 'xs', users: 1 << 2 },
   // { name: 's', users: 1 << 4 },
-  // { name: 'm', users: 1 << 7 },
-  { name: 'l', users: 1 << 10 },
+  { name: 'm', users: 1 << 7 },
+  // { name: 'l', users: 1 << 10 },
   // REVISIT: Requires workers to create enough load */
   // { name: 'xl', users: 1 << 12 },
   // { name: 'xxl', users: 1 << 16 },
@@ -176,7 +197,7 @@ afterAll(() => {
     for (const protocol of protocols) {
       let prefix = `| ${protocol.name} |`
       for (const db of dbs) {
-        const result = results[protocol.name][db.name][load.name]
+        const result = results?.[protocol.name]?.[db.name]?.[load.name] || {}
         if (!requests) requests = Object.keys(result)
 
         for (const request of requests) {

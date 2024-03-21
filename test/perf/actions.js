@@ -8,7 +8,6 @@ module.exports.landingPage = async function (user, options) {
       count: true,
       columns: [
         { ref: ['BeginDate'] },
-        { ref: ['CurrencyCode_code'] },
         { ref: ['Description'] },
         { ref: ['EndDate'] },
         { ref: ['HasActiveEntity'] },
@@ -16,10 +15,7 @@ module.exports.landingPage = async function (user, options) {
         { ref: ['IsActiveEntity'] },
         { ref: ['TotalPrice'] },
         { ref: ['TravelID'] },
-        { ref: ['TravelStatus_code'] },
         { ref: ['TravelUUID'] },
-        { ref: ['to_Agency_AgencyID'] },
-        { ref: ['to_Customer_CustomerID'] },
         {
           ref: ['DraftAdministrativeData'], expand: [
             { ref: ['DraftUUID'] },
@@ -140,7 +136,7 @@ module.exports.landingPage = async function (user, options) {
     await sleep(1000)
   }
 
-  if(search) {
+  if (search) {
     travelList.SELECT.search = search
   }
 

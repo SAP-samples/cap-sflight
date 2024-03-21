@@ -9,7 +9,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(404)
     return res.end()
   }
-  if(req.method !== 'GET') {
+  if (req.method !== 'GET') {
     res.writeHead(200)
     return res.end()
   }

@@ -17,6 +17,8 @@ module.exports.User = class User {
         break
       case 'graphql': this.exec = this.exec_graphql
         break
+      case 'hcql': this.exec = this.exec_hcql
+        break
       default: throw new Error(`Unknown protocol ${target}`)
     }
   }
@@ -151,6 +153,18 @@ module.exports.User = class User {
         throw new Error(`graphql errors:\n  ${errors.map(e => e.message).join('\n  ')}`)
       }
       return ref.reduce((l, c) => l[c], result.data.data).nodes
+    }
+  }
+
+  async exec_hcql(query) {
+    if (query.SELECT) {
+      const service = query.SELECT.from.ref.shift()
+      const name = query.name
+      query.name = undefined
+      const result = await this.post(name, `/${service}/`, query)
+      query.SELECT.from.ref.unshift(service)
+      query.name = name
+      return result.data
     }
   }
 

@@ -1,4 +1,4 @@
-// process.env.DEBUG = 'trace'
+process.env.DEBUG = 'trace'
 
 // Inject trace trailers to all http requests
 const http = require('http')
@@ -68,10 +68,7 @@ cds.on('bootstrap', async app => {
   await cds.tx(async () => cds.deploy(cds.options?.from?.[0] || '*')).catch(e => {
     console.log(e)
   })
-  if(cds.db?.pools?._factory?.options?.max) {
-    cds.db.pools._factory.options.max = 100
-  }
-  cds.disconnect()
+  await cds.run('CREATE UNIQUE INDEX IF NOT EXISTS FAST_LANDING_PAGE_INDEX ON sap_fe_cap_travel_Travel(TravelID DESC, TravelUUID ASC)')
 })
 
 process.on('exit', () => cds.disconnect())
