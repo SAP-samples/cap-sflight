@@ -30,7 +30,7 @@ entity Supplement : managed, MasterData {
   CurrencyCode     : Currency;
 };
 
-entity Flight : MasterData {
+entity Flight {
   // TODO:
   // when cuid is added, the to_Airline & to_Connection can be made managed association,
   // furthermore the AirlineID and ConnectionID can be removed,
