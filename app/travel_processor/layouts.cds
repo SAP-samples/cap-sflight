@@ -97,9 +97,8 @@ annotate TravelService.Travel with @UI : {
     Label  : '{i18n>Bookings}'
   }],
   FieldGroup#TravelData : { Data : [
-    { Value : TravelID               },
-    { Value : to_Agency_AgencyID     },
     { Value : to_Customer_CustomerID },
+    { Value : to_Agency_AgencyID     },
     { Value : Description            },
     {
       $Type       : 'UI.DataField',
@@ -116,7 +115,6 @@ annotate TravelService.Travel with @UI : {
   FieldGroup #PriceData : {Data : [
     { $Type : 'UI.DataField', Value : BookingFee },
     { $Type : 'UI.DataField', Value : TotalPrice },
-    { $Type : 'UI.DataField', Value : CurrencyCode_code }
   ]}
 };
 
