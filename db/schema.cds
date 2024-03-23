@@ -22,6 +22,8 @@ entity Travel : managed {
   to_Agency      : Association to TravelAgency;
   to_Customer    : Association to Passenger;
   to_Booking     : Composition of many Booking on to_Booking.to_Travel = $self;
+  GreenFee   : Integer;
+  TreesPlanted   : Integer;
 };
 
 annotate Travel with @(
