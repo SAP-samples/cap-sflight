@@ -23,6 +23,7 @@
     "hdb": "^0.19.1"
   },
   "devDependencies": {
+    "@cap-js/sqlite": "^1.0.1",
     "@sap/ux-specification": "UI5-1.121",
     "axios": "^1",
     "chai": "^4.3.0",

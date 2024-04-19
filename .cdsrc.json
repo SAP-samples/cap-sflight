@@ -1,4 +1,7 @@
 {
 	"sql": {
-	}
+	},
+	"cdsc": {
+        "betterSqliteSessionVariables": true
+    }
 }
