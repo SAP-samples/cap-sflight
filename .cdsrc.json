@@ -5,6 +5,7 @@
     },
     "cdsc": {
         "fewerLocalizedViews": true,
-        "betterSqliteSessionVariables": true
+        "betterSqliteSessionVariables": true,
+        "withHanaAssociations" : false
     }
 }
