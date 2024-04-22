@@ -159,7 +159,7 @@
             <configuration>
               <commands>
                 <command>build --for java --opts contentLocalizedEdmx=false</command>
-                <command>deploy --to sql --dry &gt;
+                <command>deploy --to h2 --dry &gt;
 									"${project.basedir}/src/main/resources/schema.sql"</command>
               </commands>
             </configuration>
