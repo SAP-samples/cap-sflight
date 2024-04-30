@@ -26,7 +26,6 @@ cds:
 ---
 spring:
     config.activate.on-profile: default
-    web.resources.static-locations: "file:./app"
     
 server:
     port: 4004
