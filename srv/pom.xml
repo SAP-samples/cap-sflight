@@ -81,7 +81,6 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
           <skip>false</skip>
-          <workingDirectory>..</workingDirectory>
         </configuration>
         <executions>
           <execution>
@@ -158,9 +157,8 @@
             </goals>
             <configuration>
               <commands>
-                <command>build</command>
-
-                <command>deploy --to sql --dry &gt;
+                <command>build --for java --opts contentLocalizedEdmx=false</command>
+                <command>deploy --to h2 --dry &gt;
 									"${project.basedir}/src/main/resources/schema.sql"</command>
               </commands>
             </configuration>
