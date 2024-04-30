@@ -81,7 +81,6 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
           <skip>false</skip>
-          <workingDirectory>..</workingDirectory>
         </configuration>
         <executions>
           <execution>
