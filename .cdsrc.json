@@ -1,11 +1,1 @@
-{
-    "sql": {
-        "transitive_localized_views" : false,
-        "native_hana_associations" : false
-    },
-    "cdsc": {
-        "fewerLocalizedViews": true,
-        "betterSqliteSessionVariables": true,
-        "withHanaAssociations" : false
-    }
-}
+{}
