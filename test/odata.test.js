@@ -43,10 +43,12 @@ describe ("Basic Querying", () => {
 describe('Basic OData', () => {
 
   it('serves $metadata documents in v4', async () => {
-    const { headers, status, data } = await GET(`/processor/$metadata`, { headers: { Accept: 'application/xml' } } )
+    const { headers, status, data } = await GET(`/processor/$metadata`, { headers: { accept: 'application/xml' } } )
     expect(status).to.equal(200)
-    expect(headers['content-type']).to.match(/application\/xml/)
-    // TODO: Check OData version
+    expect(headers).to.contain({
+      'content-type': 'application/xml',
+      'odata-version': '4.0',
+    })
     expect(data).to.contain('<EntitySet Name="Travel" EntityType="TravelService.Travel">')
     expect(data).to.contain('<Annotation Term="Common.Label" String="Travel"/>')
   })
