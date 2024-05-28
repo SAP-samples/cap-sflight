@@ -46,6 +46,7 @@ describe('Basic OData', () => {
     const { headers, status, data } = await GET(`/processor/$metadata`, { headers: { Accept: 'application/xml' } } )
     expect(status).to.equal(200)
     expect(headers['content-type']).to.match(/application\/xml/)
+    // TODO: Check OData version
     expect(data).to.contain('<EntitySet Name="Travel" EntityType="TravelService.Travel">')
     expect(data).to.contain('<Annotation Term="Common.Label" String="Travel"/>')
   })
