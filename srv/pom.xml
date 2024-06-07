@@ -26,11 +26,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.sap.cds</groupId>
-      <artifactId>cds-feature-dev-dashboard</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
@@ -95,13 +90,6 @@
             </goals>
             <configuration>
               <classifier>exec</classifier>
-              <!-- Exclude dashboard for production-->
-              <excludes>
-                <exclude>
-                  <groupId>com.sap.cds</groupId>
-                  <artifactId>cds-feature-dev-dashboard</artifactId>
-                </exclude>
-              </excludes>
             </configuration>
           </execution>
         </executions>
