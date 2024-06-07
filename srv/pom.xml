@@ -27,7 +27,6 @@
 
     <dependency>
       <groupId>com.sap.cds</groupId>
-      <!-- Use only for development. Remove in production! -->
       <artifactId>cds-feature-dev-dashboard</artifactId>
     </dependency>
 
@@ -96,6 +95,13 @@
             </goals>
             <configuration>
               <classifier>exec</classifier>
+              <!-- Exclude dashboard for production-->
+              <excludes>
+                <exclude>
+                  <groupId>com.sap.cds</groupId>
+                  <artifactId>cds-feature-dev-dashboard</artifactId>
+                </exclude>
+              </excludes>
             </configuration>
           </execution>
         </executions>
