@@ -26,12 +26,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.sap.cds</groupId>
-      <!-- Use only for development. Remove in production! -->
-      <artifactId>cds-feature-dev-dashboard</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>runtime</scope>
