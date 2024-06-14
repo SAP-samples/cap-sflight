@@ -5,7 +5,11 @@ management:
                 include: "*"
 
 cds:
-    sql.hana.optimizationMode: hex
+    sql.hana:
+      optimizationMode: hex
+      search:
+        fuzzy: true
+        fuzzinessThreshold: 0.9
     security.mock.users:
     - name: rose
     - name: martha
