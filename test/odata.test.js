@@ -9,9 +9,9 @@ axios.defaults.auth = { username: 'alice', password: 'admin' }
 
 // decimals and int64s as strings with cds^8
 chai.Assertion.addMethod('containCoerced', function (exp) {
-  const _coerceify = exp => { for (const [k, v] of Object.entries(exp)) exp[k] = typeof v === 'number' ? ev => ev == v : exp[k] }
-  if (Array.isArray(exp)) exp.forEach(_coerceify)
-  else if (exp && typeof exp === 'object') _coerceify(exp)
+  const _coercify = exp => { for (const [k, v] of Object.entries(exp)) exp[k] = typeof v === 'number' ? ev => ev == v : exp[k] }
+  if (Array.isArray(exp)) exp.forEach(_coercify)
+  else if (exp && typeof exp === 'object') _coercify(exp)
   new chai.Assertion(this._obj).to.containSubset(exp)
 })
 chai.Assertion.addMethod('equalCoerced', function (exp) {
