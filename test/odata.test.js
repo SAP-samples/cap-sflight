@@ -44,7 +44,7 @@ describe ("Basic Querying", () => {
 describe('Basic OData', () => {
 
   it('serves $metadata documents in v4', async () => {
-    const { headers, status, data } = await GET(`/processor/$metadata`, { headers: { accept: 'application/xml' } })
+    const { headers, status, data } = await GET(`/processor/$metadata`, { headers: { accept: '*/*' } }) //> for cds^7
     expect(status).to.equal(200)
     expect(headers).to.contain({
       // 'content-type': 'application/xml', //> fails with 'application/xml;charset=utf-8', which is set by express
@@ -101,7 +101,7 @@ describe('Basic OData', () => {
   })
 
   it('supports $value requests', async () => {
-    const { data } = await GET `/processor/Travel(TravelUUID='52657221A8E4645C17002DF03754AB66',IsActiveEntity=true)/to_Customer/LastName/$value`
+    const { data } = await GET(`/processor/Travel(TravelUUID='52657221A8E4645C17002DF03754AB66',IsActiveEntity=true)/to_Customer/LastName/$value`, { headers: { accept: '*/*' } }) //> for cds^7
     expect(data).to.equal('Prinz')
   })
 
