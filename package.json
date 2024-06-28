@@ -20,7 +20,7 @@
     "@sap/cds": ">=7.0.0",
     "@sap/xssec": "^3.2.7",
     "express": "^4",
-    "@cap-js/hana": "^0.3"
+    "@cap-js/hana": "^1"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^1.0.1",
