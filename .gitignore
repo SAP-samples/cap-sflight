@@ -8,6 +8,7 @@ gen/
 node_modules/
 target/
 .reloadtrigger
+@cds-models/
 db/data/generator/output
 
 # Web IDE, App Studio

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/*eslint no-unused-vars: ["error", { "caughtErrors": "none" }]*/
 
 const yaml = require('yaml');
 const fs = require('fs');
