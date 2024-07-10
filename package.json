@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@sap/cds": ">=7.0.0",
-    "@sap/xssec": "^4.1.0",
+    "@sap/xssec": "^3",
     "express": "^4",
     "hdb": "^0.19.1"
   },
