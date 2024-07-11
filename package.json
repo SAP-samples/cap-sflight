@@ -78,6 +78,9 @@
     "log": {
       "service": true
     },
+    "fiori": {
+      "wrap_multiple_errors": false
+    },
     "features": {
       "odata_new_parser": true
     },
