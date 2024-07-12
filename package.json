@@ -109,6 +109,9 @@
           }
         ]
       }
+    },
+    "sql" : {
+      "transitive_localized_views" : false
     }
   },
   "jest": {
