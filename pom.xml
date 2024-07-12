@@ -21,8 +21,8 @@
     <revision>1.0.0-SNAPSHOT</revision>
 
     <!-- DEPENDENCIES VERSION -->
-    <jdk.version>17</jdk.version>
-    <cds.services.version>2.10.2</cds.services.version>
+    <jdk.version>21</jdk.version>
+    <cds.services.version>3.0.0-m2428</cds.services.version>
 
     <cdsdk.version>^7</cdsdk.version>
   </properties>
