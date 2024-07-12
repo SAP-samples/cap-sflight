@@ -78,6 +78,9 @@
     "log": {
       "service": true
     },
+    "fiori": {
+      "wrap_multiple_errors": false
+    },
     "build": {
       "[node!]": {
         "target": "gen",
