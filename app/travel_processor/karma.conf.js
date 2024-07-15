@@ -18,7 +18,7 @@ module.exports = async (config) => {
     frameworks: ["ui5"],
     logLevel: "INFO", // log errors only. Change to "DEBUG" for more verbosity
     proxies: {
-      "/base/webapp/processor": "/processor",
+      "/base/webapp/": "/",
     },
     ui5: {
       failOnEmptyTestPage: true,
@@ -26,8 +26,6 @@ module.exports = async (config) => {
     plugins: [...config.plugins, await capMiddleware],
     middleware: ["cap-proxy"],
     browsers: config.ci ? ["ChromeHeadless"] : ["Chrome"],
-    singleRun: config.ci || config.singleRun || false,
-    browserNoActivityTimeout: 180000,
-    browserDisconnectTimeout: 120000,
+    singleRun: config.ci || config.singleRun || false
   });
 };

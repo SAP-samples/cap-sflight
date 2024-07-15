@@ -145,7 +145,7 @@ CDS_ENV=node cds build --production
 pack build $YOUR_CONTAINER_REGISTRY/sflight-hana-deployer \
      --path gen/db \
      --buildpack gcr.io/paketo-buildpacks/nodejs \
-     --builder paketobuildpacks/builder:base \
+     --builder paketobuildpacks/builder-jammy-base \
      --env BP_NODE_RUN_SCRIPTS=""
 ```
 (Replace `$YOUR_CONTAINER_REGISTRY` with the full-qualified hostname of your container registry)
@@ -156,7 +156,7 @@ pack build $YOUR_CONTAINER_REGISTRY/sflight-hana-deployer \
 pack build $YOUR_CONTAINER_REGISTRY/sflight-srv \
      --path "gen/srv" \
      --buildpack gcr.io/paketo-buildpacks/nodejs \
-     --builder paketobuildpacks/builder:base \
+     --builder paketobuildpacks/builder-jammy-base \
      --env BP_NODE_RUN_SCRIPTS=""
 ```
 
@@ -172,13 +172,13 @@ cds build --production
 
 ```bash
 pack build $YOUR_CONTAINER_REGISTRY/sflight-hana-deployer \
-     --path db \
+     --path gen/db \
      --buildpack gcr.io/paketo-buildpacks/nodejs \
-     --builder paketobuildpacks/builder:base \
+     --builder paketobuildpacks/builder-jammy-base \
      --env BP_NODE_RUN_SCRIPTS=""
 ```
 
-(Replace `$YOUR_CONTAINER_REGISTRY` the full-qualified hostname of your container registry)
+(Replace `$YOUR_CONTAINER_REGISTRY` with the full-qualified hostname of your container registry)
 
 **Build image for CAP service:**
 
@@ -191,7 +191,7 @@ pack build $YOUR_CONTAINER_REGISTRY/sflight-srv \
      --path srv/target/*-exec.jar \
      --buildpack gcr.io/paketo-buildpacks/sap-machine \
      --buildpack gcr.io/paketo-buildpacks/java \
-     --builder paketobuildpacks/builder:base \
+     --builder paketobuildpacks/builder-jammy-base \
      --env SPRING_PROFILES_ACTIVE=cloud \
      --env BP_JVM_VERSION=17
 ```

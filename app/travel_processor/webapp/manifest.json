@@ -7,7 +7,11 @@
     "description": "{{description}}",
     "i18n": {
       "bundleName": "sap.fe.cap.travel.i18n.i18n",
-      "supportedLocales": ["en", "de", "fr"],
+      "supportedLocales": [
+        "en",
+        "de",
+        "fr"
+      ],
       "fallbackLocale": "en"
     },
     "applicationVersion": {
@@ -67,7 +71,7 @@
       "css": []
     },
     "dependencies": {
-      "minUI5Version": "1.108.10",
+      "minUI5Version": "1.124.0",
       "libs": {
         "sap.ui.core": {},
         "sap.fe.templates": {}
@@ -78,7 +82,11 @@
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
           "bundleName": "sap.fe.cap.travel.i18n.i18n",
-          "supportedLocales": ["en", "de", "fr"],
+          "supportedLocales": [
+            "en",
+            "de",
+            "fr"
+          ],
           "fallbackLocale": "en"
         }
       },
@@ -129,7 +137,7 @@
                 }
               },
               "variantManagement": "Page",
-              "initialLoad": true,
+              "initialLoad": "Enabled",
               "navigation": {
                 "Travel": {
                   "detail": {
