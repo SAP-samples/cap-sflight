@@ -1,4 +1,4 @@
-const cds = require ('@sap/cds'); require('./workarounds')
+const cds = require ('@sap/cds');
 
 class TravelService extends cds.ApplicationService {
 init() {
