@@ -157,7 +157,7 @@
             </goals>
             <configuration>
               <commands>
-                <command>build --for java --opts contentLocalizedEdmx=false</command>
+                <command>build --for java</command>
                 <command>deploy --to h2 --dry &gt;
 									"${project.basedir}/src/main/resources/schema.sql"</command>
               </commands>
@@ -181,7 +181,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.3.1</version>
         <configuration>
           <failIfNoTests>true</failIfNoTests>
         </configuration>

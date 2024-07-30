@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.3.1</version>
+    <version>3.3.2</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -21,10 +21,9 @@
     <revision>1.0.0-SNAPSHOT</revision>
 
     <!-- DEPENDENCIES VERSION -->
-    <jdk.version>17</jdk.version>
-    <cds.services.version>2.10.1</cds.services.version>
-
-    <cdsdk.version>^7</cdsdk.version>
+    <jdk.version>21</jdk.version>
+    <cds.services.version>3.0.1</cds.services.version>
+    <cdsdk.version>^8</cdsdk.version>
   </properties>
 
   <modules>
