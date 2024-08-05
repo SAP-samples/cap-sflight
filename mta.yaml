@@ -10,15 +10,19 @@ build-parameters:
   before-all:
     - builder: custom
       commands:
-        # set 'CDS_ENV=node' to pick the 'node' build profile settings, defined in package.json
-        - npx -p @sap/cds-dk cds build --profile production,node
+        - npx -p @sap/cds-dk cds build --profile production,java
+        - npx -p @sap/cds-dk cds build --profile production,hana
 
 modules:
   # --------------------- SERVER MODULE ------------------------
   - name: sflight-srv
   # ------------------------------------------------------------
-    type: nodejs
-    path: gen/srv
+    type: java
+    path: srv
+    properties:
+      SPRING_PROFILES_ACTIVE: cloud
+      JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jre.SAPMachineJRE']"
+      JBP_CONFIG_SAP_MACHINE_JRE: '{ use_offline_repository: false, version: 17.+ }'      
     requires:
       - name: sflight-db
       - name: sflight-uaa
@@ -27,7 +31,10 @@ modules:
         properties:
           srv-url: ${default-url}
     build-parameters:
-      builder: npm-ci
+      builder: custom
+      commands:
+        - mvn clean package -DskipTests=true
+      build-result: target/*-exec.jar
       ignore: ["node_modules/"]
 
   # -------------------- SIDECAR MODULE ------------------------

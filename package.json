@@ -38,12 +38,10 @@
   "cds": {
     "requires": {
       "db": {
-        "kind": "sql"
+        "[development]": { "kind": "sqlite", "impl": "@cap-js/sqlite", "credentials": { "url": "memory" } },
+        "[production]": { "kind": "hana", "impl": "@cap-js/hana", "deploy-format": "hdbtable" }
       },
       "[production]": {
-        "db": {
-          "kind": "hana-cloud"
-        },
         "auth": {
           "kind": "xsuaa"
         }
