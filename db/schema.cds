@@ -4,7 +4,8 @@ using {
   sap.fe.cap.travel.Passenger,
   sap.fe.cap.travel.TravelAgency,
   sap.fe.cap.travel.Supplement,
-  sap.fe.cap.travel.Flight
+  sap.fe.cap.travel.Flight,
+  sap.fe.cap.travel.ConnectionId
  } from './master-data';
 
 namespace sap.fe.cap.travel;
@@ -41,7 +42,7 @@ entity Booking : managed {
   key BookingUUID   : UUID;
   BookingID         : Integer @Core.Computed;
   BookingDate       : Date;
-  ConnectionID      : String(4);
+  ConnectionID      : ConnectionId;
   FlightDate        : Date;
   FlightPrice       : Decimal(16, 3);
   CurrencyCode      : Currency;
@@ -71,6 +72,7 @@ entity BookingSupplement : managed {
 //
 
 entity BookingStatus : CodeList {
+  @cds.collate: false
   key code : String(1) enum {
     New      = 'N';
     Booked   = 'B';
@@ -79,6 +81,7 @@ entity BookingStatus : CodeList {
 };
 
 entity TravelStatus : CodeList {
+  @cds.collate: false
   key code : String(1) enum {
     Open     = 'O';
     Accepted = 'A';
