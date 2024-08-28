@@ -12,43 +12,36 @@ namespace sap.fe.cap.travel;
 entity Travel : managed {
   key TravelUUID : UUID;
   TravelID       : Integer @readonly default 0;
-  BeginDate      : Date;
-  EndDate        : Date;
-  BookingFee     : Decimal(16, 3);
-  TotalPrice     : Decimal(16, 3) @readonly;
-  CurrencyCode   : Currency;
+  BeginDate      : Date @mandatory;
+  EndDate        : Date @mandatory;
+  BookingFee     : Decimal(16,3) @mandatory default 11;
+  TotalPrice     : Decimal(16,3) @readonly;
+  CurrencyCode   : Currency default 'EUR';
   Description    : String(1024);
-  TravelStatus   : Association to TravelStatus @readonly;
-  to_Agency      : Association to TravelAgency;
-  to_Customer    : Association to Passenger;
+  TravelStatus   : Association to TravelStatus default 'O' @readonly;
+  to_Agency      : Association to TravelAgency @mandatory;
+  to_Customer    : Association to Passenger @mandatory;
   to_Booking     : Composition of many Booking on to_Booking.to_Travel = $self;
 };
 
-annotate Travel with @(
- Capabilities: {
-        FilterRestrictions     : {FilterExpressionRestrictions : [{
-            Property           : 'BeginDate',
-            AllowedExpressions : 'SingleRange'
-        },
-        {
-            Property           : 'EndDate',
-            AllowedExpressions : 'SingleRange'
-        }]}
-    });
+annotate Travel with @Capabilities.FilterRestrictions.FilterExpressionRestrictions: [
+  { Property: 'BeginDate', AllowedExpressions : 'SingleRange' },
+  { Property: 'EndDate', AllowedExpressions : 'SingleRange' }
+];
 
 
 entity Booking : managed {
   key BookingUUID   : UUID;
   BookingID         : Integer @Core.Computed;
   BookingDate       : Date;
-  ConnectionID      : String(4);
-  FlightDate        : Date;
-  FlightPrice       : Decimal(16, 3);
+  ConnectionID      : String(4) @mandatory;
+  FlightDate        : Date @mandatory;
+  FlightPrice       : Decimal(16,3) @mandatory;
   CurrencyCode      : Currency;
-  BookingStatus     : Association to BookingStatus;
+  BookingStatus     : Association to BookingStatus default 'N' @mandatory;
   to_BookSupplement : Composition of many BookingSupplement on to_BookSupplement.to_Booking = $self;
-  to_Carrier        : Association to Airline;
-  to_Customer       : Association to Passenger;
+  to_Carrier        : Association to Airline @mandatory;
+  to_Customer       : Association to Passenger @mandatory;
   to_Travel         : Association to Travel;
   to_Flight         : Association to Flight on  to_Flight.AirlineID = to_Carrier.AirlineID
                                             and to_Flight.FlightDate = FlightDate
@@ -58,11 +51,11 @@ entity Booking : managed {
 entity BookingSupplement : managed {
   key BookSupplUUID   : UUID;
   BookingSupplementID : Integer @Core.Computed;
-  Price               : Decimal(16, 3);
+  Price               : Decimal(16,3) @mandatory;
   CurrencyCode        : Currency;
   to_Booking          : Association to Booking;
   to_Travel           : Association to Travel;
-  to_Supplement       : Association to Supplement;
+  to_Supplement       : Association to Supplement @mandatory;
 };
 
 
@@ -83,8 +76,13 @@ entity TravelStatus : CodeList {
     Open     = 'O';
     Accepted = 'A';
     Canceled = 'X';
-  } default 'O'; //> will be used for foreign keys as well
-  fieldControl: Integer @odata.Type:'Edm.Byte'; // 1: #ReadOnly, 7: #Mandatory
+  };
+  fieldControl: UInt8 enum {
+    Inapplicable = 0;
+    ReadOnly = 1;
+    Optional = 3;
+    Mandatory = 7;
+  };
   createDeleteHidden: Boolean;
   insertDeleteRestriction: Boolean; // = NOT createDeleteHidden
 }
