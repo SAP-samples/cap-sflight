@@ -6,7 +6,7 @@
     "title": "{{title}}",
     "description": "{{description}}",
     "i18n": {
-      "bundleName": "sap.fe.cap.travel_analytics.i18n.i18n",
+      "bundleUrl": "i18n/i18n.properties",
       "supportedLocales": ["en", "de", "fr"],
       "fallbackLocale": "en"
     },

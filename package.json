@@ -26,14 +26,15 @@
     "@cap-js/sqlite": "^1.0.1",
     "@sap/ux-specification": "UI5-1.121",
     "axios": "^1",
+    "cds-launchpad-plugin": "^2.2.0",
     "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",
     "cross-spawn": "^7.0.3",
+    "eslint": "^9",
     "http-proxy": "^1.18.1",
     "jest": "^29.0.2",
-    "qunit": "^2.9.3",
-    "eslint": "^9"
+    "qunit": "^2.9.3"
   },
   "cds": {
     "requires": {
@@ -110,8 +111,9 @@
         ]
       }
     },
-    "sql" : {
-      "native_hana_associations" : false
+    "sql": {
+      "transitive_localized_views": false,
+      "native_hana_associations": false
     }
   },
   "jest": {
