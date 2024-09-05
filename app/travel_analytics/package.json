@@ -20,11 +20,11 @@
     "sapui5"
   ],
   "devDependencies": {
-    "@ui5/cli": "^3.11.0",
+    "@ui5/cli": "^4.0.0",
     "karma": "^6.4.3",
     "karma-chrome-launcher": "^3.2.0",
-    "karma-ui5": "^3.0.4",
-    "puppeteer": "^22.12.1",
+    "karma-ui5": "^4.0.1",
+    "puppeteer": "^23.0.2",
     "ui5-middleware-simpleproxy": "^3.2.16",
     "ui5-task-zipper": "^3.1.4"
   }

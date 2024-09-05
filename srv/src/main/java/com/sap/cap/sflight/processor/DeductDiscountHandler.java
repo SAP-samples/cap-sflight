@@ -15,7 +15,7 @@ import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 
-import cds.gen.travelservice.DeductDiscountContext;
+import cds.gen.travelservice.TravelDeductDiscountContext;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
 import cds.gen.travelservice.Travel_;
@@ -31,7 +31,7 @@ public class DeductDiscountHandler implements EventHandler {
 	}
 
 	@On(entity = Travel_.CDS_NAME)
-	public void deductDiscount(final DeductDiscountContext context) {
+	public void deductDiscount(final TravelDeductDiscountContext context) {
 
 		Travel travel = draftService.run(context.cqn()).single(Travel.class);
 
