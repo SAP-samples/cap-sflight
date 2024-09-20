@@ -12,7 +12,7 @@ function value() {
 
 function image() {
     local REPOSITORY="$(value "$1.image.repository")"
-    local TAG="$(value "$1.image.tag")"
+    local TAG="$(value "global.image.tag")"
     if [ "$TAG" != "" ]; then
         echo "$REPOSITORY:$TAG"
     else
