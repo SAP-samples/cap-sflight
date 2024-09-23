@@ -1,6 +1,7 @@
-
 import { Bookings } from '#cds-models/AnalyticsService';
 import * as cds from '@sap/cds';
+import { Travel, Booking, BookingSupplement, TravelStatus, BookingStatus } from '#cds-models/TravelService';
+
 require('./workarounds')
 
 export class TravelServiceImpl extends cds.ApplicationService {
@@ -11,7 +12,6 @@ async init() {
   /**
    * Reflect definitions from the service's CDS model
    */
-  const { Travel, Booking, BookingSupplement, TravelStatus, BookingStatus } = await import('#cds-models/TravelService')
   const TravelService = (await import('#cds-models/TravelService')).default
   /**
    * Fill in primary keys for new Travels.

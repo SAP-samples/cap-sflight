@@ -23,7 +23,7 @@ import com.sap.cds.services.persistence.PersistenceService;
 import cds.gen.travelservice.Booking;
 import cds.gen.travelservice.BookingSupplement;
 import cds.gen.travelservice.BookingSupplement_;
-import cds.gen.travelservice.DraftActivateContext;
+import cds.gen.travelservice.TravelDraftActivateContext;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
 import cds.gen.travelservice.TravelStatus;
@@ -62,7 +62,7 @@ public class CreationHandler implements EventHandler {
 	}
 
 	@Before(event = DraftService.EVENT_DRAFT_SAVE, entity = Travel_.CDS_NAME)
-	public void saveComputedValues(DraftActivateContext ctx) {
+	public void saveComputedValues(TravelDraftActivateContext ctx) {
 
 		/*
 		* Elements annotated with @Core.computed are not transferred during

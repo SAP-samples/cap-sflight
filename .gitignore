@@ -8,6 +8,7 @@ gen/
 node_modules/
 target/
 .reloadtrigger
+@cds-models/
 
 # Web IDE, App Studio
 .che/

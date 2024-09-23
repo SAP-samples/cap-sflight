@@ -81,7 +81,6 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
           <skip>false</skip>
-          <workingDirectory>..</workingDirectory>
         </configuration>
         <executions>
           <execution>
@@ -104,7 +103,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.4.0</version>
+        <version>3.6.0</version>
         <executions>
           <execution>
             <id>add-source</id>
@@ -158,9 +157,8 @@
             </goals>
             <configuration>
               <commands>
-                <command>build</command>
-
-                <command>deploy --to sql --dry &gt;
+                <command>build --for java</command>
+                <command>deploy --to h2 --dry &gt;
 									"${project.basedir}/src/main/resources/schema.sql"</command>
               </commands>
             </configuration>
@@ -183,7 +181,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.1.2</version>
+        <version>3.5.0</version>
         <configuration>
           <failIfNoTests>true</failIfNoTests>
         </configuration>

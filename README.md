@@ -107,6 +107,10 @@ Any authorized user has read access to the app. For further authorization, assig
 * `sflight-reviewer-{spacename}` for executing actions *Accept Travel*, *Reject Travel*, and *Deduct Discount*
 * `sflight-processor-{spacename}` for full write access
 
+### Integrate SFlight with SAP Build Workzone, Standard Edition
+
+CAP SFlight uses the managed AppRouter, which in case of a trial account, is provided by the Launchpad Service in SAP Build Workzone, Standard Edition. Please consult [this tutorial](https://developers.sap.com/tutorials/integrate-with-work-zone.html) to make sure that your Launchpad Service is configured correctly to serve the CAP SFlight Frontend.
+
 ### Local Development with a HANA Cloud Instance
 
 You need to have access to a HANA Cloud instance and SAP BTP.

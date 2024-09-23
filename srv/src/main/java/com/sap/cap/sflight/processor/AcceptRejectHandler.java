@@ -13,8 +13,8 @@ import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
 
-import cds.gen.travelservice.AcceptTravelContext;
-import cds.gen.travelservice.RejectTravelContext;
+import cds.gen.travelservice.TravelAcceptTravelContext;
+import cds.gen.travelservice.TravelRejectTravelContext;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
 import cds.gen.travelservice.Travel_;
@@ -36,18 +36,18 @@ public class AcceptRejectHandler implements EventHandler {
 	}
 
 	@Before(entity = Travel_.CDS_NAME)
-	public void beforeAcceptTravel(final AcceptTravelContext context) {
+	public void beforeAcceptTravel(final TravelAcceptTravelContext context) {
 
 		draftService.run(context.cqn()).first(Travel.class).ifPresent(this::checkIfTravelHasExceptedStatus);
 	}
 
 	@Before(entity = Travel_.CDS_NAME)
-	public void beforeRejectTravel(final RejectTravelContext context) {
+	public void beforeRejectTravel(final TravelRejectTravelContext context) {
 		draftService.run(context.cqn()).first(Travel.class).ifPresent(this::checkIfTravelHasExceptedStatus);
 	}
 
 	@On(entity = Travel_.CDS_NAME)
-	public void onRejectTravel(final RejectTravelContext context) {
+	public void onRejectTravel(final TravelRejectTravelContext context) {
 		Travel travel = draftService.run(context.cqn()).single(Travel.class);
 		context.getCdsRuntime().requestContext().privilegedUser().run(ctx -> {
 			updateStatusForTravelId(travel.travelUUID(), TRAVEL_STATUS_CANCELLED, travel.isActiveEntity());
@@ -56,7 +56,7 @@ public class AcceptRejectHandler implements EventHandler {
 	}
 
 	@On(entity = Travel_.CDS_NAME)
-	public void onAcceptTravel(final AcceptTravelContext context) {
+	public void onAcceptTravel(final TravelAcceptTravelContext context) {
 		Travel travel = draftService.run(context.cqn()).single(Travel.class);
 		context.getCdsRuntime().requestContext().privilegedUser().run(ctx -> {
 			updateStatusForTravelId(travel.travelUUID(), TRAVEL_STATUS_ACCEPTED, travel.isActiveEntity());
