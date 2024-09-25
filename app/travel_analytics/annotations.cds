@@ -11,6 +11,16 @@ annotate service.Bookings with @(
 };
 
 annotate service.Bookings with @Aggregation.ApplySupported : {
+  Transformations : [
+    'aggregate',
+    'topcount',
+    'bottomcount',
+    'identity',
+    'concat',
+    'groupby',
+    'filter',
+    'search'
+  ],
   GroupableProperties  : [
     TravelID,
     BookingID,

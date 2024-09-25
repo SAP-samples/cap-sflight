@@ -73,7 +73,7 @@ entity BookingSupplement : managed {
 @singular: 'BookingStatus'
 @plural: 'BookingStatuses'
 entity BookingStatus : CodeList {
-  key code : String enum {
+  key code : String(1) enum {
     New      = 'N';
     Booked   = 'B';
     Canceled = 'X';
@@ -83,7 +83,7 @@ entity BookingStatus : CodeList {
 @singular: 'TravelStatus'
 @plural: 'TravelStatuses'
 entity TravelStatus : CodeList {
-  key code : String enum {
+  key code : String(1) enum {
     Open     = 'O';
     Accepted = 'A';
     Canceled = 'X';

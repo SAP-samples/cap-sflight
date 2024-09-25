@@ -47,7 +47,7 @@
             title: "SFlight Analytics",
             description: "SFlight ALP",
             additionalInformation:
-              "SAPUI5.Component=sap.fe.cap.travel-analytics",
+              "SAPUI5.Component=sap.fe.cap.travel_analytics",
             applicationType: "URL",
             url: "../",
           },
@@ -56,23 +56,30 @@
     </script>
 
     <script
-      src="https://sapui5.hana.ondemand.com/1.102.1/test-resources/sap/ushell/bootstrap/sandbox.js"
+      src="https://sapui5.hana.ondemand.com/test-resources/sap/ushell/bootstrap/sandbox.js"
       id="sap-ushell-bootstrap"
     ></script>
     <!-- Bootstrap the UI5 core library -->
     <script
       id="sap-ui-bootstrap"
-      src="https://sapui5.hana.ondemand.com/1.102.1/resources/sap-ui-core.js"
+      src="https://ui5.sap.com/resources/sap-ui-core.js"
       data-sap-ui-libs=""
       data-sap-ui-async="true"
       data-sap-ui-preload="async"
       data-sap-ui-theme="sap_horizon"
       data-sap-ui-compatVersion="edge"
       data-sap-ui-language="en"
-      data-sap-ui-resourceroots='{"sap.fe.cap.travel-analytics": "../"}'
+      data-sap-ui-resourceroots='{"sap.fe.cap.travel_analytics": "../"}'
       data-sap-ui-frameOptions="allow"
     >
       // NON-SECURE setting for testing environment
+    </script>
+
+    <script>
+      sap.ui.getCore().attachInit(async () => {
+        const renderer = await sap.ushell.Container.createRenderer(true);
+        renderer.placeAt('content');
+      });
     </script>
   </head>
 

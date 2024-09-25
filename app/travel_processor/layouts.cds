@@ -1,7 +1,7 @@
 using TravelService from '../../srv/travel-service';
 
 //
-// annotatios that control the fiori layout
+// annotations that control the Fiori layout
 //
 
 annotate TravelService.Travel with @UI : {
