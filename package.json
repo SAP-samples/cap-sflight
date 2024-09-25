@@ -1,123 +1,122 @@
 {
-  "name": "@capire/sflight",
-  "version": "1.0.0",
-  "private": true,
-  "description": "CAP flight demo scenario",
-  "license": "SAP SAMPLE CODE LICENSE",
-  "repository": "https://github.com/SAP-samples/cap-sflight",
-  "engines": {
-    "node": ">=18"
-  },
-  "scripts": {
-    "lint": "npx eslint .",
-    "start": "cds-serve",
-    "test": "cds test",
-    "test:jest": "jest",
-    "test:mocha": "npx mocha --timeout 20000",
-    "travel-processor": "cds watch --open travel_processor/webapp/index.html?sap-ui-xx-viewCache=false",
-    "travel-analytics": "cds watch --open travel_analytics/webapp/index.html?sap-ui-xx-viewCache=false"
-  },
-  "dependencies": {
-    "@sap/cds": ">=7.0.0",
-    "@sap/xssec": "^3.2.7",
-    "express": "^4",
-    "hdb": "^0.19.1"
-  },
-  "devDependencies": {
-    "@cap-js/sqlite": "^1.0.1",
-    "@sap/ux-specification": "UI5-1.121",
-    "axios": "^1",
-    "cross-spawn": "^7.0.3",
-    "http-proxy": "^1.18.1",
-    "qunit": "^2.9.3",
-    "eslint": "^9"
-  },
-  "cds": {
-    "requires": {
-      "db": {
-        "kind": "sql"
-      },
-      "[production]": {
-        "db": {
-          "kind": "hana-cloud"
-        },
-        "auth": {
-          "kind": "xsuaa"
-        }
-      },
-      "[development]": {
-        "auth": {
-          "kind": "mocked-auth",
-          "users": {
-            "rose": {
-              "roles": []
+    "name": "@capire/sflight",
+    "version": "1.0.0",
+    "private": true,
+    "description": "CAP flight demo scenario",
+    "license": "SAP SAMPLE CODE LICENSE",
+    "repository": "https://github.com/SAP-samples/cap-sflight",
+    "engines": {
+        "node": ">=18"
+    },
+    "scripts": {
+        "lint": "npx eslint .",
+        "start": "cds-serve",
+        "test": "cds test",
+        "test:jest": "jest",
+        "test:mocha": "npx mocha --timeout 20000",
+        "travel-processor": "cds watch --open travel_processor/webapp/index.html?sap-ui-xx-viewCache=false",
+        "travel-analytics": "cds watch --open travel_analytics/webapp/index.html?sap-ui-xx-viewCache=false"
+    },
+    "dependencies": {
+        "@cap-js/hana": "^1",
+        "@sap/cds": ">=8.0.0",
+        "@sap/xssec": "^4",
+        "express": "^4"
+    },
+    "devDependencies": {
+        "@cap-js/sqlite": "^1.0.1",
+        "@sap/ux-specification": "UI5-1.128",
+        "axios": "^1",
+        "cross-spawn": "^7.0.3",
+        "eslint": "^9",
+        "http-proxy": "^1.18.1",
+        "qunit": "^2.9.3"
+    },
+    "cds": {
+        "requires": {
+            "db": {
+                "kind": "sql"
             },
-            "martha": {
-              "roles": [
-                "reviewer"
-              ]
+            "[production]": {
+                "db": {
+                    "kind": "hana-cloud"
+                },
+                "auth": {
+                    "kind": "xsuaa"
+                }
             },
-            "amy": {
-              "roles": [
-                "processor"
-              ]
-            },
-            "admin": {
-              "password": "admin",
-              "roles": [
-                "admin"
-              ]
+            "[development]": {
+                "auth": {
+                    "kind": "mocked-auth",
+                    "users": {
+                        "rose": {
+                            "roles": []
+                        },
+                        "martha": {
+                            "roles": [
+                                "reviewer"
+                            ]
+                        },
+                        "amy": {
+                            "roles": [
+                                "processor"
+                            ]
+                        },
+                        "admin": {
+                            "password": "admin",
+                            "roles": [
+                                "admin"
+                            ]
+                        }
+                    }
+                }
             }
-          }
+        },
+        "log": {
+            "service": true
+        },
+        "fiori": {
+            "wrap_multiple_errors": false
+        },
+        "build": {
+            "[node!]": {
+                "target": "gen",
+                "tasks": [
+                    {
+                        "for": "node-cf"
+                    },
+                    {
+                        "for": "hana"
+                    }
+                ]
+            },
+            "[java]": {
+                "target": ".",
+                "tasks": [
+                    {
+                        "for": "java-cf"
+                    }
+                ]
+            },
+            "[hana]": {
+                "target": "gen",
+                "tasks": [
+                    {
+                        "for": "hana"
+                    }
+                ]
+            }
+        },
+        "sql": {
+            "native_hana_associations": false
         }
-      }
     },
-    "log": {
-      "service": true
+    "jest": {
+        "testEnvironment": "node",
+        "testTimeout": 20000
     },
-    "features": {
-      "odata_new_parser": true
-    },
-    "build": {
-      "[node!]": {
-        "target": "gen",
-        "tasks": [
-          {
-            "for": "node-cf"
-          },
-          {
-            "for": "hana"
-          }
-        ]
-      },
-      "[java]": {
-        "target": ".",
-        "tasks": [
-          {
-            "for": "java-cf"
-          }
-        ]
-      },
-      "[hana]": {
-        "target": "gen",
-        "tasks": [
-          {
-            "for": "hana"
-          }
-        ]
-      }
-    },
-    "sql": {
-      "transitive_localized_views" : false,
-      "native_hana_associations" : false
-    }
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "testTimeout": 20000
-  },
-  "sapux": [
-    "app/travel_processor",
-    "app/travel_analytics"
-  ]
+    "sapux": [
+        "app/travel_processor",
+        "app/travel_analytics"
+    ]
 }

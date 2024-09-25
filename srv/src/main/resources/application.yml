@@ -5,7 +5,9 @@ management:
                 include: "*"
 
 cds:
-    sql.hana.optimizationMode: hex
+    sql.hana.search:
+        fuzzy: true
+        fuzzinessThreshold: 0.9
     security.mock.users:
     - name: rose
     - name: martha
@@ -26,7 +28,7 @@ cds:
 ---
 spring:
     config.activate.on-profile: default
-    
+
 server:
     port: 4004
 
