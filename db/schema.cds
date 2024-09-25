@@ -77,7 +77,8 @@ entity TravelStatus : CodeList {
     Accepted = 'A';
     Canceled = 'X';
   };
-  fieldControl: UInt8 enum {
+  // can't use UInt8 (which would automatically be mapped to Edm.Byte) because it's not supported on H2
+  fieldControl: Int16 @odata.Type:'Edm.Byte' enum {
     Inapplicable = 0;
     ReadOnly = 1;
     Optional = 3;
