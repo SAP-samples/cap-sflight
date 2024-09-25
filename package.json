@@ -11,7 +11,7 @@
     "scripts": {
         "lint": "npx eslint .",
         "start": "cds-serve",
-        "test": "cds test",
+        "test": "npx cds test",
         "test:jest": "jest",
         "test:mocha": "npx mocha --timeout 20000",
         "travel-processor": "cds watch --open travel_processor/webapp/index.html?sap-ui-xx-viewCache=false",
