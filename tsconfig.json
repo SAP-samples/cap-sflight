@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "CommonJS",
+        "outDir": "./gen/srv/srv",
+        "rootDir": "./srv",
+        "baseUrl": "./",
+        "allowJs": true
+    },
+    "include": ["./srv/**/*"]
+}
