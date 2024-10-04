@@ -1,12 +1,12 @@
 {
     "_version": "1.42.0",
     "sap.app": {
-        "id": "sap.fe.cap.travel_analytics",
+        "id": "sap.fe.cap.travel_alp",
         "type": "application",
         "title": "{{title}}",
         "description": "{{description}}",
         "i18n": {
-            "bundleName": "sap.fe.cap.travel_analytics.i18n.i18n",
+            "bundleName": "sap.fe.cap.travel_alp.i18n.i18n",
             "supportedLocales": [
                 "en",
                 "de",
@@ -19,7 +19,7 @@
         },
         "dataSources": {
             "mainService": {
-                "uri": "analytics/",
+                "uri": "alp/",
                 "type": "OData",
                 "settings": {
                     "odataVersion": "4.0"
@@ -83,7 +83,7 @@
             "i18n": {
                 "type": "sap.ui.model.resource.ResourceModel",
                 "settings": {
-                    "bundleName": "sap.fe.cap.travel_analytics.i18n.i18n",
+                    "bundleName": "sap.fe.cap.travel_alp.i18n.i18n",
                     "supportedLocales": [
                         "en",
                         "de",

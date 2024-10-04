@@ -1,6 +1,6 @@
 using { sap.fe.cap.travel as my } from '../db/schema';
 
-service AnalyticsService @(path:'/analytics') {
+service ALPService @(path:'/alp') {
 
   // @(restrict: [
   //   { grant: 'READ', to: 'authenticated-user'},
@@ -51,7 +51,7 @@ service AnalyticsService @(path:'/analytics') {
     @Common.Text: DepCity
     to_Flight.to_Connection.DepartureAirport.AirportID as DepAirport,
     to_Flight.to_Connection.DepartureAirport.City      as DepCity,
-    @Common.Label: '{i18n>ArrivalAirport}'
+    @Common.Label: '{i18n>DestinationAirport}'
     @Common.Text: DestCity
     to_Flight.to_Connection.DestinationAirport.AirportID as DestAirport,
     to_Flight.to_Connection.DestinationAirport.City      as DestCity,
@@ -73,7 +73,6 @@ service AnalyticsService @(path:'/analytics') {
 
   annotate Travels:TravelID with @Common.Text: null;
 
-  annotate my.Airport:AirportID @Common.Text: City;
   annotate my.FlightConnection:Distance @(
     Common.Label: '{i18n>Distance}',
     Measures.Unit : DistanceUnit
