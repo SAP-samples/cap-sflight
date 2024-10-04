@@ -3,8 +3,8 @@
   "authenticationMethod": "route",
   "routes": [
     {
-      "source": "^/alp/(.*)$",
-      "target": "/alp/$1",
+      "source": "^/analytics/(.*)$",
+      "target": "/analytics/$1",
       "destination": "sflight-srv",
       "authenticationType": "xsuaa",
       "csrfProtection": false

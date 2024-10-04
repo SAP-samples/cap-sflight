@@ -1,4 +1,4 @@
-using ALPService as service from '../../srv/alp-service';
+using AnalyticsService as service from '../../srv/analytics-service';
 
 annotate service.Bookings with @(
   Aggregation.CustomAggregate #FlightPrice : 'Edm.Decimal',
@@ -385,7 +385,7 @@ annotate service.Bookings with @UI : {
     // { Value : to_Flight.to_Connection.DepartureAirport.AirportID,
     //   Label: '{i18n>DepartureAirport}'          },
     // { Value : to_Flight.to_Connection.DestinationAirport.AirportID,
-    //   Label: '{i18n>DestinationAirport}'            },
+    //   Label: '{i18n>ArrivalAirport}'            },
     // { Value : to_Flight.to_Connection.Distance, },
 
     // Workaround:
