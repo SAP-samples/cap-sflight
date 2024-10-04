@@ -28,7 +28,7 @@ public class RedirectFilter extends GenericFilterBean {
 
         String[] uiServicePaths = {
             "/travel_processor/webapp/processor",
-            "/travel_alp/webapp/alp"
+            "/travel_analytics/webapp/analytics"
         };
 
         String path = req.getRequestURI();

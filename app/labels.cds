@@ -80,11 +80,6 @@ annotate schema.Airline with @title: '{i18n>Airline}' {
   CurrencyCode @title: '{i18n>CurrencyCode}';
 }
 
-annotate schema.Airport with @title: '{i18n>Airport}' {
-  AirportID    @title: '{i18n>AirportID}'     @Common.Text: Name;
-  Name         @title: '{i18n>Name}';
-}
-
 annotate schema.Flight with @title: '{i18n>Flight}' {
   AirlineID     @title: '{i18n>AirlineID}';
   FlightDate    @title: '{i18n>FlightDate}';
@@ -94,13 +89,6 @@ annotate schema.Flight with @title: '{i18n>Flight}' {
   PlaneType     @title: '{i18n>PlaneType}';
   MaximumSeats  @title: '{i18n>MaximumSeats}';
   OccupiedSeats @title: '{i18n>OccupiedSeats}';
-}
-
-annotate schema.FlightConnection with {
-  @Common.Label: '{i18n>DepartureAirport}'
-  DepartureAirport;
-  @Common.Label: '{i18n>DestinationAirport}'
-  DestinationAirport;
 }
 
 annotate schema.Supplement with @title: '{i18n>Supplement}' {
