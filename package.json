@@ -14,7 +14,7 @@
         "test": "jest",
         "test:mocha": "npx mocha --timeout 20000",
         "travel-processor": "cds watch --open travel_processor/webapp/index.html?sap-ui-xx-viewCache=false",
-        "travel-analytics": "cds watch --open travel_analytics/webapp/index.html?sap-ui-xx-viewCache=false"
+        "travel-alp": "cds watch --open travel_alp/webapp/index.html?sap-ui-xx-viewCache=false"
     },
     "dependencies": {
         "@cap-js/hana": "^1",
@@ -120,6 +120,6 @@
     },
     "sapux": [
         "app/travel_processor",
-        "app/travel_analytics"
+        "app/travel_alp"
     ]
 }

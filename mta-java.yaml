@@ -22,7 +22,7 @@ modules:
     properties:
       SPRING_PROFILES_ACTIVE: cloud
       JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jre.SAPMachineJRE']"
-      JBP_CONFIG_SAP_MACHINE_JRE: '{ use_offline_repository: false, version: 17.+ }'      
+      JBP_CONFIG_SAP_MACHINE_JRE: '{ use_offline_repository: false, version: 17.+ }'
     requires:
       - name: sflight-db
       - name: sflight-uaa
@@ -67,9 +67,9 @@ modules:
           artifacts:
             - travel-processor.zip
           target-path: resources/
-        - name: sflight-app-travel-analytics
+        - name: sflight-app-travel-alp
           artifacts:
-            - travel-analytics.zip
+            - travel-alp.zip
           target-path: resources/
 
   # ------------- APPLICATION: TRAVEL PROCESSOR ----------------
@@ -85,11 +85,11 @@ modules:
         - npm run build
       supported-platforms: []
 
-  # ------------- APPLICATION: TRAVEL ANALYTICS ----------------
-  - name: sflight-app-travel-analytics
+  # ------------- APPLICATION: TRAVEL ALP ----------------------
+  - name: sflight-app-travel-alp
   # ------------------------------------------------------------
     type: html5
-    path: app/travel_analytics
+    path: app/travel_alp
     build-parameters:
       build-result: dist
       builder: custom

@@ -4,7 +4,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
 
   return {
     run: function () {
-      QUnit.module("Travel Analytics Tests");
+      QUnit.module("Travel ALP Tests");
 
       opaTest("Start application", function (Given, When, Then) {
         Given.iStartMyApp();
