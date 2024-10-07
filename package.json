@@ -23,6 +23,7 @@
         "express": "^4"
     },
     "devDependencies": {
+        "@cap-js/cds-typer": "^0.26.0",
         "@cap-js/sqlite": "^1.0.1",
         "@sap/ux-specification": "UI5-1.128",
         "axios": "^1",
@@ -121,5 +122,8 @@
     "sapux": [
         "app/travel_processor",
         "app/travel_analytics"
-    ]
+    ],
+    "imports": {
+        "#cds-models/*": "./@cds-models/*/index.js"
+    }
 }

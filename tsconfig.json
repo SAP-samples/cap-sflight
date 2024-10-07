@@ -1,11 +1,19 @@
 {
     "compilerOptions": {
         "target": "ES2022",
-        "module": "CommonJS",
+        "module": "nodenext",
         "outDir": "./gen/srv/srv",
-        "rootDir": "./srv",
+        "rootDir": "./",
         "baseUrl": "./",
-        "allowJs": true
+        "allowJs": true,
+        "moduleResolution": "nodenext",
+        "paths": {
+            "#cds-models/*": [
+                "./@cds-models/*/index.ts"
+            ]
+        }
     },
-    "include": ["./srv/**/*"]
+    "include": [
+        "./srv/**/*"
+    ]
 }
