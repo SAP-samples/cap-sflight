@@ -12,9 +12,9 @@ init() {
    * Note: In contrast to Bookings and BookingSupplements that has to happen
    * upon SAVE, as multiple users could create new Travels concurrently.
    */
-  this.before('CREATE', Travel, async req => {
+  this.before ('CREATE', Travel, async req => {
     // FIXME: TS v
-    const { maxID } = await SELECT.one`max(TravelID) as maxID`.from(Travel) as unknown as { maxID: number }
+    const { maxID } = await SELECT.one `max(TravelID) as maxID` .from(Travel) as unknown as { maxID: number }
     req.data.TravelID = maxID + 1
   })
 
@@ -22,12 +22,12 @@ init() {
   /**
    * Fill in defaults for new Bookings when editing Travels.
    */
-  this.before('NEW', Booking.drafts, async (req) => {
+  this.before ('NEW', Booking.drafts, async (req) => {
     const { to_Travel_TravelUUID } = req.data
-    const { status } = await SELECT.one.from(Travel.drafts, to_Travel_TravelUUID, t => t.TravelStatus_code.as('status')) as { status: string }
-    if (status === 'X') throw req.reject(400, 'Cannot add new bookings to rejected travels.')
+    const { status } = await SELECT.one .from (Travel.drafts, to_Travel_TravelUUID, t => t.TravelStatus_code.as('status')) as { status: string }
+    if (status === 'X') throw req.reject (400, 'Cannot add new bookings to rejected travels.')
     // FIXME: TS v
-    const { maxID } = await SELECT.one`max(BookingID) as maxID`.from(Booking.drafts).where({ to_Travel_TravelUUID }) as unknown as { maxID: number }
+    const { maxID } = await SELECT.one `max(BookingID) as maxID` .from(Booking.drafts) .where({ to_Travel_TravelUUID }) as unknown as { maxID: number }
     req.data.BookingID = maxID + 1
     req.data.BookingStatus_code = 'N'
     req.data.BookingDate = (new Date).toISOString().slice(0, 10) as CdsDate // today
@@ -37,10 +37,10 @@ init() {
   /**
    * Fill in defaults for new BookingSupplements when editing Travels.
    */
-  this.before('NEW', BookingSupplement.drafts, async (req) => {
+  this.before ('NEW', BookingSupplement.drafts, async (req) => {
     const { to_Booking_BookingUUID } = req.data
     // FIXME: TS v
-    const { maxID } = await SELECT.one `max(BookingSupplementID) as maxID`.from(BookingSupplement.drafts).where({ to_Booking_BookingUUID }) as unknown as { maxID: number }
+    const { maxID } = await SELECT.one `max(BookingSupplementID) as maxID` .from(BookingSupplement.drafts) .where({ to_Booking_BookingUUID }) as unknown as { maxID: number }
     req.data.BookingSupplementID = maxID + 1
   })
 
@@ -48,9 +48,9 @@ init() {
   /**
    * Changing Booking Fees is only allowed for not yet accapted Travels.
    */
-  this.before('UPDATE', Travel.drafts, async (req) => {
+  this.before ('UPDATE', Travel.drafts, async (req) => {
     if ('BookingFee' in req.data) {
-      const { status } = await SELECT.one`TravelStatus_code as status`.from(req.subject)
+      const { status } = await SELECT.one `TravelStatus_code as status` .from(req.subject)
       if (status === 'A') req.reject(400, 'Booking fee can not be updated for accepted travels.', 'BookingFee')
     }
   })
@@ -61,7 +61,7 @@ init() {
    */
   this.after('UPDATE', Travel.drafts, (_, req) => {
     if ('BookingFee' in req.data) {
-      return this._update_totals4(req.data.TravelUUID)
+      return this._update_totals4 (req.data.TravelUUID)
     }
   })
 
@@ -69,11 +69,11 @@ init() {
   /**
    * Update the Travel's TotalPrice when a Booking's FlightPrice is modified.
    */
-  this.after('UPDATE', Booking.drafts, async (_, req) => {
+  this.after ('UPDATE', Booking.drafts, async (_, req) => {
     if ('FlightPrice' in req.data) {
       // We need to fetch the Travel's UUID for the given Booking target
-      const { travel } = await SELECT.one`to_Travel_TravelUUID as travel`.from(req.subject)
-      return this._update_totals4(travel)
+      const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from(req.subject)
+      return this._update_totals4 (travel)
     }
   })
 
@@ -81,13 +81,13 @@ init() {
   /**
    * Update the Travel's TotalPrice when a Supplement's Price is modified.
    */
-  this.after('UPDATE', BookingSupplement.drafts, async (_, req) => {
+  this.after ('UPDATE', BookingSupplement.drafts, async (_, req) => {
     if ('Price' in req.data) {
       const { BookSupplUUID } = req.data
       // We need to fetch the Travel's UUID for the given Supplement target
-      const BookingUUID = SELECT.one.from(BookingSupplement.drafts, b => b.to_Booking_BookingUUID).where({ BookSupplUUID })
-      const { travel } = await SELECT.one(Booking, b => b.to_Travel_TravelUUID.as('travel'))
-        .from(Booking.drafts).where({ BookingUUID }) as unknown as { travel: string }
+      const BookingUUID = SELECT.one .from(BookingSupplement.drafts, b => b.to_Booking_BookingUUID) .where({ BookSupplUUID })
+      const { travel } = await SELECT.one (Booking, b => b.to_Travel_TravelUUID.as('travel'))
+        .from(Booking.drafts) .where({ BookingUUID }) as unknown as { travel: string }
       // .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (req.subject) }`
       //> REVISIT: req.subject not supported for subselects -> see tests
       return this._update_totals4(travel)
@@ -130,8 +130,8 @@ init() {
   /**
    * Validate a Travel's edited data before save.
    */
-  this.before('SAVE', Travel, req => {
-    const { BeginDate, EndDate, BookingFee, to_Agency_AgencyID, to_Customer_CustomerID, to_Booking, TravelStatus_code } = req.data, today = (new Date).toISOString().slice(0, 10)
+  this.before ('SAVE', Travel, req => {
+    const { BeginDate, EndDate, BookingFee, to_Agency_AgencyID, to_Customer_CustomerID, to_Booking, TravelStatus_code } = req.data, today = (new Date).toISOString().slice(0,10)
 
     // validate only not rejected travels
     if (TravelStatus_code !== 'X') {
@@ -158,8 +158,8 @@ init() {
       }
     }
 
-    if (BeginDate < today) req.error(400, `Begin Date ${BeginDate} must not be before today ${today}.`, 'in/BeginDate')
-    if (BeginDate > EndDate) req.error(400, `Begin Date ${BeginDate} must be before End Date ${EndDate}.`, 'in/BeginDate')
+    if (BeginDate < today) req.error (400, `Begin Date ${BeginDate} must not be before today ${today}.`, 'in/BeginDate')
+    if (BeginDate > EndDate) req.error (400, `Begin Date ${BeginDate} must be before End Date ${EndDate}.`, 'in/BeginDate')
   })
 
 
@@ -173,16 +173,16 @@ init() {
   this.on(deductDiscount, async req => {
     let discount = req.data.percent / 100
     let succeeded = await UPDATE(req.subject)
-      .where`TravelStatus_code != 'A'`
-      .and`BookingFee is not null`
-      .set`TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3)`
-      .set`BookingFee = round (BookingFee - BookingFee * ${discount}, 3)`
+      .where `TravelStatus_code != 'A'`
+      .and `BookingFee is not null`
+      .set `TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3)`
+      .set `BookingFee = round (BookingFee - BookingFee * ${discount}, 3)`
 
     if (!succeeded) { //> let's find out why...
-      let travel = await SELECT.one`TravelID as ID, TravelStatus_code as status, BookingFee`.from(req.subject)
-      if (!travel) throw req.reject(404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
-      if (travel.status === 'A') req.reject(400, `Travel "${travel.ID}" has been approved already.`)
-      if (travel.BookingFee == null) throw req.reject(404, `No discount possible, as travel "${travel.ID}" does not yet have a booking fee added.`)
+      let travel = await SELECT.one `TravelID as ID, TravelStatus_code as status, BookingFee` .from(req.subject)
+      if (!travel) throw req.reject (404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
+      if (travel.status === 'A') req.reject (400, `Travel "${travel.ID}" has been approved already.`)
+      if (travel.BookingFee == null) throw req.reject (404, `No discount possible, as travel "${travel.ID}" does not yet have a booking fee added.`)
     } else {
       return SELECT(req.subject)
       // return this.read(req.subject) << REVISIT: types not available
