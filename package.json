@@ -87,7 +87,10 @@
                 "target": "gen",
                 "tasks": [
                     {
-                        "for": "node-cf"
+                        "for": "nodejs"
+                    },
+                    {
+                        "for": "typescript"
                     },
                     {
                         "for": "hana"
