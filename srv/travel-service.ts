@@ -48,51 +48,43 @@ init() {
   /**
    * Changing Booking Fees is only allowed for not yet accapted Travels.
    */
-  this.before ('UPDATE', Travel.drafts, async (req) => {
-    if ('BookingFee' in req.data) {
-      const { status } = await SELECT.one `TravelStatus_code as status` .from(req.subject)
-      if (status === 'A') req.reject(400, 'Booking fee can not be updated for accepted travels.', 'BookingFee')
-    }
-  })
+  this.before ('UPDATE', Travel.drafts, async (req) => { if ('BookingFee' in req.data) {
+    const { status } = await SELECT.one `TravelStatus_code as status` .from(req.subject)
+    if (status === 'A') req.reject(400, 'Booking fee can not be updated for accepted travels.', 'BookingFee')
+  }})
 
 
   /**
    * Update the Travel's TotalPrice when its BookingFee is modified.
    */
-  this.after('UPDATE', Travel.drafts, (_, req) => {
-    if ('BookingFee' in req.data) {
-      return this._update_totals4 (req.data.TravelUUID)
-    }
-  })
+  this.after('UPDATE', Travel.drafts, (_, req) => { if ('BookingFee' in req.data) {
+    return this._update_totals4 (req.data.TravelUUID)
+  }})
 
 
   /**
    * Update the Travel's TotalPrice when a Booking's FlightPrice is modified.
    */
-  this.after ('UPDATE', Booking.drafts, async (_, req) => {
-    if ('FlightPrice' in req.data) {
-      // We need to fetch the Travel's UUID for the given Booking target
-      const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from(req.subject)
-      return this._update_totals4 (travel)
-    }
-  })
+  this.after ('UPDATE', Booking.drafts, async (_, req) => { if ('FlightPrice' in req.data) {
+    // We need to fetch the Travel's UUID for the given Booking target
+    const { travel } = await SELECT.one `to_Travel_TravelUUID as travel` .from(req.subject)
+    return this._update_totals4 (travel)
+  }})
 
 
   /**
    * Update the Travel's TotalPrice when a Supplement's Price is modified.
    */
-  this.after ('UPDATE', BookingSupplement.drafts, async (_, req) => {
-    if ('Price' in req.data) {
-      const { BookSupplUUID } = req.data
-      // We need to fetch the Travel's UUID for the given Supplement target
-      const BookingUUID = SELECT.one .from(BookingSupplement.drafts, b => b.to_Booking_BookingUUID) .where({ BookSupplUUID })
-      const { travel } = await SELECT.one (Booking, b => b.to_Travel_TravelUUID.as('travel'))
-        .from(Booking.drafts) .where({ BookingUUID }) as unknown as { travel: string }
-      // .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (req.subject) }`
-      //> REVISIT: req.subject not supported for subselects -> see tests
-      return this._update_totals4(travel)
-    }
-  })
+  this.after ('UPDATE', BookingSupplement.drafts, async (_, req) => { if ('Price' in req.data) {
+    const { BookSupplUUID } = req.data
+    // We need to fetch the Travel's UUID for the given Supplement target
+    const BookingUUID = SELECT.one .from(BookingSupplement.drafts, b => b.to_Booking_BookingUUID) .where({ BookSupplUUID })
+    const { travel } = await SELECT.one (Booking, b => b.to_Travel_TravelUUID.as('travel'))
+      .from(Booking.drafts) .where({ BookingUUID }) as unknown as { travel: string }
+    // .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (req.subject) }`
+    //> REVISIT: req.subject not supported for subselects -> see tests
+    return this._update_totals4(travel)
+  }})
 
   /**
    * Update the Travel's TotalPrice when a Booking Supplement is deleted.
