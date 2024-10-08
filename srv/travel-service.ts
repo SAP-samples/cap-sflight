@@ -175,10 +175,9 @@ export class TravelService extends ApplicationService {
       let succeeded = await UPDATE(req.subject)
         .where`TravelStatus_code != 'A'`
         .and`BookingFee is not null`
-        .with`
-        TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3),
-        BookingFee = round (BookingFee - BookingFee * ${discount}, 3)
-      `
+        .set`TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3)`
+        .set`BookingFee = round (BookingFee - BookingFee * ${discount}, 3)`
+
       if (!succeeded) { //> let's find out why...
         let travel = await SELECT.one`TravelID as ID, TravelStatus_code as status, BookingFee`.from(req.subject)
         if (!travel) throw req.reject(404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
