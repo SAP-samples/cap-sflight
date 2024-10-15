@@ -24,7 +24,6 @@
     },
     "devDependencies": {
         "@cap-js/cds-typer": "^0.27.0",
-        "@cap-js/cds-types": "^0.6.5",
         "@cap-js/sqlite": "^1.0.1",
         "@sap/ux-specification": "UI5-1.128",
         "@types/jest": "^29.5.13",
