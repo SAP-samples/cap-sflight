@@ -23,9 +23,11 @@
         "express": "^4"
     },
     "devDependencies": {
-        "@cap-js/cds-typer": "^0.26.0",
+        "@cap-js/cds-typer": "^0.27.0",
+        "@cap-js/cds-types": "^0.6.5",
         "@cap-js/sqlite": "^1.0.1",
         "@sap/ux-specification": "UI5-1.128",
+        "@types/jest": "^29.5.13",
         "axios": "^1",
         "chai": "^4.3.0",
         "chai-as-promised": "^7.1.1",
@@ -117,6 +119,9 @@
         },
         "sql": {
             "native_hana_associations": false
+        },
+        "typer": {
+            "use_entities_proxy": true
         }
     },
     "jest": {
