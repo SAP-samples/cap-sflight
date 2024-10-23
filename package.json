@@ -23,6 +23,7 @@
         "express": "^4"
     },
     "devDependencies": {
+        "@cap-js/cds-typer": "^0.26.0",
         "@cap-js/sqlite": "^1.0.1",
         "@sap/ux-specification": "UI5-1.128",
         "axios": "^1",
@@ -33,7 +34,8 @@
         "eslint": "^9",
         "http-proxy": "^1.18.1",
         "jest": "^29.0.2",
-        "qunit": "^2.9.3"
+        "qunit": "^2.9.3",
+        "ts-jest": "^29.2.5"
     },
     "cds": {
         "requires": {
@@ -86,7 +88,10 @@
                 "target": "gen",
                 "tasks": [
                     {
-                        "for": "node-cf"
+                        "for": "nodejs"
+                    },
+                    {
+                        "for": "typescript"
                     },
                     {
                         "for": "hana"
@@ -115,11 +120,16 @@
         }
     },
     "jest": {
+        "preset": "ts-jest",
+        "globalSetup": "./test/setup.ts",
         "testEnvironment": "node",
         "testTimeout": 20000
     },
     "sapux": [
         "app/travel_processor",
         "app/travel_analytics"
-    ]
+    ],
+    "imports": {
+        "#cds-models/*": "./@cds-models/*/index.js"
+    }
 }
