@@ -1,0 +1,18 @@
+@server = http://localhost:4004
+@alice = Authorization: Basic alice
+
+GET {{server}}/processor/Travel?$filter=TravelID eq 4133
+{{alice}}
+###
+
+GET {{server}}/processor/Travel(TravelUUID='73757221A8E4645C17002DF03754AB66')
+{{alice}}
+###
+
+GET {{server}}/processor/Travel/73757221A8E4645C17002DF03754AB66/true
+{{alice}}
+###
+
+GET {{server}}/processor/Travel(TravelUUID='73757221A8E4645C17002DF03754AB66',IsActiveEntity=true)
+{{alice}}
+###
