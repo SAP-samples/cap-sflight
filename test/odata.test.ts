@@ -9,12 +9,11 @@ import { Travel } from '#cds-models/TravelService'
 describe ("Basic Querying", () => {
 
   it ("should read from row references", async()=>{
-    const TravelRef = {ref:[{
+    const TravelRef = { ref:[{
       id:'TravelService.Travel',
-      cardinality:{max:1},
       where:[ {ref:['TravelUUID']},'=',{val:'52657221A8E4645C17002DF03754AB66'} ]
     }]} as unknown as cds.ref
-    const travel = await SELECT.from (TravelRef)
+    const travel = await SELECT.one .from (TravelRef)
     expect (travel) .to.exist
     expect (travel.TravelID) .to.eql (1)
   })
