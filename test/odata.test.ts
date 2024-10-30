@@ -12,7 +12,7 @@ describe ("Basic Querying", () => {
     const TravelRef = { ref:[{
       id:'TravelService.Travel',
       where:[ {ref:['TravelUUID']},'=',{val:'52657221A8E4645C17002DF03754AB66'} ]
-    }]} as unknown as cds.ref
+    }]} as cds.ref
     const travel = await SELECT.one .from (TravelRef)
     expect (travel) .to.exist
     expect (travel.TravelID) .to.eql (1)
@@ -26,9 +26,8 @@ describe ("Basic Querying", () => {
   it.skip ("should read with row references in subselects", async()=>{
     const BookingRef = {ref:[ {
       id: 'TravelService.Booking',
-      cardinality: {max:1},
       where: [ {ref:['TravelUUID']},'=',{val:'7A757221A8E4645C17002DF03754AB66'} ]
-    }]} as unknown as cds.ref
+    }]} as cds.ref
     const travel = await SELECT.one.from (Travel) .where ({
       TravelUUID: SELECT.one `to_Travel_TravelUUID` .from (BookingRef)
     })
