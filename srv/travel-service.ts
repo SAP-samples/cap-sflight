@@ -1,6 +1,7 @@
 import { ApplicationService } from '@sap/cds'
 import * as cds from '@sap/cds'
-import { Booking, BookingSupplement, Travel } from '#cds-models/TravelService'
+import { Booking, BookingSupplement, Travel, TravelStatus } from '#cds-models/TravelService'
+import { BookingStatusCode, TravelStatusCode } from '#cds-models/sap/fe/cap/travel'
 import { CdsDate } from '#cds-models/_'
 
 
@@ -25,11 +26,11 @@ init() {
   this.before ('NEW', Booking.drafts, async (req) => {
     const { to_Travel_TravelUUID } = req.data
     const { status } = await SELECT.one .from (Travel.drafts, to_Travel_TravelUUID, t => t.TravelStatus_code.as('status')) as { status: string }
-    if (status === 'X') throw req.reject (400, 'Cannot add new bookings to rejected travels.')
+    if (status === TravelStatusCode.Canceled) throw req.reject (400, 'Cannot add new bookings to rejected travels.')
     // FIXME: TS v
     const { maxID } = await SELECT.one `max(BookingID) as maxID` .from(Booking.drafts) .where({ to_Travel_TravelUUID }) as unknown as { maxID: number }
     req.data.BookingID = maxID + 1
-    req.data.BookingStatus_code = 'N'
+    req.data.BookingStatus_code = BookingStatusCode.New
     req.data.BookingDate = (new Date).toISOString().slice(0, 10) as CdsDate // today
   })
 
@@ -49,8 +50,8 @@ init() {
    * Changing Booking Fees is only allowed for not yet accapted Travels.
    */
   this.before ('UPDATE', Travel.drafts, async (req) => { if ('BookingFee' in req.data) {
-    const { status } = await SELECT.one `TravelStatus_code as status` .from(req.subject)
-    if (status === 'A') req.reject(400, 'Booking fee can not be updated for accepted travels.', 'BookingFee')
+    const { TravelStatus_code: status } = await SELECT.one .from(req.subject) as Travel
+    if (status === TravelStatusCode.Accepted) req.reject(400, 'Booking fee can not be updated for accepted travels.', 'BookingFee')
   }})
 
 
@@ -173,7 +174,7 @@ init() {
     if (!succeeded) { //> let's find out why...
       let travel = await SELECT.one `TravelID as ID, TravelStatus_code as status, BookingFee` .from(req.subject)
       if (!travel) throw req.reject (404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
-      if (travel.status === 'A') req.reject (400, `Travel "${travel.ID}" has been approved already.`)
+      if (travel.status === TravelStatusCode.Accepted) req.reject (400, `Travel "${travel.ID}" has been approved already.`)
       if (travel.BookingFee == null) throw req.reject (404, `No discount possible, as travel "${travel.ID}" does not yet have a booking fee added.`)
     } else {
       return SELECT(req.subject)
