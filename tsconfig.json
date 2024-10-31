@@ -8,7 +8,7 @@
         "moduleResolution": "nodenext",
         "paths": {
             "#cds-models/*": [
-                "./@cds-models/*/index.ts"
+                "./@cds-models/*"
             ]
         }
     },
