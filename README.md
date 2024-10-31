@@ -29,14 +29,14 @@ You can also use the ALP with the standard OData parser, but then some features 
 
 Prerequisite:
 ```
-npm i -g @sap/cds-dk typescript ts-node
+npm i -g @sap/cds-dk typescript tsx
 ```
 
 In the root folder of your project, run
 ```
 npm ci
 npx cds-typer "*"
-cds-ts watch
+cds-tsx watch
 ```
 
 ### Build and Run - Java Backend
