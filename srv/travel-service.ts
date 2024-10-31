@@ -1,6 +1,6 @@
 import { ApplicationService } from '@sap/cds'
 import * as cds from '@sap/cds'
-import { Booking, BookingSupplement, Travel, TravelStatus } from '#cds-models/TravelService'
+import { Booking, BookingSupplement, Travel } from '#cds-models/TravelService'
 import { BookingStatusCode, TravelStatusCode } from '#cds-models/sap/fe/cap/travel'
 import { CdsDate } from '#cds-models/_'
 
@@ -79,11 +79,8 @@ init() {
   this.after ('UPDATE', BookingSupplement.drafts, async (_, req) => { if ('Price' in req.data) {
     const { BookSupplUUID } = req.data
     // We need to fetch the Travel's UUID for the given Supplement target
-    const BookingUUID = SELECT.one .from(BookingSupplement.drafts, b => b.to_Booking_BookingUUID) .where({ BookSupplUUID })
-    const { travel } = await SELECT.one (Booking, b => b.to_Travel_TravelUUID.as('travel'))
-      .from(Booking.drafts) .where({ BookingUUID }) as unknown as { travel: string }
-    // .where `BookingUUID = ${ SELECT.one `to_Booking_BookingUUID` .from (req.subject) }`
-    //> REVISIT: req.subject not supported for subselects -> see tests
+    const BookingUUID = SELECT.one(BookingSupplement.drafts, b => b.to_Booking_BookingUUID) .where({ BookSupplUUID })
+    const { to_Travel_TravelUUID: travel } = await SELECT.one (Booking.drafts, b => b.to_Travel_TravelUUID) .where({ BookingUUID })
     return this._update_totals4(travel)
   }})
 
@@ -178,7 +175,6 @@ init() {
       if (travel.BookingFee == null) throw req.reject (404, `No discount possible, as travel "${travel.ID}" does not yet have a booking fee added.`)
     } else {
       return SELECT(req.subject)
-      // return this.read(req.subject) << REVISIT: types not available
     }
   })
 
@@ -192,7 +188,7 @@ init() {
 /**
  * Helper to re-calculate a Travel's TotalPrice from BookingFees, FlightPrices and Supplement Prices.
  */
-async _update_totals4(travel: Travel | string) {
+async _update_totals4(travel: string) {
   const { Travel, Booking, BookingSupplement } = this.entities
   // Using plain native SQL for such complex queries
   await cds.run(`UPDATE ${Travel.drafts} SET

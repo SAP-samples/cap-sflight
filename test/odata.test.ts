@@ -37,7 +37,7 @@ describe ("Basic Querying", () => {
 describe('Basic OData', () => {
 
   it('serves $metadata documents in v4', async () => {
-    const { headers, status, data } = await GET(`/processor/$metadata`)
+    const { headers, status, data } = await GET `/processor/$metadata`
     expect(status).to.equal(200)
     expect(headers).to.contain({
       // 'content-type': 'application/xml', //> fails with 'application/xml;charset=utf-8', which is set by express
@@ -49,7 +49,7 @@ describe('Basic OData', () => {
   })
 
   it('GET /processor/Travel', async () => {
-    const { data } = await GET(`/processor/Travel?$filter=TravelUUID eq '00667221A8E4645C17002DF03754AB66'`)
+    const { data } = await GET `/processor/Travel?$filter=TravelUUID eq '00667221A8E4645C17002DF03754AB66'`
     expect(data.value).to.containSubset([{
       BeginDate: '2023-08-02',
       BookingFee: 60,
@@ -94,18 +94,18 @@ describe('Basic OData', () => {
   })
 
   it('supports $value requests', async () => {
-    const { data } = await GET(`/processor/Travel(TravelUUID='52657221A8E4645C17002DF03754AB66',IsActiveEntity=true)/to_Customer/LastName/$value`)
+    const { data } = await GET `/processor/Travel(TravelUUID='52657221A8E4645C17002DF03754AB66',IsActiveEntity=true)/to_Customer/LastName/$value`
     expect(data).to.equal('Prinz')
   })
 
   it('supports $top/$skip paging', async () => {
-    const { data: p1 } = await GET(`/processor/Travel?$select=TravelID,Description&$top=3&$orderby=TravelID`)
+    const { data: p1 } = await GET `/processor/Travel?$select=TravelID,Description&$top=3&$orderby=TravelID`
     expect(p1.value).to.containSubset([
       {"Description": "Business Trip for Christine, Pierre", "TravelID": 1},
       {"Description": "Vacation", "TravelID": 2},
       {"Description": "Vacation", "TravelID": 3},
     ])
-    const { data: p2 } = await GET(`/processor/Travel?$select=Description&$skip=3&$orderby=TravelID`)
+    const { data: p2 } = await GET `/processor/Travel?$select=Description&$skip=3&$orderby=TravelID`
     expect(p2.value).not.to.containSubset([
       {"Description": "Business Trip for Christine, Pierre", "TravelID": 1},
       {"Description": "Vacation", "TravelID": 2},
@@ -172,7 +172,7 @@ describe('Basic OData', () => {
   })
 
   it('deduct discount multiple times does not end up in error', async () => {
-    const { data: res1 } = await GET(`/processor/Travel(TravelUUID='52657221A8E4645C17002DF03754AB66',IsActiveEntity=true)`)
+    const { data: res1 } = await GET `/processor/Travel(TravelUUID='52657221A8E4645C17002DF03754AB66',IsActiveEntity=true)`
     expect(res1).to.contain({ TotalPrice: 900, BookingFee: 20 })
 
     const { data: res2 } = await POST(
