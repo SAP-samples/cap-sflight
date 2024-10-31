@@ -35,6 +35,7 @@ npm i -g @sap/cds-dk typescript ts-node
 In the root folder of your project, run
 ```
 npm ci
+npx cds-typer "*"
 cds-ts watch
 ```
 

@@ -121,6 +121,7 @@
             "native_hana_associations": false
         },
         "typer": {
+            "output_directory": "@cds-models",
             "use_entities_proxy": true
         }
     },
