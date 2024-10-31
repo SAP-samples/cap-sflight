@@ -124,7 +124,7 @@ init() {
     const { BeginDate, EndDate, BookingFee, to_Agency_AgencyID, to_Customer_CustomerID, to_Booking, TravelStatus_code } = req.data, today = (new Date).toISOString().slice(0,10)
 
     // validate only not rejected travels
-    if (TravelStatus_code !== 'X') {
+    if (TravelStatus_code !== TravelStatusCode.Canceled) {
       if (BookingFee == null) req.error(400, "Enter a booking fee", "in/BookingFee") // 0 is a valid BookingFee
       if (!BeginDate) req.error(400, "Enter a begin date", "in/BeginDate")
       if (!EndDate) req.error(400, "Enter an end date", "in/EndDate")
@@ -158,8 +158,8 @@ init() {
   //
   const { acceptTravel, rejectTravel, deductDiscount } = Travel.actions
 
-  this.on(acceptTravel, req => UPDATE(req.subject).with({ TravelStatus_code: 'A' }))
-  this.on(rejectTravel, req => UPDATE(req.subject).with({ TravelStatus_code: 'X' }))
+  this.on(acceptTravel, req => UPDATE(req.subject).with({ TravelStatus_code: TravelStatusCode.Accepted }))
+  this.on(rejectTravel, req => UPDATE(req.subject).with({ TravelStatus_code: TravelStatusCode.Canceled }))
   this.on(deductDiscount, async req => {
     let discount = req.data.percent / 100
     let succeeded = await UPDATE(req.subject)
