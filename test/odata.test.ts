@@ -18,15 +18,10 @@ describe ("Basic Querying", () => {
     expect (travel.TravelID) .to.eql (1)
   })
 
-  // REVISIT: fails with:
-  // TypeError: name.toUpperCase is not a function
-  //   25 |   plain: name => {
-  // > 26 |     const upper = name.toUpperCase()
-  //      |                        ^
-  it.skip ("should read with row references in subselects", async()=>{
+  it ("should read with row references in subselects", async()=>{
     const BookingRef = {ref:[ {
       id: 'TravelService.Booking',
-      where: [ {ref:['TravelUUID']},'=',{val:'7A757221A8E4645C17002DF03754AB66'} ]
+      where: [ {ref:['BookingUUID']},'=',{val:'7A757221A8E4645C17002DF03754AB66'} ]
     }]} as cds.ref
     const travel = await SELECT.one.from (Travel) .where ({
       TravelUUID: SELECT.one `to_Travel_TravelUUID` .from (BookingRef)
