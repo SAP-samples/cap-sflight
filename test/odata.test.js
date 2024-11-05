@@ -1,11 +1,10 @@
 const cds = require('@sap/cds/lib')
-const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..')
-const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
-const SAVE = (url) => POST (url+'/TravelService.draftActivate')
-axios.defaults.headers['content-type'] = 'application/json;IEEE754Compatible=true' // REVISIT: can be removed when @sap/cds 5.1.5 is released?
-axios.defaults.auth = { username: 'alice', password: 'admin' }
-
 describe ("Basic Querying", () => {
+
+  const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..')
+  axios.defaults.headers['content-type'] = 'application/json;IEEE754Compatible=true' // REVISIT: can be removed when @sap/cds 5.1.5 is released?
+  axios.defaults.auth = { username: 'alice', password: 'admin' }
+
 
   it ("should read from row references", async()=>{
     const TravelRef = {ref:[{
@@ -42,6 +41,11 @@ describe ("Basic Querying", () => {
 
 describe('Basic OData', () => {
 
+  const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..')
+  axios.defaults.headers['content-type'] = 'application/json;IEEE754Compatible=true' // REVISIT: can be removed when @sap/cds 5.1.5 is released?
+  axios.defaults.auth = { username: 'alice', password: 'admin' }
+  const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
+  const SAVE = (url) => POST (url+'/TravelService.draftActivate')
   it('serves $metadata documents in v4', async () => {
     const { headers, status, data } = await GET `/processor/$metadata`
     expect(status).to.equal(200)
