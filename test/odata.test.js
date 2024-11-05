@@ -1,7 +1,7 @@
 const cds = require('@sap/cds/lib')
 describe ("Basic Querying", () => {
 
-  const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..')
+  const { axios, expect } = cds.test(__dirname+'/..')
   axios.defaults.headers['content-type'] = 'application/json;IEEE754Compatible=true' // REVISIT: can be removed when @sap/cds 5.1.5 is released?
   axios.defaults.auth = { username: 'alice', password: 'admin' }
 
