@@ -64,4 +64,4 @@ cat >package.json <<EOF
 EOF
 
 npm install @sap/html5-app-deployer
-pack build $IMAGE --path . --buildpack gcr.io/paketo-buildpacks/nodejs --builder paketobuildpacks/builder:base
+pack build $IMAGE --path . --buildpack gcr.io/paketo-buildpacks/nodejs --builder paketobuildpacks/builder-jammy-base
