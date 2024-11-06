@@ -14,7 +14,7 @@ entity Travel : managed {
   TravelID       : Integer @readonly default 0;
   BeginDate      : Date @mandatory;
   EndDate        : Date @mandatory;
-  BookingFee     : Decimal(16,3) @mandatory default 11;
+  BookingFee     : Decimal(16,3) default 0;
   TotalPrice     : Decimal(16,3) @readonly;
   CurrencyCode   : Currency default 'EUR';
   Description    : String(1024);
