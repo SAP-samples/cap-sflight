@@ -9,9 +9,10 @@ using {
 
 namespace sap.fe.cap.travel;
 
+@assert.unique: { ID: [ TravelID ] } // to speed up order by TravelID
 entity Travel : managed {
   key TravelUUID : UUID;
-  TravelID       : Integer @readonly default 0;
+  TravelID       : Integer @readonly @indexed default 0;
   BeginDate      : Date;
   EndDate        : Date;
   BookingFee     : Decimal(16, 3);
