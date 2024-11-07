@@ -11,7 +11,7 @@ namespace sap.fe.cap.travel;
 
 entity Travel : managed {
   key TravelUUID : UUID;
-  TravelID       : Integer @readonly default 0;
+  TravelID       : Integer default 0 @readonly;
   BeginDate      : Date;
   EndDate        : Date;
   BookingFee     : Decimal(16, 3);
