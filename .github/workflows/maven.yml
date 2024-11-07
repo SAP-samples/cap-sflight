@@ -26,6 +26,7 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: ${{ matrix.java-version }}
+        distribution: 'sapmachine'
 
     - name: Build with Maven
       run: mvn -B clean verify
