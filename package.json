@@ -2,9 +2,6 @@
   "name": "@capire/sflight",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "app/*"
-  ],
   "description": "CAP flight demo scenario",
   "license": "SAP SAMPLE CODE LICENSE",
   "repository": "https://github.com/SAP-samples/cap-sflight",
@@ -16,8 +13,8 @@
     "start": "cds-serve",
     "test": "jest",
     "test:mocha": "npx mocha",
-    "travel-processor": "cds-tsx watch --open travel_processor/webapp/index.html?sap-ui-xx-viewCache=false",
-    "travel-analytics": "cds-tsx watch --open travel_analytics/webapp/index.html?sap-ui-xx-viewCache=false"
+    "travel-processor": "cds watch --open sap.fe.cap.travel/index.html?sap-ui-xx-viewCache=false",
+    "travel-analytics": "cds watch --open sap.fe.cap.travel_analytics/index.html?sap-ui-xx-viewCache=false"
   },
   "dependencies": {
     "@cap-js/hana": "^1",
@@ -145,6 +142,9 @@
     "spec": "test/**/*.ts",
     "timeout": 20000
   },
+  "workspaces": [
+    "app/*"
+  ],
   "sapux": [
     "app/travel_processor",
     "app/travel_analytics"
