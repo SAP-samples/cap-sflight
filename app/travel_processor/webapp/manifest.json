@@ -212,6 +212,15 @@
         "contentDensities": {
             "compact": true,
             "cozy": true
+        },
+        "extends": {
+            "extensions": {
+                "sap.ui.controllerExtensions": {
+                    "sap.fe.templates.ObjectPage.ObjectPageController#sap.fe.cap.travel::TravelObjectPage": {
+                        "controllerName": "sap.fe.cap.travel.ext.controller.ObjectPageExtension"
+                    }
+                }
+            }
         }
     },
     "sap.platform.abap": {

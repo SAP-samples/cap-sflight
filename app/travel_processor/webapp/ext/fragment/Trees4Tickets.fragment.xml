@@ -1,0 +1,46 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:macros="sap.fe.macros"
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+    <Dialog title="Opt for Trees-4-Tickets" icon="sap-icon://flight"
+        id="Trees4Tickets" contentWidth="38rem">
+        <content>             
+                <MessageStrip
+                    text="Plant some trees with a one percent fee on your Travel Price"
+                    type="Success"
+                    showIcon='{GoGreen}'
+                    class="sapUiSmallMarginTop sapUiSmallMarginBottom sapUiSmallMarginBeginEnd">
+                </MessageStrip>             
+            <f:Form>
+                <f:layout>
+				<f:ColumnLayout
+					columnsXL="2"
+					columnsL="2"
+					columnsM="2"/>
+                </f:layout>
+                <f:formContainers>
+                    <f:FormContainer>
+                        <f:formElements>
+                            <macros:FormElement metaPath="TotalPrice" id="formElementMacroID1" />
+                            <macros:FormElement metaPath="GoGreen" id="formElementMacroID2" />                                                                           
+                        </f:formElements>
+                    </f:FormContainer>
+                    <f:FormContainer>
+                        <f:formElements>                                         
+                            <macros:FormElement metaPath="GreenFee" visible="{GoGreen}" id="formElementMacroID3" />      
+                            <macros:FormElement metaPath="TreesPlanted" visible="{GoGreen}" id="formElementMacroID4" />                              
+                        </f:formElements>
+                    </f:FormContainer>                    
+                </f:formContainers>
+            </f:Form>      
+        </content>
+        <beginButton>
+            <Button id="Save" text="Save" type="Emphasized"/>
+        </beginButton>
+        <endButton>
+            <Button id="Cancel" text="Cancel"/>
+        </endButton>        
+    </Dialog>
+</core:FragmentDefinition>

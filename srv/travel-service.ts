@@ -177,8 +177,7 @@ init() {
       return SELECT(req.subject)
     }
   })
-
-  /**
+    /**
    * Trees-for-Tickets: Update totals including green flight fee
    */
   this.after("UPDATE", "Travel.drafts", (_, req) => {
@@ -186,7 +185,6 @@ init() {
       return this._update_totalsGreen(req)
     }
   })  
-
 
   // Add base class's handlers. Handlers registered above go first.
   return super.init()
@@ -205,8 +203,7 @@ async _update_totals4(travel: string) {
     + ( SELECT coalesce (sum(FlightPrice),0) from ${Booking.drafts} where to_Travel_TravelUUID = TravelUUID )
     + ( SELECT coalesce (sum(Price),0) from ${BookingSupplement.drafts} where to_Travel_TravelUUID = TravelUUID )
   WHERE TravelUUID = ?`, [travel])
-  }
-
+}
   /**
    * Trees-for-Tickets: helper o update totals including green flight fee
    */
@@ -238,4 +235,3 @@ async _update_totals4(travel: string) {
     }
   }
 }
-
