@@ -65,7 +65,7 @@
         }
     },
     "sap.ui5": {
-        "flexEnabled": true,
+        "flexEnabled": false,
         "resources": {
             "js": [],
             "css": []
@@ -177,7 +177,21 @@
                                     }
                                 }
                             },
-                            "editableHeaderContent": false
+                            "editableHeaderContent": false,
+                            "content": {
+                                "body": {
+                                    "sections": {
+                                        "CustomSection": {
+                                            "template": "sap.fe.cap.travel.ext.fragment.CustomSection",
+                                            "position": {
+                                                "placement": "After",
+                                                "anchor": "Travel"
+                                            },
+                                            "title": "My Itinerary"
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 },

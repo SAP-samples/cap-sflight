@@ -90,12 +90,7 @@ annotate TravelService.Travel with @UI : {
         Label  : '{i18n>Dates}'
       }
       ]
-  }, {  // booking list
-    $Type  : 'UI.ReferenceFacet',
-    ID     : 'BookingList',
-    Target : 'to_Booking/@UI.PresentationVariant',
-    Label  : '{i18n>Bookings}'
-  }],
+  },],
   FieldGroup#TravelData : { Data : [
     { Value : TravelID               },
     { Value : to_Agency_AgencyID     },
