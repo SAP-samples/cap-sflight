@@ -14,7 +14,7 @@ export default class ObjectPageExtension extends ControllerExtension<ExtensionAP
 			let approveDialog = (await this.base.getExtensionAPI().loadFragment({
 				id: "myFragment",
 				initialBindingContext: context,
-				name: "sap.fe.cap.managetravels.ext.fragment.Trees4Tickets"
+				name: "sap.fe.cap.travel.ext.fragment.Trees4Tickets"
 			})) as Dialog;
 			//Dialog Save button
 			approveDialog.getBeginButton().attachPress(function () {

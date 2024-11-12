@@ -216,7 +216,7 @@
         "extends": {
             "extensions": {
                 "sap.ui.controllerExtensions": {
-                    "sap.fe.templates.ObjectPage.ObjectPageController#sap.fe.cap.travel::TravelObjectPage": {
+                    "sap.fe.templates.ObjectPage.ObjectPageController": {
                         "controllerName": "sap.fe.cap.travel.ext.controller.ObjectPageExtension"
                     }
                 }
