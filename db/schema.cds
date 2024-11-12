@@ -92,3 +92,9 @@ entity TravelStatus : CodeList {
   createDeleteHidden: Boolean;
   insertDeleteRestriction: Boolean; // = NOT createDeleteHidden
 }
+
+extend entity Travel with {
+  GoGreen        : Boolean default false;
+  GreenFee       : Decimal(16, 3) @Core.Computed @readonly;
+  TreesPlanted   : Integer @Core.Computed @readonly;  
+};

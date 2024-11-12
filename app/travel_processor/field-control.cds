@@ -4,9 +4,16 @@ using TravelService from '../../srv/travel-service';
 // annotations that control the behavior of fields and actions
 //
 
-annotate TravelService.Travel with @(Common.SideEffects: {
-  SourceProperties: [BookingFee],
-  TargetProperties: ['TotalPrice']
+annotate TravelService.Travel with @(Common : {
+  SideEffects: {
+    SourceProperties: [BookingFee],
+    TargetProperties: ['TotalPrice']
+  },
+  SideEffects #GoGreen : {
+    $Type            : 'Common.SideEffectsType',
+    SourceProperties : [GoGreen],
+    TargetProperties : ['TotalPrice', 'GreenFee', 'TreesPlanted']
+  }
 }){
   BookingFee  @Common.FieldControl  : TravelStatus.fieldControl;
   BeginDate   @Common.FieldControl  : TravelStatus.fieldControl;

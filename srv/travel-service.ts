@@ -178,6 +178,15 @@ init() {
     }
   })
 
+  /**
+   * Trees-for-Tickets: Update totals including green flight fee
+   */
+  this.after("UPDATE", "Travel.drafts", (_, req) => {
+    if ("GoGreen" in req.data) {
+      return this._update_totalsGreen(req)
+    }
+  })  
+
 
   // Add base class's handlers. Handlers registered above go first.
   return super.init()
@@ -196,4 +205,37 @@ async _update_totals4(travel: string) {
     + ( SELECT coalesce (sum(FlightPrice),0) from ${Booking.drafts} where to_Travel_TravelUUID = TravelUUID )
     + ( SELECT coalesce (sum(Price),0) from ${BookingSupplement.drafts} where to_Travel_TravelUUID = TravelUUID )
   WHERE TravelUUID = ?`, [travel])
-}}
+  }
+
+  /**
+   * Trees-for-Tickets: helper o update totals including green flight fee
+   */
+  async _update_totalsGreen(req) {
+    const { Travel } = this.entities    
+    const [{ TotalPrice }] = await cds.read([
+      SELECT.one`TotalPrice, GreenFee`.from(Travel.drafts, req.data.TravelUUID)
+    ])
+    if (req.data.GoGreen) {
+      req.info({
+        code: 204,
+        message:
+          "Trees-4-Tickets: " +
+          Math.round(TotalPrice * 0.01, 0) + ' tree plants scheduled',
+        numericSeverity: 1
+      })
+      return UPDATE(Travel.drafts, req.data.TravelUUID).with(`
+        TotalPrice = TotalPrice + round (TotalPrice * 0.01, 0),
+        GreenFee = round (TotalPrice * 0.01, 0),
+        TreesPlanted = round(TotalPrice * 0.01, 0)
+      `)
+    } else {
+      this._update_totals4(req.data.TravelUUID)
+      return UPDATE(Travel.drafts, req.data.TravelUUID).with(`
+  TotalPrice = TotalPrice - GreenFee,
+  GreenFee = 0,
+  TreesPlanted = 0
+`)
+    }
+  }
+}
+
