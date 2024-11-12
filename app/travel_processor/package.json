@@ -25,6 +25,8 @@
     "karma-ui5": "^4.0.1",
     "puppeteer": "^23.0.2",
     "ui5-middleware-simpleproxy": "^3.2.16",
-    "ui5-task-zipper": "^3.1.4"
+    "ui5-task-zipper": "^3.1.4",
+    "@sapui5/ts-types-esm": "~1.130.0",
+    "ui5-tooling-transpile": "^3.5.1"
   }
 }
