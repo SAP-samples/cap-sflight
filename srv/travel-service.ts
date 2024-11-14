@@ -195,8 +195,7 @@ init() {
 /**
  * Helper to re-calculate a Travel's TotalPrice from BookingFees, FlightPrices and Supplement Prices.
  */
-async _update_totals4(travel: string) {
-  const { Travel, Booking, BookingSupplement } = this.entities
+  async _update_totals4(travel: string) {
   // Using plain native SQL for such complex queries
   await cds.run(`UPDATE ${Travel.drafts} SET
     TotalPrice = coalesce(BookingFee,0)
@@ -205,33 +204,32 @@ async _update_totals4(travel: string) {
   WHERE TravelUUID = ?`, [travel])
 }
   /**
-   * Trees-for-Tickets: helper o update totals including green flight fee
+   * Trees-for-Tickets: helper to update totals including green flight fee
    */
-  async _update_totalsGreen(req) {
-    const { Travel } = this.entities    
-    const [{ TotalPrice }] = await cds.read([
-      SELECT.one`TotalPrice, GreenFee`.from(Travel.drafts, req.data.TravelUUID)
-    ])
+
+  async _update_totalsGreen(req) {  
+    const { TravelUUID } = req.data
+    let { TotalPrice } = await SELECT.one
+      .from(Travel.drafts, b => b.TotalPrice)
+      .where({ TravelUUID })
     if (req.data.GoGreen) {
       req.info({
         code: 204,
         message:
-          "Trees-4-Tickets: " +
-          Math.round(TotalPrice * 0.01, 0) + ' tree plants scheduled',
+          `Trees-4-Tickets:`
+          + Math.round(TotalPrice * 0.01) + `tree plants scheduled`,
         numericSeverity: 1
       })
-      return UPDATE(Travel.drafts, req.data.TravelUUID).with(`
-        TotalPrice = TotalPrice + round (TotalPrice * 0.01, 0),
-        GreenFee = round (TotalPrice * 0.01, 0),
-        TreesPlanted = round(TotalPrice * 0.01, 0)
-      `)
+      return UPDATE(Travel.drafts, req.data.TravelUUID)
+        .set`TotalPrice = round(${TotalPrice} + ${TotalPrice} * 0.01, 0)`
+        .set`GreenFee = round(TotalPrice * 0.01, 0)`
+        .set`TreesPlanted = round(TotalPrice * 0.01, 0)`
+
     } else {
-      this._update_totals4(req.data.TravelUUID)
-      return UPDATE(Travel.drafts, req.data.TravelUUID).with(`
-  TotalPrice = TotalPrice - GreenFee,
-  GreenFee = 0,
-  TreesPlanted = 0
-`)
+      await this._update_totals4(req.data.TravelUUID)
+      return UPDATE(Travel.drafts, req.data.TravelUUID)
+        .set`GreenFee = 0`
+        .set`TreesPlanted = 0`
     }
   }
 }
