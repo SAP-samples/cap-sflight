@@ -216,8 +216,8 @@ init() {
       req.info({
         code: 204,
         message:
-          `Trees-4-Tickets:`
-          + Math.round(TotalPrice * 0.01) + `tree plants scheduled`,
+          `Trees-4-Tickets: `
+          + Math.round(TotalPrice * 0.01) + ` tree plants scheduled`,
         numericSeverity: 1
       })
       return UPDATE(Travel.drafts, req.data.TravelUUID)
