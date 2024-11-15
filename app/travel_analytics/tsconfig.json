@@ -11,7 +11,7 @@
         "outDir": "./dist",
         "baseUrl": "./",
         "paths": {
-            "sap/fe/cap/managetravels/*": [
+            "sap/fe/cap/travel_analytics/*": [
                 "./webapp/*"
             ]
         },
