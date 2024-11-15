@@ -1,4 +1,5 @@
-const cds = require('@sap/cds/lib')
+import * as cds from '@sap/cds'
+import { Travel } from '#cds-models/TravelService'
 const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..')
 const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
 const SAVE = (url) => POST (url+'/TravelService.draftActivate')
@@ -8,28 +9,21 @@ axios.defaults.auth = { username: 'alice', password: 'admin' }
 describe ("Basic Querying", () => {
 
   it ("should read from row references", async()=>{
-    const TravelRef = {ref:[{
+    const TravelRef = { ref:[{
       id:'TravelService.Travel',
-      cardinality:{max:1},
       where:[ {ref:['TravelUUID']},'=',{val:'52657221A8E4645C17002DF03754AB66'} ]
-    }]}
-    const travel = await SELECT.from (TravelRef)
+    }]} as cds.ref
+    const travel = await SELECT.one .from (TravelRef)
     expect (travel) .to.exist
     expect (travel.TravelID) .to.eql (1)
   })
 
-  // REVISIT: fails with:
-  // TypeError: name.toUpperCase is not a function
-  //   25 |   plain: name => {
-  // > 26 |     const upper = name.toUpperCase()
-  //      |                        ^
-  it.skip ("should read with row references in subselects", async()=>{
+  it ("should read with row references in subselects", async()=>{
     const BookingRef = {ref:[ {
       id: 'TravelService.Booking',
-      cardinality: {max:1},
-      where: [ {ref:['TravelUUID']},'=',{val:'7A757221A8E4645C17002DF03754AB66'} ]
-    }]}
-    const travel = await SELECT.one.from ('TravelService.Travel') .where ({
+      where: [ {ref:['BookingUUID']},'=',{val:'7A757221A8E4645C17002DF03754AB66'} ]
+    }]} as cds.ref
+    const travel = await SELECT.one.from (Travel) .where ({
       TravelUUID: SELECT.one `to_Travel_TravelUUID` .from (BookingRef)
     })
     expect (travel) .to.exist
@@ -55,7 +49,7 @@ describe('Basic OData', () => {
   })
 
   it('GET /processor/Travel', async () => {
-    const { data } = await GET(`/processor/Travel?$filter=TravelUUID eq '00667221A8E4645C17002DF03754AB66'`)
+    const { data } = await GET `/processor/Travel?$filter=TravelUUID eq '00667221A8E4645C17002DF03754AB66'`
     expect(data.value).to.containSubset([{
       BeginDate: '2023-08-02',
       BookingFee: 60,

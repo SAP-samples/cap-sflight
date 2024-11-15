@@ -69,7 +69,7 @@ async function node() {
     }
   };
 
-  const serverUrl = await spawnServer("npm", ["start"], "../..", isReady);
+  const serverUrl = await spawnServer("cds-tsx", ["serve"], "../..", isReady);
 
   return createKarmaMiddleware(serverUrl, { user: "admin", password: "admin" });
 }
