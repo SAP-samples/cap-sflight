@@ -27,10 +27,16 @@ You can also use the ALP with the standard OData parser, but then some features 
 
 ### Build and Run - Node.js Backend
 
+Prerequisite:
+```
+npm i -g @sap/cds-dk typescript tsx
+```
+
 In the root folder of your project, run
 ```
 npm ci
-cds watch
+npx cds-typer "*"
+cds-tsx watch
 ```
 
 ### Build and Run - Java Backend

@@ -11,7 +11,7 @@ namespace sap.fe.cap.travel;
 
 entity Travel : managed {
   key TravelUUID : UUID;
-  TravelID       : Integer @readonly default 0;
+  TravelID       : Integer default 0 @readonly;
   BeginDate      : Date @mandatory;
   EndDate        : Date @mandatory;
   BookingFee     : Decimal(16,3) default 0;
@@ -63,20 +63,24 @@ entity BookingSupplement : managed {
 //  Code Lists
 //
 
+type BookingStatusCode : String(1) enum {
+  New      = 'N';
+  Booked   = 'B';
+  Canceled = 'X';
+};
+
 entity BookingStatus : CodeList {
-  key code : String(1) enum {
-    New      = 'N';
-    Booked   = 'B';
-    Canceled = 'X';
-  };
+  key code : BookingStatusCode
+};
+
+type TravelStatusCode : String(1) enum {
+  Open     = 'O';
+  Accepted = 'A';
+  Canceled = 'X';
 };
 
 entity TravelStatus : CodeList {
-  key code : String(1) enum {
-    Open     = 'O';
-    Accepted = 'A';
-    Canceled = 'X';
-  };
+  key code : TravelStatusCode;
   // can't use UInt8 (which would automatically be mapped to Edm.Byte) because it's not supported on H2
   fieldControl: Int16 @odata.Type:'Edm.Byte' enum {
     Inapplicable = 0;
