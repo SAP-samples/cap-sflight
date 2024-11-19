@@ -48,7 +48,7 @@ function createKarmaMiddleware(serverUrl, auth) {
 
 async function java() {
   const isReady = (data) => {
-    const started = data.match(/started on port\(s\): (?<port>\d+)/);
+    const started = data.match(/started on port (?<port>\d+)/);
     if (started) return new URL(`http://localhost:${started.groups.port}`);
   };
   const serverUrl = await spawnServer(
@@ -69,7 +69,7 @@ async function node() {
     }
   };
 
-  const serverUrl = await spawnServer("npm", ["start"], "../..", isReady);
+  const serverUrl = await spawnServer("cds-tsx", ["serve"], "../..", isReady);
 
   return createKarmaMiddleware(serverUrl, { user: "admin", password: "admin" });
 }

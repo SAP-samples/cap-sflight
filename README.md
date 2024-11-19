@@ -30,7 +30,23 @@ You can also use the ALP with the standard OData parser, but then some features 
 In the root folder of your project, run
 ```
 npm ci
-cds watch
+cd watch
+```
+
+#### Typescript
+
+There also is a typescript variant of the Node.js custom handlers.
+
+Prerequisite:
+```
+npm i -g @sap/cds-dk typescript tsx
+```
+
+In the root folder of your project, run
+```
+npm ci
+npx cds-typer "*"
+cds-tsx watch
 ```
 
 ### Build and Run - Java Backend
@@ -106,6 +122,10 @@ The build results will be stored in the directory `mta_archives`.
 Any authorized user has read access to the app. For further authorization, assign a role collection to your user in the SAP BTP Cockpit:
 * `sflight-reviewer-{spacename}` for executing actions *Accept Travel*, *Reject Travel*, and *Deduct Discount*
 * `sflight-processor-{spacename}` for full write access
+
+### Integrate SFlight with SAP Build Workzone, Standard Edition
+
+CAP SFlight uses the managed AppRouter, which in case of a trial account, is provided by the Launchpad Service in SAP Build Workzone, Standard Edition. Please consult [this tutorial](https://developers.sap.com/tutorials/integrate-with-work-zone.html) to make sure that your Launchpad Service is configured correctly to serve the CAP SFlight Frontend.
 
 ### Local Development with a HANA Cloud Instance
 

@@ -20,12 +20,13 @@ jobs:
         java-version: [17,20]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Java ${{ matrix.java-version }}
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v4
       with:
         java-version: ${{ matrix.java-version }}
+        distribution: 'sapmachine'
 
     - name: Build with Maven
       run: mvn -B clean verify

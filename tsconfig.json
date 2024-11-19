@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "nodenext",
+        "rootDir": "./",
+        "baseUrl": "./",
+        "allowJs": true,
+        "moduleResolution": "nodenext",
+        "paths": {
+            "#cds-models/*": [
+                "./@cds-models/*"
+            ]
+        }
+    },
+    "include": [
+        "./srv/**/*"
+    ]
+}
