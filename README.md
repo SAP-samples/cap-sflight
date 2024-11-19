@@ -30,7 +30,23 @@ You can also use the ALP with the standard OData parser, but then some features 
 In the root folder of your project, run
 ```
 npm ci
-cds watch
+cd watch
+```
+
+#### Typescript
+
+There also is a typescript variant of the Node.js custom handlers.
+
+Prerequisite:
+```
+npm i -g @sap/cds-dk typescript tsx
+```
+
+In the root folder of your project, run
+```
+npm ci
+npx cds-typer "*"
+cds-tsx watch
 ```
 
 ### Build and Run - Java Backend
