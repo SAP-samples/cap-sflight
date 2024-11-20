@@ -12,7 +12,9 @@
             ]
         },
         "types": [
-            "@cap-js/cds-types"
+            "jest",
+            "node",
+            "@cap-js/cds-types",
         ],
     },
     "include": [
