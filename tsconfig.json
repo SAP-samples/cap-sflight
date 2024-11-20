@@ -10,7 +10,10 @@
             "#cds-models/*": [
                 "./@cds-models/*"
             ]
-        }
+        },
+        "types": [
+            "@cap-js/cds-types"
+        ],
     },
     "include": [
         "./srv/**/*"
