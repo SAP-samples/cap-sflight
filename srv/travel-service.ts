@@ -179,9 +179,6 @@ init() {
       return SELECT(req.subject)
     }
   })
-    /**
-   * Trees-for-Tickets: Update totals including green flight fee
-   */
 
   // Add base class's handlers. Handlers registered above go first.
   return super.init()
@@ -200,12 +197,11 @@ init() {
     + ( SELECT coalesce (sum(FlightPrice),0) from ${Booking.drafts} where to_Travel_TravelUUID = TravelUUID )
     + ( SELECT coalesce (sum(Price),0) from ${BookingSupplement.drafts} where to_Travel_TravelUUID = TravelUUID )
   WHERE TravelUUID = ?`, [travel])
-    // check on green flight
 }
+
   /**
    * Trees-for-Tickets: helper to update totals including green flight fee
    */
-
   async _update_totalsGreen(TravelUUID) {
     const { GoGreen } = await SELECT.one`GoGreen`.from(Travel.drafts).where({ TravelUUID })
     if (GoGreen) {

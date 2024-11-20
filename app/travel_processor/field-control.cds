@@ -39,8 +39,7 @@ annotate TravelService.Travel @(
         SourceEntities : [
             to_Booking
         ],
-       TargetProperties : [
-           'TotalPrice', 'GreenFee', 'TreesPlanted'
+       TargetProperties : ['TotalPrice'
        ]
     }
 );
