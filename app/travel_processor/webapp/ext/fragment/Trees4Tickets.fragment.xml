@@ -8,7 +8,7 @@
         id="Trees4Tickets" contentWidth="38rem">
         <content>             
                 <MessageStrip
-                    text="Plant some trees with a one percent fee on your Travel Price"
+                    text="Plant some trees with an additional 10 % on your booking fee"
                     type="Success"
                     showIcon='{GoGreen}'
                     class="sapUiSmallMarginTop sapUiSmallMarginBottom sapUiSmallMarginBeginEnd">

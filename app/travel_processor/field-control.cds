@@ -7,12 +7,11 @@ using TravelService from '../../srv/travel-service';
 annotate TravelService.Travel with @(Common : {
   SideEffects: {
     SourceProperties: [BookingFee],
-    TargetProperties: ['TotalPrice']
+    TargetProperties: ['TotalPrice', 'GreenFee', 'TreesPlanted']
   },
-  SideEffects #GoGreen : {
-    $Type            : 'Common.SideEffectsType',
-    SourceProperties : [GoGreen],
-    TargetProperties : ['TotalPrice', 'GreenFee', 'TreesPlanted']
+  SideEffects #GoGreen:{
+    SourceProperties: [GoGreen],
+    TargetProperties: ['TotalPrice', 'GreenFee', 'TreesPlanted']
   }
 }){
   BookingFee  @Common.FieldControl  : TravelStatus.fieldControl;
@@ -41,7 +40,7 @@ annotate TravelService.Travel @(
             to_Booking
         ],
        TargetProperties : [
-           'TotalPrice'
+           'TotalPrice', 'GreenFee', 'TreesPlanted'
        ]
     }
 );
