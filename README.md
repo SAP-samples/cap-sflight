@@ -30,7 +30,7 @@ You can also use the ALP with the standard OData parser, but then some features 
 In the root folder of your project, run
 ```
 npm ci
-cd watch
+cds watch
 ```
 
 #### Typescript
