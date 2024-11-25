@@ -7,6 +7,19 @@ class TravelService extends cds.ApplicationService { init() {
   const { today } = cds.builtin.types.Date
 
 
+  /**
+   * Fill in primary keys for new Travels.
+   * Note: In contrast to Bookings and BookingSupplements that has to happen
+   * upon SAVE, as multiple users could create new Travels concurrently.
+   */
+  this.before ('NEW', 'Travel.drafts', async req => {
+    let begin = new Date; begin.setDate (begin.getDate() + 1)
+    let end = new Date; end.setDate (begin.getDate() + 2)
+    req.data.BeginDate = begin.toISOString().slice(0,10) // today
+    req.data.EndDate = end.toISOString().slice(0,10) // today
+    req.data.BookingFee = 0
+  })
+
   // Fill in alternative keys as consecutive numbers for new Travels, Bookings, and Supplements.
   // Note: For Travels that can't be done at NEW events, that is when drafts are created,
   // but on CREATE only, as multiple users could create new Travels concurrently.
