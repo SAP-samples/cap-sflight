@@ -30,7 +30,7 @@
         "@types/jest": "^29.5.13",
         "axios": "^1",
         "chai": "^4.3.0",
-        "chai-as-promised": "^7.1.1",
+        "chai-as-promised": "^8.0.1",
         "chai-subset": "^1.6.0",
         "cross-spawn": "^7.0.3",
         "eslint": "^9",
