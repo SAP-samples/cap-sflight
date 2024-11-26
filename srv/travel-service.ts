@@ -15,18 +15,18 @@ export class TravelService extends cds.ApplicationService { init() {
   // but on CREATE only, as multiple users could create new Travels concurrently.
 
   this.before ('CREATE', Travel, async req => {
-    let { maxID } = await SELECT.one (`max(TravelID) as maxID`) .from (Travel) as unknown as { maxID: number }
+    let { maxID } = await SELECT.one (`max(TravelID) as maxID`) .from (Travel) as { maxID: number }
     req.data.TravelID = ++maxID
   })
 
   this.before ('NEW', Booking.drafts, async req => {
-    let { maxID } = await SELECT.one (`max(BookingID) as maxID`) .from (Booking.drafts) .where (req.data) as unknown as { maxID: number }
+    let { maxID } = await SELECT.one (`max(BookingID) as maxID`) .from (Booking.drafts) .where (req.data) as { maxID: number }
     req.data.BookingID = ++maxID
     req.data.BookingDate = today() // REVISIT: could that be filled in by CAP automatically?
   })
 
   this.before ('NEW', Supplements.drafts, async req => {
-    let { maxID } = await SELECT.one (`max(BookingSupplementID) as maxID`) .from (Supplements.drafts) .where (req.data) as unknown as { maxID: number }
+    let { maxID } = await SELECT.one (`max(BookingSupplementID) as maxID`) .from (Supplements.drafts) .where (req.data) as { maxID: number }
     req.data.BookingSupplementID = ++maxID
   })
 
