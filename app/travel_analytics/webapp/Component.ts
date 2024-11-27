@@ -1,7 +1,7 @@
 import BaseComponent from "sap/fe/core/AppComponent";
 
 /**
- * @namespace sap.fe.cap.managetravels
+ * @namespace sap.fe.cap.travel_analytics
  */
 export default class Component extends BaseComponent {
 

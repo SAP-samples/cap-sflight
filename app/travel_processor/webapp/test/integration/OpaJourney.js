@@ -91,6 +91,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
         // Save all
         Then.onTheDetailPage.onFooter().iCheckDraftStateSaved();
         When.onTheDetailPage.onFooter().iExecuteSave();
+        When.onTheDetailPage.onActionDialog().iConfirm();
         Then.onTheDetailPage.iSeeThisPage().and.iSeeObjectPageInDisplayMode();
         When.iNavigateBack();
       });
