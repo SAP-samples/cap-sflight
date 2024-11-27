@@ -55,14 +55,15 @@
         </configuration>
       </plugin>
 
-      <!-- MAKE SPRING BOOT PLUGIN RUNNABLE FROM ROOT -->
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
+        <!-- MAKE SPRING BOOT PLUGIN RUNNABLE FROM ROOT -->
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <skip>true</skip>
+                <workingDirectory>..</workingDirectory>
+            </configuration>
+        </plugin>
 
       <!-- POM FLATTENING FOR CI FRIENDLY VERSIONS -->
       <plugin>
