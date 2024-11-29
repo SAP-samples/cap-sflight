@@ -11,8 +11,8 @@
   "scripts": {
     "lint": "npx eslint .",
     "start": "cds-serve",
-    "test": "CDS_PLUGIN_UI5_ACTIVE=true NODE_OPTIONS=--experimental-vm-modules jest",
-    "test:mocha": "npx mocha --exit",
+    "test": "jest",
+    "test:mocha": "npx -y mocha --exit",
     "travel-processor": "cds-tsx watch --open sap.fe.cap.travel/index.html?sap-ui-xx-viewCache=false",
     "travel-analytics": "cds-tsx watch --open sap.fe.cap.travel_analytics/index.html?sap-ui-xx-viewCache=false"
   },
