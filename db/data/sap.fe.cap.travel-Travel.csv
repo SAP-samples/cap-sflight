@@ -1,4 +1,4 @@
-TravelUUID;TravelID;to_Agency_AgencyID;to_Customer_CustomerID;BeginDate;EndDate;BookingFee;TotalPrice;CurrencyCode_code;Description;TravelStatus_code;createdBy;createdAt;LastChangedBy;LastChangedAt;GoGreen;false
+TravelUUID;TravelID;to_Agency_AgencyID;to_Customer_CustomerID;BeginDate;EndDate;BookingFee;TotalPrice;CurrencyCode_code;Description;TravelStatus_code;createdBy;createdAt;LastChangedBy;LastChangedAt;GoGreen
 52657221A8E4645C17002DF03754AB66;00000001;070007;000608;2023-08-04;2023-08-04;20.00;900.00;USD;Business Trip for Christine, Pierre;O;Meier;2023-07-19T19:54:13Z;Lindwurm;2023-07-21T20:07:58Z;false
 53657221A8E4645C17002DF03754AB66;00000002;070046;000093;2023-08-04;2024-06-02;80.00;4164.00;USD;Vacation;O;Detemple;2023-07-01T22:05:32Z;Mustermann;2023-07-20T02:37:18Z;false
 54657221A8E4645C17002DF03754AB66;00000003;070042;000665;2023-08-04;2024-06-02;40.00;1871.00;USD;Vacation;O;Rahn;2023-07-15T04:32:59Z;Hoffen;2023-08-01T20:16:11Z;false
