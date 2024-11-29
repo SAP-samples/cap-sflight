@@ -16,6 +16,9 @@ module.exports = async (config) => {
 
   config.set({
     frameworks: ["ui5"],
+    preprocessors: {
+      "webapp/**/*.ts": ["ui5-transpile"],
+    },
     logLevel: "INFO", // log errors only. Change to "DEBUG" for more verbosity
     proxies: {
       "/base/webapp/": "/",
