@@ -18,11 +18,14 @@ function spawnServer(cmd, args, cwd, fnIsReady) {
     };
 
     proc.on("close", reject);
-    proc.stdout.on("data", checkServerReady);
+    proc.stdout.on("data", (data) => {
+      process.stdout.write(data.toString())
+      checkServerReady(data)
+    });
 
     // clean up sub process
     process.on("exit", () => {
-      if (proc) proc.kill();
+      if (proc) proc.kill("SIGKILL");
     });
   });
 }
@@ -54,7 +57,7 @@ async function java() {
   const serverUrl = await spawnServer(
     "mvn",
     ["spring-boot:run", "-B", "-Dserver.port=0"],
-    "../../srv",
+    "../..",
     isReady
   );
 
