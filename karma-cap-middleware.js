@@ -55,8 +55,7 @@ async function java() {
     if (started) return new URL(`http://localhost:${started.groups.port}`);
   };
   const serverUrl = await spawnServer(
-    "mvn",
-    ["spring-boot:run", "-B", "-Dserver.port=0"],
+    "mvn", ["spring-boot:run", "-B", "-Dspring-boot.run.jvmArguments=-Dserver.port=0"],
     "../..",
     isReady
   );
