@@ -28,17 +28,17 @@ jobs:
         java-version: ${{ matrix.java-version }}
         distribution: 'sapmachine'
 
+    - run: npm ci
+
     - name: Build with Maven
       run: mvn -B clean verify
 
     - name: Run integration tests - Manage Travels
       working-directory: ./app/travel_processor
       run: |
-        npm ci
         npm run test:java -- --ci
 
     - name: Run integration tests - Analyze Bookings
       working-directory: ./app/travel_analytics
       run: |
-        npm ci
         npm run test:java -- --ci
