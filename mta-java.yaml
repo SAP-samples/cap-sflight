@@ -11,8 +11,6 @@ build-parameters:
     - builder: custom
       commands:
         - npm ci
-        - npx -p @sap/cds-dk cds build --profile production,java
-        - npx -p @sap/cds-dk cds build --profile production,hana
 
 modules:
   # --------------------- SERVER MODULE ------------------------
