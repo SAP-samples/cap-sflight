@@ -5,6 +5,7 @@ description: "CAP sflight demo"
 
 parameters:
   enable-parallel-deployments: true
+  deploy_mode: html5-repo
 
 build-parameters:
   before-all:
@@ -48,23 +49,23 @@ modules:
   - name: sflight-appcontent
   # ------------------------------------------------------------
     type: com.sap.application.content
-    path: app
+    path: gen
     requires:
       - name: sflight-destination-service
       - name: sflight-html5-repo-host
         parameters:
           content-target: true
     build-parameters:
-      build-result: resources
+      build-result: app/
       requires:
         - name: sflight-app-travel-processor
           artifacts:
             - travel-processor.zip
-          target-path: resources/
+          target-path: app/
         - name: sflight-app-travel-analytics
           artifacts:
             - travel-analytics.zip
-          target-path: resources/
+          target-path: app/
 
   # ------------- APPLICATION: TRAVEL PROCESSOR ----------------
   - name: sflight-app-travel-processor
