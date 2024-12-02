@@ -1,4 +1,4 @@
-import * as cds from '@sap/cds'
+import cds from '@sap/cds'
 import { Booking, BookingSupplement as Supplements, Travel } from '#cds-models/TravelService'
 import { TravelStatusCode } from '#cds-models/sap/fe/cap/travel'
 import { CdsDate } from '#cds-models/_'
@@ -6,7 +6,6 @@ import { CdsDate } from '#cds-models/_'
 export class TravelService extends cds.ApplicationService { init() {
 
   // Reflected definitions from the service's CDS model
-  // const { Travel, Booking, BookingSupplement: Supplements } = this.entities
   const { today } = cds.builtin.types.Date as unknown as { today(): CdsDate };
 
 
@@ -50,9 +49,9 @@ export class TravelService extends cds.ApplicationService { init() {
   this.on ('DELETE', Supplements.drafts, (req, next) => update_totals (req, next))
 
   // Note: using .on handlers as we need to read a Booking's or Supplement's TravelUUID before they are deleted.
-  async function update_totals (req: cds.TypedRequest<any>, next: Function, field?: string) {
+  async function update_totals (req: cds.Request, next: Function, field?: string) {
     if (field && field in req.data === false) return next() //> skip if no relevant data changed
-    const travel = req.data.TravelUUID || ( await SELECT.one `to_Travel.TravelUUID as id` .from (req.subject) ).id
+    const travel = (req.data as Travel).TravelUUID || ( await SELECT.one `to_Travel.TravelUUID as id` .from (req.subject) ).id
     await next() // actually UPDATE or DELETE the subject entity
     await cds.run(`UPDATE ${Travel.drafts} SET TotalPrice = coalesce (BookingFee,0)
      + ( SELECT coalesce (sum(FlightPrice),0) from ${Booking.drafts} where to_Travel_TravelUUID = TravelUUID )
@@ -65,9 +64,10 @@ export class TravelService extends cds.ApplicationService { init() {
   // Action Implementations...
   //
 
-  this.on ('acceptTravel', req => UPDATE (req.subject) .with ({ TravelStatus_code: TravelStatusCode.Accepted }))
-  this.on ('rejectTravel', req => UPDATE (req.subject) .with ({ TravelStatus_code: TravelStatusCode.Canceled }))
-  this.on ('deductDiscount', async req => {
+  const { acceptTravel, rejectTravel, deductDiscount } = Travel.actions;
+  this.on (acceptTravel, req => UPDATE (req.subject) .with ({ TravelStatus_code: TravelStatusCode.Accepted }))
+  this.on (rejectTravel, req => UPDATE (req.subject) .with ({ TravelStatus_code: TravelStatusCode.Canceled }))
+  this.on (deductDiscount, async req => {
     let discount = req.data.percent / 100
     let succeeded = await UPDATE (req.subject) .where `TravelStatus.code != 'A'` .and `BookingFee != null`
       .with `TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3)`
@@ -76,10 +76,10 @@ export class TravelService extends cds.ApplicationService { init() {
     if (!succeeded) { //> let's find out why...
       let travel = await SELECT.one `TravelID as ID, TravelStatus.code as status, BookingFee` .from (req.subject)
       if (!travel) throw req.reject (404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
-      if (travel.status === TravelStatusCode.Accepted) req.reject (400, `Travel "${travel.ID}" has been approved already.`)
+      if (travel.status === TravelStatusCode.Accepted) throw req.reject (400, `Travel "${travel.ID}" has been approved already.`)
       if (travel.BookingFee == null) throw req.reject (404, `No discount possible, as travel "${travel.ID}" does not yet have a booking fee added.`)
     } else {
-      return SELECT (req.subject)
+      return SELECT(req.subject)
     }
   })
 
