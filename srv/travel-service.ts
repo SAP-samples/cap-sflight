@@ -1,4 +1,4 @@
-import cds from '@sap/cds'
+import * as cds from '@sap/cds'
 import { Booking, BookingSupplement as Supplements, Travel } from '#cds-models/TravelService'
 import { TravelStatusCode } from '#cds-models/sap/fe/cap/travel'
 import { CdsDate } from '#cds-models/_'
