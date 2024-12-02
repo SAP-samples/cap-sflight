@@ -98,6 +98,7 @@
       <plugin>
         <groupId>org.graalvm.buildtools</groupId>
         <artifactId>native-maven-plugin</artifactId>
+        <version>${spring.boot.version}</version>
       </plugin>
 
       <plugin>
@@ -158,8 +159,7 @@
             <configuration>
               <commands>
                 <command>build --for java</command>
-                <command>deploy --to h2 --dry &gt;
-									"${project.basedir}/src/main/resources/schema.sql"</command>
+                <command>deploy --to h2 --dry --out "${project.basedir}/src/main/resources/schema-h2.sql"</command>
               </commands>
             </configuration>
           </execution>

@@ -11,6 +11,7 @@ build-parameters:
     - builder: custom
       commands:
         # set 'CDS_ENV=node' to pick the 'node' build profile settings, defined in package.json
+        - npm ci
         - npx -p @sap/cds-dk cds build --profile production,node
 
 modules:
@@ -74,7 +75,6 @@ modules:
       build-result: dist
       builder: custom
       commands:
-        - npm ci
         - npm run build
       supported-platforms: []
 
@@ -87,7 +87,6 @@ modules:
       build-result: dist
       builder: custom
       commands:
-        - npm ci
         - npm run build
       supported-platforms: []
 

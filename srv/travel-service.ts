@@ -58,9 +58,12 @@ init() {
   /**
    * Update the Travel's TotalPrice when its BookingFee is modified.
    */
-  this.after('UPDATE', Travel.drafts, (_, req) => { if ('BookingFee' in req.data) {
-    return this._update_totals4 (req.data.TravelUUID)
-  }})
+  this.after('UPDATE', Travel.drafts, (_, req) => {
+    const { TravelUUID } = req.data
+    if ('BookingFee' in req.data || 'GoGreen' in req.data) {
+      return this._update_totals4(TravelUUID)
+    }
+  })
 
 
   /**
@@ -115,7 +118,6 @@ init() {
     await this._update_totals4(to_Travel_TravelUUID)
     return res
   })
-
 
   /**
    * Validate a Travel's edited data before save.
@@ -178,22 +180,38 @@ init() {
     }
   })
 
-
   // Add base class's handlers. Handlers registered above go first.
   return super.init()
 
 }
 
-
 /**
  * Helper to re-calculate a Travel's TotalPrice from BookingFees, FlightPrices and Supplement Prices.
  */
-async _update_totals4(travel: string) {
-  const { Travel, Booking, BookingSupplement } = this.entities
+  async _update_totals4(travel: string) {
+    await this._update_totalsGreen(travel)
   // Using plain native SQL for such complex queries
   await cds.run(`UPDATE ${Travel.drafts} SET
     TotalPrice = coalesce(BookingFee,0)
+    + coalesce(GreenFee,0)
     + ( SELECT coalesce (sum(FlightPrice),0) from ${Booking.drafts} where to_Travel_TravelUUID = TravelUUID )
     + ( SELECT coalesce (sum(Price),0) from ${BookingSupplement.drafts} where to_Travel_TravelUUID = TravelUUID )
   WHERE TravelUUID = ?`, [travel])
-}}
+}
+
+  /**
+   * Trees-for-Tickets: helper to update totals including green flight fee
+   */
+  async _update_totalsGreen(TravelUUID) {
+    const { GoGreen } = await SELECT.one`GoGreen`.from(Travel.drafts).where({ TravelUUID })
+    if (GoGreen) {
+      await UPDATE(Travel.drafts, TravelUUID)
+        .set`GreenFee = round(BookingFee * 0.1, 0)`
+        .set`TreesPlanted = round(BookingFee * 0.1, 0)`
+    } else {
+      await UPDATE(Travel.drafts, TravelUUID)
+        .set`GreenFee = 0`
+        .set`TreesPlanted = 0`
+    }
+  }
+}

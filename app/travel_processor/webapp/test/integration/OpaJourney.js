@@ -91,6 +91,7 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
         // Save all
         Then.onTheDetailPage.onFooter().iCheckDraftStateSaved();
         When.onTheDetailPage.onFooter().iExecuteSave();
+        When.onTheDetailPage.onActionDialog().iConfirm();
         Then.onTheDetailPage.iSeeThisPage().and.iSeeObjectPageInDisplayMode();
         When.iNavigateBack();
       });
@@ -196,10 +197,12 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           When.onTheDetailPage.onHeader().iExecuteAction("Edit");
           Then.onTheDetailPage.iSeeObjectPageInEditMode();
 
-          When.onTheDetailPage.iGoToSection("Booking");
+          When.onTheDetailPage.iGoToSection("My Itinerary");
           // Check buttons for bookings
           Then.onTheDetailPage
-            .onTable({ property: "to_Booking" })
+            .onTable({
+              id: "sap.fe.cap.travel::TravelObjectPage--fe::CustomSubSection::CustomSection--bookingTable-content",
+            })
             .iCheckDelete({ visible: false, enabled: false })
             .and.iCheckCreate({ visible: false, enabled: false });
 
@@ -221,7 +224,9 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
 
           When.onTheDetailPage.iGoToSection("General Information");
           When.onTheDetailPage
-            .onTable({ property: "to_Booking" })
+            .onTable({
+              id: "sap.fe.cap.travel::TravelObjectPage--fe::CustomSubSection::CustomSection--bookingTable-content",
+            })
             .iPressRow({ BookingID: "1" });
 
           Then.onTheDetailItemPage.iSeeThisPage();
@@ -273,13 +278,17 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
           When.onTheDetailPage.onHeader().iExecuteAction("Edit");
           Then.onTheDetailPage.iSeeObjectPageInEditMode();
 
-          When.onTheDetailPage.iGoToSection("Booking");
+          When.onTheDetailPage.iGoToSection("My Itinerary");
           // Check buttons
           When.onTheDetailPage
-            .onTable({ property: "to_Booking" })
+            .onTable({
+              id: "sap.fe.cap.travel::TravelObjectPage--fe::CustomSubSection::CustomSection--bookingTable-content",
+            })
             .iSelectRows({ BookingID: "2" });
           Then.onTheDetailPage
-            .onTable({ property: "to_Booking" })
+            .onTable({
+              id: "sap.fe.cap.travel::TravelObjectPage--fe::CustomSubSection::CustomSection--bookingTable-content",
+            })
             .iCheckDelete({ visible: true, enabled: true })
             .and.iCheckCreate({ visible: true, enabled: true });
 
@@ -301,7 +310,9 @@ sap.ui.define(["sap/ui/test/opaQunit"], function (opaTest) {
 
           When.onTheDetailPage.iGoToSection("General Information");
           When.onTheDetailPage
-            .onTable({ property: "to_Booking" })
+            .onTable({
+              id: "sap.fe.cap.travel::TravelObjectPage--fe::CustomSubSection::CustomSection--bookingTable-content",
+            })
             .iPressRow({ BookingID: "2" });
 
           Then.onTheDetailItemPage.iSeeThisPage();
