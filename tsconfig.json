@@ -5,6 +5,8 @@
         "rootDir": "./",
         "baseUrl": "./",
         "allowJs": true,
+        "inlineSources": true,
+        "inlineSourceMap": true,
         "moduleResolution": "nodenext",
         "paths": {
             "#cds-models/*": [
