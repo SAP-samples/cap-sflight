@@ -10,8 +10,7 @@ build-parameters:
   before-all:
     - builder: custom
       commands:
-        - npx -p @sap/cds-dk cds build --profile production,java
-        - npx -p @sap/cds-dk cds build --profile production,hana
+        - npm ci
 
 modules:
   # --------------------- SERVER MODULE ------------------------
@@ -22,7 +21,7 @@ modules:
     properties:
       SPRING_PROFILES_ACTIVE: cloud
       JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jre.SAPMachineJRE']"
-      JBP_CONFIG_SAP_MACHINE_JRE: '{ use_offline_repository: false, version: 17.+ }'      
+      JBP_CONFIG_SAP_MACHINE_JRE: '{ use_offline_repository: false, version: 17.+ }'
     requires:
       - name: sflight-db
       - name: sflight-uaa
@@ -81,7 +80,6 @@ modules:
       build-result: dist
       builder: custom
       commands:
-        - npm ci
         - npm run build
       supported-platforms: []
 
@@ -94,7 +92,6 @@ modules:
       build-result: dist
       builder: custom
       commands:
-        - npm ci
         - npm run build
       supported-platforms: []
 

@@ -88,13 +88,14 @@ annotate TravelService.Travel with @UI : {
         ID     : 'DateData',
         Target : '@UI.FieldGroup#DateData',
         Label  : '{i18n>Dates}'
+      },
+      {
+        $Type : 'UI.ReferenceFacet',
+        Label : '{i18n>Sustainability}',
+        ID    : 'i18nSustainability',
+        Target: '@UI.FieldGroup#i18nSustainability',
       }
-      ]
-  }, {  // booking list
-    $Type  : 'UI.ReferenceFacet',
-    ID     : 'BookingList',
-    Target : 'to_Booking/@UI.PresentationVariant',
-    Label  : '{i18n>Bookings}'
+    ]
   }],
   FieldGroup#TravelData : { Data : [
     { Value : TravelID               },
@@ -117,7 +118,24 @@ annotate TravelService.Travel with @UI : {
     { $Type : 'UI.DataField', Value : BookingFee },
     { $Type : 'UI.DataField', Value : TotalPrice },
     { $Type : 'UI.DataField', Value : CurrencyCode_code }
-  ]}
+  ]},
+  FieldGroup #i18nSustainability: {
+    $Type: 'UI.FieldGroupType',
+    Data : [
+      {
+        $Type: 'UI.DataField',
+        Value: GoGreen,
+      },
+      {
+        $Type: 'UI.DataField',
+        Value: GreenFee,
+      },
+      {
+        $Type: 'UI.DataField',
+        Value: TreesPlanted,
+      },
+    ],
+  }
 };
 
 annotate TravelService.Booking with @UI : {

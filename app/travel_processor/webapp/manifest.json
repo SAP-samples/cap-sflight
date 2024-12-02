@@ -65,13 +65,13 @@
         }
     },
     "sap.ui5": {
-        "flexEnabled": true,
+        "flexEnabled": false,
         "resources": {
             "js": [],
             "css": []
         },
         "dependencies": {
-            "minUI5Version": "1.128.0",
+            "minUI5Version": "1.130.0",
             "libs": {
                 "sap.ui.core": {},
                 "sap.fe.templates": {}
@@ -177,7 +177,21 @@
                                     }
                                 }
                             },
-                            "editableHeaderContent": false
+                            "editableHeaderContent": false,
+                            "content": {
+                                "body": {
+                                    "sections": {
+                                        "CustomSection": {
+                                            "template": "sap.fe.cap.travel.ext.fragment.CustomSection",
+                                            "position": {
+                                                "placement": "After",
+                                                "anchor": "Travel"
+                                            },
+                                            "title": "My Itinerary"
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 },
@@ -198,6 +212,15 @@
         "contentDensities": {
             "compact": true,
             "cozy": true
+        },
+        "extends": {
+            "extensions": {
+                "sap.ui.controllerExtensions": {
+                    "sap.fe.templates.ObjectPage.ObjectPageController": {
+                        "controllerName": "sap.fe.cap.travel.ext.controller.ObjectPageExtension"
+                    }
+                }
+            }
         }
     },
     "sap.platform.abap": {
