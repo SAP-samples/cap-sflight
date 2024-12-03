@@ -55,6 +55,7 @@ export class TravelService extends cds.ApplicationService { init() {
     await next() // actually UPDATE or DELETE the subject entity
     await update_totalsGreen(travel);
     await cds.run(`UPDATE ${Travel.drafts} SET TotalPrice = coalesce (BookingFee,0)
+     + coalesce(GreenFee,0)
      + ( SELECT coalesce (sum(FlightPrice),0) from ${Booking.drafts} where to_Travel_TravelUUID = TravelUUID )
      + ( SELECT coalesce (sum(Price),0) from ${Supplements.drafts} where to_Travel_TravelUUID = TravelUUID )
     WHERE TravelUUID = ?`, [travel])
