@@ -140,7 +140,7 @@
     ],
     "require": "test/setup.ts",
     "spec": "test/**/*.ts",
-    "timeout": 200000
+    "timeout": 20000
   },
   "sapux": [
     "app/travel_processor",
