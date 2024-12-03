@@ -1,0 +1,11 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:macros="sap.fe.macros">
+	<VBox core:require="{ handler: 'sap/fe/cap/travel/ext/fragment/CustomSection'}">
+        <MessageStrip text="All bookings for travel {TravelID} got confirmed by the agency." showIcon="true" class="sapUiSmallMarginBottom">
+        </MessageStrip>
+        <l:Grid hSpacing="1" containerQuery="true" defaultSpan="L12 M12 S12">      
+            <l:content>
+                <macros:Table metaPath="to_Booking/@com.sap.vocabularies.UI.v1.LineItem" id="bookingTable"/>
+            </l:content>
+        </l:Grid>
+	</VBox>
+</core:FragmentDefinition>
