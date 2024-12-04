@@ -57,7 +57,7 @@ cds add html5-repo
 Create a secret `container-registry` with credentials to access the container registry:
 
 ```
-bash deployment/kyma/scripts/create-container-registry-secret.sh
+bash .github/deployment/kyma/scripts/create-container-registry-secret.sh
 ```
 
 The *Docker Server* is the full-qualified hostname of your container registry.
@@ -67,7 +67,7 @@ The *Docker Server* is the full-qualified hostname of your container registry.
 This step is only required if you're using a BTP Trial account. If you're using a production or a free tier account then you can create HDI Container from Kyma directly by adding a [mapping to your Kyma namespace in your HANA Cloud Instance](https://blogs.sap.com/2022/12/15/consuming-sap-hana-cloud-from-the-kyma-environment/) and skip this step.
 
 ```
-bash deployment/kyma/scripts/create-db-secret.sh sflight-db
+bash .github/deployment/kyma/scripts/create-db-secret.sh sflight-db
 ```
 
 It will create a HDI container `sflight-db` instance on your currently targeted Cloud Foundry space and creates a secret `sflight-db` with the credentials in your current Kubernetes namespace.
@@ -112,7 +112,7 @@ html5-apps-deployer:
 ```
 
 4. Add backend destinations required by HTML5 Apps Deployer.
-   
+
 ```diff
 -  backendDestinations: {}
 +  backendDestinations:
@@ -199,7 +199,7 @@ pack build $YOUR_CONTAINER_REGISTRY/sflight-srv \
 ## Build HTML5 application deployer image
 
 ```
-bash deployment/kyma/scripts/build-ui-image.sh
+bash .github/deployment/kyma/scripts/build-ui-image.sh
 ```
 
 ## Push docker images
