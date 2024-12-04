@@ -141,7 +141,7 @@ that HDI container are stored locally on your filesystem (default-env.json).
 
 ## Deployment to SAP Business Technology Platform - Kyma Runtime
 
-The deployment to Kyma Runtime is explained in file [README-Kyma-Runtime.md](./README-Kyma-Runtime.md).
+The deployment to Kyma Runtime is explained in file [README-Kyma.md](./README-Kyma.md).
 
 ## Creating an SAP Fiori App from Scratch
 
