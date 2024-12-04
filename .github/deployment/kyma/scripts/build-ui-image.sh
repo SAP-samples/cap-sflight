@@ -2,7 +2,7 @@
 
 set -e
 cd "$(dirname "$(npm root)")"
-DIR="$(pwd)"
+DIR="$(pwd)/.github"
 
 npm install --no-save yaml
 

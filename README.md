@@ -7,14 +7,14 @@ The purpose of this sample app is to:
 * Demonstrate and compare SAP Fiori features on various stacks (CAP Node.js, CAP Java SDK, ABAP)
 * Run UI test suites on various stacks
 
-![Process Travels Page](img.png)
+![Process Travels Page](.github/assets/img.png)
 
 The app still contains some workarounds that are going to be addressed over time.
 In some cases, the model and the handlers can be improved or simplified once further planned CAP features become available.
 In other cases, the app itself could be improved. For example, calculation of the total price for a travel
 currently simply sums up the single prices ignoring the currencies.
 
-> For enabling all features of the Analytical List Page (ALP) in the Node.js runtime, we have switched on the new OData parser 
+> For enabling all features of the Analytical List Page (ALP) in the Node.js runtime, we have switched on the new OData parser
 (`odata_new_parser: true` in `package.json`), which is still in an **experimental state**.
 Early adopters may use this feature in own projects on their own risk.
 You can also use the ALP with the standard OData parser, but then some features like grouping in the table are not available.
@@ -141,7 +141,7 @@ that HDI container are stored locally on your filesystem (default-env.json).
 
 ## Deployment to SAP Business Technology Platform - Kyma Runtime
 
-The deployment to Kyma Runtime is explained in file [README-Kyma-Runtime.md](./README-Kyma-Runtime.md).
+The deployment to Kyma Runtime is explained in file [README-Kyma.md](./README-Kyma.md).
 
 ## Creating an SAP Fiori App from Scratch
 
