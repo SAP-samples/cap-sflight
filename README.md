@@ -49,19 +49,29 @@ npx cds-typer "*"
 cds-tsx watch
 ```
 
+#### Accessing the SAP Fiori Apps
+
+Open these links in your browser:
+* http://localhost:4004/sap.fe.cap.travel/index.html for processing the travel data
+* http://localhost:4004/sap.fe.cap.travel_analytics/index.html for the [Analytical List Page](https://ui5.sap.com/#/topic/3d33684b08ca4490b26a844b6ce19b83) (ALP)
+
+
 ### Build and Run - Java Backend
 
 In the root folder of your project, run
 ```
 npm ci
+npm run build:ui
 mvn spring-boot:run
 ```
 
-### Accessing the SAP Fiori Apps
+> At the moment, there is no watch mode for Fiori UI changes.  Run `npm run build:ui` after each change there.
+
+#### Accessing the SAP Fiori Apps
 
 Open these links in your browser:
-* http://localhost:4004/travel_processor/webapp/index.html for processing the travel data
-* http://localhost:4004/travel_analytics/webapp/index.html for the [Analytical List Page](https://ui5.sap.com/#/topic/3d33684b08ca4490b26a844b6ce19b83) (ALP)
+* http://localhost:4004/travel_processor/dist/index.html for processing the travel data
+* http://localhost:4004/travel_analytics/dist/index.html for the [Analytical List Page](https://ui5.sap.com/#/topic/3d33684b08ca4490b26a844b6ce19b83) (ALP)
 
 Log in with user `amy` and empty password.
 
