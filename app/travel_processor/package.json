@@ -23,7 +23,7 @@
     "sapui5"
   ],
   "devDependencies": {
-    "@sap-ux/eslint-plugin-fiori-tools": "^0.4.0",
+    "@sap-ux/eslint-plugin-fiori-tools": "^0.5.0",
     "@sap/ux-ui5-tooling": "1",
     "@sapui5/types": "~1.130.0",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
