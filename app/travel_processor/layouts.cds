@@ -116,8 +116,7 @@ annotate TravelService.Travel with @UI : {
   ]},
   FieldGroup #PriceData : {Data : [
     { $Type : 'UI.DataField', Value : BookingFee },
-    { $Type : 'UI.DataField', Value : TotalPrice },
-    { $Type : 'UI.DataField', Value : CurrencyCode_code }
+    { $Type : 'UI.DataField', Value : TotalPrice }
   ]},
   FieldGroup #i18nSustainability: {
     $Type: 'UI.FieldGroupType',
