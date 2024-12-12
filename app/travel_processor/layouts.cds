@@ -1,4 +1,8 @@
 using TravelService from '../../srv/travel-service';
+using from '../labels';
+using from '../../db/schema';
+
+
 
 //
 // annotations that control the Fiori layout
@@ -96,7 +100,20 @@ annotate TravelService.Travel with @UI : {
         Target: '@UI.FieldGroup#i18nSustainability',
       }
     ]
-  }],
+  },
+    {
+        $Type : 'UI.CollectionFacet',
+        Label : 'Bookings',
+        ID : 'Bookings',
+        Facets : [
+            {
+                $Type : 'UI.ReferenceFacet',
+                Label : 'Bookings',
+                ID : 'Bookings1',
+                Target : 'to_Booking/@UI.SelectionPresentationVariant#Bookings',
+            },
+        ],
+    },],
   FieldGroup#TravelData : { Data : [
     { Value : TravelID               },
     { Value : to_Agency_AgencyID     },
@@ -138,77 +155,126 @@ annotate TravelService.Travel with @UI : {
   }
 };
 
-annotate TravelService.Booking with @UI : {
-  Identification : [
-    { Value : BookingID },
-  ],
-  HeaderInfo : {
-    TypeName       : '{i18n>Bookings}',
-    TypeNamePlural : '{i18n>Bookings}',
-    Title          : { Value : to_Customer.LastName },
-    Description    : { Value : BookingID }
-  },
-  PresentationVariant : {
-    Visualizations : ['@UI.LineItem'],
-    SortOrder      : [{
-      $Type      : 'Common.SortOrderType',
-      Property   : BookingID,
-      Descending : false
-    }]
-  },
-  SelectionFields : [],
-  LineItem : [
-    { Value : to_Carrier.AirlinePicURL,  Label : '  '},
-    { Value : BookingID              },
-    { Value : BookingDate            },
-    { Value : to_Customer_CustomerID },
-    { Value : to_Carrier_AirlineID   },
-    { Value : ConnectionID,          Label : '{i18n>FlightNumber}' },
-    { Value : FlightDate             },
-    { Value : FlightPrice            },
-    { Value : BookingStatus_code,
-      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'N']}, 2,
-                                { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'B']}, 3, 0] }] } }
-    }
-  ],
-  Facets : [{
-    $Type  : 'UI.CollectionFacet',
-    Label  : '{i18n>GeneralInformation}',
-    ID     : 'Booking',
-    Facets : [{  // booking details
-      $Type  : 'UI.ReferenceFacet',
-      ID     : 'BookingData',
-      Target : '@UI.FieldGroup#GeneralInformation',
-      Label  : '{i18n>Booking}'
-    }, {  // flight details
-      $Type  : 'UI.ReferenceFacet',
-      ID     : 'FlightData',
-      Target : '@UI.FieldGroup#Flight',
-      Label  : '{i18n>Flight}'
-    }]
-  }, {  // supplements list
-    $Type  : 'UI.ReferenceFacet',
-    ID     : 'SupplementsList',
-    Target : 'to_BookSupplement/@UI.PresentationVariant',
-    Label  : '{i18n>BookingSupplements}'
-  }],
-  FieldGroup #GeneralInformation : { Data : [
-    { Value : BookingID              },
-    { Value : BookingDate,           },
-    { Value : to_Customer_CustomerID },
-    { Value : BookingDate,           },
-    { Value : BookingStatus_code,
-      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'N']}, 2,
-                                { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'B']}, 3, 0] }] } }
-     }
-  ]},
-  FieldGroup #Flight : { Data : [
-    { Value : to_Carrier_AirlineID   },
-    { Value : ConnectionID           },
-    { Value : FlightDate             },
-    { Value : FlightPrice            }
-  ]},
-};
+annotate TravelService.Booking with @(
+    UI : {
+      Identification : [
+        { Value : BookingID },
+      ],
+      HeaderInfo : {
+        TypeName       : '{i18n>Bookings}',
+        TypeNamePlural : '{i18n>Bookings}',
+        Title          : { Value : to_Customer.LastName },
+        Description    : { Value : BookingID }
+      },
+      PresentationVariant : {
+        Visualizations : ['@UI.LineItem'],
+        SortOrder      : [{
+          $Type      : 'Common.SortOrderType',
+          Property   : BookingID,
+          Descending : false
+        }],
+        GroupBy : [
+            BookingStatus_code
+        ],
+      },
+      SelectionFields : [],
+      LineItem : [
+        { Value : to_Carrier.AirlinePicURL,  Label : '  '},
+        { Value : BookingID              },
+        { Value : BookingDate            },
+        { Value : to_Customer_CustomerID },
+        { Value : to_Carrier_AirlineID   },
+        { Value : ConnectionID,          Label : '{i18n>FlightNumber}' },
+        { Value : FlightDate             },
+        { Value : FlightPrice            },
+        { Value : BookingStatus_code,
+          Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'N']}, 2,
+                                    { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'B']}, 3, 0] }] } }
+        }
+      ],
+      Facets : [{
+        $Type  : 'UI.CollectionFacet',
+        Label  : '{i18n>GeneralInformation}',
+        ID     : 'Booking',
+        Facets : [{  // booking details
+          $Type  : 'UI.ReferenceFacet',
+          ID     : 'BookingData',
+          Target : '@UI.FieldGroup#GeneralInformation',
+          Label  : '{i18n>Booking}'
+        }, {  // flight details
+          $Type  : 'UI.ReferenceFacet',
+          ID     : 'FlightData',
+          Target : '@UI.FieldGroup#Flight',
+          Label  : '{i18n>Flight}'
+        }]
+      }, {  // supplements list
+        $Type  : 'UI.ReferenceFacet',
+        ID     : 'SupplementsList',
+        Target : 'to_BookSupplement/@UI.PresentationVariant',
+        Label  : '{i18n>BookingSupplements}'
+      }],
+      FieldGroup #GeneralInformation : { Data : [
+        { Value : BookingID              },
+        { Value : BookingDate,           },
+        { Value : to_Customer_CustomerID },
+        { Value : BookingDate,           },
+        { Value : BookingStatus_code,
+          Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'N']}, 2,
+                                    { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'B']}, 3, 0] }] } }
+         }
+      ]},
+      FieldGroup #Flight : { Data : [
+        { Value : to_Carrier_AirlineID   },
+        { Value : ConnectionID           },
+        { Value : FlightDate             },
+        { Value : FlightPrice            }
+      ]},
+    },
+    UI.LineItem #Bookings : [
+        {
+            $Type : 'UI.DataField',
+            Value : BookingDate,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : BookingID,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : BookingStatus_code,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : FlightPrice,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : FlightDate,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : BookingStatus.code,
+            Label : 'code',
+        },
+    ],
+    UI.SelectionPresentationVariant #Bookings : {
+        $Type : 'UI.SelectionPresentationVariantType',
+        PresentationVariant : {
+            $Type : 'UI.PresentationVariantType',
+            Visualizations : [
+                '@UI.LineItem#Bookings',
+            ],
+            GroupBy : [
+                BookingStatus_code,
+            ],
+        },
+        SelectionVariant : {
+            $Type : 'UI.SelectionVariantType',
+            SelectOptions : [
+            ],
+        },
+    },
+);
 
 annotate TravelService.BookingSupplement with @UI : {
   Identification : [
@@ -227,7 +293,10 @@ annotate TravelService.BookingSupplement with @UI : {
       $Type      : 'Common.SortOrderType',
       Property   : BookingSupplementID,
       Descending : false
-    }]
+    }],
+    GroupBy : [
+        to_Supplement_SupplementID,
+    ],
   },
   LineItem : [
     { Value : BookingSupplementID                                       },
@@ -235,3 +304,10 @@ annotate TravelService.BookingSupplement with @UI : {
     { Value : Price,                      Label : '{i18n>ProductPrice}' }
   ],
 };
+annotate TravelService.Travel with {
+    to_Customer @Common.Text : {
+        $value : to_Customer.LastName,
+        ![@UI.TextArrangement] : #TextFirst,
+    }
+};
+

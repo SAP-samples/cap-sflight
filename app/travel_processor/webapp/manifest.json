@@ -177,21 +177,7 @@
                                     }
                                 }
                             },
-                            "editableHeaderContent": false,
-                            "content": {
-                                "body": {
-                                    "sections": {
-                                        "CustomSection": {
-                                            "template": "sap.fe.cap.travel.ext.fragment.CustomSection",
-                                            "position": {
-                                                "placement": "After",
-                                                "anchor": "Travel"
-                                            },
-                                            "title": "My Itinerary"
-                                        }
-                                    }
-                                }
-                            }
+                            "editableHeaderContent": false
                         }
                     }
                 },
