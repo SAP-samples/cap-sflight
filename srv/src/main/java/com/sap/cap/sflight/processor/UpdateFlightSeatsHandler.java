@@ -25,6 +25,7 @@ import com.sap.cds.reflect.CdsStructuredType;
 import com.sap.cds.reflect.CdsType;
 import com.sap.cds.services.EventContext;
 import com.sap.cds.services.cds.CdsDeleteEventContext;
+import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
@@ -40,7 +41,7 @@ import static cds.gen.travelservice.TravelService_.FLIGHT;
 
 @Component
 @ServiceName(TravelService_.CDS_NAME)
-public class UpdateFlightSeatsHandler /*implements EventHandler */{
+public class UpdateFlightSeatsHandler implements EventHandler {
 
     private final PersistenceService persistenceService;
 
@@ -97,7 +98,7 @@ public class UpdateFlightSeatsHandler /*implements EventHandler */{
                     @Override
                     public boolean test(Path path, CdsElement cdsElement, CdsType cdsType) {
 
-                        if (path.target().type().getQualifiedName().equals(Booking_.CDS_NAME)
+                        if (path.target().type().getQualifiedName().equals(Travel_.CDS_NAME)
                                 && cdsElement.getName().equals("to_Booking")) {
                             return true;
                         } else if (path.target().type().getQualifiedName().equals(Flight_.CDS_NAME)

@@ -3,7 +3,7 @@ package com.sap.cap.sflight.processor;
 import cds.gen.travelservice.Booking;
 import cds.gen.travelservice.Flight;
 import cds.gen.travelservice.Travel;
-import cds.gen.travelservice.TravelService_;
+import cds.gen.travelservice.TravelService;
 import cds.gen.travelservice.Travel_;
 import com.sap.cds.Result;
 import com.sap.cds.ql.Insert;
@@ -12,16 +12,17 @@ import com.sap.cds.ql.Update;
 import com.sap.cds.ql.cqn.CqnInsert;
 import com.sap.cds.ql.cqn.CqnSelect;
 import com.sap.cds.ql.cqn.CqnUpdate;
-import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.persistence.PersistenceService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +33,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class UpdateFlightSeatsHandlerServiceIntegrationTest {
+class UpdateFlightSeatsHandlerServiceIntegrationTest {
+
 
     @Autowired
-    @Qualifier(TravelService_.CDS_NAME)
-    private CqnService travelService;
+    private TravelService travelService;
 
     @Autowired
     private PersistenceService dbService;
@@ -85,7 +86,7 @@ public class UpdateFlightSeatsHandlerServiceIntegrationTest {
  */
     @Test
     @WithMockUser("amy")
-    public void testUpdateFlightHandlerForAddedBooking() {
+    void testUpdateFlightHandlerForAddedBooking() {
 
         // Retrieve some flight to add it to the new booking
         Result result = dbService.run(Select.from(FLIGHT).where(f -> f.ConnectionID().eq("0001")));
@@ -112,11 +113,9 @@ public class UpdateFlightSeatsHandlerServiceIntegrationTest {
         flight.connectionID("0001");
         addedBooking.toFlight(flight);
         travelUpdate.toBooking().add(addedBooking);
+        travelUpdate.beginDate(LocalDate.now().plusDays(1));
+        travelUpdate.endDate(LocalDate.now().plusDays(2));
 
-        List<Travel> travelUpdates = new ArrayList<>();
-        travelUpdates.add(travelUpdate);
-
-        // CqnUpsert queryUpsert = Upsert.into(TRAVEL).entries(travelUpdates);
         CqnUpdate queryUpdate = Update.entity(TRAVEL).data(travelUpdate);
         travelService.run(queryUpdate);
 
@@ -131,7 +130,7 @@ public class UpdateFlightSeatsHandlerServiceIntegrationTest {
 
     @Test
     @WithMockUser("amy")
-    public void testUpdateFlightHandlerForNewlyCreatedTravels() {
+    void testUpdateFlightHandlerForNewlyCreatedTravels() {
 
         // Get some random flight from the db
         Result result = dbService.run(Select.from(FLIGHT).where(f -> f.ConnectionID().eq("0001")));
@@ -166,7 +165,7 @@ public class UpdateFlightSeatsHandlerServiceIntegrationTest {
 
     @Test
     @WithMockUser("amy")
-    public void testUpdateFlightHandlerForDeletedBooking() {
+    void testUpdateFlightHandlerForDeletedBooking() {
 
         // Query some active entity
         CqnSelect querySelect = Select.from(Travel_.class)
@@ -204,7 +203,7 @@ public class UpdateFlightSeatsHandlerServiceIntegrationTest {
 
     @Test
     @WithMockUser("amy")
-    public void testUpdateFlightHandlerForUpdatedBooking() {
+    void testUpdateFlightHandlerForUpdatedBooking() {
 
         // Query some active entity
         CqnSelect querySelect = Select.from(Travel_.class)
@@ -232,15 +231,14 @@ public class UpdateFlightSeatsHandlerServiceIntegrationTest {
         Integer flightToBeAddedExpSeats = flightToBeAdded.occupiedSeats() + 1;
 
         // Compose an updated version of the entity which was retrieved before
-        Travel travelUpdate = travelActEnt;
-        List<Booking> booking = travelUpdate.toBooking();
+        List<Booking> booking = travelActEnt.toBooking();
         Booking newBooking = booking.get(0);
         newBooking.toFlight(flightToBeAdded);
-        travelUpdate.toBooking().set(0, newBooking);
+        travelActEnt.toBooking().set(0, newBooking);
         List<Travel> travelUpdates = new ArrayList<>();
-        travelUpdates.add(travelUpdate);
+        travelUpdates.add(travelActEnt);
 
-        CqnUpdate queryUpdate = Update.entity(TRAVEL).data(travelUpdate);
+        CqnUpdate queryUpdate = Update.entity(TRAVEL).data(travelActEnt);
         travelService.run(queryUpdate);
 
         Result resultFlightRemoved = dbService
