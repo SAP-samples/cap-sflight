@@ -12,15 +12,15 @@ namespace sap.fe.cap.travel;
 entity Travel : managed {
   key TravelUUID : UUID;
   TravelID       : Integer @readonly default 0;
-  BeginDate      : Date;
-  EndDate        : Date;
-  BookingFee     : Decimal(16, 3);
+  BeginDate      : Date @mandatory;
+  EndDate        : Date @mandatory;
+  BookingFee     : Decimal(16, 3) @mandatory;
   TotalPrice     : Decimal(16, 3) @readonly;
   CurrencyCode   : Currency;
-  Description    : String(1024);
+  Description    : String(1024) @mandatory;
   TravelStatus   : Association to TravelStatus @readonly;
-  to_Agency      : Association to TravelAgency;
-  to_Customer    : Association to Passenger;
+  to_Agency      : Association to TravelAgency @mandatory;
+  to_Customer    : Association to Passenger @mandatory;
   to_Booking     : Composition of many Booking on to_Booking.to_Travel = $self;
 };
 

@@ -6,8 +6,8 @@ using { sap.fe.cap.travel as my } from '../db/schema';
     TravelStatus.code as status
   } actions {
     action new     @(                                    to: Draft ) ();
-    action edit    @( from:[ Open, Approved, Rejected ], to: Draft ) ();
     action save    @( from:[ Draft ],                    to: Open ) ();
+    action edit    @( from:[ Open, Approved, Rejected ], to: Draft ) ();
     action approve @( from:[ Open ],                     to: Approved ) ();
     action cancel  @( from:[ Open, Approved ],           to: Cancelled ) ();
     action reject  @( from:[ Open ],                     to: Rejected ) ();

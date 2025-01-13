@@ -19,6 +19,34 @@ init() {
     req.data.TravelID = maxID + 1
   })
 
+  let messages = []
+  this.after ('NEW', 'Travel.drafts', ()=> messages = [])
+
+  // Doesn't work
+  // this.before ('PATCH', 'Travel.drafts', async req => {})
+
+  this.before ('UPDATE', 'Travel.drafts', async req => {
+
+    // Purge messages for fields in the request
+    messages = messages.filter (m => !(m.target in req.data))
+
+    // Validate input for fields in the request
+    if ('Description' in req.data) {
+      if (!req.data.Description?.trim().length)
+        req.error ('Please enter a non-empty description.', 'Description')
+    }
+    if ('BookingFee' in req.data) {
+      if (!req.data.BookingFee || req.data.BookingFee <= 0)
+        req.error ('Please enter a valid booking fee > 0.', 'BookingFee')
+    }
+
+    // Return all remaining and new messages
+    if (req.errors) {
+      for (let m of req.errors) messages.push ({ ...m, numericSeverity:4 })
+      delete req.errors
+    }
+    for (let m of messages) req.warn (m)
+  })
 
   /**
    * Fill in defaults for new Bookings when editing Travels.
@@ -133,33 +161,7 @@ init() {
    * Validate a Travel's edited data before save.
    */
   this.before ('SAVE', 'Travel', req => {
-    const { BeginDate, EndDate, BookingFee, to_Agency_AgencyID, to_Customer_CustomerID, to_Booking, TravelStatus_code } = req.data, today = (new Date).toISOString().slice(0,10)
-
-    // validate only not rejected travels
-    if (TravelStatus_code !== 'X') {
-      if (BookingFee == null) req.error(400, "Enter a booking fee", "in/BookingFee") // 0 is a valid BookingFee
-      if (!BeginDate) req.error(400, "Enter a begin date", "in/BeginDate")
-      if (!EndDate) req.error(400, "Enter an end date", "in/EndDate")
-      if (!to_Agency_AgencyID) req.error(400, "Enter a travel agency", "in/to_Agency_AgencyID")
-      if (!to_Customer_CustomerID) req.error(400, "Enter a customer", "in/to_Customer_CustomerID")
-
-      for (const booking of to_Booking) {
-        const { BookingUUID, ConnectionID, FlightDate, FlightPrice, BookingStatus_code, to_Carrier_AirlineID, to_Customer_CustomerID } = booking
-        if (!ConnectionID) req.error(400, "Enter a flight", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/ConnectionID`)
-        if (!FlightDate) req.error(400, "Enter a flight date", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/FlightDate`)
-        if (!FlightPrice) req.error(400, "Enter a flight price", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/FlightPrice`)
-        if (!BookingStatus_code) req.error(400, "Enter a booking status", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/BookingStatus_code`)
-        if (!to_Carrier_AirlineID) req.error(400, "Enter an airline", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/to_Carrier_AirlineID`)
-        if (!to_Customer_CustomerID) req.error(400, "Enter a customer", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/to_Customer_CustomerID`)
-
-        for (const suppl of booking.to_BookSupplement) {
-          const { BookSupplUUID, Price, to_Supplement_SupplementID } = suppl
-          if (!Price) req.error(400, "Enter a price", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/to_BookSupplement(BookSupplUUID='${BookSupplUUID}',IsActiveEntity=false)/Price`)
-          if (!to_Supplement_SupplementID) req.error(400, "Enter a supplement", `in/to_Booking(BookingUUID='${BookingUUID}',IsActiveEntity=false)/to_BookSupplement(BookSupplUUID='${BookSupplUUID}',IsActiveEntity=false)/to_Supplement_SupplementID`)
-        }
-      }
-    }
-
+    const { BeginDate, EndDate } = req.data, today = (new Date).toISOString().slice(0,10)
     if (BeginDate < today) req.error (400, `Begin Date ${BeginDate} must not be before today ${today}.`, 'in/BeginDate')
     if (BeginDate > EndDate) req.error (400, `Begin Date ${BeginDate} must be before End Date ${EndDate}.`, 'in/BeginDate')
   })
