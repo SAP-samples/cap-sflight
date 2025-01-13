@@ -33,14 +33,18 @@ init() {
     // Validate input for fields in the request
     if ('Description' in req.data) {
       if (!req.data.Description?.trim().length)
-        messages.push ({ message:'Please enter a non-empty description', target:'Description', numericSeverity:4 })
+        req.error ('Please enter a non-empty description.', 'Description')
     }
     if ('BookingFee' in req.data) {
       if (!req.data.BookingFee || req.data.BookingFee <= 0)
-        messages.push ({ message:'Please enter a valid booking fee > 0', target:'BookingFee', numericSeverity:4 })
+        req.error ('Please enter a valid booking fee > 0.', 'BookingFee')
     }
 
     // Return all remaining and new messages
+    if (req.errors) {
+      for (let m of req.errors) messages.push ({ ...m, numericSeverity:4 })
+      delete req.errors
+    }
     for (let m of messages) req.warn (m)
   })
 
