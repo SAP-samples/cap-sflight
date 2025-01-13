@@ -8,7 +8,6 @@ import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
 import cds.gen.travelservice.Travel_;
 import com.google.common.annotations.VisibleForTesting;
-import com.sap.cds.CdsDataProcessor;
 import com.sap.cds.CdsDiffProcessor;
 import com.sap.cds.CdsDiffProcessor.DiffVisitor;
 import com.sap.cds.impl.diff.DiffProcessor;
@@ -22,9 +21,9 @@ import com.sap.cds.ql.cqn.Path;
 import com.sap.cds.reflect.CdsAssociationType;
 import com.sap.cds.reflect.CdsElement;
 import com.sap.cds.reflect.CdsStructuredType;
-import com.sap.cds.reflect.CdsType;
 import com.sap.cds.services.EventContext;
 import com.sap.cds.services.cds.CdsDeleteEventContext;
+import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.ServiceName;
@@ -35,13 +34,17 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 import static cds.gen.travelservice.TravelService_.FLIGHT;
 
 @Component
 @ServiceName(TravelService_.CDS_NAME)
 public class UpdateFlightSeatsHandler implements EventHandler {
+
+    public static final String TO_BOOKING = "to_Booking";
+    public static final String CONNECTION_ID = "ConnectionID";
+    public static final String OCCUPIED_SEATS = "occupiedSeats";
 
     private final PersistenceService persistenceService;
 
@@ -57,29 +60,32 @@ public class UpdateFlightSeatsHandler implements EventHandler {
     @Before(event = { "CREATE", "UPDATE", "DELETE" }, entity = Travel_.CDS_NAME)
     public void updateSeatsDiffProc(EventContext context, List<Travel> travels) {
 
-        EnumMap<Status, List<Booking>> modifications = new EnumMap<>(Status.class);
+        Map<Status, List<Booking>> modifications = new EnumMap<>(Status.class);
 
         switch (context.getEvent()) {
 
-            case "CREATE":
+            case CqnService.EVENT_CREATE:
                 modifications.putIfAbsent(Status.ADDED, new ArrayList<>());
                 for (Travel travel : travels) {
                     modifications.get(Status.ADDED).addAll(travel.toBooking());
                 }
                 break;
 
-            case "DELETE":
+            case CqnService.EVENT_DELETE:
                 modifications.putIfAbsent(Status.DELETED, new ArrayList<>());
                 modifications.get(Status.DELETED)
                         .addAll(getOldStateTravel(getTravelUuidFromDeleteCqn(context)).toBooking());
                 updateSeatsOnFlights(getFlights(modifications));
                 break;
 
-            case "UPDATE":
+            case CqnService.EVENT_UPDATE:
                 for (Travel travel : travels) {
                     handleUpdatedTravelWithDiffProcessor(context, travel, modifications);
                 }
                 break;
+
+            default:
+                throw new IllegalStateException("Unexpected value: " + context.getEvent());
 
         }
 
@@ -88,146 +94,85 @@ public class UpdateFlightSeatsHandler implements EventHandler {
     }
 
     private void handleUpdatedTravelWithDiffProcessor(EventContext context, Travel newState,
-            EnumMap<Status, List<Booking>> modifications) {
+            Map<Status, List<Booking>> modifications) {
 
         CdsDiffProcessor diffProcessor = DiffProcessor.create().forDeepTraversal();
         Travel oldState = getOldStateTravel(newState.travelUUID());
         diffProcessor.add(
-                new CdsDataProcessor.Filter() {
+                (path, cdsElement, cdsType) -> {
 
-                    @Override
-                    public boolean test(Path path, CdsElement cdsElement, CdsType cdsType) {
-
-                        if (path.target().type().getQualifiedName().equals(Travel_.CDS_NAME)
-                                && cdsElement.getName().equals("to_Booking")) {
-                            return true;
-                        } else if (path.target().type().getQualifiedName().equals(Flight_.CDS_NAME)
-                                && cdsElement.getName().equals("ConnectionID")) {
-                            return true;
-                        }
-                        return false;
-                    }
+                    if (path.target().type().getQualifiedName().equals(Travel_.CDS_NAME)
+                            && cdsElement.getName().equals(TO_BOOKING)) {
+                        return true;
+                    } else return path.target().type().getQualifiedName().equals(Flight_.CDS_NAME)
+                            && cdsElement.getName().equals(CONNECTION_ID);
                 },
-                new DiffVisitor() {
-                    @Override
-                    public void changed(Path newPath, Path oldPath, CdsElement element, Object newValue, Object oldValue) {
-
-                        if (newPath.target().type().getQualifiedName().equals(Flight_.CDS_NAME)
-                                && element.getName().equals("ConnectionID")) {
-
-                            modifications.putIfAbsent(Status.ADDED, new ArrayList<Booking>());
-                            modifications.putIfAbsent(Status.DELETED, new ArrayList<Booking>());
-
-                            List<Booking> newBooking = newState.toBooking();
-                            List<Booking> oldBooking = oldState.toBooking();
-                            modifications.get(Status.ADDED).addAll(newBooking);
-                            modifications.get(Status.DELETED).addAll(oldBooking);
-
-                        }
-                    }
-
-                    @Override
-                    public void added(Path newPath, Path oldPath, CdsElement association, Map<String, Object> newValue) {
-                        CdsStructuredType target = association != null ? association.getType().as(CdsAssociationType.class).getTarget() : newPath.target().type();
-
-                        if (target.getQualifiedName().equals(Booking_.CDS_NAME)
-                                || association.getName().equals("to_Booking")) {
-                            modifications.putIfAbsent(Status.ADDED, new ArrayList<Booking>());
-                            Booking addedBooking = Booking.create();
-                            addedBooking.putAll(newValue);
-                            modifications.get(Status.ADDED).add(addedBooking);
-                        }
-                    }
-
-                    @Override
-                    public void removed(Path newPath, Path oldPath, CdsElement association, Map<String, Object> oldValue) {
-                        CdsStructuredType target = association != null ? association.getType().as(CdsAssociationType.class).getTarget() : newPath.target().type();
-                        if (target.getQualifiedName().equals(Booking_.CDS_NAME)
-                                || association.getName().equals("to_Booking")) {
-                            modifications.putIfAbsent(Status.DELETED, new ArrayList<Booking>());
-                            Booking addedBooking = Booking.create();
-                            addedBooking.putAll(oldValue);
-                            modifications.get(Status.DELETED).add(addedBooking);
-                        }
-                    }
-                });
+                new BookingDiffVisitor(modifications, newState, oldState));
 
         diffProcessor.process(newState, oldState, context.getTarget());
     }
 
-    @VisibleForTesting
     private Travel getOldStateTravel(String travelUUID) {
-        Select query = Select.from(TravelService_.TRAVEL)
+        Select<Travel_> query = Select.from(TravelService_.TRAVEL)
                 .where(t -> t.TravelUUID().eq(travelUUID).and(t.IsActiveEntity().eq(true)))
-                .columns(t -> t.TravelUUID(), t -> t.to_Booking()
-                        .expand(b -> b.BookingUUID(), b -> b.to_Flight()
-                                .expand(f -> f.ConnectionID(), f -> f.OccupiedSeats())));
+                .columns(Travel_::TravelUUID, t -> t.to_Booking()
+                        .expand(Booking_::BookingUUID, b -> b.to_Flight()
+                                .expand(Flight_::ConnectionID, Flight_::OccupiedSeats)));
         return this.persistenceService.run(query).single(Travel.class);
     }
 
-    @VisibleForTesting
     private String getTravelUuidFromDeleteCqn(EventContext context) {
         CqnAnalyzer cqnAnalyzer = CqnAnalyzer.create(context.getModel());
         CqnDelete deleteStatement = ((CdsDeleteEventContext) context).getCqn();
         return (String) cqnAnalyzer.analyze(deleteStatement).targetKeyValues().get("TravelUUID");
     }
 
-    @VisibleForTesting
-    void updateSeatsOnFlights(EnumMap<Status, List<Flight>> flightsStatus) {
+    void updateSeatsOnFlights(Map<Status, List<Flight>> flightsStatus) {
 
-        List<Flight> flights = new ArrayList<>();
+        List<Flight> flights;
+        for (Map.Entry<Status, List<Flight>> flightStatuses : flightsStatus.entrySet()) {
 
-        for (Status status : flightsStatus.keySet()) {
-
+            Status status = flightStatuses.getKey();
             flights = flightsStatus.get(status);
-
             if (status == Status.ADDED) {
-
                 for (Flight f : flights) {
-
                     CqnUpdate addSeats = Update.entity(FLIGHT).where(w -> w.ConnectionID().eq(f.connectionID()))
-                            .set("occupiedSeats", CQL.get("occupiedSeats").plus(1));
+                            .set(OCCUPIED_SEATS, CQL.get(OCCUPIED_SEATS).plus(1));
                     this.persistenceService.run(addSeats);
                 }
             }
 
             if (status == Status.DELETED) {
-
                 for (Flight f : flights) {
-
                     CqnUpdate deleteSeats = Update.entity(FLIGHT).where(w -> w.ConnectionID().eq(f.connectionID()))
-                            .set("occupiedSeats", CQL.get("occupiedSeats").minus(1));
+                            .set(OCCUPIED_SEATS, CQL.get(OCCUPIED_SEATS).minus(1));
                     this.persistenceService.run(deleteSeats);
                 }
             }
         }
-
     }
 
     @VisibleForTesting
-    EnumMap<Status, List<Flight>> getFlights(EnumMap<Status, List<Booking>> bookings) {
+    Map<Status, List<Flight>> getFlights(Map<Status, List<Booking>> bookings) {
 
-        EnumMap<Status, List<Flight>> flightsFromBookings = new EnumMap<>(Status.class);
-        // Set<Status> keys = bookings.keySet();
+        Map<Status, List<Flight>> flightsFromBookings = new EnumMap<>(Status.class);
         List<Flight> addedFlights = new ArrayList<>();
         List<Flight> deletedFlights = new ArrayList<>();
 
-        for (Status status : bookings.keySet()) {
+        for (Map.Entry<Status, List<Booking>> bookingsEntry : bookings.entrySet()) {
 
+            Status status = bookingsEntry.getKey();
             if (status == Status.ADDED) {
                 addedFlights = bookings.get(status)
                         .stream()
-                        .map(b -> b.toFlight())
-                        .collect(Collectors.toList());
+                        .map(Booking::toFlight).toList();
 
             }
 
             if (status == Status.DELETED) {
                 deletedFlights = bookings.get(status)
                         .stream()
-                        .map(b -> b.toFlight())
-                        .collect(Collectors.toList());
-
+                        .map(Booking::toFlight).toList();
             }
 
         }
@@ -240,5 +185,59 @@ public class UpdateFlightSeatsHandler implements EventHandler {
         }
 
         return flightsFromBookings;
+    }
+
+    private static class BookingDiffVisitor implements DiffVisitor {
+        private final Map<Status, List<Booking>> modifications;
+        private final Travel newState;
+        private final Travel oldState;
+
+        public BookingDiffVisitor(Map<Status, List<Booking>> modifications, Travel newState, Travel oldState) {
+            this.modifications = modifications;
+            this.newState = newState;
+            this.oldState = oldState;
+        }
+
+        @Override
+        public void changed(Path newPath, Path oldPath, CdsElement element, Object newValue, Object oldValue) {
+
+            if (newPath.target().type().getQualifiedName().equals(Flight_.CDS_NAME)
+                    && element.getName().equals(CONNECTION_ID)) {
+
+                modifications.putIfAbsent(Status.ADDED, new ArrayList<>());
+                modifications.putIfAbsent(Status.DELETED, new ArrayList<>());
+
+                List<Booking> newBooking = newState.toBooking();
+                List<Booking> oldBooking = oldState.toBooking();
+                modifications.get(Status.ADDED).addAll(newBooking);
+                modifications.get(Status.DELETED).addAll(oldBooking);
+
+            }
+        }
+
+        @Override
+        public void added(Path newPath, Path oldPath, CdsElement association, Map<String, Object> newValue) {
+            CdsStructuredType target = association != null ? association.getType().as(CdsAssociationType.class).getTarget() : newPath.target().type();
+
+            if (target.getQualifiedName().equals(Booking_.CDS_NAME)
+                    || Objects.requireNonNull(association).getName().equals(TO_BOOKING)) {
+                modifications.putIfAbsent(Status.ADDED, new ArrayList<>());
+                Booking addedBooking = Booking.create();
+                addedBooking.putAll(newValue);
+                modifications.get(Status.ADDED).add(addedBooking);
+            }
+        }
+
+        @Override
+        public void removed(Path newPath, Path oldPath, CdsElement association, Map<String, Object> oldValue) {
+            CdsStructuredType target = association != null ? association.getType().as(CdsAssociationType.class).getTarget() : newPath.target().type();
+            if (target.getQualifiedName().equals(Booking_.CDS_NAME)
+                    || Objects.requireNonNull(association).getName().equals(TO_BOOKING)) {
+                modifications.putIfAbsent(Status.DELETED, new ArrayList<>());
+                Booking addedBooking = Booking.create();
+                addedBooking.putAll(oldValue);
+                modifications.get(Status.DELETED).add(addedBooking);
+            }
+        }
     }
 }
