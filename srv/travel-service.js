@@ -26,10 +26,9 @@ init() {
   // this.before ('PATCH', 'Travel.drafts', async req => {})
 
   this.before ('UPDATE', 'Travel.drafts', async req => {
-    console.debug (req.data)
 
     // Purge messages for fields in the request
-    messages = messages.filter (m => m.target in req.data)
+    messages = messages.filter (m => !(m.target in req.data))
 
     // Validate input for fields in the request
     if ('Description' in req.data) {
