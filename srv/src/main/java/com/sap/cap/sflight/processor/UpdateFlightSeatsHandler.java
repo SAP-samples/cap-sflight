@@ -7,7 +7,6 @@ import cds.gen.travelservice.Flight_;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
 import cds.gen.travelservice.Travel_;
-import com.google.common.annotations.VisibleForTesting;
 import com.sap.cds.CdsDiffProcessor;
 import com.sap.cds.CdsDiffProcessor.DiffVisitor;
 import com.sap.cds.impl.diff.DiffProcessor;
@@ -96,7 +95,7 @@ public class UpdateFlightSeatsHandler implements EventHandler {
     private void handleUpdatedTravelWithDiffProcessor(EventContext context, Travel newState,
             Map<Status, List<Booking>> modifications) {
 
-        CdsDiffProcessor diffProcessor = DiffProcessor.create().forDeepTraversal();
+        CdsDiffProcessor diffProcessor = DiffProcessor.create();
         Travel oldState = getOldStateTravel(newState.travelUUID());
         diffProcessor.add(
                 (path, cdsElement, cdsType) -> {
@@ -152,7 +151,6 @@ public class UpdateFlightSeatsHandler implements EventHandler {
         }
     }
 
-    @VisibleForTesting
     Map<Status, List<Flight>> getFlights(Map<Status, List<Booking>> bookings) {
 
         Map<Status, List<Flight>> flightsFromBookings = new EnumMap<>(Status.class);
