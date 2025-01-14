@@ -28,7 +28,13 @@ module.exports = async (config) => {
     },
     plugins: [...config.plugins, await capMiddleware],
     middleware: ["cap-proxy"],
-    browsers: config.ci ? ["ChromeHeadless"] : ["Chrome"],
+    browsers: config.ci ? ["ChromeHeadlessNoSandbox"] : ["Chrome"],
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
     singleRun: config.ci || config.singleRun || false
   });
 };
