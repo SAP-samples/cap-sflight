@@ -33,7 +33,7 @@
     "karma-chrome-launcher": "^3.2.0",
     "karma-ui5": "^4.0.1",
     "karma-ui5-transpile": "^3.5.1",
-    "puppeteer": "^23.0.2",
+    "puppeteer": "^24",
     "typescript": "^5.1.6",
     "ui5-middleware-simpleproxy": "^3.2.16",
     "ui5-task-zipper": "^3.1.4",
