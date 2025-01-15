@@ -22,8 +22,8 @@ builder:
           - xs-app.json
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
-      configuration:
-        debug: true   
+      # configuration:
+        # debug: true
 
 server:
   customMiddleware:
@@ -39,6 +39,6 @@ server:
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
-        debug: true
+        # debug: true
         excludePatterns:
-          - /Component-preload.js            
+          - /Component-preload.js

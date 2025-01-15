@@ -5,6 +5,7 @@
         "rootDir": "./",
         "baseUrl": "./",
         "allowJs": true,
+        "esModuleInterop": true,
         "inlineSources": true,
         "inlineSourceMap": true,
         "moduleResolution": "nodenext",

@@ -1,4 +1,4 @@
-import * as cds from '@sap/cds'
+import cds from '@sap/cds'
 import { Travel } from '#cds-models/TravelService'
 const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..')
 const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
