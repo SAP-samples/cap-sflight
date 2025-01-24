@@ -24,12 +24,6 @@ entity Travel : managed {
   to_Booking     : Composition of many Booking on to_Booking.to_Travel = $self;
 };
 
-entity V as select from Travel {
-  TravelID,
-  BookingFee > 0 as positive
-}
-
-
 annotate Travel with @Capabilities.FilterRestrictions.FilterExpressionRestrictions: [
   { Property: 'BeginDate', AllowedExpressions : 'SingleRange' },
   { Property: 'EndDate', AllowedExpressions : 'SingleRange' }
