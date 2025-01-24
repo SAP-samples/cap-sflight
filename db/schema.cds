@@ -26,7 +26,7 @@ entity Travel : managed {
 
 entity V as select from Travel {
   TravelID,
-  number > 0 as positive
+  BookingFee > 0 as positive
 }
 
 
