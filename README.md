@@ -36,7 +36,7 @@ In the root folder of your project, run
 ```
 npm ci
 npx cds-typer "*"
-cds-tsx watch
+cds watch
 ```
 
 #### Accessing the SAP Fiori Apps
