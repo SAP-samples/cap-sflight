@@ -14,8 +14,8 @@
     "build:ui": "npm run build --prefix app/travel_analytics && npm run build --prefix app/travel_processor",
     "test": "jest",
     "test:mocha": "npx -y mocha",
-    "travel-processor": "cds-tsx watch --open sap.fe.cap.travel/index.html?sap-ui-xx-viewCache=false",
-    "travel-analytics": "cds-tsx watch --open sap.fe.cap.travel_analytics/index.html?sap-ui-xx-viewCache=false"
+    "travel-processor": "cds watch --open sap.fe.cap.travel/index.html?sap-ui-xx-viewCache=false",
+    "travel-analytics": "cds watch --open sap.fe.cap.travel_analytics/index.html?sap-ui-xx-viewCache=false"
   },
   "dependencies": {
     "@cap-js/hana": "^1",
