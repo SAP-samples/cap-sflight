@@ -11,6 +11,7 @@
   "scripts": {
     "lint": "npx eslint .",
     "start": "cds-serve",
+    "before:cds-watch": "cds-typer \"*\"",
     "build:ui": "npm run build --prefix app/travel_analytics && npm run build --prefix app/travel_processor",
     "test": "jest",
     "test:mocha": "npx -y mocha",
