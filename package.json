@@ -50,7 +50,7 @@
       },
       "[production]": {
         "db": {
-          "kind": "hana-cloud"
+          "kind": "hana"
         },
         "auth": {
           "kind": "xsuaa"
