@@ -9,6 +9,10 @@ using {
 
 namespace sap.fe.cap.travel;
 
+@EntityRelationship.entityType : 'sap.samples:Travel'
+@ODM.entityName: 'Travel'
+@ODM.root
+@ObjectModel.compositionRoot
 entity Travel : managed {
   key TravelUUID : UUID;
   TravelID       : Integer default 0 @readonly;
@@ -30,6 +34,7 @@ annotate Travel with @Capabilities.FilterRestrictions.FilterExpressionRestrictio
 ];
 
 
+@EntityRelationship.entityType : 'sap.samples:Booking'
 entity Booking : managed {
   key BookingUUID   : UUID;
   BookingID         : Integer @Core.Computed;
@@ -48,6 +53,8 @@ entity Booking : managed {
                                             and to_Flight.ConnectionID = ConnectionID;
 };
 
+
+@EntityRelationship.entityType : 'sap.samples:BookingSupplement'
 entity BookingSupplement : managed {
   key BookSupplUUID   : UUID;
   BookingSupplementID : Integer @Core.Computed;

@@ -21,7 +21,8 @@
     "@cap-js/hana": "^1",
     "@sap/cds": ">=8.4.0",
     "@sap/xssec": "^4",
-    "express": "^4"
+    "express": "^4",
+    "@cap-js/ord": "^1.2.0"
   },
   "devDependencies": {
     "@cap-js/cds-test": "^0",
@@ -41,6 +42,9 @@
     "typescript-eslint": "^8.12.2"
   },
   "cds": {
+    "ord": {
+      "namespace": "sap.sample"
+    },
     "cdsc": {
       "newParser": true
     },
