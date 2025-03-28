@@ -41,10 +41,8 @@ annotate TravelService.Travel with @UI : {
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.acceptTravel',   Label  : '{i18n>AcceptTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.rejectTravel',   Label  : '{i18n>RejectTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.deductDiscount', Label  : '{i18n>DeductDiscount}' },
-    {
-      Value : TravelID,
-      @UI.Importance : #High
-    },
+    { Value : TravelID, @UI.Importance : #High },
+    { Value : Description, @UI.Importance : #High },
     {
       Value : to_Agency_AgencyID,
       @HTML5.CssDefaults: {width:'16em'}
@@ -88,17 +86,15 @@ annotate TravelService.Travel with @UI : {
         ID     : 'DateData',
         Target : '@UI.FieldGroup#DateData',
         Label  : '{i18n>Dates}'
-      },
-      {
-        $Type : 'UI.ReferenceFacet',
-        Label : '{i18n>Sustainability}',
-        ID    : 'i18nSustainability',
-        Target: '@UI.FieldGroup#i18nSustainability',
       }
-    ]
+      ]
+  }, {  // booking list
+    $Type  : 'UI.ReferenceFacet',
+    ID     : 'BookingList',
+    Target : 'to_Booking/@UI.PresentationVariant',
+    Label  : '{i18n>Bookings}'
   }],
   FieldGroup#TravelData : { Data : [
-    { Value : TravelID               },
     { Value : to_Agency_AgencyID     },
     { Value : to_Customer_CustomerID },
     { Value : Description            },
@@ -118,24 +114,7 @@ annotate TravelService.Travel with @UI : {
     { $Type : 'UI.DataField', Value : BookingFee },
     { $Type : 'UI.DataField', Value : TotalPrice },
     { $Type : 'UI.DataField', Value : CurrencyCode_code }
-  ]},
-  FieldGroup #i18nSustainability: {
-    $Type: 'UI.FieldGroupType',
-    Data : [
-      {
-        $Type: 'UI.DataField',
-        Value: GoGreen,
-      },
-      {
-        $Type: 'UI.DataField',
-        Value: GreenFee,
-      },
-      {
-        $Type: 'UI.DataField',
-        Value: TreesPlanted,
-      },
-    ],
-  }
+  ]}
 };
 
 annotate TravelService.Booking with @UI : {

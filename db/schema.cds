@@ -73,14 +73,12 @@ entity BookingStatus : CodeList {
   key code : BookingStatusCode
 };
 
-type TravelStatusCode : String(1) enum {
-  Open     = 'O';
-  Accepted = 'A';
-  Canceled = 'X';
-};
-
 entity TravelStatus : CodeList {
-  key code : TravelStatusCode;
+  key code : String(1) enum {
+    Open     = 'O';
+    Accepted = 'A';
+    Canceled = 'X';
+  };
   // can't use UInt8 (which would automatically be mapped to Edm.Byte) because it's not supported on H2
   fieldControl: Int16 @odata.Type:'Edm.Byte' enum {
     Inapplicable = 0;
@@ -95,5 +93,5 @@ entity TravelStatus : CodeList {
 extend entity Travel with {
   GoGreen        : Boolean default false;
   GreenFee       : Decimal(16, 3) @Core.Computed @readonly;
-  TreesPlanted   : Integer @Core.Computed @readonly;  
+  TreesPlanted   : Integer @Core.Computed @readonly;
 };
