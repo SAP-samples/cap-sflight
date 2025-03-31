@@ -9,7 +9,7 @@ The purpose of this sample app is to:
 * Demonstrate and compare SAP Fiori features on various stacks (CAP Node.js, CAP Java SDK, ABAP)
 * Run UI test suites on various stacks
 
-![Process Travels Page](.github/assets/img.png)
+![Process Travels Page](./.github/assets/img.png)
 
 The app still contains some workarounds that are going to be addressed over time.
 In some cases, the model and the handlers can be improved or simplified once further planned CAP features become available.
@@ -37,7 +37,6 @@ npm i -g @sap/cds-dk
 In the root folder of your project, run
 ```
 npm ci
-npx cds-typer "*"
 cds watch
 ```
 
@@ -141,10 +140,6 @@ You need to have access to a HANA Cloud instance and SAP BTP.
 The running application is now connected to its own HDI container/schema. Please keep in mind that the credentials for
 that HDI container are stored locally on your filesystem (default-env.json).
 
-## Deployment to SAP Business Technology Platform - Kyma Runtime
-
-The deployment to Kyma Runtime is explained in file [README-Kyma.md](./README-Kyma.md).
-
 ## Creating an SAP Fiori App from Scratch
 
 If you want to implement an SAP Fiori app, follow these tutorials:
@@ -158,4 +153,4 @@ In case you've a question, find a bug, or otherwise need support, use the [SAP C
 
 ## License
 
-Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSES/Apache-2.0.txt) file.
+Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSE) file.

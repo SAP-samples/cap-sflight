@@ -162,36 +162,7 @@
                                     }
                                 }
                             },
-                            "controlConfiguration": {
-                                "to_Booking/@com.sap.vocabularies.UI.v1.LineItem": {
-                                    "tableSettings": {
-                                        "type": "ResponsiveTable",
-                                        "personalization": {
-                                            "column": true,
-                                            "sort": false
-                                        },
-                                        "creationMode": {
-                                            "name": "Inline",
-                                            "createAtEnd": true
-                                        }
-                                    }
-                                }
-                            },
-                            "editableHeaderContent": false,
-                            "content": {
-                                "body": {
-                                    "sections": {
-                                        "CustomSection": {
-                                            "template": "sap.fe.cap.travel.ext.fragment.CustomSection",
-                                            "position": {
-                                                "placement": "After",
-                                                "anchor": "Travel"
-                                            },
-                                            "title": "My Itinerary"
-                                        }
-                                    }
-                                }
-                            }
+                            "editableHeaderContent": false
                         }
                     }
                 },
@@ -212,15 +183,6 @@
         "contentDensities": {
             "compact": true,
             "cozy": true
-        },
-        "extends": {
-            "extensions": {
-                "sap.ui.controllerExtensions": {
-                    "sap.fe.templates.ObjectPage.ObjectPageController": {
-                        "controllerName": "sap.fe.cap.travel.ext.controller.ObjectPageExtension"
-                    }
-                }
-            }
         }
     },
     "sap.platform.abap": {

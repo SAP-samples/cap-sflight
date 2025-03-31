@@ -1,156 +1,22 @@
 {
   "name": "@capire/sflight",
   "version": "1.0.0",
-  "private": true,
   "description": "CAP flight demo scenario",
-  "license": "SAP SAMPLE CODE LICENSE",
   "repository": "https://github.com/SAP-samples/cap-sflight",
-  "engines": {
-    "node": ">=20"
-  },
   "scripts": {
     "lint": "npx eslint .",
     "start": "cds-serve",
-    "build:ui": "npm run build --prefix app/travel_analytics && npm run build --prefix app/travel_processor",
-    "test": "jest",
-    "test:mocha": "npx -y mocha",
-    "travel-processor": "cds watch --open sap.fe.cap.travel/index.html?sap-ui-xx-viewCache=false",
-    "travel-analytics": "cds watch --open sap.fe.cap.travel_analytics/index.html?sap-ui-xx-viewCache=false"
+    "jest": "npx jest",
+    "test": "chest test"
   },
   "dependencies": {
-    "@cap-js/hana": "^1",
     "@sap/cds": ">=8.4.0",
-    "@sap/xssec": "^4",
     "express": "^4"
   },
   "devDependencies": {
     "@cap-js/cds-test": "^0",
-    "@cap-js/cds-typer": "^0",
-    "@cap-js/cds-types": "^0",
-    "@cap-js/sqlite": "^1.0.1",
-    "@sap/ux-specification": "UI5-1.128",
-    "@types/jest": "^29.5.13",
-    "cds-plugin-ui5": "^0.12.0",
-    "cross-spawn": "^7.0.3",
-    "eslint": "^9",
-    "http-proxy": "^1.18.1",
-    "jest": "^29.0.2",
-    "qunit": "^2.9.3",
-    "ts-jest": "^29.2.5",
-    "tsx": "^4.19.2",
-    "typescript-eslint": "^8.12.2"
+    "@cap-js/sqlite": "^1.0.1"
   },
-  "cds": {
-    "cdsc": {
-      "newParser": true
-    },
-    "requires": {
-      "db": {
-        "kind": "sql"
-      },
-      "[production]": {
-        "db": {
-          "kind": "hana"
-        },
-        "auth": {
-          "kind": "xsuaa"
-        }
-      },
-      "[development]": {
-        "auth": {
-          "kind": "mocked-auth",
-          "users": {
-            "rose": {
-              "roles": []
-            },
-            "martha": {
-              "roles": [
-                "reviewer"
-              ]
-            },
-            "amy": {
-              "roles": [
-                "processor"
-              ]
-            },
-            "admin": {
-              "password": "admin",
-              "roles": [
-                "admin"
-              ]
-            }
-          }
-        }
-      }
-    },
-    "log": {
-      "service": true
-    },
-    "fiori": {
-      "wrap_multiple_errors": false
-    },
-    "build": {
-      "[node!]": {
-        "target": "gen",
-        "tasks": [
-          {
-            "for": "nodejs"
-          },
-          {
-            "for": "typescript"
-          },
-          {
-            "for": "hana"
-          }
-        ]
-      },
-      "[java]": {
-        "target": ".",
-        "tasks": [
-          {
-            "for": "java-cf"
-          }
-        ]
-      },
-      "[hana]": {
-        "target": "gen",
-        "tasks": [
-          {
-            "for": "hana"
-          }
-        ]
-      }
-    },
-    "sql": {
-      "native_hana_associations": false
-    },
-    "typer": {
-      "output_directory": "@cds-models",
-      "use_entities_proxy": true
-    }
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "globalSetup": "./test/setup.ts",
-    "testEnvironment": "node",
-    "testTimeout": 20000
-  },
-  "mocha": {
-    "node-option": [
-      "import=tsx"
-    ],
-    "require": "test/setup.ts",
-    "spec": "test/**/*.ts",
-    "timeout": 20000
-  },
-  "sapux": [
-    "app/travel_processor",
-    "app/travel_analytics"
-  ],
-  "workspaces": [
-    "app/*"
-  ],
-  "imports": {
-    "#cds-models/*": "./@cds-models/*/index.js"
-  }
+  "license": "SAP SAMPLE CODE LICENSE",
+  "private": true
 }

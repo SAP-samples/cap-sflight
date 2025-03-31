@@ -1,5 +1,4 @@
-import cds from '@sap/cds'
-import { Travel } from '#cds-models/TravelService'
+const cds = require('@sap/cds')
 const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..')
 const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
 const SAVE = (url) => POST (url+'/TravelService.draftActivate')
@@ -12,17 +11,18 @@ describe ("Basic Querying", () => {
     const TravelRef = { ref:[{
       id:'TravelService.Travel',
       where:[ {ref:['TravelUUID']},'=',{val:'52657221A8E4645C17002DF03754AB66'} ]
-    }]} as cds.ref
+    }]}
     const travel = await SELECT.one .from (TravelRef)
     expect (travel) .to.exist
     expect (travel.TravelID) .to.eql (1)
   })
 
   it ("should read with row references in subselects", async()=>{
+    const { Travel } = cds.entities ('TravelService')
     const BookingRef = {ref:[ {
       id: 'TravelService.Booking',
       where: [ {ref:['BookingUUID']},'=',{val:'7A757221A8E4645C17002DF03754AB66'} ]
-    }]} as cds.ref
+    }]}
     const travel = await SELECT.one.from (Travel) .where ({
       TravelUUID: SELECT.one `to_Travel_TravelUUID` .from (BookingRef)
     })

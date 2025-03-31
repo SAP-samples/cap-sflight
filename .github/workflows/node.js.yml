@@ -26,23 +26,10 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm i -g @sap/cds-dk typescript tsx
+    - run: npm i -g @sap/cds-dk
     - run: npm ci
-    - run: npx cds-typer "*"
     - run: npm run lint
-    - run: npm run build --if-present
     - run: npm run test
-    - run: npm run test:mocha
-
-    - name: Run integration tests - Manage Travels
-      working-directory: ./app/travel_processor
-      run: |
-        npm run test:node -- --ci
-
-    - name: Run integration tests - Analyze Bookings
-      working-directory: ./app/travel_analytics
-      run: |
-        npm run test:node -- --ci
 
 #
 ### temporarily switch off deployment as it consistently fails
