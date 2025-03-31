@@ -7,7 +7,7 @@
     "lint": "npx eslint .",
     "start": "cds-serve",
     "jest": "npx jest",
-    "test": "chest"
+    "test": "chest test"
   },
   "dependencies": {
     "@sap/cds": ">=8.4.0",
