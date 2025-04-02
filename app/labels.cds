@@ -16,8 +16,8 @@ annotate schema.Travel with @title: '{i18n>Travel}' {
   GreenFee     @title: '{i18n>GreenFee}'      @Measures.ISOCurrency: CurrencyCode_code;
   TreesPlanted @title: '{i18n>TreesPlanted}'; 
   TravelStatus @title: '{i18n>TravelStatus}'  @Common.Text: TravelStatus.name     @Common.TextArrangement: #TextOnly;
-  to_Customer  @title: '{i18n>CustomerID}'    @Common.Text: to_Customer.LastName;
-  to_Agency    @title: '{i18n>AgencyID}'      @Common.Text: to_Agency.Name;
+  to_Customer_CustomerID  @title: '{i18n>CustomerID}'    @Common.Text: to_Customer.LastName;
+  to_Agency_AgencyID      @title: '{i18n>AgencyID}'      @Common.Text: to_Agency.Name;
 }
 
 annotate schema.TravelStatus with {
@@ -33,9 +33,9 @@ annotate schema.Booking with @title: '{i18n>Booking}' {
   CurrencyCode  @title: '{i18n>CurrencyCode}';
   FlightDate    @title: '{i18n>FlightDate}';
   FlightPrice   @title: '{i18n>FlightPrice}'    @Measures.ISOCurrency: CurrencyCode_code;
-  BookingStatus @title: '{i18n>BookingStatus}'  @Common.Text: BookingStatus.name    @Common.TextArrangement: #TextOnly;
-  to_Carrier    @title: '{i18n>AirlineID}'      @Common.Text: to_Carrier.Name;
-  to_Customer   @title: '{i18n>CustomerID}'     @Common.Text: to_Customer.LastName;
+  BookingStatus_code       @title: '{i18n>BookingStatus}'  @Common.Text: BookingStatus.name    @Common.TextArrangement: #TextOnly;
+  to_Carrier_AirlineID     @title: '{i18n>AirlineID}'      @Common.Text: to_Carrier.Name;
+  to_Customer_CustomerID   @title: '{i18n>CustomerID}'     @Common.Text: to_Customer.LastName;
 }
 
 annotate schema.BookingStatus with {
