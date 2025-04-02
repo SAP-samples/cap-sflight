@@ -22,11 +22,17 @@ entity Travel : managed {
   TravelStatus_code : TravelStatusCode default 'O' @readonly;
   TravelStatus   : Association to TravelStatus on TravelStatus.code = TravelStatus_code;
 
+  TravelStatus_ctrl: Int16 @odata.Type:'Edm.Byte' /*enum {Inapplicable = 0; ReadOnly = 1; Optional = 3; Mandatory = 7;}*/
+    = (TravelStatus_code = 'A' ? 1 : 7 );
+
   to_Agency_AgencyID : String(6)  @mandatory;
   to_Agency      : Association to TravelAgency on to_Agency.AgencyID = to_Agency_AgencyID;
   to_Customer_CustomerID : String(6) @mandatory;
   to_Customer    : Association to Passenger on to_Customer.CustomerID = to_Customer_CustomerID;
   to_Booking     : Composition of many Booking on to_Booking.to_Travel = $self;
+
+  field_A: String @label: 'controlled';
+  field_Ctr : String @label: 'controlling';
 };
 
 annotate Travel with @Capabilities.FilterRestrictions.FilterExpressionRestrictions: [

@@ -76,6 +76,12 @@ annotate TravelService.Travel with @UI : {
         Target : '@UI.FieldGroup#TravelData',
         Label  : '{i18n>GeneralInformation}'
       },
+      {  // experimental
+        $Type  : 'UI.ReferenceFacet',
+        ID     : 'ExperimentalData',
+        Target : '@UI.FieldGroup#ExperimentalData',
+        Label  : 'Experimental'
+      },
       {  // price information
         $Type  : 'UI.ReferenceFacet',
         ID     : 'PriceData',
@@ -107,6 +113,10 @@ annotate TravelService.Travel with @UI : {
       Criticality : ($self.TravelStatus_code = 'O' ? 2 : ($self.TravelStatus_code = 'A' ? 3 : 0)),
       Label : '{i18n>Status}' // label only necessary if differs from title of element
     }
+  ]},
+  FieldGroup #ExperimentalData : {Data : [
+    { $Type : 'UI.DataField', Value : field_A },
+    { $Type : 'UI.DataField', Value : field_Ctr }
   ]},
   FieldGroup #DateData : {Data : [
     { $Type : 'UI.DataField', Value : BeginDate },
