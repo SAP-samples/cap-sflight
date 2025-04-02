@@ -18,9 +18,14 @@ entity Travel : managed {
   TotalPrice     : Decimal(16,3) @readonly;
   CurrencyCode   : Currency default 'EUR';
   Description    : String(1024);
-  TravelStatus   : Association to TravelStatus default 'O' @readonly;
-  to_Agency      : Association to TravelAgency @mandatory;
-  to_Customer    : Association to Passenger @mandatory;
+
+  TravelStatus_code : TravelStatusCode default 'O' @readonly;
+  TravelStatus   : Association to TravelStatus on TravelStatus.code = TravelStatus_code;
+
+  to_Agency_AgencyID : String(6)  @mandatory;
+  to_Agency      : Association to TravelAgency on to_Agency.AgencyID = to_Agency_AgencyID;
+  to_Customer_CustomerID : String(6) @mandatory;
+  to_Customer    : Association to Passenger on to_Customer.CustomerID = to_Customer_CustomerID;
   to_Booking     : Composition of many Booking on to_Booking.to_Travel = $self;
 };
 
@@ -38,12 +43,19 @@ entity Booking : managed {
   FlightDate        : Date @mandatory;
   FlightPrice       : Decimal(16,3) @mandatory;
   CurrencyCode      : Currency;
-  BookingStatus     : Association to BookingStatus default 'N' @mandatory;
+
+  BookingStatus_code : BookingStatusCode  default 'N' @mandatory;
+  BookingStatus     : Association to BookingStatus on BookingStatus.code = BookingStatus_code;
   to_BookSupplement : Composition of many BookingSupplement on to_BookSupplement.to_Booking = $self;
-  to_Carrier        : Association to Airline @mandatory;
-  to_Customer       : Association to Passenger @mandatory;
-  to_Travel         : Association to Travel;
-  to_Flight         : Association to Flight on  to_Flight.AirlineID = to_Carrier.AirlineID
+
+  to_Carrier_AirlineID : String(3) @mandatory;
+  to_Carrier        : Association to Airline on to_Carrier.AirlineID = to_Carrier_AirlineID;
+  to_Customer_CustomerID : String(6) @mandatory;
+  to_Customer       : Association to Passenger on to_Customer.CustomerID = to_Customer_CustomerID;
+  to_Travel_TravelUUID : UUID;
+  to_Travel         : Association to Travel on to_Travel.TravelUUID = to_Travel_TravelUUID;
+
+  to_Flight         : Association to Flight on  to_Flight.AirlineID = to_Carrier_AirlineID
                                             and to_Flight.FlightDate = FlightDate
                                             and to_Flight.ConnectionID = ConnectionID;
 };
@@ -53,9 +65,13 @@ entity BookingSupplement : managed {
   BookingSupplementID : Integer @Core.Computed;
   Price               : Decimal(16,3) @mandatory;
   CurrencyCode        : Currency;
-  to_Booking          : Association to Booking;
-  to_Travel           : Association to Travel;
-  to_Supplement       : Association to Supplement @mandatory;
+
+  to_Booking_BookingUUID   : UUID;
+  to_Booking          : Association to Booking on to_Booking.BookingUUID = to_Booking_BookingUUID;
+  to_Travel_TravelUUID : UUID;
+  to_Travel         : Association to Travel on to_Travel.TravelUUID = to_Travel_TravelUUID;
+  to_Supplement_SupplementID : String(10) @mandatory;
+  to_Supplement       : Association to Supplement on to_Supplement.SupplementID = to_Supplement_SupplementID;
 };
 
 
