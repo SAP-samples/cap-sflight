@@ -60,8 +60,7 @@ annotate TravelService.Travel with @UI : {
     { Value : TotalPrice, @HTML5.CssDefaults: {width:'12em'} },
     {
       Value : TravelStatus_code,
-      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'TravelStatus_code'}, 'O']}, 2,
-                                { $If: [{$Eq: [{ $Path: 'TravelStatus_code'}, 'A']}, 3, 0] }] } },
+      Criticality : ($self.TravelStatus_code = 'O' ? 2 : ($self.TravelStatus_code = 'A' ? 3 : 0)),
       @UI.Importance : #High,
       @HTML5.CssDefaults: {width:'10em'}
     }
@@ -105,8 +104,7 @@ annotate TravelService.Travel with @UI : {
     {
       $Type       : 'UI.DataField',
       Value       : TravelStatus_code,
-      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'TravelStatus_code'}, 'O']}, 2,
-                                { $If: [{$Eq: [{ $Path: 'TravelStatus_code'}, 'A']}, 3, 0] }] } },
+      Criticality : ($self.TravelStatus_code = 'O' ? 2 : ($self.TravelStatus_code = 'A' ? 3 : 0)),
       Label : '{i18n>Status}' // label only necessary if differs from title of element
     }
   ]},
@@ -167,8 +165,7 @@ annotate TravelService.Booking with @UI : {
     { Value : FlightDate             },
     { Value : FlightPrice            },
     { Value : BookingStatus_code,
-      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'N']}, 2,
-                                { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'B']}, 3, 0] }] } }
+      Criticality : ($self.BookingStatus_code = 'N' ? 2 : ($self.BookingStatus_code = 'B' ? 3 : 0)),
     }
   ],
   Facets : [{
@@ -198,9 +195,8 @@ annotate TravelService.Booking with @UI : {
     { Value : to_Customer_CustomerID },
     { Value : BookingDate,           },
     { Value : BookingStatus_code,
-      Criticality : { $edmJson: { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'N']}, 2,
-                                { $If: [{$Eq: [{ $Path: 'BookingStatus_code'}, 'B']}, 3, 0] }] } }
-     }
+      Criticality : ($self.BookingStatus_code = 'N' ? 2 : ($self.BookingStatus_code = 'B' ? 3 : 0)),
+    }
   ]},
   FieldGroup #Flight : { Data : [
     { Value : to_Carrier_AirlineID   },

@@ -22,15 +22,15 @@ annotate TravelService.Travel with @(Common : {
 
 } actions {
   rejectTravel @(
-    Core.OperationAvailable : { $edmJson: { $Ne: [{ $Path: 'in/TravelStatus_code'}, 'X']}},
+    Core.OperationAvailable : ($self.TravelStatus_code != 'X'),
     Common.SideEffects.TargetProperties : ['in/TravelStatus_code'],
   );
   acceptTravel @(
-    Core.OperationAvailable : { $edmJson: { $Ne: [{ $Path: 'in/TravelStatus_code'}, 'A']}},
+    Core.OperationAvailable : ($self.TravelStatus_code != 'A'),
     Common.SideEffects.TargetProperties : ['in/TravelStatus_code'],
   );
   deductDiscount @(
-    Core.OperationAvailable : { $edmJson: { $Eq: [{ $Path: 'in/TravelStatus_code'}, 'O']}}
+    Core.OperationAvailable : ($self.TravelStatus_code = 'O'),
   );
 }
 
