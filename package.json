@@ -14,7 +14,7 @@
     "express": "^4"
   },
   "devDependencies": {
-    "@cap-js/cds-test": "^0",
+    "@cap-js/cds-test": "*",
     "@cap-js/sqlite": ">=1"
   },
   "license": "SAP SAMPLE CODE LICENSE",
