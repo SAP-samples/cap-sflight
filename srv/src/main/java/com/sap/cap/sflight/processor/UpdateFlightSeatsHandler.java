@@ -99,12 +99,17 @@ public class UpdateFlightSeatsHandler implements EventHandler {
         Travel oldState = getOldStateTravel(newState.travelUUID());
         diffProcessor.add(
                 (path, cdsElement, cdsType) -> {
-
-                    if (path.target().type().getQualifiedName().equals(Travel_.CDS_NAME)
-                            && cdsElement.getName().equals(TO_BOOKING)) {
-                        return true;
-                    } else return path.target().type().getQualifiedName().equals(Flight_.CDS_NAME)
-                            && cdsElement.getName().equals(CONNECTION_ID);
+                    if(cdsElement != null) {
+                        if (path.target().type().getQualifiedName().equals(Travel_.CDS_NAME)
+                                && cdsElement.getName().equals(TO_BOOKING)) {
+                            return true;
+                        } else {
+                            return path.target().type().getQualifiedName().equals(Flight_.CDS_NAME)
+                                && cdsElement.getName().equals(CONNECTION_ID);
+                        }
+                    } else {
+                        return false;
+                    }
                 },
                 new BookingDiffVisitor(modifications, newState, oldState));
 
