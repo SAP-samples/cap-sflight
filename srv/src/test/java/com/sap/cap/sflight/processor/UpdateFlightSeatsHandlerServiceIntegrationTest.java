@@ -1,5 +1,26 @@
 package com.sap.cap.sflight.processor;
 
+import static cds.gen.travelservice.TravelService_.FLIGHT;
+import static cds.gen.travelservice.TravelService_.TRAVEL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.EnabledIf;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import com.sap.cds.ql.Select;
+import com.sap.cds.ql.Update;
+import com.sap.cds.ql.cqn.CqnSelect;
+import com.sap.cds.ql.cqn.CqnUpdate;
+import com.sap.cds.services.persistence.PersistenceService;
+
 import cds.gen.travelservice.Booking;
 import cds.gen.travelservice.Booking_;
 import cds.gen.travelservice.Flight;
@@ -7,26 +28,6 @@ import cds.gen.travelservice.Flight_;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService;
 import cds.gen.travelservice.Travel_;
-import com.sap.cds.ql.Select;
-import com.sap.cds.ql.Update;
-import com.sap.cds.ql.cqn.CqnSelect;
-import com.sap.cds.ql.cqn.CqnUpdate;
-import com.sap.cds.services.persistence.PersistenceService;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit.jupiter.EnabledIf;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static cds.gen.travelservice.TravelService_.FLIGHT;
-import static cds.gen.travelservice.TravelService_.TRAVEL;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
