@@ -99,7 +99,7 @@ public class UpdateFlightSeatsHandler implements EventHandler {
         Travel oldState = getOldStateTravel(newState.travelUUID());
         diffProcessor.add(
                 (path, cdsElement, cdsType) -> {
-                    if(cdsElement != null) {
+                    if (cdsElement != null) {
                         if (path.target().type().getQualifiedName().equals(Travel_.CDS_NAME)
                                 && cdsElement.getName().equals(TO_BOOKING)) {
                             return true;
