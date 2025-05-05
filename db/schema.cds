@@ -18,6 +18,7 @@ entity Travel : managed {
   TotalPrice     : Decimal(16,3) @readonly;
   CurrencyCode   : Currency default 'EUR';
   Description    : String(1024);
+  @flow.status
   TravelStatus   : Association to TravelStatus default 'O' @readonly;
   to_Agency      : Association to TravelAgency @mandatory;
   to_Customer    : Association to Passenger @mandatory;

@@ -10,7 +10,15 @@ service TravelService @(path:'/processor') {
   ])
   entity Travel as projection on my.Travel actions {
     action createTravelByTemplate() returns Travel;
+    @(flow: {
+      from:[ Open ],
+      to: Canceled
+    })
     action rejectTravel();
+    @(flow: {
+      from:[ Open ],
+      to: Accepted
+    })
     action acceptTravel();
     action deductDiscount( percent: Percentage not null ) returns Travel;
   };
