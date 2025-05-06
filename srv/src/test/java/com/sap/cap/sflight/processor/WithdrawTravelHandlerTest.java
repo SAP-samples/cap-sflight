@@ -1,5 +1,6 @@
 package com.sap.cap.sflight.processor;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import cds.gen.travelservice.Travel;
@@ -8,7 +9,11 @@ import cds.gen.travelservice.Travel_;
 import com.sap.cds.ql.Select;
 import com.sap.cds.ql.cqn.CqnSelect;
 import com.sap.cds.services.ServiceException;
+import com.sap.cds.services.messages.Message;
+import com.sap.cds.services.messages.Message.Severity;
 import com.sap.cds.services.persistence.PersistenceService;
+import com.sap.cds.services.runtime.CdsRuntime;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +31,8 @@ class WithdrawTravelHandlerTest {
     private PersistenceService dbService;
     @Autowired
     private TravelService travelService;
+    @Autowired
+    private CdsRuntime runtime;
 
     @Test
     @WithMockUser("amy")
@@ -37,7 +44,9 @@ class WithdrawTravelHandlerTest {
         assertEquals("X", travel.travelStatusCode());
 
         var exception = assertThrows(ServiceException.class, () -> travelService.withdrawTravel(travel.ref()));
-        assertEquals("Invalid entry state for transition. Action requires 'TravelStatus' to be one of '[O, A]', but was 'X'.", exception.getLocalizedMessage());
+        assertEquals(
+            "Invalid entry state for transition. Action requires 'TravelStatus' to be one of '[O, A]', but was 'X'.",
+            exception.getLocalizedMessage());
     }
 
     @Test
@@ -64,7 +73,19 @@ class WithdrawTravelHandlerTest {
         Travel travel = travelService.run(querySelect).single(Travel.class);
         assertEquals("A", travel.travelStatusCode());
 
-        var exception = assertThrows(ServiceException.class, () -> travelService.withdrawTravel(travel.ref()));
-        assertEquals("Travel can only be withdrawn up to 24 hours before travel begins.", exception.getLocalizedMessage());
+        verifyError(() -> travelService.withdrawTravel(travel.ref()),
+            "Travel can only be withdrawn up to 24 hours before travel begins.");
+    }
+
+    void verifyError(Runnable action, String errorMessage) {
+        runtime.requestContext().run(r -> {
+            action.run();
+
+            Optional<Message> message = r.getMessages().stream().findFirst();
+            assertThat(message).hasValueSatisfying(m -> {
+                assertThat(m.getSeverity()).isEqualTo(Severity.ERROR);
+                assertThat(m.getMessage()).isEqualTo(errorMessage);
+            });
+        });
     }
 }

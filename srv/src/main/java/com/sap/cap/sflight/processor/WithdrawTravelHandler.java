@@ -34,12 +34,11 @@ public class WithdrawTravelHandler implements EventHandler {
     public void onWithdrawTravel(final TravelWithdrawTravelContext context) {
         Travel travel = draftService.run(context.cqn()).single(Travel.class);
         if (travel != null && travel.beginDate().isBefore(LocalDate.now().minusDays(1))) {
-            throw new WithdrawingNotPossibleException("Travel can only be withdrawn up to 24 hours before travel begins.");
+            context.getMessages().error("Travel can only be withdrawn up to 24 hours before travel begins.");
+            return;
         }
 
-        context.getCdsRuntime().requestContext().privilegedUser().run(ctx -> {
-            updateStatusForTravelId(travel.travelUUID(), travel.isActiveEntity());
-        });
+        updateStatusForTravelId(travel.travelUUID(), travel.isActiveEntity());
         context.setCompleted();
     }
 
