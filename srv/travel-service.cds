@@ -20,6 +20,10 @@ service TravelService @(path:'/processor') {
       to: Accepted
     })
     action acceptTravel();
+    @(flow: {
+      from:[ Open, Accepted ],
+    })
+    action withdrawTravel();
     action deductDiscount( percent: Percentage not null ) returns Travel;
   };
 
