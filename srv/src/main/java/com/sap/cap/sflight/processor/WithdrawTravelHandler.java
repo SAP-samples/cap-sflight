@@ -2,14 +2,22 @@ package com.sap.cap.sflight.processor;
 
 import static cds.gen.travelservice.TravelService_.TRAVEL;
 
+import cds.gen.analyticsservice.AnalyticsService;
+import cds.gen.analyticsservice.AnalyticsService.Draft;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
 import cds.gen.travelservice.TravelWithdrawTravelContext;
 import cds.gen.travelservice.Travel_;
+import com.sap.cds.ql.Select;
 import com.sap.cds.ql.Update;
+import com.sap.cds.ql.cqn.CqnStructuredTypeRef;
 import com.sap.cds.ql.cqn.CqnUpdate;
+import com.sap.cds.services.ErrorStatuses;
+import com.sap.cds.services.ServiceException;
+import com.sap.cds.services.cds.ApplicationService;
 import com.sap.cds.services.draft.DraftService;
 import com.sap.cds.services.handler.EventHandler;
+import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
@@ -23,34 +31,46 @@ public class WithdrawTravelHandler implements EventHandler {
     private static final String TRAVEL_STATUS_WITHDRAWN = "W";
 
     private final PersistenceService persistenceService;
-    private final DraftService draftService;
 
-    public WithdrawTravelHandler(DraftService draftService, PersistenceService persistenceService) {
+    public WithdrawTravelHandler(PersistenceService persistenceService) {
         this.persistenceService = persistenceService;
-        this.draftService = draftService;
+    }
+
+    @Before(entity = Travel_.CDS_NAME)
+    public void check24HoursBeforeTravel(final TravelWithdrawTravelContext context) {
+        // TODO
+//        if (travel.beginDate().isBefore(LocalDate.now().minusDays(1))) {
+//            context.getMessages().error("Travel can only be withdrawn up to 24 hours before travel begins.");
+//            return;
+//        }
     }
 
     @On(entity = Travel_.CDS_NAME)
-    public void onWithdrawTravel(final TravelWithdrawTravelContext context) {
-        Travel travel = draftService.run(context.cqn()).single(Travel.class);
-        if (travel != null && travel.beginDate().isBefore(LocalDate.now().minusDays(1))) {
+    public void onWithdrawTravel(final TravelWithdrawTravelContext context, CqnStructuredTypeRef travelRef) {
+        // TODO: ask whether context.cqn() or Select.from(ref) is preferred
+        // TODO specify columns
+        Travel travel = ((ApplicationService) context.getService()).run(Select.from(travelRef).columns(Travel_.BEGIN_DATE)).first(Travel.class)
+            .orElseThrow( () -> new ServiceException(ErrorStatuses.BAD_REQUEST, "TRAVEL_NOT_FOUND"));
+
+        // todo: moved
+        if (travel.beginDate().isBefore(LocalDate.now().minusDays(1))) {
             context.getMessages().error("Travel can only be withdrawn up to 24 hours before travel begins.");
             return;
         }
 
-        updateStatusForTravelId(travel.travelUUID(), travel.isActiveEntity());
+        // TODO: ask why travel.ref().asRef() fails a test but this doesn't -> noone knows
+        updateStatusForTravelId(context, travelRef, travel.isActiveEntity());
         context.setCompleted();
     }
 
-    private void updateStatusForTravelId(String travelUUID, boolean isActiveEntity) {
+    private void updateStatusForTravelId(TravelWithdrawTravelContext context, CqnStructuredTypeRef travelRef, boolean isActiveEntity) {
         if (isActiveEntity) {
-            persistenceService.run(Update.entity(TRAVEL).where(t -> t.TravelUUID().eq(travelUUID))
+            persistenceService.run(Update.entity(travelRef)
                 .data(Travel.TRAVEL_STATUS_CODE, TRAVEL_STATUS_WITHDRAWN));
         } else {
-            CqnUpdate travelUpdateDraft = Update.entity(TRAVEL)
-                .where(t -> t.TravelUUID().eq(travelUUID).and(t.IsActiveEntity().eq(false)))
+            CqnUpdate travelUpdateDraft = Update.entity(travelRef)
                 .data(Travel.TRAVEL_STATUS_CODE, TRAVEL_STATUS_WITHDRAWN);
-            draftService.patchDraft(travelUpdateDraft).first(Travel.class);
+            ((DraftService) context.getService()).patchDraft(travelUpdateDraft).first(Travel.class);
         }
     }
 }

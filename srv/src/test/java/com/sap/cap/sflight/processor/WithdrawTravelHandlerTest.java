@@ -6,9 +6,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService;
 import cds.gen.travelservice.Travel_;
+import com.sap.cds.Result;
+import com.sap.cds.ql.Insert;
 import com.sap.cds.ql.Select;
+import com.sap.cds.ql.StructuredType;
 import com.sap.cds.ql.cqn.CqnSelect;
 import com.sap.cds.services.ServiceException;
+import com.sap.cds.services.draft.DraftService;
 import com.sap.cds.services.messages.Message;
 import com.sap.cds.services.messages.Message.Severity;
 import com.sap.cds.services.persistence.PersistenceService;
@@ -75,6 +79,25 @@ class WithdrawTravelHandlerTest {
 
         verifyError(() -> travelService.withdrawTravel(travel.ref()),
             "Travel can only be withdrawn up to 24 hours before travel begins.");
+    }
+
+    @Test
+    @WithMockUser("amy")
+    void testOnWithdrawTravel_draft_withdrawingStillPossible() {
+        CqnSelect querySelect = Select.from(Travel_.class)
+            .where(t -> t.TravelUUID().eq("76757221A8E4645C17002DF03754AB66"))
+            .columns(Travel_::TravelUUID, Travel_::TravelStatus_code);
+        var travel = travelService.run(querySelect).single(Travel.class);
+        assertEquals("A", travel.travelStatusCode());
+        DraftService draftService = (DraftService) travelService;
+        var draftTravelInsert = draftService.newDraft(Insert.into(Travel_.class).entry(travel)).single(Travel.class);
+//        CqnSelect selectDraft = Select.from(draftTravelInsert);
+//        Travel draftTravel = travelService.run(selectDraft).single(Travel.class);
+
+        travelService.withdrawTravel(draftTravelInsert.ref());
+
+        Travel travelAfter = travelService.run(querySelect).single(Travel.class);
+        assertEquals("W", travelAfter.travelStatusCode());
     }
 
     void verifyError(Runnable action, String errorMessage) {
