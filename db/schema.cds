@@ -68,7 +68,6 @@ type BookingStatusCode : String(1) enum {
   New      = 'N';
   Booked   = 'B';
   Canceled = 'X';
-  Withdrawn = 'W';
 };
 
 entity BookingStatus : CodeList {
@@ -79,6 +78,7 @@ type TravelStatusCode : String(1) enum {
   Open     = 'O';
   Accepted = 'A';
   Canceled = 'X';
+  Withdrawn = 'W';
 };
 
 entity TravelStatus : CodeList {

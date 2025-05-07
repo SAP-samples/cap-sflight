@@ -1,13 +1,15 @@
 package com.sap.cap.sflight.processor;
 
+import cds.gen.sap.fe.cap.travel.TravelStatus;
+import cds.gen.sap.fe.cap.travel.TravelStatusCode;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
 import cds.gen.travelservice.TravelWithdrawTravelContext;
 import cds.gen.travelservice.Travel_;
+import com.sap.cds.CdsData;
 import com.sap.cds.ql.Select;
 import com.sap.cds.ql.Update;
 import com.sap.cds.ql.cqn.CqnStructuredTypeRef;
-import com.sap.cds.ql.cqn.CqnUpdate;
 import com.sap.cds.services.ErrorStatuses;
 import com.sap.cds.services.ServiceException;
 import com.sap.cds.services.cds.ApplicationService;
@@ -24,8 +26,6 @@ import org.springframework.stereotype.Component;
 @Component
 @ServiceName(TravelService_.CDS_NAME)
 public class WithdrawTravelHandler implements EventHandler {
-
-    private static final String TRAVEL_STATUS_WITHDRAWN = "W";
 
     private final PersistenceService persistenceService;
 
@@ -46,18 +46,17 @@ public class WithdrawTravelHandler implements EventHandler {
 
     @On(entity = Travel_.CDS_NAME)
     public void onWithdrawTravel(final TravelWithdrawTravelContext context, CqnStructuredTypeRef travelRef) {
-        updateStatusForTravelId(context, travelRef);
-        context.setCompleted();
-    }
-
-    private void updateStatusForTravelId(TravelWithdrawTravelContext context, CqnStructuredTypeRef travelRef) {
         var isDraft = DraftUtils.isDraftTarget(travelRef,
             context.getModel().findEntity(travelRef.targetSegment().id()).get(), context.getModel());
-        var update = Update.entity(travelRef).data(Travel.TRAVEL_STATUS_CODE, TRAVEL_STATUS_WITHDRAWN);
+        CdsData data = CdsData.create();
+        data.putPath(Travel.TRAVEL_STATUS + "." + TravelStatus.CODE, TravelStatusCode.WITHDRAWN);
+        var update = Update.entity(travelRef).data(data);
         if (isDraft) {
             ((DraftService) context.getService()).patchDraft(update).first(Travel.class);
         } else {
             persistenceService.run(update);
         }
+        context.setCompleted();
     }
+
 }
