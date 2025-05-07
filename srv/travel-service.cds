@@ -4,7 +4,7 @@ service TravelService @(path:'/processor') {
 
   @(restrict: [
     { grant: 'READ', to: 'authenticated-user'},
-    { grant: ['rejectTravel','acceptTravel','deductDiscount'], to: 'reviewer'},
+    { grant: ['rejectTravel','acceptTravel', 'withdrawTravel', 'deductDiscount'], to: 'reviewer'},
     { grant: ['*'], to: 'processor'},
     { grant: ['*'], to: 'admin'}
   ])

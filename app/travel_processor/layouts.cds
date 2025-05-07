@@ -9,6 +9,7 @@ annotate TravelService.Travel with @UI : {
   Identification : [
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.acceptTravel',   Label  : '{i18n>AcceptTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.rejectTravel',   Label  : '{i18n>RejectTravel}'   },
+    { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.withdrawTravel',   Label  : '{i18n>WithdrawTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.deductDiscount', Label  : '{i18n>DeductDiscount}' }
   ],
   HeaderInfo : {
@@ -40,6 +41,7 @@ annotate TravelService.Travel with @UI : {
   LineItem : [
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.acceptTravel',   Label  : '{i18n>AcceptTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.rejectTravel',   Label  : '{i18n>RejectTravel}'   },
+    { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.withdrawTravel',   Label  : '{i18n>WithdrawTravel}'   },
     { $Type  : 'UI.DataFieldForAction', Action : 'TravelService.deductDiscount', Label  : '{i18n>DeductDiscount}' },
     {
       Value : TravelID,
