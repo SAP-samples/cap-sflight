@@ -27,36 +27,44 @@ import org.springframework.stereotype.Component;
 @ServiceName(TravelService_.CDS_NAME)
 public class WithdrawTravelHandler implements EventHandler {
 
-    private final PersistenceService persistenceService;
+  private final PersistenceService persistenceService;
 
-    public WithdrawTravelHandler(PersistenceService persistenceService) {
-        this.persistenceService = persistenceService;
-    }
+  public WithdrawTravelHandler(PersistenceService persistenceService) {
+    this.persistenceService = persistenceService;
+  }
 
-    @Before(entity = Travel_.CDS_NAME)
-    public void check24HoursBeforeTravel(final TravelWithdrawTravelContext context, CqnStructuredTypeRef travelRef) {
-        Travel travel = ((ApplicationService) context.getService()).run(
-                Select.from(travelRef).columns(Travel_.BEGIN_DATE)).first(Travel.class)
+  @Before(entity = Travel_.CDS_NAME)
+  public void check24HoursBeforeTravel(
+      final TravelWithdrawTravelContext context, CqnStructuredTypeRef travelRef) {
+    Travel travel =
+        ((ApplicationService) context.getService())
+            .run(Select.from(travelRef).columns(Travel_.BEGIN_DATE))
+            .first(Travel.class)
             .orElseThrow(() -> new ServiceException(ErrorStatuses.BAD_REQUEST, "TRAVEL_NOT_FOUND"));
 
-        if (travel.beginDate().isBefore(LocalDate.now().minusDays(1))) {
-            context.getMessages().error("Travel can only be withdrawn up to 24 hours before travel begins.");
-        }
+    if (travel.beginDate().isBefore(LocalDate.now().minusDays(1))) {
+      context
+          .getMessages()
+          .error("Travel can only be withdrawn up to 24 hours before travel begins.");
     }
+  }
 
-    @On(entity = Travel_.CDS_NAME)
-    public void onWithdrawTravel(final TravelWithdrawTravelContext context, CqnStructuredTypeRef travelRef) {
-        var isDraft = DraftUtils.isDraftTarget(travelRef,
-            context.getModel().findEntity(travelRef.targetSegment().id()).get(), context.getModel());
-        CdsData data = CdsData.create();
-        data.putPath(Travel.TRAVEL_STATUS + "." + TravelStatus.CODE, TravelStatusCode.WITHDRAWN);
-        var update = Update.entity(travelRef).data(data);
-        if (isDraft) {
-            ((DraftService) context.getService()).patchDraft(update).first(Travel.class);
-        } else {
-            persistenceService.run(update);
-        }
-        context.setCompleted();
+  @On(entity = Travel_.CDS_NAME)
+  public void onWithdrawTravel(
+      final TravelWithdrawTravelContext context, CqnStructuredTypeRef travelRef) {
+    var isDraft =
+        DraftUtils.isDraftTarget(
+            travelRef,
+            context.getModel().findEntity(travelRef.targetSegment().id()).get(),
+            context.getModel());
+    var travel = Travel.create();
+    travel.travelStatusCode(TravelStatusCode.WITHDRAWN);
+    var update = Update.entity(travelRef).data(travel);
+    if (isDraft) {
+      ((DraftService) context.getService()).patchDraft(update);
+    } else {
+      persistenceService.run(update);
     }
-
+    context.setCompleted();
+  }
 }
