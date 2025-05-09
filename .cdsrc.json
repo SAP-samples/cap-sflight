@@ -1,1 +1,10 @@
-{}
+{
+  "odata": {
+    "containment": true
+  },
+  "cdsc": {
+    "beta": {
+      "draftMessages": true
+    }
+  }
+}

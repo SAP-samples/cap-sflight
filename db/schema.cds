@@ -12,13 +12,31 @@ namespace sap.fe.cap.travel;
 entity Travel : managed {
   key TravelUUID : UUID;
   TravelID       : Integer default 0 @readonly;
+  @assert.constraint.beginDateMustBeInFuture : {
+      condition : (BeginDate > CURRENT_DATE),
+      message: 'error.travel.date.past',
+      parameters: [ (TravelID), (BeginDate) ]}
   BeginDate      : Date @mandatory;
+  @assert.constraint.beginBeforeEndDate : {
+    condition : (BeginDate <= EndDate),
+    message: 'error.travel.date.before',
+    parameters: [ (TravelID), (EndDate), (BeginDate) ]}
   EndDate        : Date @mandatory;
+
+  @mandatory: (TravelStatus.code = 'A') // TODO does not show error on UI, yet
   BookingFee     : Decimal(16,3) default 0;
+
+/*
+  @assert.constraint.maxLimitForEur : {
+    condition : ((CurrencyCode.code = 'EUR' and TotalPrice <= 10000) or CurrencyCode.code <> 'EUR')
+  } // TODO could work but does not work because of @readonly and custom logic updating this element
+  */
   TotalPrice     : Decimal(16,3) @readonly;
   CurrencyCode   : Currency default 'EUR';
   Description    : String(1024);
   TravelStatus   : Association to TravelStatus default 'O' @readonly;
+  // TODO this results in a DB error as string and boolean are not comparable. Compiler could help here!
+  //to_Agency      : Association to TravelAgency @mandatory : (Description);
   to_Agency      : Association to TravelAgency @mandatory;
   to_Customer    : Association to Passenger @mandatory;
   to_Booking     : Composition of many Booking on to_Booking.to_Travel = $self;
@@ -30,11 +48,26 @@ annotate Travel with @Capabilities.FilterRestrictions.FilterExpressionRestrictio
 ];
 
 
+/*
+@assert.constraint.freeseats: {
+  condition: (to_Flight.OccupiedSeats < to_Flight.MaximumSeats),
+  message: 'no free seats on booked flight',
+  target: [(to_Flight)]
+} //TODO this does not yet work as expected. no error is thrown
+*/
+//TODO / IDEA entity level constraint validating customers from one country cannot travel to another country
 entity Booking : managed {
   key BookingUUID   : UUID;
   BookingID         : Integer @Core.Computed;
   BookingDate       : Date;
   ConnectionID      : String(4) @mandatory;
+  /*
+  @assert.constraint.flightDate : {
+      condition : (to_Travel.BeginDate <= FlightDate AND
+                  FlightDate <= to_Travel.EndDate),
+      message: 'error.booking.flightDateNotInTravelPeriod',
+      parameters: [ (BookingID), (FlightDate), (to_Travel.BeginDate), (to_Travel.EndDate) ],
+      targets: [(FlightDate)]}*/ // TODO test data does not match.
   FlightDate        : Date @mandatory;
   FlightPrice       : Decimal(16,3) @mandatory;
   CurrencyCode      : Currency;
