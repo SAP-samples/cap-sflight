@@ -46,11 +46,11 @@ annotate TravelService.Travel with @UI : {
       @UI.Importance : #High
     },
     {
-      Value : to_Agency_AgencyID,
+      Value : (to_Agency.AgencyID),
       @HTML5.CssDefaults: {width:'16em'}
     },
     {
-      Value : to_Customer_CustomerID,
+      Value : (to_Customer.CustomerID),
       @UI.Importance : #High,
       @HTML5.CssDefaults: {width:'14em'}
     },
@@ -59,8 +59,8 @@ annotate TravelService.Travel with @UI : {
     { Value : BookingFee, @HTML5.CssDefaults: {width:'10em'} },
     { Value : TotalPrice, @HTML5.CssDefaults: {width:'12em'} },
     {
-      Value : TravelStatus_code,
-      Criticality : ($self.TravelStatus_code = 'O' ? 2 : ($self.TravelStatus_code = 'A' ? 3 : 0)),
+      Value : (TravelStatus.code),
+      Criticality : (TravelStatus.code = 'O' ? 2 : (TravelStatus.code = 'A' ? 3 : 0)),
       @UI.Importance : #High,
       @HTML5.CssDefaults: {width:'10em'}
     }
@@ -76,11 +76,17 @@ annotate TravelService.Travel with @UI : {
         Target : '@UI.FieldGroup#TravelData',
         Label  : '{i18n>GeneralInformation}'
       },
-      {  // experimental
+      {  // experimental A
         $Type  : 'UI.ReferenceFacet',
-        ID     : 'ExperimentalData',
-        Target : '@UI.FieldGroup#ExperimentalData',
-        Label  : 'Experimental'
+        ID     : 'ExperimentalDataA',
+        Target : '@UI.FieldGroup#ExperimentalDataA',
+        Label  : 'FC via edmXpr'
+      },
+      {  // experimental B
+        $Type  : 'UI.ReferenceFacet',
+        ID     : 'ExperimentalDataB',
+        Target : '@UI.FieldGroup#ExperimentalDataB',
+        Label  : 'FC via CalcElem'
       },
       {  // price information
         $Type  : 'UI.ReferenceFacet',
@@ -104,19 +110,23 @@ annotate TravelService.Travel with @UI : {
   }],
   FieldGroup#TravelData : { Data : [
     { Value : TravelID               },
-    { Value : to_Agency_AgencyID     },
-    { Value : to_Customer_CustomerID },
+    { Value : (to_Agency.AgencyID)     },
+    { Value : (to_Customer.CustomerID) },
     { Value : Description            },
     {
       $Type       : 'UI.DataField',
-      Value       : TravelStatus_code,
-      Criticality : ($self.TravelStatus_code = 'O' ? 2 : ($self.TravelStatus_code = 'A' ? 3 : 0)),
+      Value       : (TravelStatus.code),
+      Criticality : (TravelStatus.code = 'O' ? 2 : (TravelStatus.code = 'A' ? 3 : 0)),
       Label : '{i18n>Status}' // label only necessary if differs from title of element
     }
   ]},
-  FieldGroup #ExperimentalData : {Data : [
+  FieldGroup #ExperimentalDataA : {Data : [
     { $Type : 'UI.DataField', Value : field_A },
-    { $Type : 'UI.DataField', Value : field_Ctr }
+    { $Type : 'UI.DataField', Value : field_ACtr }
+  ]},
+  FieldGroup #ExperimentalDataB : {Data : [
+    { $Type : 'UI.DataField', Value : field_B },
+    { $Type : 'UI.DataField', Value : field_BCtr }
   ]},
   FieldGroup #DateData : {Data : [
     { $Type : 'UI.DataField', Value : BeginDate },
@@ -125,7 +135,7 @@ annotate TravelService.Travel with @UI : {
   FieldGroup #PriceData : {Data : [
     { $Type : 'UI.DataField', Value : BookingFee },
     { $Type : 'UI.DataField', Value : TotalPrice },
-    { $Type : 'UI.DataField', Value : CurrencyCode_code }
+    { $Type : 'UI.DataField', Value : (CurrencyCode.code) }
   ]},
   FieldGroup #i18nSustainability: {
     $Type: 'UI.FieldGroupType',
@@ -169,13 +179,13 @@ annotate TravelService.Booking with @UI : {
     { Value : to_Carrier.AirlinePicURL,  Label : '  '},
     { Value : BookingID              },
     { Value : BookingDate            },
-    { Value : to_Customer_CustomerID },
-    { Value : to_Carrier_AirlineID   },
+    { Value : (to_Customer.CustomerID) },
+    { Value : (to_Carrier.AirlineID)   },
     { Value : ConnectionID,          Label : '{i18n>FlightNumber}' },
     { Value : FlightDate             },
     { Value : FlightPrice            },
-    { Value : BookingStatus_code,
-      Criticality : ($self.BookingStatus_code = 'N' ? 2 : ($self.BookingStatus_code = 'B' ? 3 : 0)),
+    { Value : (BookingStatus.code),
+      Criticality : (BookingStatus.code = 'N' ? 2 : (BookingStatus.code = 'B' ? 3 : 0)),
     }
   ],
   Facets : [{
@@ -202,14 +212,14 @@ annotate TravelService.Booking with @UI : {
   FieldGroup #GeneralInformation : { Data : [
     { Value : BookingID              },
     { Value : BookingDate,           },
-    { Value : to_Customer_CustomerID },
+    { Value : (to_Customer.CustomerID) },
     { Value : BookingDate,           },
-    { Value : BookingStatus_code,
-      Criticality : ($self.BookingStatus_code = 'N' ? 2 : ($self.BookingStatus_code = 'B' ? 3 : 0)),
+    { Value : (BookingStatus.code),
+      Criticality : (BookingStatus.code = 'N' ? 2 : (BookingStatus.code = 'B' ? 3 : 0)),
     }
   ]},
   FieldGroup #Flight : { Data : [
-    { Value : to_Carrier_AirlineID   },
+    { Value : (to_Carrier.AirlineID)   },
     { Value : ConnectionID           },
     { Value : FlightDate             },
     { Value : FlightPrice            }
@@ -237,7 +247,7 @@ annotate TravelService.BookingSupplement with @UI : {
   },
   LineItem : [
     { Value : BookingSupplementID                                       },
-    { Value : to_Supplement_SupplementID, Label : '{i18n>ProductID}'    },
-    { Value : Price,                      Label : '{i18n>ProductPrice}' }
+    { Value : (to_Supplement.SupplementID), Label : '{i18n>ProductID}'    },
+    { Value : Price,                        Label : '{i18n>ProductPrice}' }
   ],
 };

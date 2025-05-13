@@ -37,9 +37,7 @@ service AnalyticsService @(path:'/analytics') {
 
     BookingDate,
 
-    to_Travel_TravelUUID,
     to_Travel,
-    to_Carrier_AirlineID,
     to_Carrier,
 
     // Java has a problem with this association

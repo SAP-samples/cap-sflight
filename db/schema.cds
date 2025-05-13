@@ -19,20 +19,21 @@ entity Travel : managed {
   CurrencyCode   : Currency default 'EUR';
   Description    : String(1024);
 
-  TravelStatus_code : TravelStatusCode default 'O' @readonly;
-  TravelStatus   : Association to TravelStatus on TravelStatus.code = TravelStatus_code;
+  TravelStatus   : Association to TravelStatus  default 'O' @readonly;
 
   TravelStatus_ctrl: Int16 @odata.Type:'Edm.Byte' /*enum {Inapplicable = 0; ReadOnly = 1; Optional = 3; Mandatory = 7;}*/
-    = (TravelStatus_code = 'A' ? 1 : 7 );
+    = (TravelStatus.code = 'A' ? 1 : 7 );
 
-  to_Agency_AgencyID : String(6)  @mandatory;
-  to_Agency      : Association to TravelAgency on to_Agency.AgencyID = to_Agency_AgencyID;
-  to_Customer_CustomerID : String(6) @mandatory;
-  to_Customer    : Association to Passenger on to_Customer.CustomerID = to_Customer_CustomerID;
+  to_Agency      : Association to TravelAgency @mandatory;
+  to_Customer    : Association to Passenger @mandatory;
   to_Booking     : Composition of many Booking on to_Booking.to_Travel = $self;
 
-  field_A: String @label: 'controlled';
-  field_Ctr : String @label: 'controlling';
+  field_A: String @label: 'controlled A';
+  field_ACtr : String @label: 'controlling A';
+
+  field_B: String @label: 'controlled B';
+  field_BCtr : String @label: 'controlling B';
+  field_BCtrCalc : Int16 @odata.Type:'Edm.Byte' = (field_BCtr = 'readonly' ? 1 : (field_BCtr = 'inapplicable' ? 0 : (field_BCtr = 'mandatory' ? 7 : 3)));
 };
 
 annotate Travel with @Capabilities.FilterRestrictions.FilterExpressionRestrictions: [
@@ -50,18 +51,14 @@ entity Booking : managed {
   FlightPrice       : Decimal(16,3) @mandatory;
   CurrencyCode      : Currency;
 
-  BookingStatus_code : BookingStatusCode  default 'N' @mandatory;
-  BookingStatus     : Association to BookingStatus on BookingStatus.code = BookingStatus_code;
+  BookingStatus     : Association to BookingStatus default 'N' @mandatory;
   to_BookSupplement : Composition of many BookingSupplement on to_BookSupplement.to_Booking = $self;
 
-  to_Carrier_AirlineID : String(3) @mandatory;
-  to_Carrier        : Association to Airline on to_Carrier.AirlineID = to_Carrier_AirlineID;
-  to_Customer_CustomerID : String(6) @mandatory;
-  to_Customer       : Association to Passenger on to_Customer.CustomerID = to_Customer_CustomerID;
-  to_Travel_TravelUUID : UUID;
-  to_Travel         : Association to Travel on to_Travel.TravelUUID = to_Travel_TravelUUID;
+  to_Carrier        : Association to Airline @mandatory;
+  to_Customer       : Association to Passenger @mandatory;
+  to_Travel         : Association to Travel;
 
-  to_Flight         : Association to Flight on  to_Flight.AirlineID = to_Carrier_AirlineID
+  to_Flight         : Association to Flight on  to_Flight.AirlineID = to_Carrier.AirlineID
                                             and to_Flight.FlightDate = FlightDate
                                             and to_Flight.ConnectionID = ConnectionID;
 };
@@ -72,12 +69,9 @@ entity BookingSupplement : managed {
   Price               : Decimal(16,3) @mandatory;
   CurrencyCode        : Currency;
 
-  to_Booking_BookingUUID   : UUID;
-  to_Booking          : Association to Booking on to_Booking.BookingUUID = to_Booking_BookingUUID;
-  to_Travel_TravelUUID : UUID;
-  to_Travel         : Association to Travel on to_Travel.TravelUUID = to_Travel_TravelUUID;
-  to_Supplement_SupplementID : String(10) @mandatory;
-  to_Supplement       : Association to Supplement on to_Supplement.SupplementID = to_Supplement_SupplementID;
+  to_Booking          : Association to Booking;
+  to_Travel         : Association to Travel;
+  to_Supplement       : Association to Supplement @mandatory;
 };
 
 

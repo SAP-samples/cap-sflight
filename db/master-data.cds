@@ -25,8 +25,7 @@ entity Airport : MasterData {
 entity Supplement : managed, MasterData {
   key SupplementID : String(10);
   Price            : Decimal(16, 3);
-  Type_code        : String(2);
-  Type             : Association to SupplementType on Type.code = Type_code;
+  Type             : Association to SupplementType;
   Description      : localized String(1024);
   CurrencyCode     : Currency;
 };
@@ -59,10 +58,8 @@ entity FlightConnection : MasterData {
   key ConnectionID   : String(4);
   key AirlineID      : String(3);
 
-  DepartureAirport_AirportID : String(3);
-  DepartureAirport   : Association to Airport on DepartureAirport.AirportID = DepartureAirport_AirportID;
-  DestinationAirport_AirportID : String(3);
-  DestinationAirport : Association to Airport on DestinationAirport.AirportID = DestinationAirport_AirportID;
+  DepartureAirport   : Association to Airport;
+  DestinationAirport : Association to Airport;
   DepartureTime      : Time;
   ArrivalTime        : Time;
   Distance           : Integer;
