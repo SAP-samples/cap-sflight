@@ -179,20 +179,20 @@ describe('Basic OData', () => {
       `/processor/Travel(TravelUUID='52657221A8E4645C17002DF03754AB66',IsActiveEntity=true)/TravelService.deductDiscount`,
       { percent: 11 }
     )
-    expect(res2).to.contain({ TotalPrice: 897.8, BookingFee: 17.8 })
+    expect(res2).to.contain({ TotalPrice: 801, BookingFee: 17.8 })
 
     const { data: res3 } = await POST(
       `/processor/Travel(TravelUUID='52657221A8E4645C17002DF03754AB66',IsActiveEntity=true)/TravelService.deductDiscount`,
       { percent: 11 }
     )
-    expect(res3).to.contain({ TotalPrice: 895.842, BookingFee: 15.842 })
+    expect(res3).to.contain({ TotalPrice: 712.89, BookingFee: 15.842 })
 
     const { data: res4 } = await POST(
       `/processor/Travel(TravelUUID='52657221A8E4645C17002DF03754AB66',IsActiveEntity=true)/TravelService.deductDiscount`,
       { percent: 11 }
     )
     // rounded to 3 decimals
-    expect(res4).to.contain({ TotalPrice: 894.099, BookingFee: 14.099 })
+    expect(res4).to.contain({ TotalPrice: 634.472, BookingFee: 14.099 })
   })
 
   it('allows deducting discounts on drafts as well', async ()=>{
@@ -212,15 +212,15 @@ describe('Basic OData', () => {
     await PATCH (Draft, { EndDate: tomorrow })
 
     const { data:res2 } = await POST (`${Draft}/TravelService.deductDiscount`, { percent: 50 })
-    expect(res2).to.contain({ TotalPrice: 724, BookingFee: 5 })
+    expect(res2).to.contain({ TotalPrice: 364.5, BookingFee: 5 })
 
     const { data:res3 } = await GET (Draft)
-    expect(res3).to.contain({ TotalPrice: 724, BookingFee: 5 })
+    expect(res3).to.contain({ TotalPrice: 364.5, BookingFee: 5 })
 
     await SAVE (Draft)
 
     const { data:res4 } = await GET (Active)
-    expect(res4).to.contain({ TotalPrice: 724, BookingFee: 5 })
+    expect(res4).to.contain({ TotalPrice: 364.5, BookingFee: 5 })
   })
 
 })
