@@ -18,11 +18,14 @@ function spawnServer(cmd, args, cwd, fnIsReady) {
     };
 
     proc.on("close", reject);
-    proc.stdout.on("data", checkServerReady);
+    proc.stdout.on("data", (data) => {
+      process.stdout.write(data.toString())
+      checkServerReady(data)
+    });
 
     // clean up sub process
     process.on("exit", () => {
-      if (proc) proc.kill();
+      if (proc) proc.kill("SIGKILL");
     });
   });
 }
@@ -52,9 +55,8 @@ async function java() {
     if (started) return new URL(`http://localhost:${started.groups.port}`);
   };
   const serverUrl = await spawnServer(
-    "mvn",
-    ["spring-boot:run", "-B", "-Dserver.port=0"],
-    "../../srv",
+    "mvn", ["spring-boot:run", "-B", "-Dspring-boot.run.jvmArguments=-Dserver.port=0"],
+    "../..",
     isReady
   );
 
@@ -69,7 +71,7 @@ async function node() {
     }
   };
 
-  const serverUrl = await spawnServer("npm", ["start"], "../..", isReady);
+  const serverUrl = await spawnServer("cds", ["serve"], "../..", isReady);
 
   return createKarmaMiddleware(serverUrl, { user: "admin", password: "admin" });
 }

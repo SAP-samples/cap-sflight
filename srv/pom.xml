@@ -98,6 +98,7 @@
       <plugin>
         <groupId>org.graalvm.buildtools</groupId>
         <artifactId>native-maven-plugin</artifactId>
+        <version>${spring.boot.version}</version>
       </plugin>
 
       <plugin>
@@ -157,9 +158,8 @@
             </goals>
             <configuration>
               <commands>
-                <command>build --for java --opts contentLocalizedEdmx=false</command>
-                <command>deploy --to h2 --dry &gt;
-									"${project.basedir}/src/main/resources/schema.sql"</command>
+                <command>build --for java</command>
+                <command>deploy --to h2 --dry --out "${project.basedir}/src/main/resources/schema-h2.sql"</command>
               </commands>
             </configuration>
           </execution>
@@ -181,7 +181,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>3.5.3</version>
         <configuration>
           <failIfNoTests>true</failIfNoTests>
         </configuration>

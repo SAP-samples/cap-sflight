@@ -3,7 +3,7 @@ _out
 *.db
 connection.properties
 default-*.json
-schema.sql
+*.sql
 gen/
 node_modules/
 target/
@@ -55,3 +55,5 @@ dist/
 # Experimental
 xxx_*
 xxx/*
+
+@cds-models

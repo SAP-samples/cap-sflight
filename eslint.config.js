@@ -1,20 +1,22 @@
 'use strict'
 
 const eslint_js = require('@eslint/js')
+const tseslint = require('typescript-eslint');
 const globals = require('globals')
 
 module.exports = [
   {
-    ignores: ["**/dist/*"]
+    ignores: ["**/dist/*", "gen/**/*", "@cds-models/**/*", "app/**/*"],
   },
   // global rules for all files
   eslint_js.configs.recommended,
+  tseslint.configs.base,
   // Generic config for JavaScript files: Setup environment, version, etc.
   {
-    files: ['**/*.js'],
+    files: ["**/*.js", "**/*.ts"],
     languageOptions: {
       ecmaVersion: 2022,
-      sourceType: 'commonjs',
+      sourceType: "module",
       globals: {
         ...globals.node,
         ...globals.jest,
@@ -29,12 +31,12 @@ module.exports = [
         CQL: true,
         CXL: true,
         cds: true,
-        sap: true
-      }
+        sap: true,
+      },
     },
     rules: {
-      'no-console': 'off',
-      'require-atomic-updates': 'off'
-    }
-  }
-]
+      "no-console": "off",
+      "require-atomic-updates": "off",
+    },
+  },
+];

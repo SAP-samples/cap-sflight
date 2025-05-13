@@ -6,6 +6,8 @@ import static java.lang.Boolean.TRUE;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import cds.gen.travelservice.TravelService;
+import com.sap.cds.services.persistence.PersistenceService;
 import org.springframework.stereotype.Component;
 
 import com.sap.cds.ql.Update;
@@ -15,7 +17,7 @@ import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 
-import cds.gen.travelservice.DeductDiscountContext;
+import cds.gen.travelservice.TravelDeductDiscountContext;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
 import cds.gen.travelservice.Travel_;
@@ -25,13 +27,15 @@ import cds.gen.travelservice.Travel_;
 public class DeductDiscountHandler implements EventHandler {
 
 	private final DraftService draftService;
+	private final PersistenceService persistenceService;
 
-	public DeductDiscountHandler(DraftService draftService) {
+	public DeductDiscountHandler(DraftService draftService, PersistenceService persistenceService) {
 		this.draftService = draftService;
+		this.persistenceService = persistenceService;
 	}
 
 	@On(entity = Travel_.CDS_NAME)
-	public void deductDiscount(final DeductDiscountContext context) {
+	public void deductDiscount(final TravelDeductDiscountContext context) {
 
 		Travel travel = draftService.run(context.cqn()).single(Travel.class);
 
@@ -40,7 +44,7 @@ public class DeductDiscountHandler implements EventHandler {
 
 		BigDecimal deductedBookingFee = travel.bookingFee().subtract(travel.bookingFee().multiply(discount))
 				.round(new MathContext(3));
-		BigDecimal deductedTotalPrice = travel.totalPrice().subtract(deductedBookingFee);
+		BigDecimal deductedTotalPrice = travel.totalPrice().subtract(travel.totalPrice().multiply(discount));
 
 		travel.bookingFee(deductedBookingFee);
 		travel.totalPrice(deductedTotalPrice);
@@ -55,7 +59,7 @@ public class DeductDiscountHandler implements EventHandler {
 			if (TRUE.equals(travel.isActiveEntity())) {
 				CqnUpdate updateCqn = Update.entity(TRAVEL)
 						.where(t -> t.TravelUUID().eq(travel.travelUUID())).data(update);
-				draftService.run(updateCqn);
+				persistenceService.run(updateCqn);
 			} else {
 				CqnUpdate updateCqn = Update.entity(TRAVEL)
 						.where(t -> t.TravelUUID().eq(travel.travelUUID()).and(t.IsActiveEntity().eq(travel.isActiveEntity()))).data(update);

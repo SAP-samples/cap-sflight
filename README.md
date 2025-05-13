@@ -1,3 +1,5 @@
+
+
 # Welcome to the CAP SFLIGHT App
 
 This is a sample app for the travel reference scenario, built with the [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap) and [SAP Fiori Elements](https://experience.sap.com/fiori-design-web/smart-templates).
@@ -7,14 +9,14 @@ The purpose of this sample app is to:
 * Demonstrate and compare SAP Fiori features on various stacks (CAP Node.js, CAP Java SDK, ABAP)
 * Run UI test suites on various stacks
 
-![Process Travels Page](img.png)
+![Process Travels Page](.github/assets/img.png)
 
 The app still contains some workarounds that are going to be addressed over time.
 In some cases, the model and the handlers can be improved or simplified once further planned CAP features become available.
 In other cases, the app itself could be improved. For example, calculation of the total price for a travel
 currently simply sums up the single prices ignoring the currencies.
 
-> For enabling all features of the Analytical List Page (ALP) in the Node.js runtime, we have switched on the new OData parser 
+> For enabling all features of the Analytical List Page (ALP) in the Node.js runtime, we have switched on the new OData parser
 (`odata_new_parser: true` in `package.json`), which is still in an **experimental state**.
 Early adopters may use this feature in own projects on their own risk.
 You can also use the ALP with the standard OData parser, but then some features like grouping in the table are not available.
@@ -27,25 +29,41 @@ You can also use the ALP with the standard OData parser, but then some features 
 
 ### Build and Run - Node.js Backend
 
+Prerequisite:
+```
+npm i -g @sap/cds-dk
+```
+
 In the root folder of your project, run
 ```
 npm ci
+npx cds-typer "*"
 cds watch
 ```
+
+#### Accessing the SAP Fiori Apps
+
+Open these links in your browser:
+* http://localhost:4004/sap.fe.cap.travel/index.html for processing the travel data
+* http://localhost:4004/sap.fe.cap.travel_analytics/index.html for the [Analytical List Page](https://ui5.sap.com/#/topic/3d33684b08ca4490b26a844b6ce19b83) (ALP)
+
 
 ### Build and Run - Java Backend
 
 In the root folder of your project, run
 ```
 npm ci
+npm run build:ui
 mvn spring-boot:run
 ```
 
-### Accessing the SAP Fiori Apps
+> At the moment, there is no watch mode for Fiori UI changes.  Run `npm run build:ui` after each change there.
+
+#### Accessing the SAP Fiori Apps
 
 Open these links in your browser:
-* http://localhost:4004/travel_processor/webapp/index.html for processing the travel data
-* http://localhost:4004/travel_analytics/webapp/index.html for the [Analytical List Page](https://ui5.sap.com/#/topic/3d33684b08ca4490b26a844b6ce19b83) (ALP)
+* http://localhost:4004/travel_processor/dist/index.html for processing the travel data
+* http://localhost:4004/travel_analytics/dist/index.html for the [Analytical List Page](https://ui5.sap.com/#/topic/3d33684b08ca4490b26a844b6ce19b83) (ALP)
 
 Log in with user `amy` and empty password.
 
@@ -125,7 +143,7 @@ that HDI container are stored locally on your filesystem (default-env.json).
 
 ## Deployment to SAP Business Technology Platform - Kyma Runtime
 
-The deployment to Kyma Runtime is explained in file [README-Kyma-Runtime.md](./README-Kyma-Runtime.md).
+The deployment to Kyma Runtime is explained in file [README-Kyma.md](./README-Kyma.md).
 
 ## Creating an SAP Fiori App from Scratch
 
