@@ -1,8 +1,19 @@
-using TravelService from '../../srv/travel-service';
-
+using { TravelService, sap.fe.cap.travel.TravelStatus } from '../../srv/travel-service';
 //
 // annotations that control the behavior of fields and actions
 //
+
+extend entity TravelStatus with {
+  fieldControl: UInt8 enum {
+    Inapplicable = 0;
+    ReadOnly = 1;
+    Optional = 3;
+    Mandatory = 7;
+  };
+  insertDeleteRestriction: Boolean; // = NOT createDeleteHidden
+  createDeleteHidden: Boolean;
+}
+
 
 annotate TravelService.Travel with @(Common : {
   SideEffects: {
@@ -34,15 +45,10 @@ annotate TravelService.Travel with @(Common : {
   );
 }
 
-annotate TravelService.Travel @(
-    Common.SideEffects#ReactonItemCreationOrDeletion : {
-        SourceEntities : [
-            to_Booking
-        ],
-       TargetProperties : ['TotalPrice'
-       ]
-    }
-);
+annotate TravelService.Travel @Common.SideEffects#ReactonItemCreationOrDeletion : {
+  SourceEntities : [ to_Booking ],
+  TargetProperties : [ 'TotalPrice' ]
+};
 
 annotate TravelService.Booking with @UI.CreateHidden : to_Travel.TravelStatus.createDeleteHidden;
 annotate TravelService.Booking with @UI.DeleteHidden : to_Travel.TravelStatus.createDeleteHidden;
@@ -57,21 +63,17 @@ annotate TravelService.Booking {
   to_Customer   @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
 };
 
-annotate TravelService.Booking with @(
-  Capabilities.NavigationRestrictions : {
-    RestrictedProperties : [
-      {
-        NavigationProperty : to_BookSupplement,
-        InsertRestrictions : {
-          Insertable : to_Travel.TravelStatus.insertDeleteRestriction
-        },
-        DeleteRestrictions : {
-          Deletable : to_Travel.TravelStatus.insertDeleteRestriction
-        }
-      }
-    ]
+annotate TravelService.Booking with @Capabilities.NavigationRestrictions.RestrictedProperties : [
+  {
+    NavigationProperty : to_BookSupplement,
+    InsertRestrictions : {
+      Insertable : to_Travel.TravelStatus.insertDeleteRestriction
+    },
+    DeleteRestrictions : {
+      Deletable : to_Travel.TravelStatus.insertDeleteRestriction
+    }
   }
-);
+];
 
 
 annotate TravelService.BookingSupplement {
@@ -79,5 +81,4 @@ annotate TravelService.BookingSupplement {
   to_Supplement @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
   to_Booking    @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
   to_Travel     @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-
 };

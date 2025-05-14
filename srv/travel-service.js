@@ -3,7 +3,7 @@ module.exports = class TravelService extends cds.ApplicationService { init() {
 
   // Reflected definitions from the service's CDS model
   const { Travel, Booking, BookingSupplement: Supplements } = this.entities
-  const { Accepted='A', Canceled='X' } = {}
+  const { Open='O', Accepted='A', Canceled='X' } = {}
   const { today } = cds.builtin.types.Date
 
   // Fill in alternative keys as consecutive numbers for new Travels, Bookings, and Supplements.
@@ -15,13 +15,15 @@ module.exports = class TravelService extends cds.ApplicationService { init() {
     req.data.TravelID = ++maxID
   })
 
-  this.before ('NEW', 'Travel.drafts', async req => {
+  this.before ('NEW', Travel.drafts, async req => {
      req.data.BeginDate = today()
      req.data.EndDate = today()
      req.data.BookingFee = 0
    })
 
   this.before ('NEW', Booking.drafts, async req => {
+    let { status } = await SELECT `TravelStatus_code as status` .from (Travel.drafts, req.data.to_Travel_TravelUUID)
+    if (status === Canceled) return req.reject (400, 'Cannot add new bookings to rejected travels.')
     let { maxID } = await SELECT.one (`max(BookingID) as maxID`) .from (Booking.drafts) .where (req.data)
     req.data.BookingID = ++maxID
     req.data.BookingDate = today() // REVISIT: could that be filled in by CAP automatically?
@@ -34,7 +36,7 @@ module.exports = class TravelService extends cds.ApplicationService { init() {
 
 
   // Ensure BeginDate is not before today and not after EndDate.
-  this.before ('SAVE', Travel, req => {
+  this.before ('SAVE', Travel.drafts, req => {
     const { BeginDate, EndDate } = req.data
     if (BeginDate < today()) req.error (400, `Begin Date must not be before today.`, 'in/BeginDate')
     if (BeginDate > EndDate) req.error (400, `End Date must be after Begin Date.`, 'in/EndDate')
@@ -86,18 +88,19 @@ module.exports = class TravelService extends cds.ApplicationService { init() {
   //
 
   const { acceptTravel, rejectTravel, deductDiscount } = Travel.actions
-  this.on (acceptTravel, req => UPDATE (req.subject) .with ({ TravelStatus_code: Accepted }))
-  this.on (rejectTravel, req => UPDATE (req.subject) .with ({ TravelStatus_code: Canceled }))
+
+  this.on (acceptTravel, async req => UPDATE (req.subject) .with ({ TravelStatus_code: Accepted }))
+  this.on (rejectTravel, async req => UPDATE (req.subject) .with ({ TravelStatus_code: Canceled }))
   this.on (deductDiscount, async req => {
     let discount = req.data.percent / 100
-    let succeeded = await UPDATE (req.subject) .where `TravelStatus.code != 'A'` .and `BookingFee != null`
+    let succeeded = await UPDATE (req.subject) .where ({ TravelStatus_code: Open, BookingFee: { 'is not': null } })
       .with `TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3)`
       .with `BookingFee = round (BookingFee - BookingFee * ${discount}, 3)`
 
     if (!succeeded) { //> let's find out why...
       let travel = await SELECT.one `TravelID as ID, TravelStatus.code as status, BookingFee` .from (req.subject)
       if (!travel) throw req.reject (404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
-      if (travel.status === Accepted) throw req.reject (400, `Travel "${travel.ID}" has been approved already.`)
+      if (travel.status === Accepted) throw req.reject (409, `Travel "${travel.ID}" has been approved already.`)
       if (travel.BookingFee == null) throw req.reject (404, `No discount possible, "${travel.ID}" does not yet have a booking fee added.`)
     } else {
       return SELECT(req.subject)

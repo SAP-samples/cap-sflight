@@ -143,7 +143,7 @@ describe('Basic OData', () => {
     })
 
     // Ensure it is not in accepted state as that would disallow changing
-    await POST (Draft +`/TravelService.rejectTravel`)
+    await PATCH (Draft, { TravelStatus_code: 'O' }) // REVISIT: should actually be forbidden !!!
     await PATCH (Draft, { BeginDate: '2222-01-01', EndDate: '2222-01-02' })
 
     // Change the Travel's Booking Fee
@@ -205,10 +205,9 @@ describe('Basic OData', () => {
     expect(res1).to.contain({ TotalPrice: 729, BookingFee: 10 })
 
     // Change the Travel's dates to avoid validation errors
-    const today = new Date().toISOString().split('T')[0]
-    await PATCH (Draft, { BeginDate: today })
-    const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]
-    await PATCH (Draft, { EndDate: tomorrow })
+    const today = new Date, tomorrow = new Date; tomorrow.setDate(today.getDate()+1)
+    await PATCH (Draft, { BeginDate: today.toISOString().slice(0,10) })
+    await PATCH (Draft, { EndDate: tomorrow.toISOString().slice(0,10) })
 
     const { data:res2 } = await POST (`${Draft}/TravelService.deductDiscount`, { percent: 50 })
     expect(res2).to.contain({ TotalPrice: 724, BookingFee: 5 })
