@@ -34,6 +34,7 @@ entity Travel : managed {
   TotalPrice     : Decimal(16,3) @readonly;
   CurrencyCode   : Currency default 'EUR';
   Description    : String(1024);
+  @flow.status
   TravelStatus   : Association to TravelStatus default 'O' @readonly;
   // TODO this results in a DB error as string and boolean are not comparable. Compiler could help here!
   //to_Agency      : Association to TravelAgency @mandatory : (Description);
@@ -110,6 +111,7 @@ type TravelStatusCode : String(1) enum {
   Open     = 'O';
   Accepted = 'A';
   Canceled = 'X';
+  Withdrawn = 'W';
 };
 
 entity TravelStatus : CodeList {

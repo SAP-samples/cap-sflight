@@ -4,14 +4,26 @@ service TravelService @(path:'/processor') {
 
   @(restrict: [
     { grant: 'READ', to: 'authenticated-user'},
-    { grant: ['rejectTravel','acceptTravel','deductDiscount'], to: 'reviewer'},
+    { grant: ['rejectTravel','acceptTravel', 'withdrawTravel', 'deductDiscount'], to: 'reviewer'},
     { grant: ['*'], to: 'processor'},
     { grant: ['*'], to: 'admin'}
   ])
   entity Travel as projection on my.Travel actions {
     action createTravelByTemplate() returns Travel;
+    @(flow: {
+      from:[ Open ],
+      to: Canceled
+    })
     action rejectTravel();
+    @(flow: {
+      from:[ Open ],
+      to: Accepted
+    })
     action acceptTravel();
+    @(flow: {
+      from:[ Open, Accepted ],
+    })
+    action withdrawTravel();
     action deductDiscount( percent: Percentage not null ) returns Travel;
   };
 
