@@ -39,11 +39,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 class WithdrawTravelHandlerTest {
 
     @Autowired
-    private PersistenceService dbService;
-    @Autowired
     private TravelService travelService;
-    @Autowired
-    private CdsRuntime runtime;
 
     @Test
     @WithMockUser("amy")
@@ -105,44 +101,10 @@ class WithdrawTravelHandlerTest {
         Travel_ draftRef = CQL.entity(Travel_.class).filter(t -> t.TravelUUID().eq("75757221A8E4645C17002DF03754AB66").and(t.IsActiveEntity().eq(false)));
         travelService.withdrawTravel(draftRef);
 
-
         Travel activeTravelAfter = travelService.run(selectActive).single(Travel.class);
         assertEquals("O", activeTravelAfter.travelStatusCode(), "active Travel should be unchanged");
         Travel draftTravelAfter = travelService.run(Select.from(draftRef)).single(Travel.class);
         assertEquals("W", draftTravelAfter.travelStatusCode(), "draft Travel should be changed");
     }
 
-    public boolean isDraftEnabledAndActive(CqnStructuredTypeRef ref) {
-        return DraftUtils.isDraftEnabled(runtime.getCdsModel().findEntity(ref.targetSegment().id()).get())
-            && isActiveEntity(ref);
-    }
-
-    public boolean isActiveEntity(CqnStructuredTypeRef ref) {
-        Object isActiveEntity = CqnAnalyzer.create(runtime.getCdsModel()).analyze(ref).targetKeys()
-            .get(Drafts.IS_ACTIVE_ENTITY);
-        return isActiveEntity instanceof Boolean bool && bool;
-    }
-
-    public boolean isInactiveEntity(CqnStructuredTypeRef ref) {
-        Object isActiveEntity = CqnAnalyzer.create(runtime.getCdsModel()).analyze(ref).targetKeys()
-            .get(Drafts.IS_ACTIVE_ENTITY);
-        return (isActiveEntity instanceof Boolean bool && !bool.booleanValue());
-    }
-
-    public boolean isDraft(CqnStructuredTypeRef ref) {
-        return DraftUtils.isDraftTarget(ref, runtime.getCdsModel().findEntity(Travel_.CDS_NAME).get(),
-            runtime.getCdsModel());
-    }
-
-    void verifyError(Runnable action, String errorMessage) {
-        runtime.requestContext().run(r -> {
-            action.run();
-
-            Optional<Message> message = r.getMessages().stream().findFirst();
-            assertThat(message).hasValueSatisfying(m -> {
-                assertThat(m.getSeverity()).isEqualTo(Severity.ERROR);
-                assertThat(m.getMessage()).isEqualTo(errorMessage);
-            });
-        });
-    }
 }
