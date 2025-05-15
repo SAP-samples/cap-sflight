@@ -21,7 +21,7 @@
     "@cap-js/hana": ">=1",
     "@sap/cds": ">=8.4.0",
     "@sap/xssec": "^4",
-    "express": "^4"
+    "express": "^5"
   },
   "devDependencies": {
     "@cap-js/cds-test": "^0",
