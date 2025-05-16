@@ -98,7 +98,7 @@
       <plugin>
         <groupId>org.graalvm.buildtools</groupId>
         <artifactId>native-maven-plugin</artifactId>
-        <version>${spring.boot.version}</version>
+        <version>${graalvm.buildtools.version}</version>
       </plugin>
 
       <plugin>
