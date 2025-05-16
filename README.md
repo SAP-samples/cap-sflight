@@ -37,7 +37,6 @@ npm i -g @sap/cds-dk
 In the root folder of your project, run
 ```
 npm ci
-npx cds-typer "*"
 cds watch
 ```
 
