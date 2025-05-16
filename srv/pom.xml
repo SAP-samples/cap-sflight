@@ -142,12 +142,12 @@
           </execution>
 
           <execution>
-            <id>install-cdsdk</id>
+            <id>cds.npm-ci</id>
             <goals>
-              <goal>install-cdsdk</goal>
+              <goal>npm</goal>
             </goals>
             <configuration>
-              <version>${cdsdk.version}</version>
+              <arguments>ci</arguments>
             </configuration>
           </execution>
 
@@ -196,44 +196,6 @@
       <properties>
         <cdsdk-global>true</cdsdk-global>
       </properties>
-    </profile>
-    <profile>
-      <id>no-cds</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.sap.cds</groupId>
-            <artifactId>cds-maven-plugin</artifactId>
-            <version>${cds.services.version}</version>
-            <executions>
-              <execution>
-                <id>cds.clean</id>
-                <phase>none</phase>
-              </execution>
-
-              <execution>
-                <id>cds.install-node</id>
-                <phase>none</phase>
-              </execution>
-
-              <execution>
-                <id>install-cdsdk</id>
-                <phase>none</phase>
-              </execution>
-
-              <execution>
-                <id>cds.build</id>
-                <phase>none</phase>
-              </execution>
-
-              <execution>
-                <id>cds.generate</id>
-                <phase>none</phase>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
     <profile>
       <id>native</id>
