@@ -21,7 +21,7 @@
 - BTP Subaccount with Kyma Runtime
 - BTP Subaccount with Cloud Foundry Space
 - HANA Cloud instance available for your Cloud Foundry space
-- BTP Entitlements for: *HANA HDI Services & Container* plan *hdi-shared*, *Launchpad Service* plan *standard*
+- BTP Entitlements for: *HANA HDI Services & Container* plan *hdi-shared*, *Build Work Zone* plan *standard*
 - Container Registry
 - Command Line Tools: `kubectl`, `kubectl-oidc_login`, `pack`, `docker`, `helm`, `cf`
 - Logged into Kyma Runtime (with `kubectl` CLI), Cloud Foundry space (with `cf` CLI) and Container Registry (with `docker login`)
@@ -220,11 +220,11 @@ helm install sflight ./chart --set-file xsuaa.jsonParameters=xs-security.json
 
 ## Access the UI
 
-1. Create Launchpad Service subscription in the BTP Cockpit
+1. Create Build Work Zone subscription in the BTP Cockpit
 2. Create a role collection `sflight`
 3. Add role `admin` of `sflight.tXYZ` application to role collection
 4. Add your user to the role collection
 5. Goto **HTML5 Applications**
 6. Start HTML5 application `sapfecaptravel`
 
-Additionally, you can add the UI to a Launchpad Service site like it is described in in the last two steps of [this tutorial](https://developers.sap.com/tutorials/btp-app-kyma-launchpad-service.html#9aab2dd0-18ea-4ccd-bc44-24e87c845740).
+Additionally, you can add the UI to a Build Work Zone site like it is described in in the last two steps of [this tutorial](https://developers.sap.com/tutorials/btp-app-kyma-launchpad-service.html#9aab2dd0-18ea-4ccd-bc44-24e87c845740).

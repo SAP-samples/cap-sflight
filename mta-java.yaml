@@ -12,6 +12,7 @@ build-parameters:
     - builder: custom
       commands:
         - npm ci
+        - npx -p @sap/cds-dk cds build --profile production,node # generates gen/db
 
 modules:
   # --------------------- SERVER MODULE ------------------------
@@ -22,7 +23,7 @@ modules:
     properties:
       SPRING_PROFILES_ACTIVE: cloud
       JBP_CONFIG_COMPONENTS: "jres: ['com.sap.xs.java.buildpack.jre.SAPMachineJRE']"
-      JBP_CONFIG_SAP_MACHINE_JRE: '{ use_offline_repository: false, version: 17.+ }'
+      JBP_CONFIG_SAP_MACHINE_JRE: '{ use_offline_repository: false, version: 21.+ }'
     requires:
       - name: sflight-db
       - name: sflight-uaa
@@ -30,6 +31,8 @@ modules:
       - name: srv-api # required by consumers of CAP services (e.g. approuter, destinations)
         properties:
           srv-url: ${default-url}
+    parameters:
+      buildpack: sap_java_buildpack_jakarta
     build-parameters:
       builder: custom
       commands:
