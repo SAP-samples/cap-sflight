@@ -2,16 +2,18 @@ package com.sap.cap.sflight.processor;
 
 import static cds.gen.travelservice.TravelService_.FLIGHT;
 import static cds.gen.travelservice.TravelService_.TRAVEL;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.util.List;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit.jupiter.EnabledIf;
 
 import com.sap.cds.ql.Select;
 import com.sap.cds.ql.Update;
@@ -28,15 +30,21 @@ import cds.gen.travelservice.TravelService;
 import cds.gen.travelservice.Travel_;
 
 @SpringBootTest
-@EnabledIf(value = "#{environment.matchesProfiles('!cloud')}")
 class UpdateFlightSeatsHandlerServiceIntegrationTest {
-
 
     @Autowired
     private TravelService travelService;
 
     @Autowired
     private PersistenceService dbService;
+
+    @Autowired
+    private Environment environment;
+
+    @BeforeEach
+    void skipInCloud() {
+        assumeThat(environment.acceptsProfiles(Profiles.of("!cloud")));
+    }
 
     @Test
     @WithMockUser("amy")
