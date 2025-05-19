@@ -2,6 +2,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.4.5</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+
   <groupId>com.sap.cap</groupId>
   <artifactId>sflight</artifactId>
   <version>${revision}</version>
@@ -15,9 +22,7 @@
 
     <!-- DEPENDENCIES VERSION -->
     <jdk.version>21</jdk.version>
-    <cds.services.version>3.10.0</cds.services.version>
-    <spring.boot.version>3.4.0</spring.boot.version>
-    <cdsdk.version>^8</cdsdk.version>
+    <cds.services.version>3.10.1</cds.services.version>
   </properties>
 
   <modules>
@@ -34,15 +39,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
-      <!-- SPRING BOOT -->
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring.boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
@@ -53,8 +49,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.14.0</version>
         <configuration>
-          <source>${jdk.version}</source>
-          <target>${jdk.version}</target>
+          <release>${jdk.version}</release>
         </configuration>
       </plugin>
 
@@ -62,7 +57,6 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring.boot.version}</version>
         <configuration>
           <skip>true</skip>
         </configuration>
@@ -111,9 +105,9 @@
                 <requireMavenVersion>
                   <version>3.5.0</version>
                 </requireMavenVersion>
-                <!-- <requireJavaVersion>
+                <requireJavaVersion>
                   <version>${jdk.version}</version>
-                </requireJavaVersion> -->
+                </requireJavaVersion>
                 <requireProperty>
                   <property>project.artifactId</property>
                   <regex>[^_]+</regex>
