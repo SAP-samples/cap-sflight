@@ -6,7 +6,6 @@ import static java.lang.Boolean.TRUE;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import cds.gen.travelservice.TravelService;
 import com.sap.cds.services.persistence.PersistenceService;
 import org.springframework.stereotype.Component;
 

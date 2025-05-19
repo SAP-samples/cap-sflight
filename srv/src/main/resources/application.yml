@@ -28,7 +28,7 @@ cds:
 ---
 spring:
     config.activate.on-profile: default
-    sql.init.schema-locations: classpath:schema-h2.sql
+    sql.init.platform: h2
 
 server:
     port: 4004
@@ -36,8 +36,3 @@ server:
 ---
 spring:
     config.activate.on-profile: cloud
-    sql.init.mode: never
-
-cds:
-    datasource:
-        csv.initialization-mode: never

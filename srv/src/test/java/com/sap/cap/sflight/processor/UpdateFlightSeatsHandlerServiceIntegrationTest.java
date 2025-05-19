@@ -8,12 +8,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.EnabledIf;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.sap.cds.ql.Select;
 import com.sap.cds.ql.Update;
@@ -29,7 +27,6 @@ import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService;
 import cds.gen.travelservice.Travel_;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @EnabledIf(value = "#{environment.matchesProfiles('!cloud')}")
 class UpdateFlightSeatsHandlerServiceIntegrationTest {
