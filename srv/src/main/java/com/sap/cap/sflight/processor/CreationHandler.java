@@ -26,7 +26,6 @@ import cds.gen.travelservice.BookingSupplement_;
 import cds.gen.travelservice.TravelDraftActivateContext;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
-import cds.gen.travelservice.TravelStatus;
 import cds.gen.travelservice.Travel_;
 
 @Component

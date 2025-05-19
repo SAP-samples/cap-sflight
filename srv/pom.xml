@@ -98,7 +98,6 @@
       <plugin>
         <groupId>org.graalvm.buildtools</groupId>
         <artifactId>native-maven-plugin</artifactId>
-        <version>${spring.boot.version}</version>
       </plugin>
 
       <plugin>
@@ -190,13 +189,6 @@
   </build>
 
   <profiles>
-    <!-- A profile that uses global installation of @sap/cds-dk -->
-    <profile>
-      <id>cdsdk-global</id>
-      <properties>
-        <cdsdk-global>true</cdsdk-global>
-      </properties>
-    </profile>
     <profile>
       <id>native</id>
       <build>
