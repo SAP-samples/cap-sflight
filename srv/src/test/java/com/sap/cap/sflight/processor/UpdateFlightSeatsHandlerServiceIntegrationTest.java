@@ -41,14 +41,12 @@ class UpdateFlightSeatsHandlerServiceIntegrationTest {
     @Autowired
     private Environment environment;
 
-    @BeforeEach
-    void skipInCloud() {
-        assumeThat(environment.acceptsProfiles(Profiles.of("!cloud")));
-    }
-
     @Test
     @WithMockUser("amy")
     void testUpdateFlightHandlerForAddedBooking() {
+        if (environment.acceptsProfiles(Profiles.of("cloud"))) {
+            return; // skip in cloud
+        }
 
         // Retrieve some flight to add it to the new booking
         Flight flightBeforeAdded = dbService.run(Select.from(FLIGHT).where(f -> f.ConnectionID().eq("0001"))).first(Flight.class).orElseThrow();
@@ -85,6 +83,9 @@ class UpdateFlightSeatsHandlerServiceIntegrationTest {
     @Test
     @WithMockUser("amy")
     void testUpdateFlightHandlerForDeletedBooking() {
+        if (environment.acceptsProfiles(Profiles.of("cloud"))) {
+            return; // skip in cloud
+        }
 
         // Query some active entity
         CqnSelect querySelect = Select.from(Travel_.class)
@@ -117,6 +118,9 @@ class UpdateFlightSeatsHandlerServiceIntegrationTest {
     @Test
     @WithMockUser("amy")
     void testUpdateFlightHandlerForUpdatedBooking() {
+        if (environment.acceptsProfiles(Profiles.of("cloud"))) {
+            return; // skip in cloud
+        }
 
         // Query some active entity
         CqnSelect querySelect = Select.from(Travel_.class)
