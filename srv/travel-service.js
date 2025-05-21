@@ -4,63 +4,56 @@ module.exports = class TravelService extends cds.ApplicationService { init() {
   // Reflected definitions from the service's CDS model
   const { Travel, Booking, BookingSupplement: Supplements } = this.entities
   const { Open='O', Accepted='A', Canceled='X' } = {}
-  const { today } = cds.builtin.types.Date
 
   // Fill in alternative keys as consecutive numbers for new Travels, Bookings, and Supplements.
   // Note: For Travels that can't be done at NEW events, that is when drafts are created,
   // but on CREATE only, as multiple users could create new Travels concurrently.
-
   this.before ('CREATE', Travel, async req => {
     let { maxID } = await SELECT.one (`max(TravelID) as maxID`) .from (Travel)
     req.data.TravelID = ++maxID
   })
 
-  this.before ('NEW', Travel.drafts, async req => {
-     req.data.BeginDate = today()
-     req.data.EndDate = today()
-     req.data.BookingFee = 0
-   })
-
+  // Prevent changing closed travels -> should be automated by Status-Transition Flows
   this.before ('NEW', Booking.drafts, async req => {
     let { status } = await SELECT `TravelStatus_code as status` .from (Travel.drafts, req.data.to_Travel_TravelUUID)
     if (status === Canceled) return req.reject (400, 'Cannot add new bookings to rejected travels.')
-    let { maxID } = await SELECT.one (`max(BookingID) as maxID`) .from (Booking.drafts) .where (req.data)
-    req.data.BookingID = ++maxID
-    req.data.BookingDate = today() // REVISIT: could that be filled in by CAP automatically?
   })
 
+  // Fill in IDs as sequence numbers -> could be automated by auto-generation
+  this.before ('NEW', Booking.drafts, async req => {
+    let { maxID } = await SELECT.one (`max(BookingID) as maxID`) .from (Booking.drafts) .where (req.data)
+    req.data.BookingID = ++maxID
+  })
+
+  // Fill in IDs as sequence numbers -> should be automated by auto-generation
   this.before ('NEW', Supplements.drafts, async req => {
     let { maxID } = await SELECT.one (`max(BookingSupplementID) as maxID`) .from (Supplements.drafts) .where (req.data)
     req.data.BookingSupplementID = ++maxID
   })
 
-
-  // Ensure BeginDate is not before today and not after EndDate.
-  this.before ('SAVE', Travel.drafts, req => {
+  // Ensure BeginDate is not after EndDate -> would be automated by Dynamic Validations
+  this.before ('SAVE', Travel, req => { // REVISIT: should also work for Travel.drafts instead of Travel, but doesn't (?)
     const { BeginDate, EndDate } = req.data
-    if (BeginDate < today()) req.error (400, `Begin Date must not be before today.`, 'in/BeginDate')
-    if (BeginDate > EndDate) req.error (400, `End Date must be after Begin Date.`, 'in/EndDate')
+    if (BeginDate > EndDate) req.error (400, `End Date must be after Begin Date.`, 'in/EndDate') // REVISIT: in/ should go away!
   })
 
 
   // Update a Travel's TotalPrice whenever its BookingFee is modified,
   // or when a nested Booking is deleted or its FlightPrice is modified,
   // or when a nested Supplement is deleted or its Price is modified.
-
-  this.on ('UPDATE', Travel.drafts,      (req, next) => update_totals (req, next, ['BookingFee', 'GoGreen']))
-  this.on ('UPDATE', Booking.drafts,     (req, next) => update_totals (req, next, ['FlightPrice']))
-  this.on ('UPDATE', Supplements.drafts, (req, next) => update_totals (req, next, ['Price']))
+  // -> should be automated by Calculated Elements + auto-GROUP BY
+  this.on ('PATCH', Travel.drafts,      (req, next) => update_totals (req, next, 'BookingFee', 'GoGreen'))
+  this.on ('PATCH', Booking.drafts,     (req, next) => update_totals (req, next, 'FlightPrice'))
+  this.on ('PATCH', Supplements.drafts, (req, next) => update_totals (req, next, 'Price'))
   this.on ('DELETE', Booking.drafts,     (req, next) => update_totals (req, next))
   this.on ('DELETE', Supplements.drafts, (req, next) => update_totals (req, next))
-
-  // Note: using .on handlers as we need to read a Booking's or Supplement's TravelUUID before they are deleted.
-  async function update_totals (req, next, fields) {
-    if (fields && !fields.some(f => f in req.data)) return next() //> skip if no relevant data changed
-    const travel = (req.data).TravelUUID || ( await SELECT.one `to_Travel.TravelUUID as id` .from (req.subject) ).id
+  // Note: Using .on handlers as we need to read a Booking's or Supplement's TravelUUID before they are deleted.
+  async function update_totals (req, next, ...fields) {
+    if (fields.length && !fields.some(f => f in req.data)) return next() //> skip if no relevant data changed
+    const travel = req.data.TravelUUID || ( await SELECT.one `to_Travel.TravelUUID as id` .from (req.subject) ).id
     await next() // actually UPDATE or DELETE the subject entity
     await update_totalsGreen(travel)
-    await cds.run(`UPDATE ${Travel.drafts} SET TotalPrice = coalesce (BookingFee,0)
-     + coalesce(GreenFee,0)
+    await cds.run(`UPDATE ${Travel.drafts} SET TotalPrice = coalesce (BookingFee,0) + coalesce(GreenFee,0)
      + ( SELECT coalesce (sum(FlightPrice),0) from ${Booking.drafts} where to_Travel_TravelUUID = TravelUUID )
      + ( SELECT coalesce (sum(Price),0) from ${Supplements.drafts} where to_Travel_TravelUUID = TravelUUID )
     WHERE TravelUUID = ?`, [travel])
@@ -70,16 +63,14 @@ module.exports = class TravelService extends cds.ApplicationService { init() {
    * Trees-for-Tickets: helper to update totals including green flight fee
    */
   async function update_totalsGreen(TravelUUID) {
-    const { GoGreen } = await SELECT.one .from(Travel.drafts) .columns('GoGreen') .where({ TravelUUID })
-    if (GoGreen) {
-      await UPDATE(Travel.drafts, TravelUUID)
-        .set `GreenFee = round(BookingFee * 0.1, 0)`
-        .set `TreesPlanted = round(BookingFee * 0.1, 0)`
-    } else {
-      await UPDATE(Travel.drafts, TravelUUID)
-        .set `GreenFee = 0`
-        .set `TreesPlanted = 0`
-    }
+    const { GoGreen, BookingFee } = await SELECT.one .from(Travel.drafts) .columns('GoGreen') .where({ TravelUUID })
+      await UPDATE(Travel.drafts, TravelUUID) .with ( GoGreen ? {
+        GreenFee: Math.round (BookingFee * 0.1, 0),
+        TreesPlanted: Math.round (BookingFee * 0.1, 0) // looks wrong
+      } : {
+        GreenFee: 0,
+        TreesPlanted: 0
+      })
   }
 
 

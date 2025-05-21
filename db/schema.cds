@@ -6,8 +6,8 @@ namespace sap.fe.cap.travel;
 entity Travel : managed {
   key TravelUUID : UUID;
   TravelID       : Integer default 0 @readonly;
-  BeginDate      : Date;
-  EndDate        : Date;
+  BeginDate      : Date default $now;
+  EndDate        : Date default $now;
   BookingFee     : Decimal(16,3) default 0;
   TotalPrice     : Decimal(16,3) @readonly;
   CurrencyCode   : Currency default 'EUR';
@@ -22,9 +22,9 @@ entity Travel : managed {
 entity Booking : managed {
   key BookingUUID   : UUID;
   BookingID         : Integer @readonly;
-  BookingDate       : Date;
+  BookingDate       : Date default $now;
   ConnectionID      : String(4);
-  FlightDate        : Date;
+  FlightDate        : Date default $now;
   FlightPrice       : Decimal(16,3);
   CurrencyCode      : Currency;
   BookingStatus     : Association to BookingStatus default 'N';
