@@ -1,0 +1,38 @@
+<mvc:View
+    controllerName="company.contactform.app.controller.ContactForm"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns="sap.m">
+    <Page id="contactFormPage" title="{i18n>contactFormTitle}">
+        <content>
+            <f:SimpleForm id="contactSimpleForm"
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanXL="3" labelSpanL="3" labelSpanM="12" labelSpanS="12"
+                adjustLabelSpan="false"
+                emptySpanXL="4" emptySpanL="4" emptySpanM="0" emptySpanS="0"
+                columnsXL="1" columnsL="1" columnsM="1"
+                singleContainerFullSize="false">
+                <f:content>
+                    <Label text="{i18n>formName}" required="true"/>
+                    <Input id="nameInput" value="{formModel>/name}" required="true"/>
+                    <Label text="{i18n>formEmail}" required="true"/>
+                    <Input id="emailInput" type="Email" value="{formModel>/email}" required="true"/>
+                    <Label text="{i18n>formCompany}"/>
+                    <Input id="companyInput" value="{formModel>/company}"/>
+                    <Label text="{i18n>formPhone}"/>
+                    <Input id="phoneInput" type="Tel" value="{formModel>/phone}"/>
+                    <Label text="{i18n>formMessage}" required="true"/>
+                    <TextArea id="messageInput" value="{formModel>/message}" rows="4" required="true"/>
+                </f:content>
+            </f:SimpleForm>
+        </content>
+        <footer>
+            <Toolbar>
+                <ToolbarSpacer/>
+                <Button id="submitButton" text="{i18n>submitButtonText}" type="Emphasized" press=".onSubmit"/>
+            </Toolbar>
+        </footer>
+    </Page>
+</mvc:View>

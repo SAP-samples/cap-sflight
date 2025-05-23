@@ -66,6 +66,10 @@ modules:
           artifacts:
             - travel-analytics.zip
           target-path: app/
+        - name: sflight-app-contact-form
+          artifacts:
+            - contact_form.zip # The build result (dist folder) should be zipped as contact_form.zip
+          target-path: app/
 
   # ------------- APPLICATION: TRAVEL PROCESSOR ----------------
   - name: sflight-app-travel-processor
@@ -89,6 +93,19 @@ modules:
       builder: custom
       commands:
         - npm run build
+      supported-platforms: []
+
+  # ------------- APPLICATION: CONTACT FORM ------------------
+  - name: sflight-app-contact-form
+  # ------------------------------------------------------------
+    type: html5
+    path: app/contact_form
+    build-parameters:
+      build-result: dist # The package.json for contact_form UI is set to build into 'dist'
+      builder: custom
+      commands:
+        - npm install # Ensure dependencies are installed
+        - npm run build # This uses ui5 build from app/contact_form/package.json
       supported-platforms: []
 
   # ------------------ DESTINATION CONTENT ---------------------

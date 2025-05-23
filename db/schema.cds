@@ -1,3 +1,4 @@
+using from './contact-schema';
 using { Currency, custom.managed, sap.common.CodeList } from './common';
 using {
   sap.fe.cap.travel.Airline,

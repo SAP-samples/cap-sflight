@@ -1,0 +1,18 @@
+{
+  "name": "contact-form-ui",
+  "version": "1.0.0",
+  "description": "Contact Form UI",
+  "scripts": {
+    "build": "ui5 build --all --clean-dest --dest dist",
+    "start": "ui5 serve --open index.html"
+  },
+  "devDependencies": {
+    "@ui5/cli": "^3.0.0"
+  },
+  "ui5": {
+    "dependencies": [
+      "@sap/ui5-builder-webide-extension",
+      "ui5-middlewares-livereload"
+    ]
+  }
+}
