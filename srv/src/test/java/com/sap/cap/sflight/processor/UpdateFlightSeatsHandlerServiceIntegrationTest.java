@@ -2,12 +2,10 @@ package com.sap.cap.sflight.processor;
 
 import static cds.gen.travelservice.TravelService_.FLIGHT;
 import static cds.gen.travelservice.TravelService_.TRAVEL;
-import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
