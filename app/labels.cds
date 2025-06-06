@@ -10,10 +10,10 @@ annotate schema.Travel with @title: '{i18n>Travel}' {
   BeginDate    @title: '{i18n>BeginDate}';
   EndDate      @title: '{i18n>EndDate}';
   Description  @title: '{i18n>Description}';
-  BookingFee   @title: '{i18n>BookingFee}'    @Measures.ISOCurrency: CurrencyCode_code;
-  TotalPrice   @title: '{i18n>TotalPrice}'    @Measures.ISOCurrency: CurrencyCode_code;
+  BookingFee   @title: '{i18n>BookingFee}'    @Measures.ISOCurrency: (CurrencyCode.code);
+  TotalPrice   @title: '{i18n>TotalPrice}'    @Measures.ISOCurrency: (CurrencyCode.code);
   GoGreen      @title: '{i18n>GoGreen}';  
-  GreenFee     @title: '{i18n>GreenFee}'      @Measures.ISOCurrency: CurrencyCode_code;
+  GreenFee     @title: '{i18n>GreenFee}'      @Measures.ISOCurrency: (CurrencyCode.code);
   TreesPlanted @title: '{i18n>TreesPlanted}'; 
   TravelStatus @title: '{i18n>TravelStatus}'  @Common.Text: TravelStatus.name     @Common.TextArrangement: #TextOnly;
   to_Customer  @title: '{i18n>CustomerID}'    @Common.Text: to_Customer.LastName;
@@ -32,7 +32,7 @@ annotate schema.Booking with @title: '{i18n>Booking}' {
   ConnectionID  @title: '{i18n>ConnectionID}';
   CurrencyCode  @title: '{i18n>CurrencyCode}';
   FlightDate    @title: '{i18n>FlightDate}';
-  FlightPrice   @title: '{i18n>FlightPrice}'    @Measures.ISOCurrency: CurrencyCode_code;
+  FlightPrice   @title: '{i18n>FlightPrice}'    @Measures.ISOCurrency: (CurrencyCode.code);
   BookingStatus @title: '{i18n>BookingStatus}'  @Common.Text: BookingStatus.name    @Common.TextArrangement: #TextOnly;
   to_Carrier    @title: '{i18n>AirlineID}'      @Common.Text: to_Carrier.Name;
   to_Customer   @title: '{i18n>CustomerID}'     @Common.Text: to_Customer.LastName;
@@ -47,7 +47,7 @@ annotate schema.BookingSupplement with @title: '{i18n>BookingSupplement}' {
   to_Booking           @UI.Hidden;
   to_Travel            @UI.Hidden;
   to_Supplement        @title: '{i18n>SupplementID}'  @Common.Text: to_Supplement.Description;
-  Price                @title: '{i18n>Price}'         @Measures.ISOCurrency: CurrencyCode_code;
+  Price                @title: '{i18n>Price}'         @Measures.ISOCurrency: (CurrencyCode.code);
   BookingSupplementID  @title: '{i18n>BookingSupplementID}';
   CurrencyCode         @title: '{i18n>CurrencyCode}';
 }
@@ -88,7 +88,7 @@ annotate schema.Flight with @title: '{i18n>Flight}' {
   FlightDate    @title: '{i18n>FlightDate}';
   ConnectionID  @title: '{i18n>ConnectionID}';
   CurrencyCode  @title: '{i18n>CurrencyCode}';
-  Price         @title: '{i18n>Price}'        @Measures.ISOCurrency: CurrencyCode_code;
+  Price         @title: '{i18n>Price}'        @Measures.ISOCurrency: (CurrencyCode.code);
   PlaneType     @title: '{i18n>PlaneType}';
   MaximumSeats  @title: '{i18n>MaximumSeats}';
   OccupiedSeats @title: '{i18n>OccupiedSeats}';
@@ -96,7 +96,7 @@ annotate schema.Flight with @title: '{i18n>Flight}' {
 
 annotate schema.Supplement with @title: '{i18n>Supplement}' {
   SupplementID @title: '{i18n>SupplementID}'  @Common.Text: Description;
-  Price        @title: '{i18n>Price}'         @Measures.ISOCurrency: CurrencyCode_code;
+  Price        @title: '{i18n>Price}'         @Measures.ISOCurrency: (CurrencyCode.code);
   CurrencyCode @title: '{i18n>CurrencyCode}';
   Description  @title: '{i18n>Description}';
 }
