@@ -52,6 +52,7 @@ dist/
 /chart
 
 # Experimental
+xxx-*
 xxx_*
 xxx/*
 
