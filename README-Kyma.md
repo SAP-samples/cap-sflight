@@ -21,7 +21,7 @@
 - BTP Subaccount with Kyma Runtime
 - BTP Subaccount with Cloud Foundry Space
 - HANA Cloud instance available for your Cloud Foundry space
-- BTP Entitlements for: *HANA HDI Services & Container* plan *hdi-shared*, *Launchpad Service* plan *standard*
+- BTP Entitlements for: *HANA HDI Services & Container* plan *hdi-shared*, *Build Work Zone* plan *standard*
 - Container Registry
 - Command Line Tools: `kubectl`, `kubectl-oidc_login`, `pack`, `docker`, `helm`, `cf`
 - Logged into Kyma Runtime (with `kubectl` CLI), Cloud Foundry space (with `cf` CLI) and Container Registry (with `docker login`)
@@ -57,7 +57,7 @@ cds add html5-repo
 Create a secret `container-registry` with credentials to access the container registry:
 
 ```
-bash deployment/kyma/scripts/create-container-registry-secret.sh
+bash .github/deployment/kyma/scripts/create-container-registry-secret.sh
 ```
 
 The *Docker Server* is the full-qualified hostname of your container registry.
@@ -67,7 +67,7 @@ The *Docker Server* is the full-qualified hostname of your container registry.
 This step is only required if you're using a BTP Trial account. If you're using a production or a free tier account then you can create HDI Container from Kyma directly by adding a [mapping to your Kyma namespace in your HANA Cloud Instance](https://blogs.sap.com/2022/12/15/consuming-sap-hana-cloud-from-the-kyma-environment/) and skip this step.
 
 ```
-bash deployment/kyma/scripts/create-db-secret.sh sflight-db
+bash .github/deployment/kyma/scripts/create-db-secret.sh sflight-db
 ```
 
 It will create a HDI container `sflight-db` instance on your currently targeted Cloud Foundry space and creates a secret `sflight-db` with the credentials in your current Kubernetes namespace.
@@ -112,7 +112,7 @@ html5-apps-deployer:
 ```
 
 4. Add backend destinations required by HTML5 Apps Deployer.
-   
+
 ```diff
 -  backendDestinations: {}
 +  backendDestinations:
@@ -199,7 +199,7 @@ pack build $YOUR_CONTAINER_REGISTRY/sflight-srv \
 ## Build HTML5 application deployer image
 
 ```
-bash deployment/kyma/scripts/build-ui-image.sh
+bash .github/deployment/kyma/scripts/build-ui-image.sh
 ```
 
 ## Push docker images
@@ -220,11 +220,11 @@ helm install sflight ./chart --set-file xsuaa.jsonParameters=xs-security.json
 
 ## Access the UI
 
-1. Create Launchpad Service subscription in the BTP Cockpit
+1. Create Build Work Zone subscription in the BTP Cockpit
 2. Create a role collection `sflight`
 3. Add role `admin` of `sflight.tXYZ` application to role collection
 4. Add your user to the role collection
 5. Goto **HTML5 Applications**
 6. Start HTML5 application `sapfecaptravel`
 
-Additionally, you can add the UI to a Launchpad Service site like it is described in in the last two steps of [this tutorial](https://developers.sap.com/tutorials/btp-app-kyma-launchpad-service.html#9aab2dd0-18ea-4ccd-bc44-24e87c845740).
+Additionally, you can add the UI to a Build Work Zone site like it is described in in the last two steps of [this tutorial](https://developers.sap.com/tutorials/btp-app-kyma-launchpad-service.html#9aab2dd0-18ea-4ccd-bc44-24e87c845740).

@@ -26,7 +26,6 @@ import cds.gen.travelservice.BookingSupplement_;
 import cds.gen.travelservice.TravelDraftActivateContext;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
-import cds.gen.travelservice.TravelStatus;
 import cds.gen.travelservice.Travel_;
 
 @Component
@@ -44,14 +43,6 @@ public class CreationHandler implements EventHandler {
 
 	@Before(event = { CqnService.EVENT_CREATE, CqnService.EVENT_UPDATE, DraftService.EVENT_DRAFT_CREATE}, entity = Travel_.CDS_NAME)
 	public void setBookingDateIfNotProvided(final Travel travel) {
-		if (travel.beginDate() == null) {
-			travel.beginDate(LocalDate.now());
-		}
-
-		if (travel.endDate() == null) {
-			travel.endDate(LocalDate.now().plusDays(1));
-		}
-
 		if (travel.toBooking() != null) {
 			for (Booking booking : travel.toBooking()) {
 				if (booking.bookingDate() == null) {
@@ -83,8 +74,7 @@ public class CreationHandler implements EventHandler {
 
 	@Before(event = { CqnService.EVENT_CREATE, CqnService.EVENT_UPDATE }, entity = Travel_.CDS_NAME)
 	public void checkTravelEndDateIsAfterBeginDate(Travel travel) {
-
-		if (travel.beginDate() != null && travel.endDate() != null) {
+		if(travel.beginDate() != null && travel.endDate() != null) {
 			if (travel.beginDate().isAfter(travel.endDate())) {
 				throw new IllegalTravelDateException("error.travel.date.illegal", travel.travelID(),
 						travel.beginDate(), travel.endDate());
@@ -150,13 +140,6 @@ public class CreationHandler implements EventHandler {
 		for (Booking booking : bookingsWithoutId) {
 			booking.bookingID(++currentMaxBookingId);
 		}
-	}
-
-	@Before(event = CqnService.EVENT_CREATE, entity = Travel_.CDS_NAME)
-	public void initialTravelStatus(final Travel travel) {
-		TravelStatus travelStatus = TravelStatus.create();
-		travelStatus.code("O");
-		travel.travelStatus(travelStatus);
 	}
 
 	@Before(event = DraftService.EVENT_DRAFT_NEW, entity = Travel_.CDS_NAME)

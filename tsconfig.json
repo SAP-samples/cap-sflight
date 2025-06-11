@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "nodenext",
+        "rootDir": "./",
+        "baseUrl": "./",
+        "allowJs": true,
+        "esModuleInterop": true,
+        "inlineSources": true,
+        "inlineSourceMap": true,
+        "moduleResolution": "nodenext",
+        "paths": {
+            "#cds-models/*": [
+                "./@cds-models/*"
+            ]
+        },
+        "types": [
+            "jest",
+            "node",
+            "@cap-js/cds-types",
+        ],
+    },
+    "include": [
+        "./srv/**/*"
+    ]
+}

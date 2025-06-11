@@ -28,6 +28,7 @@ cds:
 ---
 spring:
     config.activate.on-profile: default
+    sql.init.platform: h2
 
 server:
     port: 4004
@@ -35,8 +36,3 @@ server:
 ---
 spring:
     config.activate.on-profile: cloud
-    sql.init.mode: never
-
-cds:
-    datasource:
-        csv.initialization-mode: never

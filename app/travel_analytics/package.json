@@ -12,7 +12,11 @@
     "start": "ui5 serve",
     "test": "npm run test:node && npm run test:java",
     "test:java": "karma start --server=java --single-run",
-    "test:node": "karma start --server=node --single-run"
+    "test:node": "karma start --server=node --single-run",
+    "ts-typecheck": "tsc --noEmit",
+    "prestart": "npm run ts-typecheck",
+    "prebuild": "npm run ts-typecheck",
+    "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
   },
   "keywords": [
     "ui5",
@@ -20,12 +24,19 @@
     "sapui5"
   ],
   "devDependencies": {
+    "@sap/ux-ui5-tooling": "1",
+    "@sapui5/types": "^1.130.0",
+    "@typescript-eslint/eslint-plugin": "^8",
+    "@typescript-eslint/parser": "^8",
     "@ui5/cli": "^4.0.0",
     "karma": "^6.4.3",
     "karma-chrome-launcher": "^3.2.0",
     "karma-ui5": "^4.0.1",
-    "puppeteer": "^23.0.2",
+    "karma-ui5-transpile": "^3.5.1",
+    "puppeteer": "^24",
+    "typescript": "^5.1.6",
     "ui5-middleware-simpleproxy": "^3.2.16",
-    "ui5-task-zipper": "^3.1.4"
+    "ui5-task-zipper": "^3.1.4",
+    "ui5-tooling-transpile": "^3.3.7"
   }
 }

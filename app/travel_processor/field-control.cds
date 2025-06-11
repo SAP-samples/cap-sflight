@@ -4,9 +4,15 @@ using TravelService from '../../srv/travel-service';
 // annotations that control the behavior of fields and actions
 //
 
-annotate TravelService.Travel with @(Common.SideEffects: {
-  SourceProperties: [BookingFee],
-  TargetProperties: ['TotalPrice']
+annotate TravelService.Travel with @(Common : {
+  SideEffects: {
+    SourceProperties: [BookingFee],
+    TargetProperties: ['TotalPrice', 'GreenFee', 'TreesPlanted']
+  },
+  SideEffects #GoGreen:{
+    SourceProperties: [GoGreen],
+    TargetProperties: ['TotalPrice', 'GreenFee', 'TreesPlanted']
+  }
 }){
   BookingFee  @Common.FieldControl  : TravelStatus.fieldControl;
   BeginDate   @Common.FieldControl  : TravelStatus.fieldControl;
@@ -24,7 +30,8 @@ annotate TravelService.Travel with @(Common.SideEffects: {
     Common.SideEffects.TargetProperties : ['in/TravelStatus_code'],
   );
   deductDiscount @(
-    Core.OperationAvailable : { $edmJson: { $Eq: [{ $Path: 'in/TravelStatus_code'}, 'O']}}
+    Core.OperationAvailable : { $edmJson: { $Eq: [{ $Path: 'in/TravelStatus_code'}, 'O']}},
+    Common.SideEffects.TargetProperties : ['in/TotalPrice', 'in/BookingFee'],
   );
 }
 
@@ -33,8 +40,7 @@ annotate TravelService.Travel @(
         SourceEntities : [
             to_Booking
         ],
-       TargetProperties : [
-           'TotalPrice'
+       TargetProperties : ['TotalPrice'
        ]
     }
 );

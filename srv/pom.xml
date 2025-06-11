@@ -103,7 +103,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>3.6.1</version>
         <executions>
           <execution>
             <id>add-source</id>
@@ -141,12 +141,12 @@
           </execution>
 
           <execution>
-            <id>install-cdsdk</id>
+            <id>cds.npm-ci</id>
             <goals>
-              <goal>install-cdsdk</goal>
+              <goal>npm</goal>
             </goals>
             <configuration>
-              <version>${cdsdk.version}</version>
+              <arguments>ci</arguments>
             </configuration>
           </execution>
 
@@ -158,8 +158,7 @@
             <configuration>
               <commands>
                 <command>build --for java</command>
-                <command>deploy --to h2 --dry &gt;
-									"${project.basedir}/src/main/resources/schema.sql"</command>
+                <command>deploy --to h2 --dry --out "${project.basedir}/src/main/resources/schema-h2.sql"</command>
               </commands>
             </configuration>
           </execution>
@@ -181,7 +180,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.5.2</version>
+        <version>3.5.3</version>
         <configuration>
           <failIfNoTests>true</failIfNoTests>
         </configuration>
@@ -190,51 +189,6 @@
   </build>
 
   <profiles>
-    <!-- A profile that uses global installation of @sap/cds-dk -->
-    <profile>
-      <id>cdsdk-global</id>
-      <properties>
-        <cdsdk-global>true</cdsdk-global>
-      </properties>
-    </profile>
-    <profile>
-      <id>no-cds</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.sap.cds</groupId>
-            <artifactId>cds-maven-plugin</artifactId>
-            <version>${cds.services.version}</version>
-            <executions>
-              <execution>
-                <id>cds.clean</id>
-                <phase>none</phase>
-              </execution>
-
-              <execution>
-                <id>cds.install-node</id>
-                <phase>none</phase>
-              </execution>
-
-              <execution>
-                <id>install-cdsdk</id>
-                <phase>none</phase>
-              </execution>
-
-              <execution>
-                <id>cds.build</id>
-                <phase>none</phase>
-              </execution>
-
-              <execution>
-                <id>cds.generate</id>
-                <phase>none</phase>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
     <profile>
       <id>native</id>
       <build>
