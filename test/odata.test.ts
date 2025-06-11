@@ -3,8 +3,8 @@ import { Travel } from '#cds-models/TravelService'
 const { GET, POST, PATCH, axios, expect } = cds.test(__dirname+'/..')
 const EDIT = (url) => POST (url+'/TravelService.draftEdit',{})
 const SAVE = (url) => POST (url+'/TravelService.draftActivate')
-axios.defaults.headers['content-type'] = 'application/json;IEEE754Compatible=true' // REVISIT: can be removed when @sap/cds 5.1.5 is released?
-axios.defaults.headers.accept = 'application/json;IEEE754Compatible=true' //> for cds^7; decimals and int64s as strings with cds^8 to ensure precision
+axios.defaults.headers['content-type'] = 'application/json;IEEE754Compatible=true'
+axios.defaults.headers.accept = 'application/json;IEEE754Compatible=true'
 axios.defaults.auth = { username: 'alice', password: 'admin' }
 
 describe ("Basic Querying", () => {
