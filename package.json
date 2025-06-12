@@ -18,5 +18,43 @@
     "@cap-js/sqlite": ">=1"
   },
   "license": "SAP SAMPLE CODE LICENSE",
-  "private": true
+  "private": true,
+  "cds": {
+    "requires": {
+      "[production]": {
+        "db": {
+          "kind": "hana"
+        },
+        "auth": {
+          "kind": "xsuaa"
+        }
+      },
+      "[development]": {
+        "auth": {
+          "kind": "mocked-auth",
+          "users": {
+            "rose": {
+              "roles": []
+            },
+            "martha": {
+              "roles": [
+                "reviewer"
+              ]
+            },
+            "amy": {
+              "roles": [
+                "processor"
+              ]
+            },
+            "admin": {
+              "password": "admin",
+              "roles": [
+                "admin"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
 }
