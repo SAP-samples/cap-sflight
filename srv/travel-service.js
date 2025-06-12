@@ -85,7 +85,7 @@ module.exports = class TravelService extends cds.ApplicationService { init() {
   this.on (deductDiscount, async req => {
     let discount = req.data.percent / 100
     let succeeded = await UPDATE (req.subject) .where ({ TravelStatus_code: Open, BookingFee: { 'is not': null } })
-      .with `TotalPrice = round (TotalPrice - BookingFee * ${discount}, 3)`
+      .with `TotalPrice = round (TotalPrice - TotalPrice * ${discount}, 3)`
       .with `BookingFee = round (BookingFee - BookingFee * ${discount}, 3)`
 
     if (!succeeded) { //> let's find out why...
