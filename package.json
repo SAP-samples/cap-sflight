@@ -10,12 +10,12 @@
     "test": "chest test"
   },
   "dependencies": {
-    "@sap/cds": ">=8.4.0",
+    "@sap/cds": ">=9",
     "express": "^4"
   },
   "devDependencies": {
     "@cap-js/cds-test": "*",
-    "@cap-js/sqlite": ">=1"
+    "@cap-js/sqlite": ">=2"
   },
   "license": "SAP SAMPLE CODE LICENSE",
   "private": true,
