@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.0</version>
+    <version>3.5.3</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -67,7 +67,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-        <version>1.7.0</version>
+        <version>1.7.1</version>
         <configuration>
           <updatePomFile>true</updatePomFile>
           <flattenMode>resolveCiFriendliesOnly</flattenMode>
