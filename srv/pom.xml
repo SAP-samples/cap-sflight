@@ -69,6 +69,18 @@
       <artifactId>cds-feature-k8s</artifactId>
       <scope>runtime</scope>
     </dependency>
+
+  	<dependency>
+  		<groupId>com.sap.cloud.security.ams.client</groupId>
+  		<artifactId>jakarta-ams</artifactId>
+  		<version>${sap.cloud.security.ams.version}</version>
+  	</dependency>
+
+  	<dependency>
+  		<groupId>com.sap.cloud.security.ams.client</groupId>
+  		<artifactId>cap-ams-support</artifactId>
+  		<version>${sap.cloud.security.ams.version}</version>
+  	</dependency>
   </dependencies>
 
   <build>
@@ -158,6 +170,7 @@
               <commands>
                 <command>build --for java</command>
                 <command>deploy --to h2 --dry --out "${project.basedir}/src/main/resources/schema-h2.sql"</command>
+              	<command>build --for ams</command>
               </commands>
             </configuration>
           </execution>
@@ -184,6 +197,26 @@
           <failIfNoTests>true</failIfNoTests>
         </configuration>
       </plugin>
+
+    	<plugin>
+    		<groupId>com.sap.cloud.security.ams.client</groupId>
+    		<artifactId>dcl-compiler-plugin</artifactId>
+    		<version>${sap.cloud.security.ams.version}</version>
+    		<executions>
+    			<execution>
+    				<id>dcl.compile</id>
+    				<goals>
+    					<goal>compile</goal>
+    				</goals>
+    				<configuration>
+	    				<sourceDirectory>${project.basedir}/src/main/resources/ams</sourceDirectory>
+	    				<dcn>true</dcn>
+	    				<dcnParameter>pretty</dcnParameter>
+	    				<compileTestToDcn>true</compileTestToDcn>
+    				</configuration>
+    			</execution>
+    		</executions>
+    	</plugin>
     </plugins>
   </build>
 

@@ -1,1 +1,7 @@
-{}
+{
+  "requires": {
+    "auth": {
+      "kind": "ias"
+    }
+  }
+}

@@ -15,6 +15,8 @@ service TravelService @(path:'/processor') {
 
 
 
+
+
 // @restrict annotations that you know and love!
 annotate TravelService.Travel with @(restrict: [
   { grant: [ 'READ' ],                         to: 'authenticated-user' },
@@ -23,6 +25,18 @@ annotate TravelService.Travel with @(restrict: [
 ]);
 
 
+
+
+
+
+
+// Enhance with attributes, even compile-safe!
+annotate TravelService.Travel with @ams.attributes: {
+  // AMS name   : (domain path expression)
+  AgencyID      : (to_Agency.AgencyID),
+  AgencyLocation: (to_Agency.CountryCode.code),
+  Budget        : (TotalPrice)
+};
 
 
 

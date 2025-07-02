@@ -44,7 +44,11 @@ modules:
       - name: sflight-db
       - name: sflight-uaa
     build-parameters:
-      ignore: ["node_modules/"]
+      ignore:
+        - "node_modules/"
+      builder: custom
+      commands:
+        - npm run build
 
   # ------------------ APPLICATION CONTENT ---------------------
   - name: sflight-appcontent
@@ -126,6 +130,52 @@ modules:
               ServiceInstanceName: sflight-uaa
               ServiceKeyName: sflight-uaa-key
               sap.cloud.service: sap.fe.cap.sflight
+  - name: sflight-srv
+    type: java
+    path: srv
+    requires:
+      - name: sflight-auth
+        parameters:
+          config:
+            credential-type: X509_GENERATED
+            app-identifier: srv
+      - name: sflight-db
+      - name: sflight-uaa
+    parameters:
+      routes:
+        - route: "${default-url}"
+        - route: "${default-host}.cert.${default-domain}"
+    provides:
+      - name: srv-api
+        properties:
+          srv-cert-url: '${protocol}://${default-host}.cert.${default-domain}'
+    deployed-after:
+      - sflight-ams-policies-deployer
+    properties:
+      AMS_DCL_ROOT: ams/dcl
+
+  - name: sflight-ams-policies-deployer
+    type: javascript.nodejs
+    path: .
+    build-parameters:
+      builder: custom
+      commands:
+        - npx cds build --for ams
+      build-result: srv/src/gen/policies
+    parameters:
+      buildpack: nodejs_buildpack
+      no-route: true
+      no-start: true
+      tasks:
+        - name: deploy-dcl
+          command: npm start
+          memory: 512M
+    requires:
+      - name: sflight-auth
+        parameters:
+          config:
+            credential-type: X509_GENERATED
+            app-identifier: ams-policy-deployer
 
 resources:
   # ------------------------------------------------------------
@@ -202,4 +252,14 @@ resources:
                 ProxyType: Internet
                 HTML5.ForwardAuthToken: true
                 HTML5.DynamicDestination: true
-
+  - name: sflight-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: identity
+      service-name: sflight-auth
+      service-plan: application
+      config:
+        display-name: sflight
+        authorization:
+          enabled: true
+        xsuaa-cross-consumption: true

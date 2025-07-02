@@ -13,15 +13,21 @@ cds:
     security:
       mock.users:
 
-        - name: Uma # no roles
+        - name: Uma # no policies
 
         - name: Paula
-          roles:
-            - Planner
+          policies:
+            # - cap.TravelPlanner
+            - local.TravelPlannerEU
 
         - name: Richard
-          roles:
-            - Reviewer
+          policies:
+            # - cap.TravelReviewer
+            - local.TravelReviewerJunior
+
+      authorization:
+          ams:  # This will not be necessary anymore in the future.
+              test-sources: "target/dcl_opa"
 
     odata-v4:
         endpoint:
@@ -30,6 +36,8 @@ cds:
 logging:
   level:
     com.sap.cds.security: DEBUG
+    com.sap.cloud.security.ams: DEBUG
+    com.sap.cloud.security.ams.dcl.capsupport: DEBUG
 
 ---
 spring:
