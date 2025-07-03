@@ -27,6 +27,7 @@ import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
+import com.sap.cds.services.utils.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -95,16 +96,27 @@ public class UpdateFlightSeatsHandler implements EventHandler {
     private void handleUpdatedTravelWithDiffProcessor(EventContext context, Travel newState,
             Map<Status, List<Booking>> modifications) {
 
+
+        if(StringUtils.isEmpty(newState.travelUUID())) {
+            // this update does not even have a TravelUUID. No reason to continue.
+            return;
+        }
+
         CdsDiffProcessor diffProcessor = DiffProcessor.create();
         Travel oldState = getOldStateTravel(newState.travelUUID());
         diffProcessor.add(
                 (path, cdsElement, cdsType) -> {
-
-                    if (path.target().type().getQualifiedName().equals(Travel_.CDS_NAME)
-                            && cdsElement.getName().equals(TO_BOOKING)) {
-                        return true;
-                    } else return path.target().type().getQualifiedName().equals(Flight_.CDS_NAME)
-                            && cdsElement.getName().equals(CONNECTION_ID);
+                    if (cdsElement != null) {
+                        if (path.target().type().getQualifiedName().equals(Travel_.CDS_NAME)
+                                && cdsElement.getName().equals(TO_BOOKING)) {
+                            return true;
+                        } else {
+                            return path.target().type().getQualifiedName().equals(Flight_.CDS_NAME)
+                                && cdsElement.getName().equals(CONNECTION_ID);
+                        }
+                    } else {
+                        return false;
+                    }
                 },
                 new BookingDiffVisitor(modifications, newState, oldState));
 

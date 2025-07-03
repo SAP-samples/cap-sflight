@@ -1,5 +1,24 @@
 package com.sap.cap.sflight.processor;
 
+import static cds.gen.travelservice.TravelService_.FLIGHT;
+import static cds.gen.travelservice.TravelService_.TRAVEL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.time.LocalDate;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
+import org.springframework.security.test.context.support.WithMockUser;
+
+import com.sap.cds.ql.Select;
+import com.sap.cds.ql.Update;
+import com.sap.cds.ql.cqn.CqnSelect;
+import com.sap.cds.ql.cqn.CqnUpdate;
+import com.sap.cds.services.persistence.PersistenceService;
+
 import cds.gen.travelservice.Booking;
 import cds.gen.travelservice.Booking_;
 import cds.gen.travelservice.Flight;
@@ -7,32 +26,9 @@ import cds.gen.travelservice.Flight_;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService;
 import cds.gen.travelservice.Travel_;
-import com.sap.cds.ql.Select;
-import com.sap.cds.ql.Update;
-import com.sap.cds.ql.cqn.CqnSelect;
-import com.sap.cds.ql.cqn.CqnUpdate;
-import com.sap.cds.services.persistence.PersistenceService;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit.jupiter.EnabledIf;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import static cds.gen.travelservice.TravelService_.FLIGHT;
-import static cds.gen.travelservice.TravelService_.TRAVEL;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
-@EnabledIf(value = "#{environment.matchesProfiles('!cloud')}")
 class UpdateFlightSeatsHandlerServiceIntegrationTest {
-
 
     @Autowired
     private TravelService travelService;
@@ -40,9 +36,15 @@ class UpdateFlightSeatsHandlerServiceIntegrationTest {
     @Autowired
     private PersistenceService dbService;
 
+    @Autowired
+    private Environment environment;
+
     @Test
     @WithMockUser("amy")
     void testUpdateFlightHandlerForAddedBooking() {
+        if (environment.acceptsProfiles(Profiles.of("cloud"))) {
+            return; // skip in cloud
+        }
 
         // Retrieve some flight to add it to the new booking
         Flight flightBeforeAdded = dbService.run(Select.from(FLIGHT).where(f -> f.ConnectionID().eq("0001"))).first(Flight.class).orElseThrow();
@@ -79,6 +81,9 @@ class UpdateFlightSeatsHandlerServiceIntegrationTest {
     @Test
     @WithMockUser("amy")
     void testUpdateFlightHandlerForDeletedBooking() {
+        if (environment.acceptsProfiles(Profiles.of("cloud"))) {
+            return; // skip in cloud
+        }
 
         // Query some active entity
         CqnSelect querySelect = Select.from(Travel_.class)
@@ -111,6 +116,9 @@ class UpdateFlightSeatsHandlerServiceIntegrationTest {
     @Test
     @WithMockUser("amy")
     void testUpdateFlightHandlerForUpdatedBooking() {
+        if (environment.acceptsProfiles(Profiles.of("cloud"))) {
+            return; // skip in cloud
+        }
 
         // Query some active entity
         CqnSelect querySelect = Select.from(Travel_.class)

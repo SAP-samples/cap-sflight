@@ -42,6 +42,7 @@ annotate TravelService.Travel with @(Common : {
   );
   deductDiscount @(
     Core.OperationAvailable : ($self.TravelStatus.code = 'O'),
+    Common.SideEffects.TargetProperties : ['in/TotalPrice', 'in/BookingFee'],
   );
 }
 

@@ -26,7 +26,6 @@ import cds.gen.travelservice.BookingSupplement_;
 import cds.gen.travelservice.TravelDraftActivateContext;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService_;
-import cds.gen.travelservice.TravelStatus;
 import cds.gen.travelservice.Travel_;
 
 @Component
@@ -75,14 +74,16 @@ public class CreationHandler implements EventHandler {
 
 	@Before(event = { CqnService.EVENT_CREATE, CqnService.EVENT_UPDATE }, entity = Travel_.CDS_NAME)
 	public void checkTravelEndDateIsAfterBeginDate(Travel travel) {
-		if (travel.beginDate().isAfter(travel.endDate())) {
-			throw new IllegalTravelDateException("error.travel.date.illegal", travel.travelID(),
-					travel.beginDate(), travel.endDate());
-		}
+		if(travel.beginDate() != null && travel.endDate() != null) {
+			if (travel.beginDate().isAfter(travel.endDate())) {
+				throw new IllegalTravelDateException("error.travel.date.illegal", travel.travelID(),
+						travel.beginDate(), travel.endDate());
+			}
 
-		if (travel.beginDate().isBefore(LocalDate.now().atStartOfDay().toLocalDate())) {
-			throw new IllegalTravelDateException("error.travel.date.past", travel.travelID(),
-					travel.beginDate());
+			if (travel.beginDate().isBefore(LocalDate.now().atStartOfDay().toLocalDate())) {
+				throw new IllegalTravelDateException("error.travel.date.past", travel.travelID(),
+						travel.beginDate());
+			}
 		}
 	}
 
