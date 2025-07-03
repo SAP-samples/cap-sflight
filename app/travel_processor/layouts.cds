@@ -60,7 +60,7 @@ annotate TravelService.Travel with @UI : {
     { Value : TotalPrice, @HTML5.CssDefaults: {width:'12em'} },
     {
       Value : (TravelStatus.code),
-      Criticality : (TravelStatus.code = 'O' ? 2 : (TravelStatus.code = 'A' ? 3 : 0)),
+      Criticality : (TravelStatus.code = #Open ? 2 : (TravelStatus.code = #Accepted ? 3 : 0)),
       @UI.Importance : #High,
       @HTML5.CssDefaults: {width:'10em'}
     }
@@ -116,7 +116,7 @@ annotate TravelService.Travel with @UI : {
     {
       $Type       : 'UI.DataField',
       Value       : (TravelStatus.code),
-      Criticality : (TravelStatus.code = 'O' ? 2 : (TravelStatus.code = 'A' ? 3 : 0)),
+      Criticality : (TravelStatus.code = #Open ? 2 : (TravelStatus.code = #Accepted ? 3 : 0)),
       Label : '{i18n>Status}' // label only necessary if differs from title of element
     }
   ]},
@@ -185,7 +185,7 @@ annotate TravelService.Booking with @UI : {
     { Value : FlightDate             },
     { Value : FlightPrice            },
     { Value : (BookingStatus.code),
-      Criticality : (BookingStatus.code = 'N' ? 2 : (BookingStatus.code = 'B' ? 3 : 0)),
+      Criticality : (BookingStatus.code = #New ? 2 : (BookingStatus.code = #Booked ? 3 : 0)),
     }
   ],
   Facets : [{
@@ -215,11 +215,11 @@ annotate TravelService.Booking with @UI : {
     { Value : (to_Customer.CustomerID) },
     { Value : BookingDate,           },
     { Value : (BookingStatus.code),
-      Criticality : (BookingStatus.code = 'N' ? 2 : (BookingStatus.code = 'B' ? 3 : 0)),
-    }
+      Criticality : (BookingStatus.code = #New ? 2 : (BookingStatus.code = #Booked ? 3 : 0)),
+     }
   ]},
   FieldGroup #Flight : { Data : [
-    { Value : (to_Carrier.AirlineID)   },
+    { Value : (to_Carrier.AirlineID) },
     { Value : ConnectionID           },
     { Value : FlightDate             },
     { Value : FlightPrice            }

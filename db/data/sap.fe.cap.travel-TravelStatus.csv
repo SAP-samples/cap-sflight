@@ -1,4 +1,4 @@
-code;name;fieldControl;createDeleteHidden;insertDeleteRestriction
-O;Open;7;false;true
-A;Accepted;1;true;false
-X;Canceled;7;true;false
+code;name
+O;Open
+A;Accepted
+X;Canceled

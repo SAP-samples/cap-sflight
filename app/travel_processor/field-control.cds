@@ -4,6 +4,18 @@ using TravelService from '../../srv/travel-service';
 // annotations that control the behavior of fields and actions
 //
 
+
+using { sap.fe.cap.travel.TravelStatus } from '../../db/schema';
+
+// As we use field control based on travel status for many elements, we do the computation in a calculated element
+// right here instead of repeating the same expression in multiple annotations
+extend TravelStatus with {  
+  // can't use UInt8 (which would automatically be mapped to Edm.Byte) because it's not supported on H2
+  fieldControl: Int16 @odata.Type:'Edm.Byte' enum {Inapplicable = 0; ReadOnly = 1; Optional = 3; Mandatory = 7;}
+    = (code = #Accepted ? #ReadOnly : #Mandatory );
+}
+
+
 annotate TravelService.Travel with @(Common : {
   SideEffects: {
     SourceProperties: [BookingFee],
@@ -33,15 +45,15 @@ annotate TravelService.Travel with @(Common : {
 
 } actions {
   rejectTravel @(
-    Core.OperationAvailable : ($self.TravelStatus.code != 'X'),
+    Core.OperationAvailable : ($self.TravelStatus.code != #Canceled),
     Common.SideEffects.TargetProperties : ['in/TravelStatus_code'],
   );
   acceptTravel @(
-    Core.OperationAvailable : ($self.TravelStatus.code != 'A'),
+    Core.OperationAvailable : ($self.TravelStatus.code != #Accepted),
     Common.SideEffects.TargetProperties : ['in/TravelStatus_code'],
   );
   deductDiscount @(
-    Core.OperationAvailable : ($self.TravelStatus.code = 'O'),
+    Core.OperationAvailable : ($self.TravelStatus.code = #Open),
     Common.SideEffects.TargetProperties : ['in/TotalPrice', 'in/BookingFee'],
   );
 }
@@ -53,9 +65,8 @@ annotate TravelService.Travel @(
   }
 );
 
-
-annotate TravelService.Booking with @UI.CreateHidden : (to_Travel.TravelStatus.code != 'O');
-annotate TravelService.Booking with @UI.DeleteHidden : (to_Travel.TravelStatus.code != 'O');
+annotate TravelService.Booking with @UI.CreateHidden : (to_Travel.TravelStatus.code != #Open);
+annotate TravelService.Booking with @UI.DeleteHidden : (to_Travel.TravelStatus.code != #Open);
 
 // ok
 // annotate TravelService.Booking with @UI.CreateHidden : (not to_Travel.TravelStatus.createDeleteHidden);
@@ -76,7 +87,6 @@ annotate TravelService.Booking with @UI.DeleteHidden : (to_Travel.TravelStatus.c
 // X;   true;              false
 
 
-
 annotate TravelService.Booking {
   BookingDate   @Core.Computed;
   ConnectionID  @Common.FieldControl  : to_Travel.TravelStatus_ctrl;
@@ -93,10 +103,10 @@ annotate TravelService.Booking with @(
       {
         NavigationProperty : to_BookSupplement,
         InsertRestrictions : {
-          Insertable : (to_Travel.TravelStatus.code = 'O')
+          Insertable : (to_Travel.TravelStatus.code = #Open)
         },
         DeleteRestrictions : {
-          Deletable : (to_Travel.TravelStatus.code = 'O')
+          Deletable : (to_Travel.TravelStatus.code = #Open)
         }
       }
     ]

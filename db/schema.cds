@@ -97,15 +97,6 @@ type TravelStatusCode : String(1) enum {
 
 entity TravelStatus : CodeList {
   key code : TravelStatusCode;
-  // can't use UInt8 (which would automatically be mapped to Edm.Byte) because it's not supported on H2
-  fieldControl: Int16 @odata.Type:'Edm.Byte' enum {
-    Inapplicable = 0;
-    ReadOnly = 1;
-    Optional = 3;
-    Mandatory = 7;
-  };
-  createDeleteHidden: Boolean;
-  insertDeleteRestriction: Boolean; // = NOT createDeleteHidden
 }
 
 extend entity Travel with {
