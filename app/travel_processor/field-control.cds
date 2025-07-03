@@ -4,18 +4,6 @@ using TravelService from '../../srv/travel-service';
 // annotations that control the behavior of fields and actions
 //
 
-
-using { sap.fe.cap.travel.TravelStatus } from '../../db/schema';
-
-// As we use field control based on travel status for many elements, we do the computation in a calculated element
-// right here instead of repeating the same expression in multiple annotations
-extend TravelStatus with {  
-  // can't use UInt8 (which would automatically be mapped to Edm.Byte) because it's not supported on H2
-  fieldControl: Int16 @odata.Type:'Edm.Byte' enum {Inapplicable = 0; ReadOnly = 1; Optional = 3; Mandatory = 7;}
-    = (code = #Accepted ? #ReadOnly : #Mandatory );
-}
-
-
 annotate TravelService.Travel with @(Common : {
   SideEffects: {
     SourceProperties: [BookingFee],
@@ -26,11 +14,11 @@ annotate TravelService.Travel with @(Common : {
     TargetProperties: ['TotalPrice', 'GreenFee', 'TreesPlanted']
   }
 }){
-  BookingFee  @Common.FieldControl  : TravelStatus.fieldControl;
-  BeginDate   @Common.FieldControl  : TravelStatus.fieldControl;
-  EndDate     @Common.FieldControl  : TravelStatus.fieldControl;
-  to_Agency   @Common.FieldControl  : TravelStatus.fieldControl;
-  to_Customer @Common.FieldControl  : TravelStatus.fieldControl;
+  BookingFee  @mandatory: (TravelStatus.code != #Accepted) @readonly: (TravelStatus.code = #Accepted);
+  BeginDate   @mandatory: (TravelStatus.code != #Accepted) @readonly: (TravelStatus.code = #Accepted);
+  EndDate     @mandatory: (TravelStatus.code != #Accepted) @readonly: (TravelStatus.code = #Accepted);
+  to_Agency   @mandatory: (TravelStatus.code != #Accepted) @readonly: (TravelStatus.code = #Accepted);
+  to_Customer @mandatory: (TravelStatus.code != #Accepted) @readonly: (TravelStatus.code = #Accepted);
 
 } actions {
   rejectTravel @(
@@ -62,12 +50,12 @@ annotate TravelService.Booking with @UI.DeleteHidden : (to_Travel.TravelStatus.c
 
 annotate TravelService.Booking {
   BookingDate   @Core.Computed;
-  ConnectionID  @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  FlightDate    @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  FlightPrice   @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  BookingStatus @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Carrier    @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Customer   @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
+  ConnectionID  @mandatory: (to_Travel.TravelStatus.code != #Accepted) @readonly: (to_Travel.TravelStatus.code = #Accepted);
+  FlightDate    @mandatory: (to_Travel.TravelStatus.code != #Accepted) @readonly: (to_Travel.TravelStatus.code = #Accepted);
+  FlightPrice   @mandatory: (to_Travel.TravelStatus.code != #Accepted) @readonly: (to_Travel.TravelStatus.code = #Accepted);
+  BookingStatus @mandatory: (to_Travel.TravelStatus.code != #Accepted) @readonly: (to_Travel.TravelStatus.code = #Accepted);
+  to_Carrier    @mandatory: (to_Travel.TravelStatus.code != #Accepted) @readonly: (to_Travel.TravelStatus.code = #Accepted);
+  to_Customer   @mandatory: (to_Travel.TravelStatus.code != #Accepted) @readonly: (to_Travel.TravelStatus.code = #Accepted);
 };
 
 annotate TravelService.Booking with @(
@@ -88,8 +76,8 @@ annotate TravelService.Booking with @(
 
 
 annotate TravelService.BookingSupplement {
-  Price         @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Supplement @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Booking    @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Travel     @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
+  Price         @mandatory: (to_Travel.TravelStatus.code != #Accepted) @readonly: (to_Travel.TravelStatus.code = #Accepted);
+  to_Supplement @mandatory: (to_Travel.TravelStatus.code != #Accepted) @readonly: (to_Travel.TravelStatus.code = #Accepted);
+  to_Booking    @mandatory: (to_Travel.TravelStatus.code != #Accepted) @readonly: (to_Travel.TravelStatus.code = #Accepted);
+  to_Travel     @mandatory: (to_Travel.TravelStatus.code != #Accepted) @readonly: (to_Travel.TravelStatus.code = #Accepted);
 };

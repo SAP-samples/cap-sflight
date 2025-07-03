@@ -17,21 +17,10 @@
     "travel-processor": "cds watch --open sap.fe.cap.travel/index.html?sap-ui-xx-viewCache=false",
     "travel-analytics": "cds watch --open sap.fe.cap.travel_analytics/index.html?sap-ui-xx-viewCache=false"
   },
-  "dependencies": {
-    "@cap-js/hana": ">=2",
-    "@sap/cds": ">=9.1",
-    "@sap/xssec": "^4",
-    "express": "^4"
-  },
   "devDependencies": {
-    "@cap-js/cds-test": "^0",
-    "@cap-js/cds-typer": "^0.35.0",
-    "@cap-js/cds-types": "^0",
-    "@cap-js/sqlite": ">=2",
-    "@sap/cds-dk" : ">=9.1",
+    "@sap/cds-dk" : "9.1.1-2025070308275109-SNAPSHOT",
     "@sap/ux-specification": "UI5-1.128",
     "@types/jest": "^29.5.13",
-    "cds-plugin-ui5": "^0.13.1",
     "cross-spawn": "^7.0.3",
     "eslint": "^9",
     "http-proxy": "^1.18.1",
@@ -86,6 +75,9 @@
     },
     "fiori": {
       "wrap_multiple_errors": false
+    },
+    "cdsc": {
+      "draftMessages": true
     },
     "build": {
       "[node!]": {

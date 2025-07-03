@@ -4,21 +4,6 @@ import static cds.gen.travelservice.TravelService_.FLIGHT;
 import static cds.gen.travelservice.TravelService_.TRAVEL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.LocalDate;
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
-import org.springframework.security.test.context.support.WithMockUser;
-
-import com.sap.cds.ql.Select;
-import com.sap.cds.ql.Update;
-import com.sap.cds.ql.cqn.CqnSelect;
-import com.sap.cds.ql.cqn.CqnUpdate;
-import com.sap.cds.services.persistence.PersistenceService;
-
 import cds.gen.travelservice.Booking;
 import cds.gen.travelservice.Booking_;
 import cds.gen.travelservice.Flight;
@@ -26,6 +11,18 @@ import cds.gen.travelservice.Flight_;
 import cds.gen.travelservice.Travel;
 import cds.gen.travelservice.TravelService;
 import cds.gen.travelservice.Travel_;
+import com.sap.cds.ql.Select;
+import com.sap.cds.ql.Update;
+import com.sap.cds.ql.cqn.CqnSelect;
+import com.sap.cds.ql.cqn.CqnUpdate;
+import com.sap.cds.services.persistence.PersistenceService;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
+import org.springframework.security.test.context.support.WithMockUser;
 
 @SpringBootTest
 class UpdateFlightSeatsHandlerServiceIntegrationTest {
@@ -123,7 +120,7 @@ class UpdateFlightSeatsHandlerServiceIntegrationTest {
         // Query some active entity
         CqnSelect querySelect = Select.from(Travel_.class)
                 .where(t -> t.TravelUUID().eq("72757221A8E4645C17002DF03754AB66"))
-                .columns(Travel_::TravelUUID, t -> t.to_Booking()
+                .columns(Travel_::TravelUUID, Travel_::BeginDate, t -> t.to_Booking()
                         .expand(Booking_::BookingUUID, b -> b.to_Flight()
                                 .expand(Flight_::ConnectionID, Flight_::OccupiedSeats)));
 
@@ -138,7 +135,7 @@ class UpdateFlightSeatsHandlerServiceIntegrationTest {
         Integer flightToBeRemovedExpSeats = flightToBeRemoved.occupiedSeats() - 1;
 
         // Get some random flight and get its expected number of seats after update
-        Flight flightToBeAdded = dbService.run(Select.from(FLIGHT).where(f -> f.ConnectionID().eq("0001"))).first(Flight.class).orElseThrow();
+        Flight flightToBeAdded = dbService.run(Select.from(FLIGHT).where(f -> f.FlightDate().eq(travel.beginDate()))).first(Flight.class).orElseThrow();
         String flightToBeAddedID = flightToBeAdded.connectionID();
         Integer flightToBeAddedExpSeats = flightToBeAdded.occupiedSeats() + 1;
 
@@ -165,8 +162,8 @@ class UpdateFlightSeatsHandlerServiceIntegrationTest {
     }
 
     private static void addRequiredDataToTravel(Travel travel) {
-        travel.beginDate(LocalDate.now().plusDays(1));
-        travel.endDate(LocalDate.now().plusDays(2));
+        // travel.beginDate(LocalDate.now().plusDays(1));
+        // travel.endDate(LocalDate.now().plusDays(2));
     }
 
 }

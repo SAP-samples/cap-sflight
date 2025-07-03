@@ -1,16 +1,14 @@
 package com.sap.cap.sflight.processor;
 
 
-import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Component;
-
+import cds.gen.travelservice.Booking;
+import cds.gen.travelservice.BookingSupplement;
+import cds.gen.travelservice.BookingSupplement_;
+import cds.gen.travelservice.Booking_;
+import cds.gen.travelservice.Travel;
+import cds.gen.travelservice.TravelDraftActivateContext;
+import cds.gen.travelservice.TravelService_;
+import cds.gen.travelservice.Travel_;
 import com.sap.cds.ql.Select;
 import com.sap.cds.ql.Update;
 import com.sap.cds.services.cds.CqnService;
@@ -19,14 +17,15 @@ import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
-
-import cds.gen.travelservice.Booking;
-import cds.gen.travelservice.BookingSupplement;
-import cds.gen.travelservice.BookingSupplement_;
-import cds.gen.travelservice.TravelDraftActivateContext;
-import cds.gen.travelservice.Travel;
-import cds.gen.travelservice.TravelService_;
-import cds.gen.travelservice.Travel_;
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
 @Component
 @ServiceName(TravelService_.CDS_NAME)
@@ -70,21 +69,6 @@ public class CreationHandler implements EventHandler {
 			data.put(Travel.TRAVEL_STATUS_CODE , travelDraft.travelStatusCode());
 			persistenceService.run(Update.entity(Travel_.class).data(data));
 		});
-	}
-
-	@Before(event = { CqnService.EVENT_CREATE, CqnService.EVENT_UPDATE }, entity = Travel_.CDS_NAME)
-	public void checkTravelEndDateIsAfterBeginDate(Travel travel) {
-		if(travel.beginDate() != null && travel.endDate() != null) {
-			if (travel.beginDate().isAfter(travel.endDate())) {
-				throw new IllegalTravelDateException("error.travel.date.illegal", travel.travelID(),
-						travel.beginDate(), travel.endDate());
-			}
-
-			if (travel.beginDate().isBefore(LocalDate.now().atStartOfDay().toLocalDate())) {
-				throw new IllegalTravelDateException("error.travel.date.past", travel.travelID(),
-						travel.beginDate());
-			}
-		}
 	}
 
 	@Before(event = CqnService.EVENT_CREATE, entity = Travel_.CDS_NAME)
@@ -145,6 +129,11 @@ public class CreationHandler implements EventHandler {
 	@Before(event = DraftService.EVENT_DRAFT_NEW, entity = Travel_.CDS_NAME)
 	public void initialTravelId(final Travel travel) {
 		travel.travelID(0);
+	}
+
+	@Before(event = DraftService.EVENT_DRAFT_NEW, entity = Booking_.CDS_NAME)
+	public void initialTravelId(final Booking booking) {
+		booking.bookingUUID(UUID.randomUUID().toString().replace("-", ""));
 	}
 
 	@Before(event = DraftService.EVENT_DRAFT_NEW, entity = BookingSupplement_.CDS_NAME)
