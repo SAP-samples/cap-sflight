@@ -155,9 +155,11 @@ public class UpdateFlightSeatsHandler implements EventHandler {
 
             if (status == Status.DELETED) {
                 for (Flight f : flights) {
-                    CqnUpdate deleteSeats = Update.entity(FLIGHT).where(w -> w.ConnectionID().eq(f.connectionID()))
-                            .set(OCCUPIED_SEATS, CQL.get(OCCUPIED_SEATS).minus(1));
-                    this.persistenceService.run(deleteSeats);
+					if (f != null) {
+						CqnUpdate deleteSeats = Update.entity(FLIGHT).where(w -> w.ConnectionID().eq(f.connectionID()))
+							.set(OCCUPIED_SEATS, CQL.get(OCCUPIED_SEATS).minus(1));
+						this.persistenceService.run(deleteSeats);
+					}
                 }
             }
         }

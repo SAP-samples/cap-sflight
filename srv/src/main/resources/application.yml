@@ -8,22 +8,28 @@ cds:
     sql.hana.search:
         fuzzy: true
         fuzzinessThreshold: 0.9
-    security.mock.users:
-    - name: rose
-    - name: martha
-      roles:
-        - reviewer
-    - name: amy
-      roles:
-        - processor
-    - name: admin
-      password: admin
-      roles:
-      - admin
+
+
+    security:
+      mock.users:
+
+        - name: Uma # no roles
+
+        - name: Paula
+          roles:
+            - Planner
+
+        - name: Richard
+          roles:
+            - Reviewer
 
     odata-v4:
         endpoint:
             path: "/"
+
+logging:
+  level:
+    com.sap.cds.security: DEBUG
 
 ---
 spring:

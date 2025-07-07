@@ -47,17 +47,21 @@ annotate TravelService.Travel with @UI : {
     },
     {
       Value : (to_Agency.AgencyID),
-      @HTML5.CssDefaults: {width:'16em'}
+      @HTML5.CssDefaults: {width:'12em'}
+    },
+    {
+      Value : (to_Agency.CountryCode.code),
+      @HTML5.CssDefaults: {width:'4em'}
     },
     {
       Value : (to_Customer.CustomerID),
       @UI.Importance : #High,
-      @HTML5.CssDefaults: {width:'14em'}
+      @HTML5.CssDefaults: {width:'10em'}
     },
+    { Value : TotalPrice, @HTML5.CssDefaults: {width:'10em'}, @UI.Importance : #High },
     { Value : BeginDate,  @HTML5.CssDefaults: {width:'9em'} },
     { Value : EndDate,    @HTML5.CssDefaults: {width:'9em'} },
     { Value : BookingFee, @HTML5.CssDefaults: {width:'10em'} },
-    { Value : TotalPrice, @HTML5.CssDefaults: {width:'12em'} },
     {
       Value : (TravelStatus.code),
       Criticality : (TravelStatus.code = #Open ? 2 : (TravelStatus.code = #Accepted ? 3 : 0)),

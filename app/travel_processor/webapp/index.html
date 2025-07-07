@@ -29,6 +29,29 @@
     ></script>
   </head>
   <body class="sapUiBody sapUiSizeCompact" id="content">
+
+    <!-- A small hacked script to show current user and switch user via basic auth. -->
+    <div style="height: 2em; position: absolute; width:100%; background-color:#00C8E855; z-index:999999;">
+        <p style="margin: 0;text-align:center;line-height:2em">
+            Currently logged in as: <strong id="userid"></strong>
+            <span style="width:20px;"></span>
+            <a href="http://Richard:@localhost:4004/travel_processor/dist/index.html">Richard</a>
+            <a href="http://Paula:@localhost:4004/travel_processor/dist/index.html">Paula</a>
+            <a href="http://Uma:@localhost:4004/travel_processor/dist/index.html">Uma</a>
+        </p>
+        <script>
+          fetch("http://localhost:4004/processor/User")
+            .then(response => response.json())
+            .then(data => {
+                  document.getElementById("userid").innerText = data.value[0]?.userId
+          })
+          // A little hack to clear the username from the URL and force the UI to properly load.
+          if (document.URL.includes('@')) {
+              document.location = "http://localhost:4004/travel_processor/dist/index.html"
+          }
+        </script>
+    </div>
+
     <div
       data-sap-ui-component
       data-name="sap.fe.cap.travel"

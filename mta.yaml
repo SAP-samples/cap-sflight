@@ -18,7 +18,7 @@ build-parameters:
 modules:
   # --------------------- SERVER MODULE ------------------------
   - name: sflight-srv
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: nodejs
     path: gen/srv
     requires:
@@ -30,11 +30,12 @@ modules:
           srv-url: ${default-url}
     build-parameters:
       builder: npm-ci
-      ignore: ["node_modules/"]
+      ignore:
+        - "node_modules/"
 
   # -------------------- SIDECAR MODULE ------------------------
   - name: sflight-db-deployer
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: hdb
     path: gen/db
     parameters:
@@ -47,7 +48,7 @@ modules:
 
   # ------------------ APPLICATION CONTENT ---------------------
   - name: sflight-appcontent
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: com.sap.application.content
     path: gen
     requires:
@@ -69,7 +70,7 @@ modules:
 
   # ------------- APPLICATION: TRAVEL PROCESSOR ----------------
   - name: sflight-app-travel-processor
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: html5
     path: app/travel_processor
     build-parameters:
@@ -77,11 +78,12 @@ modules:
       builder: custom
       commands:
         - npm run build
-      supported-platforms: []
+      supported-platforms:
+        []
 
   # ------------- APPLICATION: TRAVEL ANALYTICS ----------------
   - name: sflight-app-travel-analytics
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: html5
     path: app/travel_analytics
     build-parameters:
@@ -89,11 +91,12 @@ modules:
       builder: custom
       commands:
         - npm run build
-      supported-platforms: []
+      supported-platforms:
+        []
 
   # ------------------ DESTINATION CONTENT ---------------------
   - name: sflight-destinationcontent
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: com.sap.application.content
     build-parameters:
       no-source: true
@@ -127,7 +130,7 @@ modules:
 resources:
   # ------------------------------------------------------------
   - name: sflight-db
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: com.sap.xs.hdi-container
     parameters:
       service: hana
@@ -137,7 +140,7 @@ resources:
 
   # ------------------------------------------------------------
   - name: sflight-uaa
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
@@ -162,7 +165,7 @@ resources:
 
   # ------------------------------------------------------------
   - name: sflight-html5-repo-runtime
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
     parameters:
       service: html5-apps-repo
@@ -170,7 +173,7 @@ resources:
 
   # ------------------------------------------------------------
   - name: sflight-html5-repo-host
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
     parameters:
       service: html5-apps-repo
@@ -178,7 +181,7 @@ resources:
 
   # ------------------------------------------------------------
   - name: sflight-destination-service
-  # ------------------------------------------------------------
+    # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
     requires:
       - name: srv-api
