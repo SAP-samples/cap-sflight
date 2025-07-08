@@ -1,1 +1,3 @@
-export const silent = true
+export default {
+  silent: true
+}
