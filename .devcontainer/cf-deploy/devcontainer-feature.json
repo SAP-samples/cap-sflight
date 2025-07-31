@@ -1,0 +1,10 @@
+{
+    "id": "cf-deploy",
+    "version": "1.0.1",
+    "name": "cf-deploy",
+    "description": "Install tooling for deploying to Cloud Foundry",
+
+    "dependsOn": {
+        "ghcr.io/devcontainers/features/node:1": { }
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "id": "cds-dk",
+    "version": "1.0.0",
+    "name": "cds-dk",
+    "description": "Install @sap/cds-dk (via npm)",
+
+    "options": {
+
+        "version": {
+            "type": "string",
+            "proposals": [
+                "^9",
+                "^8"
+            ],
+            "default": "latest",
+            "description": "Select the @sap/cds-dk version"
+        }
+    },
+
+    "dependsOn": {
+        "ghcr.io/devcontainers/features/node:1": { }
+    }
+}
