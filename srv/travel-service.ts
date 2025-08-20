@@ -31,12 +31,28 @@ export class TravelService extends cds.ApplicationService { init() {
 
 
   // Ensure BeginDate is not before today and not after EndDate.
-  this.before ('SAVE', Travel, req => {
-    const { BeginDate, EndDate } = req.data
-    if (BeginDate < today()) req.error (400, `Begin Date must not be before today.`, 'in/BeginDate')
-    if (BeginDate > EndDate) req.error (400, `End Date must be after Begin Date.`, 'in/EndDate')
-  })
+  // this.before ('SAVE', Travel, req => {
+  //   const { BeginDate, EndDate } = req.data
+  //   if (BeginDate < today()) req.error (400, `Begin Date must not be before today.`, 'in/BeginDate')
+  //   if (BeginDate > EndDate) req.error (400, `End Date must be after Begin Date.`, 'in/EndDate')
+  // })
 
+  this.before('UPDATE', Travel.drafts, async (req) => {
+    let { BeginDate, EndDate } = req.data
+    if (!BeginDate && !EndDate) return //> skip if no dates changed
+
+    const persistedData = await cds.ql.SELECT.one(Travel.drafts) 
+      .columns(['BeginDate', 'EndDate']) 
+      .where({ TravelUUID: req.data.TravelUUID })
+
+    const beginDateToValidate = Date.parse(BeginDate ?? persistedData.BeginDate)
+    const endDateToValidate = Date.parse(EndDate ?? persistedData.EndDate)
+
+    if (beginDateToValidate > endDateToValidate) {
+      // @ts-ignore
+      req.error({code: 422, message: 'End Date must be after Begin Date.', target: 'in/EndDate', additionalTargets: ['in/BeginDate']})
+    }
+  })
 
   // Update a Travel's TotalPrice whenever its BookingFee is modified,
   // or when a nested Booking is deleted or its FlightPrice is modified,

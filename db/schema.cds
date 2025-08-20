@@ -17,7 +17,7 @@ entity Travel : managed {
   BookingFee     : Decimal(16,3) default 0;
   TotalPrice     : Decimal(16,3) @readonly;
   CurrencyCode   : Currency default 'EUR';
-  Description    : String(1024);
+  Description    : String(1024) @assert.format: '^[a-zA-Z]{5}';
   TravelStatus   : Association to TravelStatus default 'O' @readonly;
   to_Agency      : Association to TravelAgency @mandatory;
   to_Customer    : Association to Passenger @mandatory;
