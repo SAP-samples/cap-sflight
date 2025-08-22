@@ -112,6 +112,23 @@ describe('Basic OData', () => {
     ])
   })
 
+  it('supports $search', async () => {
+    // @Common.Text: TravelStatus.name added to default search fields
+    const { data } = await GET(`/processor/Travel?$search=Canceled`, {
+      params: {
+        $select: `TravelID`,
+        $expand: `TravelStatus($select=name)`,
+        $top: 3,
+        $orderby: `TravelID`
+      }
+    })
+    expect(data.value).to.containSubset([
+      { TravelID: 5, TravelStatus: {name:'Canceled'} },
+      { TravelID: 10, TravelStatus: {name:'Canceled'} },
+      { TravelID: 15, TravelStatus: {name:'Canceled'} },
+    ])
+  })
+
   it('new draft has initial key, key is auto incremented upon activation', async () => {
     const { data: newDraft } = await POST(`/processor/Travel`, {})
     expect(newDraft).to.contain({ TravelID: 0 }) // initial value: 0
