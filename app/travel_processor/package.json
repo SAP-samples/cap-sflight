@@ -24,7 +24,7 @@
   ],
   "devDependencies": {
     "@sap/ux-ui5-tooling": "1",
-    "@sapui5/types": "^1.130.0",
+    "@sapui5/types": "^1.139.0",
     "@typescript-eslint/eslint-plugin": "^8",
     "@typescript-eslint/parser": "^8",
     "@ui5/cli": "^4.0.0",
