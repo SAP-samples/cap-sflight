@@ -12,10 +12,10 @@ import org.springframework.security.web.servlet.util.matcher.PathPatternRequestM
 @Configuration
 @ConditionalOnWebApplication
 @EnableWebSecurity
-@Order(1)
 public class WebSecurityConfig {
 
 	@Bean
+    @Order(1)
 	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 		return http.securityMatchers(s -> s.requestMatchers(PathPatternRequestMatcher.withDefaults().matcher("/actuator/health"))) //
 				.csrf(c -> c.disable()).authorizeHttpRequests(a -> a.anyRequest().permitAll())
