@@ -83,17 +83,11 @@ export class TravelService extends cds.ApplicationService { init() {
   //
 
   const { acceptTravel, rejectTravel, deductDiscount } = Travel.actions;
-  this.before(acceptTravel, async (req) => {
+  this.before([acceptTravel, rejectTravel], async (req) => {
     // @ts-ignore
     const existingDraft = await SELECT.one(req.target.drafts.name).where(req.subject.ref[0].where)
       .columns(travel => { travel.DraftAdministrativeData.InProcessByUser.as('InProcessByUser') } )
     if (existingDraft && existingDraft.InProcessByUser !== req.user) req.error(423, 'The entity is locked by another user and cannot be rejected')
-  })
-  this.before(rejectTravel, async (req) => {
-    // @ts-ignore
-    const existingDraft = await SELECT.one(req.target.drafts.name).where(req.subject.ref[0].where)
-      .columns(travel => { travel.DraftAdministrativeData.InProcessByUser.as('InProcessByUser') } )
-    if (existingDraft && existingDraft.InProcessByUser !== req.user.id) req.error(423, 'The entity is locked by another user and cannot be rejected')
   })
   this.on (acceptTravel, req => UPDATE (req.subject) .with ({ TravelStatus_code: TravelStatusCode.Accepted }))
   this.on (rejectTravel, req => UPDATE (req.subject) .with ({ TravelStatus_code: TravelStatusCode.Canceled }))
