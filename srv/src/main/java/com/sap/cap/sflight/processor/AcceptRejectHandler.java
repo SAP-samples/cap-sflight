@@ -60,8 +60,10 @@ public class AcceptRejectHandler implements EventHandler {
 						.where(select.from().asRef().targetSegment().filter().get()))
 				.first(Travel.class);
 
-		travelToProcess.ifPresent(this::checkIfTravelHasExceptedStatus);
-		travelToProcess.ifPresent(t -> checkIfTravelIsLockedByAnotherUser(t, userInfo));
+		travelToProcess.ifPresent(t -> {
+			checkIfTravelHasExceptedStatus(t);
+			checkIfTravelIsLockedByAnotherUser(t, userInfo);
+		});
 	}
 
 	@On(entity = Travel_.CDS_NAME)
