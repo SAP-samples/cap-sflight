@@ -55,10 +55,13 @@ public class AcceptRejectHandler implements EventHandler {
 	private void beforeAcceptOrRejectTravel(CqnSelect select, UserInfo userInfo) {
 		Optional<Travel> travelToProcess = draftService.run(
 				Select.from(Travel_.class)
-						.columns(t -> t.DraftAdministrativeData().expand(d -> d.InProcessByUser()),
-								t -> t.TravelStatus_code())
-						.where(select.from().asRef().targetSegment().filter().get()))
-				.first(Travel.class);
+					.where(select.from().asRef().targetSegment().filter().get())
+					.columns(
+						t -> t.DraftAdministrativeData().expand(d -> d.InProcessByUser()),
+						t -> t.TravelStatus_code(),
+						t -> t.IsActiveEntity()
+					)
+				).first(Travel.class);
 
 		travelToProcess.ifPresent(t -> {
 			checkIfTravelHasExceptedStatus(t);
@@ -106,10 +109,11 @@ public class AcceptRejectHandler implements EventHandler {
 	}
 
 	private void checkIfTravelIsLockedByAnotherUser(Travel travel, UserInfo userInfo) {
-		if (travel.draftAdministrativeData() != null) {
-			throw new ServiceException(ErrorStatuses.UNAUTHORIZED,
-					String.format("The draft is locked by %s.",
-							travel.draftAdministrativeData().inProcessByUser()));
+		if (!travel.isActiveEntity() && travel.draftAdministrativeData() != null && travel.draftAdministrativeData().inProcessByUser() != userInfo.getId()) {
+			throw new ServiceException(ErrorStatuses.UNAUTHORIZED, String.format("The draft is locked by %s.", travel.draftAdministrativeData().inProcessByUser()));
+		}
+		if (travel.isActiveEntity() && travel.draftAdministrativeData() != null) {
+			throw new ServiceException(ErrorStatuses.UNAUTHORIZED, String.format("The draft is locked by %s.", travel.draftAdministrativeData().inProcessByUser()));
 		}
 	}
 }
