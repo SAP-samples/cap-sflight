@@ -87,7 +87,10 @@ export class TravelService extends cds.ApplicationService { init() {
     // @ts-ignore
     const existingDraft = await SELECT.one(req.target.drafts.name).where(req.subject.ref[0].where)
       .columns(travel => { travel.DraftAdministrativeData.InProcessByUser.as('InProcessByUser') } )
-    if (existingDraft) req.error(423, `The travel is locked by ${existingDraft.InProcessByUser}.`);
+    // @ts-ignore
+    if (!req.target.isDraft && existingDraft) req.error(423, `The travel is locked by ${existingDraft.InProcessByUser}.`);
+    // @ts-ignore
+    if (req.target.isDraft && existingDraft?.InProcessByUser !== req.user.id) req.error(423, `The travel is locked by ${existingDraft.InProcessByUser}.`);
   })
   // @ts-ignore
   this.on (acceptTravel, [Travel, Travel.drafts], req => UPDATE (req.subject) .with ({ TravelStatus_code: TravelStatusCode.Accepted }))
