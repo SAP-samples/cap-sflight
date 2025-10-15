@@ -109,7 +109,7 @@ public class AcceptRejectHandler implements EventHandler {
 	}
 
 	private void checkIfTravelIsLockedByAnotherUser(Travel travel, UserInfo userInfo) {
-		if (!travel.isActiveEntity() && travel.draftAdministrativeData() != null && travel.draftAdministrativeData().inProcessByUser() != userInfo.getId()) {
+		if (!travel.isActiveEntity() && travel.draftAdministrativeData() != null && !travel.draftAdministrativeData().inProcessByUser().equals(userInfo.getName())) {
 			throw new ServiceException(ErrorStatuses.UNAUTHORIZED, String.format("The draft is locked by %s.", travel.draftAdministrativeData().inProcessByUser()));
 		}
 		if (travel.isActiveEntity() && travel.draftAdministrativeData() != null) {
