@@ -89,7 +89,7 @@ export class TravelService extends cds.ApplicationService { init() {
       .columns(travel => { travel.DraftAdministrativeData.InProcessByUser.as('InProcessByUser') } )
     // @ts-ignore
     // action called on active -> reject if draft exists
-    // action called on draft -> reject if not own draft 
+    // action called on draft -> reject if not own draft
     if (!req.target.isDraft && existingDraft || req.target.isDraft && existingDraft?.InProcessByUser !== req.user.id)
       req.error(423, `The travel is locked by ${existingDraft.InProcessByUser}.`);
   })
