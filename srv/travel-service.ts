@@ -92,10 +92,8 @@ export class TravelService extends cds.ApplicationService { init() {
     if (!isDraft && existingDraft || isDraft && existingDraft?.InProcessByUser !== req.user.id)
       throw req.reject(423, `The travel is locked by ${existingDraft.InProcessByUser}.`);
   })
-  // @ts-ignore
-  this.on (acceptTravel, [Travel, Travel.drafts], req => UPDATE (req.subject) .with ({ TravelStatus_code: TravelStatusCode.Accepted }))
-  // @ts-ignore
-  this.on (rejectTravel, [Travel, Travel.drafts], req => UPDATE (req.subject) .with ({ TravelStatus_code: TravelStatusCode.Canceled }))
+  this.on (acceptTravel, req => UPDATE (req.subject) .with ({ TravelStatus_code: TravelStatusCode.Accepted }))
+  this.on (rejectTravel, req => UPDATE (req.subject) .with ({ TravelStatus_code: TravelStatusCode.Canceled }))
   this.on (deductDiscount, async req => {
     let discount = req.data.percent / 100
     let succeeded = await UPDATE (req.subject) .where `TravelStatus.code != 'A'` .and `BookingFee != null`
