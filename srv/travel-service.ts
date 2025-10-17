@@ -105,9 +105,7 @@ export class TravelService extends cds.ApplicationService { init() {
       if (!travel) throw req.reject (404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
       if (travel.status === TravelStatusCode.Accepted) throw req.reject (400, `Travel "${travel.ID}" has been approved already.`)
       if (travel.BookingFee == null) throw req.reject (404, `No discount possible, as travel "${travel.ID}" does not yet have a booking fee added.`)
-    } else {
-      return SELECT(req.subject)
-    }
+    } else return SELECT(req.subject)
   })
 
   // Add base class's handlers. Handlers registered above go first.
