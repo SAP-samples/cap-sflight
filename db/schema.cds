@@ -22,6 +22,8 @@ entity Travel : managed {
   to_Agency      : Association to TravelAgency @mandatory;
   to_Customer    : Association to Passenger @mandatory;
   to_Booking     : Composition of many Booking on to_Booking.to_Travel = $self;
+  GreenFee   : Integer;
+  TreesPlanted   : Integer;
 };
 
 annotate Travel with @Capabilities.FilterRestrictions.FilterExpressionRestrictions: [
