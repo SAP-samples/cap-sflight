@@ -20,8 +20,7 @@
   "dependencies": {
     "@cap-js/hana": ">=2",
     "@sap/cds": ">=9.5",
-    "@sap/xssec": "^4",
-    "express": "^4"
+    "@sap/xssec": "^4"
   },
   "devDependencies": {
     "@cap-js/cds-test": "^0",
