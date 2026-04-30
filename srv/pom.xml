@@ -104,6 +104,11 @@
       <plugin>
         <groupId>org.graalvm.buildtools</groupId>
         <artifactId>native-maven-plugin</artifactId>
+			<configuration>
+        		<buildArgs>
+                	<buildArg>--trace-class-initialization=org.junit.jupiter.engine.discovery.MethodSegmentResolver</buildArg>
+                </buildArgs>
+            </configuration> 
       </plugin>
 
       <plugin>
