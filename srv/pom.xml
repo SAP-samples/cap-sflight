@@ -76,13 +76,7 @@
       <artifactId>cds-feature-k8s</artifactId>
       <scope>runtime</scope>
     </dependency>
-
-    <dependency>
-      <groupId>com.sap.cds</groupId>
-      <artifactId>cds-feature-flow</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-  </dependencies>
+</dependencies>
 
   <build>
     <finalName>${project.artifactId}</finalName>
