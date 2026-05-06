@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+# yaml-language-server: $schema=https://ui5.github.io/cli/schema/ui5.yaml.json
 specVersion: "3.0"
 metadata:
   name: sap.fe.cap.travel_analytics
@@ -23,7 +23,7 @@ builder:
     - name: ui5-tooling-transpile-task
       afterTask: replaceVersion
       # configuration:
-        # debug: true
+      #   debug: true
 
 server:
   customMiddleware:
