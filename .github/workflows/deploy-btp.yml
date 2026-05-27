@@ -54,6 +54,9 @@ on:
       ui_app_url:
         value: ${{ jobs.deployment.outputs.ui_app_url }}
 
+permissions:
+  contents: read
+
 jobs:
 
   deployment:
