@@ -54,6 +54,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webmvc-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-test</artifactId>
       <scope>test</scope>
@@ -98,7 +104,10 @@
       <plugin>
         <groupId>org.graalvm.buildtools</groupId>
         <artifactId>native-maven-plugin</artifactId>
-      </plugin>
+        <configuration>
+          <useArgFile>true</useArgFile>
+        </configuration>
+		  </plugin>
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
