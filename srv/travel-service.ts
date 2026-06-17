@@ -83,6 +83,15 @@ export class TravelService extends cds.ApplicationService { init() {
   //
 
   const { acceptTravel, rejectTravel, deductDiscount } = Travel.actions;
+  this.before([acceptTravel, rejectTravel], [Travel, Travel.drafts], async (req) => {
+    const existingDraft = await SELECT.one(Travel.drafts.name).where(req.params[0])
+      .columns(travel => { travel.DraftAdministrativeData.InProcessByUser.as('InProcessByUser') } )
+    // action called on active -> reject if draft exists
+    // action called on draft -> reject if not own draft
+    const isDraft = req.target.name.endsWith('.drafts')
+    if (!isDraft && existingDraft || isDraft && existingDraft?.InProcessByUser !== req.user.id)
+      throw req.reject(423, `The travel is locked by ${existingDraft.InProcessByUser}.`);
+  })
   this.on (acceptTravel, req => UPDATE (req.subject) .with ({ TravelStatus_code: TravelStatusCode.Accepted }))
   this.on (rejectTravel, req => UPDATE (req.subject) .with ({ TravelStatus_code: TravelStatusCode.Canceled }))
   this.on (deductDiscount, async req => {
@@ -96,9 +105,7 @@ export class TravelService extends cds.ApplicationService { init() {
       if (!travel) throw req.reject (404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
       if (travel.status === TravelStatusCode.Accepted) throw req.reject (400, `Travel "${travel.ID}" has been approved already.`)
       if (travel.BookingFee == null) throw req.reject (404, `No discount possible, as travel "${travel.ID}" does not yet have a booking fee added.`)
-    } else {
-      return SELECT(req.subject)
-    }
+    } else return SELECT(req.subject)
   })
 
   // Add base class's handlers. Handlers registered above go first.

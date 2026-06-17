@@ -10,6 +10,10 @@ on:
     branches: [ main ]
   schedule:
     - cron: 30 4 * * *
+
+permissions:
+  contents: read
+
 jobs:
   build:
 
