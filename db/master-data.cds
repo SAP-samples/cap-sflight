@@ -31,10 +31,6 @@ entity Supplement : managed, MasterData {
 };
 
 entity Flight : MasterData {
-  // TODO:
-  // when cuid is added, the to_Airline & to_Connection can be made managed association,
-  // furthermore the AirlineID and ConnectionID can be removed,
-  // they will be replaced by the generate FKs for to_Airline & to_Connection
   key AirlineID    : String(3);
   key FlightDate   : Date;
   key ConnectionID : String(4);
