@@ -18,10 +18,22 @@ entity Travel : managed {
   TotalPrice     : Decimal(16,3) @readonly;
   CurrencyCode   : Currency default 'EUR';
   Description    : String(1024);
-  TravelStatus   : Association to TravelStatus default 'O' @readonly;
+
+  TravelStatus   : Association to TravelStatus  default 'O' @readonly;
+
+  TravelStatus_ctrl: Int16 @odata.Type:'Edm.Byte' /*enum {Inapplicable = 0; ReadOnly = 1; Optional = 3; Mandatory = 7;}*/
+    = (TravelStatus.code = 'A' ? 1 : 7 );
+
   to_Agency      : Association to TravelAgency @mandatory;
   to_Customer    : Association to Passenger @mandatory;
   to_Booking     : Composition of many Booking on to_Booking.to_Travel = $self;
+
+  field_A: String @label: 'controlled A';
+  field_ACtr : String @label: 'controlling A';
+
+  field_B: String @label: 'controlled B';
+  field_BCtr : String @label: 'controlling B';
+  field_BCtrCalc : Int16 @odata.Type:'Edm.Byte' = (field_BCtr = 'readonly' ? 1 : (field_BCtr = 'inapplicable' ? 0 : (field_BCtr = 'mandatory' ? 7 : 3)));
 };
 
 annotate Travel with @Capabilities.FilterRestrictions.FilterExpressionRestrictions: [
@@ -38,11 +50,14 @@ entity Booking : managed {
   FlightDate        : Date @mandatory;
   FlightPrice       : Decimal(16,3) @mandatory;
   CurrencyCode      : Currency;
+
   BookingStatus     : Association to BookingStatus default 'N' @mandatory;
   to_BookSupplement : Composition of many BookingSupplement on to_BookSupplement.to_Booking = $self;
+
   to_Carrier        : Association to Airline @mandatory;
   to_Customer       : Association to Passenger @mandatory;
   to_Travel         : Association to Travel;
+
   to_Flight         : Association to Flight on  to_Flight.AirlineID = to_Carrier.AirlineID
                                             and to_Flight.FlightDate = FlightDate
                                             and to_Flight.ConnectionID = ConnectionID;
@@ -53,8 +68,9 @@ entity BookingSupplement : managed {
   BookingSupplementID : Integer @Core.Computed;
   Price               : Decimal(16,3) @mandatory;
   CurrencyCode        : Currency;
+
   to_Booking          : Association to Booking;
-  to_Travel           : Association to Travel;
+  to_Travel         : Association to Travel;
   to_Supplement       : Association to Supplement @mandatory;
 };
 

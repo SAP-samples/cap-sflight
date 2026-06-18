@@ -76,6 +76,18 @@ annotate TravelService.Travel with @UI : {
         Target : '@UI.FieldGroup#TravelData',
         Label  : '{i18n>GeneralInformation}'
       },
+      {  // experimental A
+        $Type  : 'UI.ReferenceFacet',
+        ID     : 'ExperimentalDataA',
+        Target : '@UI.FieldGroup#ExperimentalDataA',
+        Label  : 'FC via edmXpr'
+      },
+      {  // experimental B
+        $Type  : 'UI.ReferenceFacet',
+        ID     : 'ExperimentalDataB',
+        Target : '@UI.FieldGroup#ExperimentalDataB',
+        Label  : 'FC via CalcElem'
+      },
       {  // price information
         $Type  : 'UI.ReferenceFacet',
         ID     : 'PriceData',
@@ -107,6 +119,14 @@ annotate TravelService.Travel with @UI : {
       Criticality : (TravelStatus.code = #Open ? 2 : (TravelStatus.code = #Accepted ? 3 : 0)),
       Label : '{i18n>Status}' // label only necessary if differs from title of element
     }
+  ]},
+  FieldGroup #ExperimentalDataA : {Data : [
+    { $Type : 'UI.DataField', Value : field_A },
+    { $Type : 'UI.DataField', Value : field_ACtr }
+  ]},
+  FieldGroup #ExperimentalDataB : {Data : [
+    { $Type : 'UI.DataField', Value : field_B },
+    { $Type : 'UI.DataField', Value : field_BCtr }
   ]},
   FieldGroup #DateData : {Data : [
     { $Type : 'UI.DataField', Value : BeginDate },
@@ -160,7 +180,7 @@ annotate TravelService.Booking with @UI : {
     { Value : BookingID              },
     { Value : BookingDate            },
     { Value : (to_Customer.CustomerID) },
-    { Value : (to_Carrier.AirlineID )  },
+    { Value : (to_Carrier.AirlineID)   },
     { Value : ConnectionID,          Label : '{i18n>FlightNumber}' },
     { Value : FlightDate             },
     { Value : FlightPrice            },
