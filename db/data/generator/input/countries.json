@@ -1,0 +1,57 @@
+[
+  {
+    "code": "AU",
+    "name": "Australia",
+    "descr": "Commonwealth of Australia"
+  },
+  {
+    "code": "CA",
+    "name": "Canada",
+    "descr": "Canada"
+  },
+  {
+    "code": "CN",
+    "name": "China",
+    "descr": "People's Republic of China (PRC)"
+  },
+  {
+    "code": "FR",
+    "name": "France",
+    "descr": "French Republic"
+  },
+  {
+    "code": "DE",
+    "name": "Germany",
+    "descr": "Federal Republic of Germany"
+  },
+  {
+    "code": "IN",
+    "name": "India",
+    "descr": "Republic of India"
+  },
+  {
+    "code": "IL",
+    "name": "Israel",
+    "descr": "State of Israel"
+  },
+  {
+    "code": "MM",
+    "name": "Myanmar",
+    "descr": "Republic of the Union of Myanmar"
+  },
+  {
+    "code": "GB",
+    "name": "United Kingdom",
+    "descr": "United Kingdom of Great Britain and Northern Ireland"
+  },
+  {
+    "code": "US",
+    "name": "United States",
+    "descr": "United States of America (USA)"
+  },
+  {
+    "code": "EU",
+    "name": "European Union",
+    "descr": "European Union"
+  }
+]
