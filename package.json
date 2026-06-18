@@ -87,6 +87,9 @@
     "fiori": {
       "wrap_multiple_errors": false
     },
+    "features": {
+      "ieee754compatible": true
+    },
     "build": {
       "[node!]": {
         "target": "gen",
