@@ -35,6 +35,7 @@ module.exports = async (config) => {
         flags: ['--no-sandbox']
       }
     },
+    browserNoActivityTimeout: 60000,
     singleRun: config.ci || config.singleRun || false
   });
 };
