@@ -13,7 +13,7 @@
     "start": "cds-serve",
     "build:ui": "npm run build --prefix app/travel_analytics && npm run build --prefix app/travel_processor",
     "test": "jest",
-    "test:mocha": "npx -y mocha",
+    "test:mocha": "mocha",
     "travel-processor": "cds watch --open sap.fe.cap.travel/index.html?sap-ui-xx-viewCache=false",
     "travel-analytics": "cds watch --open sap.fe.cap.travel_analytics/index.html?sap-ui-xx-viewCache=false"
   },
@@ -36,6 +36,7 @@
     "eslint": "^9 || ^10",
     "http-proxy": "^1.18.1",
     "jest": "^30.3.0",
+    "mocha": "^11",
     "qunit": "^2.9.3",
     "ts-jest": "^29.2.5",
     "tsx": "^4.19.2",
