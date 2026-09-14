@@ -151,6 +151,8 @@
   },
   "overrides": {
     "qs": "6.16.0",
+    "diff": ">=8.0.3",
+    "serialize-javascript": ">=7.0.5",
     "@humanfs/node": ">=0.16.8",
     "browserslist": ">=4.28.7"
   }
