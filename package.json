@@ -147,5 +147,10 @@
   ],
   "imports": {
     "#cds-models/*": "./@cds-models/*/index.js"
+  },
+  "overrides": {
+    "qs": "6.16.0",
+    "@humanfs/node": ">=0.16.8",
+    "browserslist": ">=4.28.7"
   }
 }
