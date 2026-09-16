@@ -24,13 +24,24 @@ annotate TravelService.Travel with @(Common : {
   SideEffects #GoGreen:{
     SourceProperties: [GoGreen],
     TargetProperties: ['TotalPrice', 'GreenFee', 'TreesPlanted']
+  },
+  SideEffects #Exp:{
+    SourceProperties: [field_BCtr, field_BCtrCalc],
+    TargetProperties: ['field_B']
   }
 }){
-  BookingFee  @Common.FieldControl  : TravelStatus.fieldControl;
-  BeginDate   @Common.FieldControl  : TravelStatus.fieldControl;
-  EndDate     @Common.FieldControl  : TravelStatus.fieldControl;
-  to_Agency   @Common.FieldControl  : TravelStatus.fieldControl;
-  to_Customer @Common.FieldControl  : TravelStatus.fieldControl;
+  BookingFee    @Common.FieldControl  : TravelStatus_ctrl;
+  BeginDate     @Common.FieldControl  : TravelStatus_ctrl;
+  EndDate       @Common.FieldControl  : TravelStatus_ctrl;
+  to_Agency     @Common.FieldControl  : TravelStatus_ctrl;
+  to_Customer   @Common.FieldControl  : TravelStatus_ctrl;
+
+  // field_A @Common.FieldControl: (field_ACtr = 'readonly' ? 1 : (field_ACtr = 'inapplicable' ? 0 : (field_ACtr = 'mandatory' ? 7 : 3)))
+  //         @readonly:  (field_ACtr = 'readonly')
+  //         @mandatory: (field_ACtr = 'mandatory')
+  //         @enabled:   (field_ACtr != 'inapplicable');
+  field_A @Common.FieldControl: (field_ACtr = 'readonly' and to_Agency.City = 'Sydney' ? 1 : 3);
+  field_B @Common.FieldControl: field_BCtrCalc;
 
 } actions {
   rejectTravel @(
@@ -48,26 +59,42 @@ annotate TravelService.Travel with @(Common : {
 }
 
 annotate TravelService.Travel @(
-    Common.SideEffects#ReactonItemCreationOrDeletion : {
-        SourceEntities : [
-            to_Booking
-        ],
-       TargetProperties : ['TotalPrice'
-       ]
-    }
+  Common.SideEffects#ReactonItemCreationOrDeletion : {
+    SourceEntities : [to_Booking],
+    TargetProperties : ['TotalPrice']
+  }
 );
 
 annotate TravelService.Booking with @UI.CreateHidden : (to_Travel.TravelStatus.code != #Open);
 annotate TravelService.Booking with @UI.DeleteHidden : (to_Travel.TravelStatus.code != #Open);
 
+// ok
+// annotate TravelService.Booking with @UI.CreateHidden : (not to_Travel.TravelStatus.createDeleteHidden);
+// annotate TravelService.Booking with @UI.DeleteHidden : (not to_Travel.TravelStatus.createDeleteHidden);
+
+// ok
+// annotate TravelService.Booking with @UI.CreateHidden : { $edmJson: { $Path: 'to_Travel/TravelStatus/createDeleteHidden'} };
+// annotate TravelService.Booking with @UI.DeleteHidden : { $edmJson: { $Path: 'to_Travel/TravelStatus/createDeleteHidden'} };
+
+// ok
+// annotate TravelService.Booking with @UI.CreateHidden : { $edmJson: {$Not: { $Path: 'to_Travel/TravelStatus/createDeleteHidden'} } };
+// annotate TravelService.Booking with @UI.DeleteHidden : { $edmJson: {$Not: { $Path: 'to_Travel/TravelStatus/createDeleteHidden'} } };
+
+
+// code;createDeleteHidden;insertDeleteRestriction
+// O;   false;             true
+// A;   true;              false
+// X;   true;              false
+
+
 annotate TravelService.Booking {
   BookingDate   @Core.Computed;
-  ConnectionID  @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  FlightDate    @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  FlightPrice   @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  BookingStatus @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Carrier    @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Customer   @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
+  ConnectionID  @Common.FieldControl  : to_Travel.TravelStatus_ctrl;
+  FlightDate    @Common.FieldControl  : to_Travel.TravelStatus_ctrl;
+  FlightPrice   @Common.FieldControl  : to_Travel.TravelStatus_ctrl;
+  BookingStatus @Common.FieldControl  : to_Travel.TravelStatus_ctrl;
+  to_Carrier    @Common.FieldControl  : to_Travel.TravelStatus_ctrl;
+  to_Customer   @Common.FieldControl  : to_Travel.TravelStatus_ctrl;
 };
 
 annotate TravelService.Booking with @(
@@ -88,8 +115,8 @@ annotate TravelService.Booking with @(
 
 
 annotate TravelService.BookingSupplement {
-  Price         @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Supplement @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Booking    @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
-  to_Travel     @Common.FieldControl  : to_Travel.TravelStatus.fieldControl;
+  Price          @Common.FieldControl  : to_Travel.TravelStatus_ctrl;
+  to_Supplement  @Common.FieldControl  : to_Travel.TravelStatus_ctrl;
+  to_Booking     @Common.FieldControl  : to_Travel.TravelStatus_ctrl;
+  to_Travel      @Common.FieldControl  : to_Travel.TravelStatus_ctrl;
 };
