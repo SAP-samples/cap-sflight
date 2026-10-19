@@ -1,0 +1,1 @@
+require('./lib/monkey-patch-cds.js')
