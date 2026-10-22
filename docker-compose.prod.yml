@@ -1,0 +1,34 @@
+# Production compose file for Coolify (single resource + preview deployments).
+# See README-Coolify.md.
+#
+# One service: the CAP server serves the Fiori apps, the OData services and the
+# MCP endpoints, all on port 4004. No host port mapping: Coolify's Traefik
+# proxy routes the public domain to it.
+#
+# SERVICE_FQDN_SFLIGHT_4004 and SERVICE_PASSWORD_* are Coolify "magic"
+# variables, generated per environment (including per preview deployment).
+# The database is in-memory SQLite, seeded from db/data on every start, so each
+# deploy, restart and preview starts from the same data.
+services:
+  sflight:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      # Bare declaration: Coolify generates the domain and routes it to port 4004
+      - SERVICE_FQDN_SFLIGHT_4004
+      # One generated password per user in package.json's [coolify] profile,
+      # readable under Environment Variables in Coolify
+      - CDS_REQUIRES_AUTH_USERS_AMY_PASSWORD=${SERVICE_PASSWORD_AMY}
+      - CDS_REQUIRES_AUTH_USERS_MARTHA_PASSWORD=${SERVICE_PASSWORD_MARTHA}
+      - CDS_REQUIRES_AUTH_USERS_ROSE_PASSWORD=${SERVICE_PASSWORD_ROSE}
+      - CDS_REQUIRES_AUTH_USERS_AGENT_PASSWORD=${SERVICE_PASSWORD_AGENT}
+      - CDS_REQUIRES_AUTH_USERS_ADMIN_PASSWORD=${SERVICE_PASSWORD_ADMIN}
+    healthcheck:
+      # CAP's built-in, unauthenticated /health route; 127.0.0.1, not
+      # localhost, as busybox wget doesn't fall back from ::1
+      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:4004/health > /dev/null']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s

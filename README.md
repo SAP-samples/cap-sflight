@@ -145,6 +145,10 @@ that HDI container are stored locally on your filesystem (default-env.json).
 
 The deployment to Kyma Runtime is explained in file [README-Kyma.md](./README-Kyma.md).
 
+## Deployment to Coolify
+
+The deployment to Coolify, with MCP endpoints for AI agents, is explained in file [README-Coolify.md](./README-Coolify.md).
+
 ## Creating an SAP Fiori App from Scratch
 
 If you want to implement an SAP Fiori app, follow these tutorials:

@@ -1,0 +1,15 @@
+# The image builds everything itself; keep local installs and build output out.
+node_modules/
+**/node_modules/
+gen/
+**/dist/
+@cds-models/
+
+# Java variant
+srv/target/
+srv/src/
+
+.git/
+*.log
+.env
+default-*.json

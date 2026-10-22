@@ -21,13 +21,14 @@
     "@cap-js/hana": ">=3",
     "@sap/cds": ">=10",
     "@sap/xssec": "^4",
-    "express": "^5"
+    "express": "^5",
+    "@cap-js/mcp": "^1.5.0",
+    "@cap-js/sqlite": ">=3"
   },
   "devDependencies": {
     "@cap-js/cds-test": "^1.0.1",
     "@cap-js/cds-typer": "^0.40.0",
     "@cap-js/cds-types": "^0.18.0",
-    "@cap-js/sqlite": ">=3",
     "@sap/cds-dk": ">=10",
     "@sap/ux-specification": "UI5-1.144",
     "@types/jest": "^30.0.0",
@@ -80,6 +81,47 @@
             }
           }
         }
+      }
+    },
+    "[coolify]": {
+      "requires": {
+        "db": {
+          "kind": "sqlite",
+          "credentials": {
+            "url": ":memory:"
+          }
+        },
+        "auth": {
+          "kind": "basic",
+          "users": {
+            "amy": {
+              "roles": [
+                "processor"
+              ]
+            },
+            "martha": {
+              "roles": [
+                "reviewer"
+              ]
+            },
+            "rose": {
+              "roles": []
+            },
+            "agent": {
+              "roles": [
+                "processor"
+              ]
+            },
+            "admin": {
+              "roles": [
+                "admin"
+              ]
+            }
+          }
+        }
+      },
+      "server": {
+        "index": true
       }
     },
     "log": {
