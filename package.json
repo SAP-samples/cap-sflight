@@ -34,13 +34,14 @@
     "cds-plugin-ui5": "^0.17.0",
     "cross-spawn": "^7.0.3",
     "eslint": "^9 || ^10",
+    "globals": "^17.13.0",
     "http-proxy": "^1.18.1",
     "jest": "^30.3.0",
     "mocha": "^11",
     "qunit": "^2.9.3",
     "ts-jest": "^29.2.5",
     "tsx": "^4.19.2",
-    "typescript-eslint": "^8.12.2"
+    "typescript-eslint": "^8.72.1"
   },
   "cds": {
     "requires": {
@@ -150,9 +151,10 @@
     "#cds-models/*": "./@cds-models/*/index.js"
   },
   "overrides": {
-    "qs": "6.16.0",
+    "qs": "6.17.1",
     "diff": ">=8.0.3",
-    "serialize-javascript": ">=7.1.2",
+    "serialize-javascript": ">=7.1.4",
+    "brace-expansion": ">=5.0.12",
     "@humanfs/node": ">=0.16.8",
     "browserslist": ">=4.28.7"
   }
