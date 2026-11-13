@@ -8,6 +8,7 @@
         "i18n": {
             "bundleName": "sap.fe.cap.travel.i18n.i18n",
             "supportedLocales": [
+                "",
                 "en",
                 "de",
                 "fr"
@@ -83,6 +84,7 @@
                 "settings": {
                     "bundleName": "sap.fe.cap.travel.i18n.i18n",
                     "supportedLocales": [
+                        "",
                         "en",
                         "de",
                         "fr"
