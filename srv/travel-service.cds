@@ -18,3 +18,13 @@ service TravelService @(path:'/processor') {
 }
 
 type Percentage : Integer @assert.range: [1,100];
+
+using { TravelFlow } from './travel-flow';
+annotate TravelService.Travel with actions {
+  createTravelByTemplate  @emits:  TravelFlow.Travel.new;
+  rejectTravel            @emits:  TravelFlow.Travel.reject;
+  acceptTravel            @emits:  TravelFlow.Travel.approve;
+  NEW                     @emits:  TravelFlow.Travel.new;
+  EDIT                    @emits:  TravelFlow.Travel.edit;
+  SAVE                    @emits:  TravelFlow.Travel.save;
+};
