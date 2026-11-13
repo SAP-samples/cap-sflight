@@ -57,6 +57,7 @@ entity FlightConnection : MasterData {
   // and will be replaced with the generated FK
   key ConnectionID   : String(4);
   key AirlineID      : String(3);
+
   DepartureAirport   : Association to Airport;
   DestinationAirport : Association to Airport;
   DepartureTime      : Time;

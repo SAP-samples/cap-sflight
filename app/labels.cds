@@ -15,7 +15,8 @@ annotate schema.Travel with @title: '{i18n>Travel}' {
   GoGreen      @title: '{i18n>GoGreen}';  
   GreenFee     @title: '{i18n>GreenFee}'      @Measures.ISOCurrency: (CurrencyCode.code);
   TreesPlanted @title: '{i18n>TreesPlanted}'; 
-  TravelStatus @title: '{i18n>TravelStatus}'  @Common.Text: TravelStatus.name     @Common.TextArrangement: #TextOnly;
+  TravelStatus @title: '{i18n>TravelStatus}'  @Common.Text: TravelStatus.name
+                                              @Common.TextArrangement: #TextOnly;
   to_Customer  @title: '{i18n>CustomerID}'    @Common.Text: to_Customer.LastName;
   to_Agency    @title: '{i18n>AgencyID}'      @Common.Text: to_Agency.Name;
 }
