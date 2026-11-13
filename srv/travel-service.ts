@@ -102,7 +102,7 @@ export class TravelService extends cds.ApplicationService { init() {
 
     if (!succeeded) { //> let's find out why...
       let travel = await SELECT.one `TravelID as ID, TravelStatus.code as status, BookingFee` .from (req.subject)
-      if (!travel) throw req.reject (404, `Travel "${travel.ID}" does not exist; may have been deleted meanwhile.`)
+      if (!travel) throw req.reject (404, `Travel does not exist; may have been deleted meanwhile.`)
       if (travel.status === TravelStatusCode.Accepted) throw req.reject (400, `Travel "${travel.ID}" has been approved already.`)
       if (travel.BookingFee == null) throw req.reject (404, `No discount possible, as travel "${travel.ID}" does not yet have a booking fee added.`)
     } else return SELECT(req.subject)

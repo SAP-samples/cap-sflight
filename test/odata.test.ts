@@ -223,4 +223,16 @@ describe('Basic OData', () => {
     expect(res4).to.contain({ TotalPrice: '364.500', BookingFee: '5.000' })
   })
 
+  it('rejects deducting discount with 404 when travel does not exist', async () => {
+    try {
+      await POST(
+        `/processor/Travel(TravelUUID='00000000-0000-0000-0000-000000000000',IsActiveEntity=true)/TravelService.deductDiscount`,
+        { percent: 10 }
+      )
+      expect.fail('Should have failed')
+    } catch (err: any) {
+      expect(err.response?.status || err.status).to.eql(404)
+    }
+  })
+
 })
